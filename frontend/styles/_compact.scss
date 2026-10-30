@@ -125,23 +125,21 @@ td:last-child {
 }
 
 
-/* Azul forte e escuro apenas em bordas e pequenos números de seção. */
+/* Ciano-azulado discreto, limitado aos contornos principais e índices. */
 :root {
-  --border-highlight: #1e40af;
-  --index-highlight: #4c8dff;
+  --border-highlight: #365963;
+  --index-highlight: #72b7c6;
 }
 
 :root[data-theme="light"] {
-  --border-highlight: #1d4ed8;
-  --index-highlight: #1e40af;
+  --border-highlight: #a0bec5;
+  --index-highlight: #276f7e;
 }
 
-.panel,
 .simulation-panel,
 .metrics-grid,
-.field-input,
-.icon-button,
-.tool-arrow {
+.chart-panel,
+.results-details {
   border-color: var(--border-highlight);
 }
 
