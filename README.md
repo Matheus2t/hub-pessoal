@@ -4,7 +4,7 @@
 
 ## Calculadoras financeiras
 
-A página inicial `#/` apresenta a plataforma e suas áreas. O catálogo exclusivo fica em `#/calculadoras`, com busca e filtros por categoria. `#/ferramentas` redireciona para esse catálogo. As rotas individuais das quatro calculadoras permanecem válidas e incluem navegação de volta à área. Layout compartilhado (`app-shell`), início (`home-page`), catálogo (`calculator-catalog`) e ferramentas são componentes separados; o menu principal é definido em `catalog.ts`.
+A página inicial `#/` apresenta diretamente as quatro calculadoras, com busca e filtros por categoria. `#/calculadoras` e `#/ferramentas` redirecionam ao início. As rotas individuais permanecem válidas e incluem um breadcrumb de retorno ao início. Layout compartilhado (`app-shell`), início (`home-page`), catálogo reutilizável (`calculator-catalog`) e ferramentas continuam separados. O cabeçalho mantém apenas marca, Início e tema, inclusive no celular. Os estilos de início estão em `_home.scss`, os de layout em `_layout.scss`, os financeiros em `_finance.scss` e o refinamento de tabelas/gráficos em `_compact.scss`.
 
 Catálogo com busca: juros compostos (`#/calculadora`), juros simples (`#/juros-simples`), financiamento PRICE (`#/price`) e SAC (`#/sac`). Taxas são sempre informadas pelo usuário. As ferramentas aceitam meses/anos e taxas mensais/anuais; em juros simples a conversão é proporcional, nas demais é efetiva. Os novos endpoints `/api/finance/simple`, `/api/finance/price` e `/api/finance/sac` não usam banco. O endpoint existente preserva a persistência opcional.
 

@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "overview" | "tools" | "calculator" | "simple" | "price" | "sac";
+export type Page = "overview" | "calculator" | "simple" | "price" | "sac";
 export interface Tool {
   id: string;
   name: string;
@@ -27,17 +27,9 @@ export const pages: Record<Page, { title: string; section: string }> = {
   price: { title: 'Financiamento PRICE', section: 'Crédito' },
   sac: { title: 'Financiamento SAC', section: 'Crédito' },
   overview: { title: "Início", section: "2T" },
-  tools: { title: "Calculadoras", section: "Calculadoras" },
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
-    : location.hash === "#/calculadoras" || location.hash === "#/ferramentas"
-      ? "tools"
-      : "overview";
-
-export const navigation: { page: Page; href: string; label: string }[] = [
-  { page: 'overview', href: '#/', label: 'Início' },
-  { page: 'tools', href: '#/calculadoras', label: 'Calculadoras' },
-];
+    : "overview";

@@ -1,54 +1,4 @@
-// Shared density and legibility for the compact interface.
-.masthead {
-  min-height: 72px;
-}
-.brand img {
-  width: 36px;
-  height: 36px;
-}
-.main-content {
-  padding-top: 28px;
-}
-.page-heading {
-  padding-bottom: 0;
-  border: 0;
-  margin-bottom: 22px;
-}
-.page-heading h1 {
-  font-size: 34px;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.04em;
-}
-.page-heading h1 em {
-  font-family: var(--font-body);
-  color: var(--text);
-  font-style: normal;
-  font-weight: 700;
-}
-.page-footer {
-  margin-top: 28px;
-  padding-block: 18px;
-}
-.home-intro {
-  padding-bottom: 24px;
-}
-.home-intro h1 {
-  font-size: 38px;
-  font-weight: 700;
-}
-.tool-card {
-  padding-block: 24px;
-}
-.tool-card h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.nav-item {
-  font-size: 14px;
-}
+// Financial component density. Shell and catalog styles live in layout/home.
 .metric-card p:empty {
   display: none;
 }
@@ -87,44 +37,6 @@ td:last-child {
   padding-inline: 16px;
   font-size: 12px;
 }
-@media (min-width: 1700px) {
-  :root {
-    --content-width: 1600px;
-  }
-  .main-content {
-    padding-top: 28px;
-  }
-  .masthead {
-    min-height: 76px;
-  }
-}
-@media (max-width: 900px) {
-  .sidebar {
-    top: 72px;
-  }
-  .menu-open .menu-scrim {
-    top: 72px;
-  }
-  .masthead {
-    min-height: 72px;
-  }
-}
-@media (max-width: 600px) {
-  .main-content {
-    padding-top: 22px;
-  }
-  .page-heading h1 {
-    font-size: 28px;
-  }
-  .home-intro h1 {
-    font-size: 34px;
-  }
-  .page-footer {
-    margin-top: 24px;
-  }
-}
-
-
 /* Ciano-azulado discreto, limitado aos contornos principais e índices. */
 :root {
   --border-highlight: #365963;
