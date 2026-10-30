@@ -1,8 +1,16 @@
-# Mercado de Ações V1.1 — TradingView
+# Mercado de Ações V1.2 — Catálogo e pesquisa
+
+## Etapa 1 — catálogo local
+
+52 ações (48 adicionadas), em 13 setores. Cada entrada de `frontend/src/market-catalog.ts` contém ticker, empresa, setor e símbolo BMFBOVESPA. A busca ignora caixa/acentos e combina setor e ordenação por ticker ou empresa. Sugestões limitadas a oito itens; setas selecionam, Enter abre e Escape fecha. A lista completa reflete os filtros e informa a quantidade encontrada. Limpar remove a pesquisa e preserva o setor.
+
+Códigos e identidades revisados em 30/10/2026 nas listagens oficiais [ações brasileiras](https://www.tradingview.com/markets/stocks-brazil/market-movers-all-stocks/) e [maiores empresas](https://www.tradingview.com/markets/stocks-brazil/market-movers-large-cap/). Foram usados códigos atuais, como AXIA3 e EMBJ3, em vez de ELET3 e EMBR3. Setores são agrupamentos editoriais locais, não uma taxonomia oficial da B3. Para manutenção, revisar listagem, mudanças de ticker e o widget incorporado antes de alterar o catálogo; a cobertura externa pode mudar.
+
+O Tickers mantém somente os quatro destaques originais via `featuredStocks`, evitando carregar 52 cotações na página. Todas as entradas usam a página individual existente e o mesmo Symbol Overview. Não há pesquisa remota, novos widgets ou alterações no backend/brapi.
 
 ## Interface pública e provedores separados
 
-`#/acoes` usa busca local por código/nome e o **Tickers** oficial; `#/acoes/ITUB4` (e os outros três códigos) usa **Symbol Overview**. Catálogo em `frontend/src/market-catalog.ts`: ITUB4, PETR4, VALE3 e MGLU3, sempre com prefixo `BMFBOVESPA:`. Para ampliar, acrescente a identidade e confirme a cobertura real antes de publicar. Códigos desconhecidos recebem mensagem local; a ausência no catálogo não significa que a empresa não existe na bolsa.
+`#/acoes` usa busca local por código/nome e o **Tickers** oficial; `#/acoes/ITUB4` (e os demais códigos do catálogo) usa **Symbol Overview**, sempre com prefixo `BMFBOVESPA:`. Para ampliar, acrescente a identidade e confirme a cobertura real antes de publicar. Códigos desconhecidos recebem mensagem local; a ausência no catálogo não significa que a empresa não existe na bolsa.
 
 Nenhum valor de mercado é lido, extraído, armazenado ou replicado pela 2T. Preço, variação, períodos, tooltip e histórico pertencem ao widget e são exibidos por ele. Os cards de navegação mostram apenas ticker/nome. A interface não chama `/api/market/*`, nem precisa de token, banco ou plano pago.
 

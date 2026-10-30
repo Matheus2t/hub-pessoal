@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { LightElement } from '../ui';
-import { findStock, stocks } from '../market-catalog';
+import { findStock, featuredStocks } from '../market-catalog';
 
 const TICKERS_SCRIPT = 'https://widgets.tradingview-widget.com/w/br/tv-tickers.js';
 const OVERVIEW_SCRIPT = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
@@ -71,7 +71,7 @@ export class TradingViewWidget extends LightElement {
         await loadTickers();
         if (!this.isConnected || generation !== this.generation) return;
         const widget = document.createElement('tv-tickers');
-        widget.setAttribute('symbols', stocks.map(stock => stock.tradingView).join(','));
+        widget.setAttribute('symbols', featuredStocks.map(stock => stock.tradingView).join(','));
         widget.setAttribute('theme', theme); widget.setAttribute('hide-chart', '');
         widget.setAttribute('item-size', 'normal');
         widget.setAttribute('symbol-url', `${location.origin}/#/acoes/{tvsymbol}`);

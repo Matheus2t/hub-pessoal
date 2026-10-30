@@ -1,11 +1,27 @@
 import { test, expect } from '@playwright/test';
-import { findStock, searchStocks } from '../src/market-catalog';
+import { findStock, searchStocks, stocks, sectors } from '../src/market-catalog';
 
 test('local catalog resolves known companies and rejects unknown codes', () => {
   expect(findStock('itub4')?.tradingView).toBe('BMFBOVESPA:ITUB4');
   expect(searchStocks('itau')[0].symbol).toBe('ITUB4');
   expect(searchStocks('magazine')[0].symbol).toBe('MGLU3');
   expect(findStock('ABCD3')).toBeUndefined();
+  expect(stocks.length).toBeGreaterThanOrEqual(50);
+  expect(stocks.length).toBeLessThanOrEqual(80);
+  expect(new Set(stocks.map(stock => stock.symbol)).size).toBe(stocks.length);
+  expect(sectors).toHaveLength(13);
+  for (const stock of stocks) {
+    expect(stock.symbol).toMatch(/^[A-Z0-9]{4}[34]$/);
+    expect(stock.tradingView).toBe(`BMFBOVESPA:${stock.symbol}`);
+    expect(stock.name.length).toBeGreaterThan(1);
+    expect(sectors).toContain(stock.sector);
+  }
+  expect(searchStocks('ItAÚ', 'Bancos e serviços financeiros').map(stock => stock.symbol)).toEqual(['ITUB4']);
+  expect(searchStocks('itau', 'Saúde')).toHaveLength(0);
+  const alphabetical = searchStocks('', '', 'name');
+  expect(alphabetical[0].name).toBe('Allied');
+  expect(searchStocks('AXIA')[0].symbol).toBe('AXIA3');
+  expect(searchStocks('Embraer')[0].symbol).toBe('EMBJ3');
 });
 
 const tickersStub = `
@@ -40,7 +56,19 @@ for (const width of [1366, 390, 320]) {
     expect(tickerModules).toBe(0);
     await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Ações', exact: true }).click();
     await expect(page.locator('tv-tickers')).toHaveAttribute('symbols', 'BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
+    await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
+    await page.getByLabel('Setor', { exact: true }).selectOption('Saúde');
     await expect(page.locator('.stock-item')).toHaveCount(4);
+    await page.getByLabel('Buscar ação', { exact: true }).fill('itau');
+    await expect(page.locator('.stock-item')).toHaveCount(0);
+    await expect(page.getByText('Nenhuma ação encontrada. Ajuste a busca ou o setor.')).toBeVisible();
+    await page.getByRole('button', { name: 'Limpar', exact: true }).click();
+    await expect(page.locator('.stock-item')).toHaveCount(4);
+    await page.getByLabel('Setor', { exact: true }).selectOption('');
+    await page.getByLabel('Ordenar por', { exact: true }).selectOption('name');
+    await expect(page.locator('.stock-item').first()).toContainText('Allied');
+    await page.getByLabel('Ordenar por', { exact: true }).selectOption('symbol');
+    await expect(page.locator('.stock-item').first()).toContainText('ABEV3');
     await expect(page.locator('tv-tickers')).toHaveAttribute('direction', width < 700 ? 'vertical' : 'horizontal');
     await page.getByRole('button', { name: 'Ativar tema claro' }).click();
     await expect(page.locator('tv-tickers')).toHaveAttribute('theme', 'light');
@@ -69,6 +97,16 @@ for (const width of [1366, 390, 320]) {
     await page.getByRole('button', { name: 'Buscar', exact: true }).click();
     await expect(page.getByRole('alert')).toContainText('Ação não encontrada no catálogo');
     expect(brapiRequests).toBe(0);
+    await page.getByRole('button', { name: 'Limpar', exact: true }).click();
+    await page.getByLabel('Buscar ação', { exact: true }).fill('totvs');
+    await page.getByLabel('Buscar ação', { exact: true }).press('ArrowDown');
+    await expect(page.getByRole('option', { name: 'TOTS3 · TOTVS' })).toHaveAttribute('aria-selected', 'true');
+    await page.getByLabel('Buscar ação', { exact: true }).press('Escape');
+    await expect(page.getByRole('combobox', { name: 'Buscar ação' })).toHaveAttribute('aria-expanded', 'false');
+    await page.getByLabel('Buscar ação', { exact: true }).press('ArrowDown');
+    await page.getByLabel('Buscar ação', { exact: true }).press('Enter');
+    await expect(page).toHaveURL(/#\/acoes\/TOTS3$/);
+    await expect(page.getByTitle('TradingView — TOTS3')).toBeVisible();
     await page.goto('/#/acoes/PETR4');
     await expect(page.getByTitle('TradingView — PETR4')).toBeVisible();
     await page.goto('/#/acoes/VALE3');
