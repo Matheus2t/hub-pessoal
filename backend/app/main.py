@@ -1,5 +1,7 @@
+from pathlib import Path
 from fastapi import Depends,FastAPI,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from .calculator import calculate_compound
@@ -32,3 +34,5 @@ def history():
     try:return db.query(Simulation).order_by(Simulation.created_at.desc()).limit(10).all()
     except SQLAlchemyError as exc: raise HTTPException(status_code=503, detail='Banco de dados indisponível ou DATABASE_URL não configurada.') from exc
     finally:db.close()
+frontend_dir=Path(__file__).resolve().parents[2]/'dist'
+if frontend_dir.is_dir():app.mount('/',StaticFiles(directory=frontend_dir,html=True),name='frontend')
