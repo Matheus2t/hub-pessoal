@@ -39,7 +39,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Suas ferramentas. Um só lugar." }),
+      page.getByRole("heading", { name: "Menos ruído. Mais clareza." }),
     ).toBeVisible();
     await expect(page.locator("body")).toHaveJSProperty(
       "scrollWidth",
@@ -49,6 +49,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
       await page.screenshot({
         path: testInfo.outputPath(`home-dark-${width}.png`),
         fullPage: true,
+        animations: "disabled",
       });
     if (width <= 900) {
       await page.getByRole("button", { name: "Abrir menu" }).click();
@@ -94,12 +95,15 @@ for (const width of [1920, 1366, 768, 390, 320]) {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await page.getByRole('heading', {name:'Calculadora de juros compostos'}).click();
+    await page
+      .getByRole("heading", { name: "Calculadora de juros compostos" })
+      .click();
     await page.evaluate(() => window.scrollTo(0, 0));
     if (width === 1366 || width === 390)
       await page.screenshot({
         path: testInfo.outputPath(`calculator-dark-${width}.png`),
         fullPage: true,
+        animations: "disabled",
       });
     await page.getByRole("button", { name: "Ativar tema claro" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
@@ -107,6 +111,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
       await page.screenshot({
         path: testInfo.outputPath(`calculator-light-${width}.png`),
         fullPage: true,
+        animations: "disabled",
       });
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
@@ -154,18 +159,40 @@ test("validation, loading, API error and 600-month pagination", async ({
   await expect(page.locator("metric-card")).toHaveCount(0);
 });
 
-test('touch chart, mobile navigation and system theme preference', async ({browser}) => {
- const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,colorScheme:'light',reducedMotion:'reduce'});
- const page=await context.newPage();
- await page.goto('/');await expect(page.locator('html')).toHaveAttribute('data-theme','light');
- await page.getByRole('button',{name:'Abrir menu'}).tap();
- await page.getByRole('link',{name:'Juros compostos',exact:true}).tap();
- await expect(page.getByRole('button',{name:'Abrir menu'})).toBeVisible();
- await page.getByRole('button',{name:'Simular investimento'}).tap();
- const plot=page.locator('.evolution-svg');await expect(plot).toBeVisible();await plot.scrollIntoViewIfNeeded();
- const bounds=await plot.boundingBox();if(!bounds)throw Error('Chart is not rendered');
- await page.touchscreen.tap(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
- await expect(page.locator('.chart-tooltip')).toBeVisible();await expect(page.locator('.chart-tooltip')).toContainText('Total investido:');
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await context.close();
+test("touch chart, mobile navigation and system theme preference", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    colorScheme: "light",
+    reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("button", { name: "Abrir menu" }).tap();
+  await page.getByRole("link", { name: "Juros compostos", exact: true }).tap();
+  await expect(page.getByRole("button", { name: "Abrir menu" })).toBeVisible();
+  await page.getByRole("button", { name: "Simular investimento" }).tap();
+  const plot = page.locator(".evolution-svg");
+  await expect(plot).toBeVisible();
+  await plot.scrollIntoViewIfNeeded();
+  const bounds = await plot.boundingBox();
+  if (!bounds) throw Error("Chart is not rendered");
+  await page.touchscreen.tap(
+    bounds.x + bounds.width / 2,
+    bounds.y + bounds.height / 2,
+  );
+  await expect(page.locator(".chart-tooltip")).toBeVisible();
+  await expect(page.locator(".chart-tooltip")).toContainText(
+    "Total investido:",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await context.close();
 });

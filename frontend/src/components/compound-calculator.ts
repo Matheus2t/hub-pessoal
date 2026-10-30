@@ -160,14 +160,14 @@ export class CompoundCalculator extends LightElement {
   render() {
     return html`<div class="page-heading">
         <div>
-          <p class="eyebrow">FINANÇAS / SIMULADOR</p>
-          <h1>Calculadora de juros compostos</h1>
+          <p class="eyebrow">FERRAMENTA 01 / FINANÇAS</p>
+          <h1>Calculadora de<br /><em>juros compostos</em></h1>
           <p class="page-description">
             Planeje seus aportes. Visualize o potencial do seu dinheiro ao longo
             do tempo.
           </p>
         </div>
-        <span class="badge heading-badge"
+        <span class="heading-badge"
           >${icon("calculator")} Planejamento financeiro</span
         >
       </div>
@@ -178,7 +178,7 @@ export class CompoundCalculator extends LightElement {
         <div class="panel-heading">
           <div>
             <span class="section-index">01</span>
-            <h2 id="parameters-title">Parâmetros da simulação</h2>
+            <h2 id="parameters-title">Defina o seu cenário.</h2>
           </div>
           <span class="subtle">Todos os valores em reais</span>
         </div>
@@ -244,7 +244,7 @@ export class CompoundCalculator extends LightElement {
           ? html`<div class="section-heading result-heading">
                 <div>
                   <p class="eyebrow">SEU CENÁRIO</p>
-                  <h2>O resultado do seu planejamento</h2>
+                  <h2>Resultado da simulação</h2>
                 </div>
                 <span class="result-status ${this.stale ? "stale" : ""}"
                   >${icon(this.stale ? "info" : "check")}${this.stale

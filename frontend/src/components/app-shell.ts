@@ -64,9 +64,21 @@ export class AppShell extends LightElement {
         >Pular para o conteúdo</a
       >
       <div class="app-layout ${this.menuOpen ? "menu-open" : ""}">
-        <aside id="sidebar" class="sidebar" aria-label="Menu da plataforma">
-          <app-sidebar .page=${this.page}></app-sidebar>
-        </aside>
+        <header class="masthead">
+          <a class="brand" href="#/" aria-label="2T — início"
+            ><img src="/2t-mark.svg" width="44" height="44" alt="" /><span
+              ><strong>Ferramentas</strong><small>POR MATHEUS / 2T</small></span
+            ></a
+          >
+          <aside id="sidebar" class="sidebar" aria-label="Menu da plataforma">
+            <app-sidebar .page=${this.page}></app-sidebar>
+          </aside>
+          <app-topbar
+            .page=${this.page}
+            .menuOpen=${this.menuOpen}
+            @menu-toggle=${() => (this.menuOpen = !this.menuOpen)}
+          ></app-topbar>
+        </header>
         ${this.menuOpen
           ? html`<button
               class="menu-scrim"
@@ -76,11 +88,6 @@ export class AppShell extends LightElement {
             ></button>`
           : ""}
         <div class="app-body">
-          <app-topbar
-            .page=${this.page}
-            .menuOpen=${this.menuOpen}
-            @menu-toggle=${() => (this.menuOpen = !this.menuOpen)}
-          ></app-topbar>
           <main
             id="content"
             tabindex="-1"
@@ -95,7 +102,10 @@ export class AppShell extends LightElement {
               ?hidden=${this.page !== "calculator"}
             ></compound-calculator>
             <footer class="page-footer">
-              <span>2T — Ferramentas</span><span>Feito para simplificar.</span>
+              <span class="footer-signature"
+                ><strong>2T</strong
+                ><span>Ferramentas para o que importa.</span></span
+              ><span>MATHEUS2T.COM.BR</span>
             </footer>
           </main>
         </div>

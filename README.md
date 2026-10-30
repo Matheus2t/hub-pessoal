@@ -33,6 +33,8 @@ Sem `DATABASE_URL`, a API ainda calcula e retorna a simulação, mas não grava 
 
 ## Frontend e testes de navegador
 
+A identidade visual usa preto, branco e cinzas neutros, com navegação horizontal, hierarquia editorial e tipografia serifada em títulos selecionados. Os resultados e as séries do gráfico se distinguem por escala, rótulos e traçado contínuo/tracejado, sem depender de cor. O tema claro usa a mesma hierarquia sobre uma base clara neutra.
+
 Os componentes Lit usam Light DOM deliberadamente: o SCSS compartilhado alcança todos os elementos, sem atravessar Shadow DOM. Tokens semânticos e temas estão em `frontend/styles/_tokens.scss`; regras por área ficam nos demais módulos SCSS. As ferramentas disponíveis estão centralizadas em `frontend/src/catalog.ts`. A navegação usa hash e preserva os caminhos de estáticos e `/api/*` do deploy.
 
 O tema respeita a preferência do sistema quando não existe escolha salva. A escolha manual usa apenas `localStorage['2t:theme']`, aplicada antes do CSS para evitar flashes.

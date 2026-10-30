@@ -2,27 +2,26 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { LightElement, icon } from "../ui";
 import { tools, type Tool } from "../catalog";
+
 @customElement("tool-card")
 export class ToolCard extends LightElement {
   @property({ attribute: false }) tool!: Tool;
+  @property({ type: Number }) index = 1;
   render() {
-    const t = this.tool;
-    return html`<article class="tool-card panel">
-      <div class="tool-card-top">
-        <span class="tool-symbol">${icon(t.icon)}</span
-        ><span class="badge">${t.category}</span>
-      </div>
+    const tool = this.tool;
+    return html`<article class="tool-card">
+      <span class="tool-index">${String(this.index).padStart(2, "0")}</span>
       <div class="tool-card-content">
-        <span class="eyebrow">PLANEJAMENTO FINANCEIRO</span>
-        <h2>${t.name}</h2>
-        <p>${t.description}</p>
+        <span class="eyebrow">${tool.category} / Simulador</span>
+        <h2>${tool.name}</h2>
+        <p>${tool.description}</p>
+        <div class="tool-features">
+          <span>Evolução em gráfico</span><span>Detalhamento mensal</span>
+        </div>
       </div>
-      <div class="tool-features">
-        <span>${icon("chart")} Evolução em gráfico</span
-        ><span>${icon("layers")} Detalhamento mensal</span>
-      </div>
-      <a class="button primary" href=${t.href}
-        >Abrir calculadora ${icon("arrow")}</a
+      <a class="tool-access" href=${tool.href} aria-label="Abrir calculadora"
+        ><span>Abrir ferramenta</span
+        ><span class="tool-arrow">${icon("arrow")}</span></a
       >
     </article>`;
   }
@@ -32,80 +31,57 @@ export class HomePage extends LightElement {
   @property({ type: Boolean }) catalogOnly = false;
   render() {
     return html`<section class="home-intro">
-        <div>
-          <p class="eyebrow">
-            ${this.catalogOnly ? "BIBLIOTECA 2T" : "SEU PONTO DE PARTIDA"}
-          </p>
+        <div class="intro-caption">
+          <span class="eyebrow">2T / FERRAMENTAS DIGITAIS</span
+          ><span class="intro-edition">Simples por escolha.</span>
+        </div>
+        <div class="intro-composition">
           <h1>
             ${this.catalogOnly
-              ? html`Ferramentas para<br />ir direto ao ponto.`
-              : html`Suas ferramentas.<br /><span>Um só lugar.</span>`}
+              ? html`O que você<br /><em>precisa resolver.</em>`
+              : html`Menos ruído.<br /><em>Mais clareza.</em>`}
           </h1>
-          <p class="page-description">
-            Utilidades digitais para organizar ideias, explorar
-            possibilidades<br class="desktop-break" />
-            e tomar decisões com mais clareza.
-          </p>
-          <a class="text-link" href="#/calculadora"
-            >Começar uma simulação ${icon("arrow")}</a
-          >
-        </div>
-        <div class="home-graphic" aria-hidden="true">
-          <div class="graphic-grid"></div>
-          <span class="graphic-label">MENOS COMPLICAÇÃO. MAIS CLAREZA.</span>
-          <div class="graphic-mark">2T<span>FERRAMENTAS</span></div>
-          <span class="graphic-coordinate">IDEIA → ANÁLISE → DECISÃO</span>
+          <div class="intro-aside">
+            <span class="intro-rule"></span>
+            <p>Boas ferramentas deixam<br />espaço para o que importa.</p>
+            <p class="page-description">
+              Um lugar para explorar cenários, entender seus números e decidir
+              com mais informação.
+            </p>
+            <a class="text-link" href="#/calculadora"
+              >Começar uma simulação ${icon("arrow")}</a
+            >
+          </div>
         </div>
       </section>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">EXPLORE A PLATAFORMA</p>
-          <h2>Suas ferramentas disponíveis</h2>
+      <section class="tool-collection" aria-labelledby="collection-title">
+        <div class="section-heading">
+          <h2 id="collection-title">Ferramentas disponíveis</h2>
+          <span class="count-label"
+            >${String(tools.length).padStart(2, "0")} / Finanças</span
+          >
         </div>
-        <span class="count-label">${tools.length} ferramenta</span>
-      </div>
-      <div class="home-grid">
-        <div class="tool-grid">
-          ${tools.map((tool) => html`<tool-card .tool=${tool}></tool-card>`)}
-        </div>
-        <aside class="guide-panel">
-          <span class="eyebrow">UM JEITO MAIS SIMPLES</span>
-          <h2>Da pergunta<br />à próxima decisão.</h2>
-          <ol class="guide-steps">
-            <li>
-              <span>01</span>
-              <div>
-                <h3>Escolha sua ferramenta</h3>
-                <p>Encontre uma utilidade para o que você precisa resolver.</p>
-              </div>
-            </li>
-            <li>
-              <span>02</span>
-              <div>
-                <h3>Explore seus cenários</h3>
-                <p>Ajuste os parâmetros e compare possibilidades reais.</p>
-              </div>
-            </li>
-            <li>
-              <span>03</span>
-              <div>
-                <h3>Enxergue os detalhes</h3>
-                <p>Veja resultados organizados, do resumo à evolução mensal.</p>
-              </div>
-            </li>
-          </ol>
-        </aside>
-      </div>
-      <section class="platform-note">
-        ${icon("grid")}
+        ${tools.map(
+          (tool, index) =>
+            html`<tool-card .tool=${tool} .index=${index + 1}></tool-card>`,
+        )}
+      </section>
+      <section class="editorial-note">
+        <p class="eyebrow">FEITA PARA SER ÚTIL</p>
         <div>
-          <h2>Um espaço para o que vem a seguir.</h2>
+          <h2>
+            Uma pergunta de cada vez.<br /><em>Uma decisão mais clara.</em>
+          </h2>
           <p>
-            A biblioteca começa com finanças e está organizada para receber
-            novas ferramentas de dados, produtividade e utilidades.
+            Comece com os juros compostos: defina os valores, acompanhe a
+            evolução e confira cada mês. Sem cadastro. No seu ritmo.
           </p>
         </div>
-        <span class="note-tag">EM EVOLUÇÃO</span>
+        <div class="editorial-facts">
+          <span><b>01</b>Informe seus parâmetros</span
+          ><span><b>02</b>Explore o resultado</span
+          ><span><b>03</b>Consulte os detalhes</span>
+        </div>
       </section>`;
   }
 }

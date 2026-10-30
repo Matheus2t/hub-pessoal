@@ -17,8 +17,19 @@ export class AppTopbar extends LightElement {
     }
   }
   render() {
-    return html`<header class="topbar">
-      <div class="topbar-context">
+    return html`<div class="topbar">
+      <span class="topbar-page">${pages[this.page].title}</span>
+      <div class="topbar-actions">
+        <button
+          class="icon-button theme-toggle"
+          @click=${this.toggleTheme}
+          aria-label=${this.theme === "dark"
+            ? "Ativar tema claro"
+            : "Ativar tema escuro"}
+          title="Alternar tema"
+        >
+          ${icon(this.theme === "dark" ? "sun" : "moon")}
+        </button>
         <button
           class="icon-button mobile-menu"
           aria-label=${this.menuOpen ? "Fechar menu" : "Abrir menu"}
@@ -31,24 +42,7 @@ export class AppTopbar extends LightElement {
         >
           ${icon(this.menuOpen ? "close" : "menu")}
         </button>
-        <div>
-          <p>${pages[this.page].section}</p>
-          <span>${pages[this.page].title}</span>
-        </div>
       </div>
-      <div class="topbar-actions">
-        <span class="topbar-wordmark">2T <span>— Ferramentas</span></span
-        ><button
-          class="icon-button theme-toggle"
-          @click=${this.toggleTheme}
-          aria-label=${this.theme === "dark"
-            ? "Ativar tema claro"
-            : "Ativar tema escuro"}
-          title="Alternar tema"
-        >
-          ${icon(this.theme === "dark" ? "sun" : "moon")}
-        </button>
-      </div>
-    </header>`;
+    </div>`;
   }
 }

@@ -1,53 +1,41 @@
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { LightElement, icon } from "../ui";
+import { LightElement } from "../ui";
 import type { Page } from "../catalog";
+
 @customElement("app-sidebar")
 export class AppSidebar extends LightElement {
   @property() page: Page = "overview";
   render() {
-    const link = (
-      page: Page,
-      href: string,
-      name: string,
-      glyph: "home" | "grid" | "calculator",
-    ) =>
-      html`<a
-        class="nav-item ${this.page === page ? "is-active" : ""}"
-        href=${href}
-        aria-current=${this.page === page ? "page" : "false"}
-        >${icon(glyph)}<span>${name}</span>${this.page === page
-          ? html`<span class="nav-indicator"></span>`
-          : ""}</a
-      >`;
-    return html`<div class="sidebar-inner">
-      <a class="brand" href="#/" aria-label="2T — início"
-        ><img src="/2t-mark.svg" width="40" height="40" alt="" /><span
-          ><strong>2T<span class="brand-divider">/</span>Ferramentas</strong
-          ><small>Clareza para o seu dia a dia</small></span
-        ></a
+    const links: { page: Page; href: string; label: string; index: string }[] =
+      [
+        { page: "overview", href: "#/", label: "Visão geral", index: "01" },
+        {
+          page: "tools",
+          href: "#/ferramentas",
+          label: "Ferramentas",
+          index: "02",
+        },
+        {
+          page: "calculator",
+          href: "#/calculadora",
+          label: "Juros compostos",
+          index: "03",
+        },
+      ];
+    return html`<nav aria-label="Navegação principal">
+      ${links.map(
+        (link) =>
+          html`<a
+            class="nav-item ${this.page === link.page ? "is-active" : ""}"
+            href=${link.href}
+            aria-current=${this.page === link.page ? "page" : "false"}
+            ><span class="nav-number" aria-hidden="true">${link.index}</span
+            ><span>${link.label}</span></a
+          >`,
+      )}<span class="mobile-nav-note"
+        >2T — Ferramentas digitais<br />matheus2t.com.br</span
       >
-      <div class="nav-label">PLATAFORMA</div>
-      <nav aria-label="Navegação principal">
-        ${link("overview", "#/", "Visão geral", "home")}${link(
-          "tools",
-          "#/ferramentas",
-          "Ferramentas",
-          "grid",
-        )}
-        <div class="nav-label nav-section">FINANÇAS</div>
-        ${link("calculator", "#/calculadora", "Juros compostos", "calculator")}
-      </nav>
-      <div class="sidebar-bottom">
-        <div class="sidebar-note">
-          ${icon("layers")}<strong>O essencial, bem resolvido.</strong>
-          <p>Ferramentas práticas para transformar números em decisões.</p>
-        </div>
-        <div class="sidebar-footer">
-          <span class="mini-mark">2T</span
-          ><span>matheus2t.com.br<small>Ferramentas digitais</small></span>
-        </div>
-      </div>
-    </div>`;
+    </nav>`;
   }
 }

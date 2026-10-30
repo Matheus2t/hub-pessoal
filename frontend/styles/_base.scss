@@ -89,9 +89,10 @@ results-table {
   vertical-align: middle;
 }
 .eyebrow {
-  font-size: var(--text-xs);
-  font-weight: 650;
-  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   color: var(--muted);
 }
 .page-description {
@@ -114,7 +115,7 @@ results-table {
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -127,7 +128,7 @@ results-table {
   box-shadow: var(--shadow);
 }
 .secondary {
-  background: var(--panel);
+  background: transparent;
   color: var(--secondary);
   border-color: var(--line);
 }

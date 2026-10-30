@@ -107,7 +107,9 @@ export class EvolutionChart extends LightElement {
           aria-label="Evolução mensal do patrimônio acumulado e do total investido"
           @pointermove=${this.inspect}
           @pointerdown=${this.inspect}
-          @pointerleave=${(event: PointerEvent) => { if (event.pointerType !== 'touch') this.inspecting = false; }}
+          @pointerleave=${(event: PointerEvent) => {
+            if (event.pointerType !== "touch") this.inspecting = false;
+          }}
         >
           ${[0, 1, 2, 3, 4].map((i) => {
             const value = (max * i) / 4,
