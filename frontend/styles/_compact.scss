@@ -123,3 +123,29 @@ td:last-child {
     margin-top: 24px;
   }
 }
+
+
+/* Azul forte e escuro apenas em bordas e pequenos números de seção. */
+:root {
+  --border-highlight: #1e40af;
+  --index-highlight: #4c8dff;
+}
+
+:root[data-theme="light"] {
+  --border-highlight: #1d4ed8;
+  --index-highlight: #1e40af;
+}
+
+.panel,
+.simulation-panel,
+.metrics-grid,
+.field-input,
+.icon-button,
+.tool-arrow {
+  border-color: var(--border-highlight);
+}
+
+.nav-number,
+.section-index {
+  color: var(--index-highlight);
+}
