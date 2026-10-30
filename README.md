@@ -4,6 +4,8 @@
 
 ## Calculadoras financeiras
 
+As quatro ferramentas pertencem à categoria `Calculadoras`, selecionada inicialmente. As categorias dos filtros são derivadas do catálogo e ordenadas automaticamente; `Todas` é sempre o último filtro e não restringe a categoria. A identidade visual usa apenas cores acromáticas nos dois temas, incluindo estados e gráficos. Os tokens de cor estão centralizados em `_tokens.scss`.
+
 A página inicial `#/` apresenta diretamente as quatro calculadoras, com busca e filtros por categoria. `#/calculadoras` e `#/ferramentas` redirecionam ao início. As rotas individuais permanecem válidas e incluem um breadcrumb de retorno ao início. Layout compartilhado (`app-shell`), início (`home-page`), catálogo reutilizável (`calculator-catalog`) e ferramentas continuam separados. O cabeçalho mantém apenas marca, Início e tema, inclusive no celular. Os estilos de início estão em `_home.scss`, os de layout em `_layout.scss`, os financeiros em `_finance.scss` e o refinamento de tabelas/gráficos em `_compact.scss`.
 
 Catálogo com busca: juros compostos (`#/calculadora`), juros simples (`#/juros-simples`), financiamento PRICE (`#/price`) e SAC (`#/sac`). Taxas são sempre informadas pelo usuário. As ferramentas aceitam meses/anos e taxas mensais/anuais; em juros simples a conversão é proporcional, nas demais é efetiva. Os novos endpoints `/api/finance/simple`, `/api/finance/price` e `/api/finance/sac` não usam banco. O endpoint existente preserva a persistência opcional.

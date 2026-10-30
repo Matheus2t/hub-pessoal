@@ -37,17 +37,6 @@ td:last-child {
   padding-inline: 16px;
   font-size: 12px;
 }
-/* Ciano-azulado discreto, limitado aos contornos principais e índices. */
-:root {
-  --border-highlight: #365963;
-  --index-highlight: #72b7c6;
-}
-
-:root[data-theme="light"] {
-  --border-highlight: #a0bec5;
-  --index-highlight: #276f7e;
-}
-
 .simulation-panel,
 .metrics-grid,
 .chart-panel,
@@ -55,7 +44,6 @@ td:last-child {
   border-color: var(--border-highlight);
 }
 
-.nav-number,
 .section-index {
   color: var(--index-highlight);
 }
