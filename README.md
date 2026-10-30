@@ -29,5 +29,7 @@ pytest backend/tests
 
 O limite de período é de 1 a 600 meses. Os aportes acontecem ao final de cada mês, depois da aplicação dos juros.
 
+Sem `DATABASE_URL`, a API ainda calcula e retorna a simulação, mas não grava histórico. Quando `DATABASE_URL` está configurada localmente, as simulações são persistidas no MySQL. Em Vercel, o histórico compartilhado permanece desativado.
+
 ## GitHub
 O projeto está preparado para a branch `main`. Após criar um repositório vazio: `git remote add origin https://github.com/SEU_USUARIO/hub-pessoal.git` e `git push -u origin main`. Não há credenciais no repositório.
