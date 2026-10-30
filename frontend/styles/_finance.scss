@@ -19,6 +19,10 @@
 .table-panel { margin-top: 16px; border-radius: 8px; overflow: hidden; }
 .table-panel .results-details { margin: 0; border: 0; }
 finance-calculator { display: block; }
+@media (max-width: 400px) {
+  .form-actions { flex-direction: column; align-items: stretch; }
+  .form-actions .button { width: 100%; min-width: 0; }
+}
 @media (max-width: 700px) {
   .home-intro { align-items: stretch; flex-direction: column; gap: 18px; }
   .catalog-search { min-width: 0; }

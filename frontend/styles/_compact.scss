@@ -15,7 +15,8 @@
   margin-bottom: 22px;
 }
 .page-heading h1 {
-  font-size: 32px;
+  font-size: 34px;
+  font-weight: 600;
   margin: 0;
   line-height: 1.2;
   letter-spacing: -0.04em;
@@ -24,6 +25,7 @@
   font-family: var(--font-body);
   color: var(--text);
   font-style: normal;
+  font-weight: 700;
 }
 .page-footer {
   margin-top: 28px;
@@ -33,17 +35,19 @@
   padding-bottom: 24px;
 }
 .home-intro h1 {
-  font-size: 36px;
+  font-size: 38px;
+  font-weight: 700;
 }
 .tool-card {
   padding-block: 24px;
 }
 .tool-card h2 {
-  font-size: 26px;
+  font-size: 28px;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 .nav-item {
-  font-size: 13px;
+  font-size: 14px;
 }
 .metric-card p:empty {
   display: none;
@@ -51,16 +55,21 @@
 .chart-readout,
 .chart-slider,
 .chart-legend {
-  font-size: 12px;
+  font-size: 13px;
+}
+.chart-slider {
+  font-weight: 600;
 }
 .chart-readout strong {
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 700;
 }
 .summary-title small {
   font-size: 12px;
 }
 thead th {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 700;
 }
 th,
 td {
@@ -76,7 +85,7 @@ td:last-child {
 }
 .table-pagination {
   padding-inline: 16px;
-  font-size: 11px;
+  font-size: 12px;
 }
 @media (min-width: 1700px) {
   :root {
@@ -105,12 +114,36 @@ td:last-child {
     padding-top: 22px;
   }
   .page-heading h1 {
-    font-size: 27px;
+    font-size: 28px;
   }
   .home-intro h1 {
-    font-size: 32px;
+    font-size: 34px;
   }
   .page-footer {
     margin-top: 24px;
   }
+}
+
+
+/* Ciano-azulado discreto, limitado aos contornos principais e índices. */
+:root {
+  --border-highlight: #365963;
+  --index-highlight: #72b7c6;
+}
+
+:root[data-theme="light"] {
+  --border-highlight: #a0bec5;
+  --index-highlight: #276f7e;
+}
+
+.simulation-panel,
+.metrics-grid,
+.chart-panel,
+.results-details {
+  border-color: var(--border-highlight);
+}
+
+.nav-number,
+.section-index {
+  color: var(--index-highlight);
 }

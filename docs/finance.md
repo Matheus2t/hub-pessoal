@@ -21,6 +21,8 @@ Não foram copiados código, textos, marcas ou layouts. A análise responsiva da
 
 O catálogo tinha uma ferramenta e links com nomes acessíveis repetidos; faltavam seletores de unidades. Os componentes financeiros, gráfico com mouse/toque/teclado e tabela paginada já eram reutilizáveis. A fonte presente era Helvetica/Arial, sem IBM Plex Sans nem detalhe ciano descrito no briefing.
 
+Durante a integração, foram encontrados oito commits mais recentes no GitHub. Eles já introduziam IBM Plex Sans, detalhes ciano e inspeção independente das três séries do gráfico. Essas implementações remotas foram preservadas integralmente; o diagnóstico de fonte acima se refere apenas à cópia local inicial desatualizada. A entrega amplia o catálogo e reutiliza o gráfico mais recente.
+
 Ordem: preservar juros compostos; introduzir unidades; entregar juros simples, PRICE e SAC com validação; ampliar catálogo com busca; ajustar densidade/identidade; validar e publicar. Porcentagem, rentabilidade, inflação e CDI ficam para entregas seguintes, com critérios e testes próprios. Nenhuma taxa de mercado é fornecida automaticamente.
 
 ## Convenções matemáticas

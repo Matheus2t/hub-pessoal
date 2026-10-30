@@ -23,15 +23,16 @@
 }
 .brand strong {
   display: block;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.04em;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 .brand small {
   display: block;
   font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.09em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -50,17 +51,22 @@
   align-items: baseline;
   min-height: 44px;
   padding-block: var(--space-3);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--muted);
 }
 .nav-number {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 600;
   color: var(--muted);
 }
 .nav-item:hover,
 .nav-item.is-active {
   color: var(--text);
+}
+.nav-item.is-active {
+  font-weight: 700;
 }
 .nav-item::after {
   content: "";
@@ -111,7 +117,7 @@
   margin-top: var(--space-20);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .footer-signature {
   display: flex;
@@ -121,12 +127,12 @@
 .footer-signature strong {
   color: var(--text);
   font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.08em;
+  font-weight: 700;
+  letter-spacing: -0.06em;
 }
 .page-footer > span:last-child {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 .page-heading {
   padding-bottom: var(--space-12);
@@ -140,15 +146,16 @@
 .page-heading h1 {
   font-size: clamp(36px, 4.5vw, 62px);
   max-width: 800px;
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.055em;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
   margin: var(--space-6) 0;
 }
 .page-heading h1 em {
-  font-family: var(--font-editorial);
-  font-weight: 400;
-  color: var(--secondary);
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 700;
+  color: var(--text);
 }
 .page-heading .page-description {
   font-size: 13px;
@@ -194,7 +201,8 @@
   .topbar-page {
     display: block;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: 500;
     margin-right: var(--space-4);
   }
   .mobile-menu {
@@ -228,6 +236,7 @@
   .nav-item {
     padding-block: var(--space-5);
     font-size: 20px;
+    font-weight: 600;
     gap: var(--space-5);
     border-bottom: 1px solid var(--line-soft);
   }
@@ -276,10 +285,10 @@
     height: 36px;
   }
   .brand strong {
-    font-size: 15px;
+    font-size: 16px;
   }
   .brand small {
-    font-size: 7px;
+    font-size: 9px;
   }
   .topbar-page {
     display: none;

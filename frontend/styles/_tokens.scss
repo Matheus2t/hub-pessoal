@@ -38,20 +38,20 @@
   --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
-  --text-xs: 11px;
-  --text-sm: 12px;
-  --text-base: 14px;
-  --text-md: 16px;
-  --text-lg: 20px;
-  --text-xl: 24px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 22px;
+  --text-xl: 26px;
   --shadow: none;
   --shadow-raised: 0 12px 40px #00000020;
   --duration: 160ms;
   --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
   --content-width: 1280px;
-  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
   --detail: #78c9d5;
-  --font-editorial: Georgia, "Times New Roman", serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-editorial: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-family: var(--font-body);
 }
