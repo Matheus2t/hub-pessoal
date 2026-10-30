@@ -8,7 +8,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     await expect(page.getByRole('heading', { name: 'Ferramentas', exact: true })).toBeVisible();
     await expect(page.locator('tool-card')).toHaveCount(4);
     const nav = page.getByRole('navigation', { name: 'Navegação principal' });
-    await expect(nav.getByRole('link')).toHaveCount(1);
+    await expect(nav.getByRole('link')).toHaveCount(3);
     await expect(nav.getByRole('link', { name: 'Início', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Abrir menu' })).toHaveCount(0);
     const filters = page.getByRole('group', { name: 'Filtrar por categoria' });
@@ -42,7 +42,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
 }
 
 test('legacy catalogs redirect home and tool routes remain accessible', async ({ page }) => {
-  for (const alias of ['calculadoras', 'ferramentas']) {
+  for (const alias of ['ferramentas']) {
     await page.goto(`/#/${alias}`);
     await expect(page).toHaveURL(/#\/$/);
     await expect(page.locator('tool-card')).toHaveCount(4);

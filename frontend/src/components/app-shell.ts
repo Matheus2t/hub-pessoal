@@ -8,17 +8,20 @@ import "./topbar";
 import "./home-page";
 import "./compound-calculator";
 import "./finance-calculator";
+import "./market-page";
 
 @customElement("app-shell")
 export class AppShell extends LightElement {
   @state() private page = currentPage();
+  @state() private route = location.hash;
   private normalizeRoute() {
-    if (["#/calculadoras", "#/ferramentas"].includes(location.hash))
+    if (["#/ferramentas"].includes(location.hash))
       history.replaceState(null, "", "#/");
   }
   private navigate = () => {
     this.normalizeRoute();
     this.page = currentPage();
+    this.route = location.hash;
     document.title = `${pages[this.page].title} · 2T — Ferramentas`;
     window.scrollTo({ top: 0 });
     void this.updateComplete.then(() => this.querySelector<HTMLElement>("#content")?.focus());
@@ -44,7 +47,9 @@ export class AppShell extends LightElement {
         </header>
         <main id="content" tabindex="-1" class="main-content">
           ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span><span aria-current="page">${pages[this.page].title}</span></nav>` : ""}
-          <home-page ?hidden=${this.page !== "overview"}></home-page>
+          ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
+          ${this.page === 'catalog' ? html`<calculator-catalog title="Calculadoras"></calculator-catalog>` : ''}
+          ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
           <footer class="page-footer"><span>2T</span><span>matheus2t.com.br</span></footer>

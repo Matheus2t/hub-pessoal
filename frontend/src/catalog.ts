@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "overview" | "calculator" | "simple" | "price" | "sac";
+export type Page = "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market";
 export interface Tool {
   id: string;
   name: string;
@@ -23,6 +23,8 @@ export const tools: Tool[] = [
   { id: 'sac', name: 'Financiamento SAC', category: 'Calculadoras', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  catalog: { title: 'Calculadoras', section: 'Calculadoras' },
+  market: { title: 'Mercado de Ações', section: 'Ações' },
   simple: { title: 'Juros simples', section: 'Calculadoras' },
   price: { title: 'Financiamento PRICE', section: 'Calculadoras' },
   sac: { title: 'Financiamento SAC', section: 'Calculadoras' },
@@ -30,6 +32,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
+  location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
     : "overview";

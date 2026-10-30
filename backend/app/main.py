@@ -11,8 +11,10 @@ from .db import SessionLocal,get_db
 from .models import Simulation
 from .schemas import CalculationInput,CalculationResult,HistoryItem
 from .finance import router as finance_router
+from .market import router as market_router
 app=FastAPI(title='Hub Pessoal API',version='1.0.0')
 app.include_router(finance_router)
+app.include_router(market_router)
 app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.api_cors_origins.split(',')],allow_methods=['*'],allow_headers=['*'])
 @app.get('/api/health')
 def health():return {'status':'ok'}

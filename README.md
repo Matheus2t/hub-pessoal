@@ -2,6 +2,10 @@
 
 2T — Ferramentas. Plataforma de utilidades digitais com calculadora de juros compostos, gráfico interativo e detalhamento mensal. Site oficial: `matheus2t.com.br`.
 
+## Mercado de Ações V1
+
+Área em `#/acoes` e detalhe em `#/acoes/ITUB4`, com integração brapi v2 no FastAPI, cache de 30 minutos, busca, cotação e gráfico histórico. **A distribuição de dados no Vercel permanece bloqueada**, pois os termos consultados não autorizam inequivocamente a redistribuição pública pretendida. Não há dados simulados na aplicação. Veja [configuração, licenciamento, limitações e execução local](docs/market.md). `BRAPI_API_KEY` é opcional e exclusivo do backend; não ativa a distribuição pública.
+
 ## Calculadoras financeiras
 
 As quatro ferramentas pertencem à categoria `Calculadoras`, selecionada inicialmente. As categorias dos filtros são derivadas do catálogo e ordenadas automaticamente; `Todas` é sempre o último filtro e não restringe a categoria. A identidade visual usa apenas cores acromáticas nos dois temas, incluindo estados e gráficos. Os tokens de cor estão centralizados em `_tokens.scss`.
