@@ -11,6 +11,7 @@ import "./form-field";
 import "./metric-card";
 import "./evolution-chart";
 import "./results-table";
+import "./unit-select";
 
 type Field = keyof CalculationInput;
 const fieldDefinitions: {
@@ -46,6 +47,8 @@ const fieldDefinitions: {
 ];
 @customElement("compound-calculator")
 export class CompoundCalculator extends LightElement {
+  @state() private rateUnit = 'monthly';
+  @state() private periodUnit = 'months';
   @state() private values: Record<Field, string> = {
     initial_capital: "1.000,00",
     monthly_contribution: "300,00",
@@ -104,8 +107,8 @@ export class CompoundCalculator extends LightElement {
       if (!Number.isFinite(value) || value < 0)
         this.errors[name] = "Informe um número válido, maior ou igual a zero.";
     }
-    if (!Number.isInteger(body.months) || body.months < 1 || body.months > 600)
-      this.errors.months = "Informe um prazo inteiro entre 1 e 600 meses.";
+    if (!Number.isInteger(body.months) || body.months < 1 || body.months > (this.periodUnit === 'years' ? 50 : 600))
+      this.errors.months = this.periodUnit === 'years' ? 'Informe um prazo inteiro entre 1 e 50 anos.' : "Informe um prazo inteiro entre 1 e 600 meses.";
     if (Object.keys(this.errors).length) {
       this.errors = { ...this.errors };
       await this.updateComplete;
@@ -124,7 +127,7 @@ export class CompoundCalculator extends LightElement {
       const response = await fetch(apiUrl("/api/calculations"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ ...body, rate_unit: this.rateUnit, period_unit: this.periodUnit }),
         signal: this.controller.signal,
       });
       if (!response.ok) {
@@ -179,14 +182,18 @@ export class CompoundCalculator extends LightElement {
           @field-input=${this.change}
           @field-blur=${this.format}
         >
+          <div class="unit-controls" @unit-change=${(event: CustomEvent) => { if (event.detail.name === 'rate') this.rateUnit = event.detail.value; else this.periodUnit = event.detail.value; if (this.result) this.stale = true; }}>
+            <unit-select label="Taxa informada" name="rate" .value=${this.rateUnit} .disabled=${this.loading} .options=${[['monthly', 'Mensal'], ['annual', 'Anual efetiva']]}></unit-select>
+            <unit-select label="Período em" name="period" .value=${this.periodUnit} .disabled=${this.loading} .options=${[['months', 'Meses'], ['years', 'Anos']]}></unit-select>
+          </div>
           <div class="form-grid">
             ${fieldDefinitions.map(
               (f) =>
                 html`<form-field
                   .name=${f.name}
-                  .label=${f.label}
-                  .unit=${f.unit}
-                  .hint=${f.hint}
+                  .label=${f.name === 'monthly_rate' && this.rateUnit === 'annual' ? 'Taxa de juros anual' : f.label}
+                  .unit=${f.name === 'monthly_rate' && this.rateUnit === 'annual' ? '% a.a.' : f.name === 'months' && this.periodUnit === 'years' ? 'anos' : f.unit}
+                  .hint=${f.name === 'monthly_rate' && this.rateUnit === 'annual' ? 'Rendimento anual esperado' : f.name === 'months' && this.periodUnit === 'years' ? 'Informe de 1 a 50 anos inteiros' : f.hint}
                   .value=${this.values[f.name]}
                   .error=${this.errors[f.name] || ""}
                   .integer=${f.name === "months"}

@@ -96,7 +96,7 @@ export class EvolutionChart extends LightElement {
         <div class="chart-readout" aria-live="off">
           <span>Mês ${selected.month}</span
           ><strong>${money(selected.balance)}</strong
-          ><small>Investido: ${money(selected.invested)}</small>
+          ><small>Investido: ${money(selected.invested)} · Juros: ${money(selected.balance - selected.invested)}</small>
         </div>
       </div>
       <div class="chart-plot">
@@ -146,7 +146,7 @@ export class EvolutionChart extends LightElement {
             >
               <span>Mês ${selected.month}</span
               ><strong>${money(selected.balance)}</strong
-              ><small>Total investido: ${money(selected.invested)}</small>
+              ><small>Total investido: ${money(selected.invested)}</small><small>Juros: ${money(selected.balance - selected.invested)}</small>
             </div>`
           : ""}
       </div>

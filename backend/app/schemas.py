@@ -1,7 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 from pydantic import BaseModel,Field,ConfigDict
 class CalculationInput(BaseModel):
+    rate_unit: Literal['monthly', 'annual'] = 'monthly'
+    period_unit: Literal['months', 'years'] = 'months'
     initial_capital:Decimal=Field(ge=0);monthly_contribution:Decimal=Field(ge=0);monthly_rate:Decimal=Field(ge=0);months:int=Field(ge=1,le=600)
 class EvolutionRow(BaseModel):
     month:int;interest:Decimal;deposit:Decimal;balance:Decimal;invested:Decimal

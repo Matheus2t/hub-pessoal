@@ -2,7 +2,13 @@
 
 2T — Ferramentas. Plataforma de utilidades digitais com calculadora de juros compostos, gráfico interativo e detalhamento mensal. Site oficial: `matheus2t.com.br`.
 
-## Stack
+## Calculadoras financeiras
+
+Catálogo com busca: juros compostos (`#/calculadora`), juros simples (`#/juros-simples`), financiamento PRICE (`#/price`) e SAC (`#/sac`). Taxas são sempre informadas pelo usuário. As ferramentas aceitam meses/anos e taxas mensais/anuais; em juros simples a conversão é proporcional, nas demais é efetiva. Os novos endpoints `/api/finance/simple`, `/api/finance/price` e `/api/finance/sac` não usam banco. O endpoint existente preserva a persistência opcional.
+
+Pesquisa, diagnóstico, prioridades, fórmulas, convenções de arredondamento e limitações estão em [docs/finance.md](docs/finance.md). A fonte IBM Plex Sans é carregada pelo Google Fonts com `display=swap` e fallback local; não bloqueia o uso das ferramentas caso o serviço de fontes esteja indisponível.
+
+## Tecnologias
 Frontend: Lit, TypeScript, SCSS e esbuild. Backend: Python, FastAPI e Pydantic. Persistência: MySQL, SQLAlchemy e Alembic. Testes: Pytest e Playwright.
 
 ## Configuração

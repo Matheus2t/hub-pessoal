@@ -1,0 +1,33 @@
+.home-intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.catalog-search { display: grid; gap: 6px; color: var(--secondary); font-size: 13px; min-width: 260px; }
+.catalog-search input, .unit-control select { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; color: var(--text); font: inherit; min-height: 42px; padding: 8px 12px; }
+.catalog-search input:focus-visible, .unit-control select:focus-visible { outline: 2px solid var(--detail); outline-offset: 3px; }
+.tool-collection { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border: 0; }
+.tool-card { height: 100%; border: 1px solid var(--line-soft); background: var(--panel); border-radius: 8px; padding: 24px; }
+.tool-card:hover { border-color: var(--detail); }
+.tool-category { display: flex; align-items: center; gap: 8px; color: var(--detail); font-size: 12px; margin-bottom: 12px; }
+.tool-category svg { width: 16px; height: 16px; }
+.tool-card .tool-card-content h2 { font-family: var(--font-body); font-weight: 600; font-size: 23px; }
+.unit-controls { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+.unit-control { display: flex; align-items: center; gap: 10px; color: var(--secondary); font-size: 13px; }
+.unit-control select { background: var(--bg); }
+.finance-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.form-bottom { justify-content: flex-end; }
+.form-bottom > .form-note { margin-right: auto; }
+.chart-readout small { max-width: none; }
+.metrics-grid > metric-card:first-child strong { color: var(--detail); }
+.table-panel { margin-top: 16px; border-radius: 8px; overflow: hidden; }
+.table-panel .results-details { margin: 0; border: 0; }
+finance-calculator { display: block; }
+@media (max-width: 700px) {
+  .home-intro { align-items: stretch; flex-direction: column; gap: 18px; }
+  .catalog-search { min-width: 0; }
+  .tool-collection { grid-template-columns: minmax(0, 1fr); }
+  .tool-card { padding: 20px; }
+  .finance-fields { grid-template-columns: minmax(0, 1fr); }
+  .unit-controls { gap: 12px; }
+  .unit-control { flex-direction: column; align-items: stretch; gap: 6px; }
+  unit-select { flex: 1; min-width: 0; }
+  .chart-readout { flex-wrap: wrap; }
+  .chart-readout small { width: 100%; }
+}

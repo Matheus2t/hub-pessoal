@@ -49,12 +49,14 @@
   --duration: 160ms;
   --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
   --content-width: 1280px;
-  --font-body: "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --detail: #78c9d5;
   --font-editorial: Georgia, "Times New Roman", serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-family: var(--font-body);
 }
 :root[data-theme="light"] {
+  --detail: #146775;
   color-scheme: light;
   --bg: #f8f7f4;
   --sidebar: #f8f7f4;

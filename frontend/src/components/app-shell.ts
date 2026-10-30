@@ -1,4 +1,5 @@
 import { html } from "lit";
+import { keyed } from 'lit/directives/keyed.js';
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { currentPage, pages } from "../catalog";
@@ -6,6 +7,7 @@ import "./sidebar";
 import "./topbar";
 import "./home-page";
 import "./compound-calculator";
+import "./finance-calculator";
 @customElement("app-shell")
 export class AppShell extends LightElement {
   @state() private page = currentPage();
@@ -71,7 +73,7 @@ export class AppShell extends LightElement {
             ></a
           >
           <aside id="sidebar" class="sidebar" aria-label="Menu da plataforma">
-            <app-sidebar .page=${this.page}></app-sidebar>
+            <app-sidebar .page=${['simple', 'price', 'sac'].includes(this.page) ? 'tools' : this.page}></app-sidebar>
           </aside>
           <app-topbar
             .page=${this.page}
@@ -95,12 +97,13 @@ export class AppShell extends LightElement {
             ?inert=${this.menuOpen}
           >
             <home-page
-              ?hidden=${this.page === "calculator"}
+              ?hidden=${!["overview", "tools"].includes(this.page)}
               .catalogOnly=${this.page === "tools"}
             ></home-page
             ><compound-calculator
               ?hidden=${this.page !== "calculator"}
             ></compound-calculator>
+            ${['simple', 'price', 'sac'].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ''}
             <footer class="page-footer">
               <span class="footer-signature"
                 ><strong>2T</strong

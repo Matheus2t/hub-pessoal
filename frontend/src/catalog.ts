@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "overview" | "tools" | "calculator";
+export type Page = "overview" | "tools" | "calculator" | "simple" | "price" | "sac";
 export interface Tool {
   id: string;
   name: string;
@@ -18,14 +18,20 @@ export const tools: Tool[] = [
     icon: "calculator",
     href: "#/calculadora",
   },
+  { id: 'simple', name: 'Juros simples', category: 'Investimentos', description: 'Capital e juros sem capitalização.', icon: 'calculator', href: '#/juros-simples' },
+  { id: 'price', name: 'Financiamento PRICE', category: 'Crédito', description: 'Parcelas fixas e custo total do crédito.', icon: 'calculator', href: '#/price' },
+  { id: 'sac', name: 'Financiamento SAC', category: 'Crédito', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  simple: { title: 'Juros simples', section: 'Investimentos' },
+  price: { title: 'Financiamento PRICE', section: 'Crédito' },
+  sac: { title: 'Financiamento SAC', section: 'Crédito' },
   overview: { title: "Visão geral", section: "Seu espaço de ferramentas" },
   tools: { title: "Ferramentas", section: "Explore a plataforma" },
   calculator: { title: "Juros compostos", section: "Ferramentas / Finanças" },
 };
 export const currentPage = (): Page =>
-  location.hash === "#/calculadora"
+  location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
     : location.hash === "#/ferramentas"
       ? "tools"
