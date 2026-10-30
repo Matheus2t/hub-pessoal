@@ -2,15 +2,15 @@
 
 2T — Ferramentas. Plataforma de utilidades digitais com calculadora de juros compostos, gráfico interativo e detalhamento mensal. Site oficial: `matheus2t.com.br`.
 
-## Mercado de Ações V1
+## Mercado de Ações V1.1
 
-Área em `#/acoes` e detalhe em `#/acoes/ITUB4`, com integração brapi v2 no FastAPI, cache de 30 minutos, busca, cotação e gráfico histórico. **A distribuição de dados no Vercel permanece bloqueada**, pois os termos consultados não autorizam inequivocamente a redistribuição pública pretendida. Não há dados simulados na aplicação. Veja [configuração, licenciamento, limitações e execução local](docs/market.md). `BRAPI_API_KEY` é opcional e exclusivo do backend; não ativa a distribuição pública.
+Área em `#/acoes` e detalhe em `#/acoes/ITUB4`, com busca local, Tickers e Symbol Overview oficiais do TradingView. Cotações e gráficos são exibidos exclusivamente nos widgets, com marca preservada e atraso de 15 minutos conforme a cobertura B3 anunciada pelo provedor. A 2T não extrai preços. A integração brapi permanece preservada e **bloqueada para distribuição pública**. Veja [provedores, configuração, licenciamento, manutenção e inspeção real](docs/market.md).
 
 ## Calculadoras financeiras
 
-As quatro ferramentas pertencem à categoria `Calculadoras`, selecionada inicialmente. As categorias dos filtros são derivadas do catálogo e ordenadas automaticamente; `Todas` é sempre o último filtro e não restringe a categoria. A identidade visual usa apenas cores acromáticas nos dois temas, incluindo estados e gráficos. Os tokens de cor estão centralizados em `_tokens.scss`.
+As quatro ferramentas pertencem à categoria `Calculadoras`, selecionada inicialmente. As categorias dos filtros são derivadas do catálogo e ordenadas automaticamente; `Todas` é sempre o último filtro e não restringe a categoria. A área das calculadoras usa cores acromáticas nos dois temas. No Mercado de Ações, os widgets oficiais preservam a marca e as cores financeiras do provedor. Os tokens da 2T estão centralizados em `_tokens.scss`.
 
-A página inicial `#/` apresenta diretamente as quatro calculadoras, com busca e filtros por categoria. `#/calculadoras` e `#/ferramentas` redirecionam ao início. As rotas individuais permanecem válidas e incluem um breadcrumb de retorno ao início. Layout compartilhado (`app-shell`), início (`home-page`), catálogo reutilizável (`calculator-catalog`) e ferramentas continuam separados. O cabeçalho mantém apenas marca, Início e tema, inclusive no celular. Os estilos de início estão em `_home.scss`, os de layout em `_layout.scss`, os financeiros em `_finance.scss` e o refinamento de tabelas/gráficos em `_compact.scss`.
+A página inicial `#/` apresenta as quatro calculadoras e o acesso ao Mercado de Ações. O cabeçalho oferece Início, Calculadoras e Ações, além do tema. `#/calculadoras` abre o catálogo exclusivo e `#/ferramentas` redireciona ao início. As rotas individuais incluem navegação de retorno. Layout (`app-shell`), início (`home-page`), catálogo reutilizável (`calculator-catalog`) e ferramentas continuam separados. Os estilos de início estão em `_home.scss`, os de layout em `_layout.scss`, os financeiros em `_finance.scss` e o refinamento de tabelas/gráficos em `_compact.scss`.
 
 Catálogo com busca: juros compostos (`#/calculadora`), juros simples (`#/juros-simples`), financiamento PRICE (`#/price`) e SAC (`#/sac`). Taxas são sempre informadas pelo usuário. As ferramentas aceitam meses/anos e taxas mensais/anuais; em juros simples a conversão é proporcional, nas demais é efetiva. Os novos endpoints `/api/finance/simple`, `/api/finance/price` e `/api/finance/sac` não usam banco. O endpoint existente preserva a persistência opcional.
 
