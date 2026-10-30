@@ -1,1 +1,4 @@
--r backend/requirements.txt
+fastapi==0.115.6
+pydantic-settings==2.7.1
+sqlalchemy==2.0.36
+pymysql==1.1.1
