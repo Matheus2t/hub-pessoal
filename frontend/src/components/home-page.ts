@@ -10,12 +10,9 @@ export class ToolCard extends LightElement {
   render() {
     const tool = this.tool;
     return html`<article class="tool-card">
-      
       <div class="tool-card-content">
-        
         <h2>${tool.name}</h2>
         <p>${tool.description}</p>
-        
       </div>
       <a class="tool-access" href=${tool.href} aria-label="Abrir calculadora"
         ><span>Abrir ferramenta</span
@@ -28,13 +25,12 @@ export class ToolCard extends LightElement {
 export class HomePage extends LightElement {
   @property({ type: Boolean }) catalogOnly = false;
   render() {
-    return html`<section class="home-intro"><h1>Ferramentas</h1></section><section class="tool-collection" aria-labelledby="collection-title">
-        
+    return html`<section class="home-intro"><h1>Ferramentas</h1></section>
+      <section class="tool-collection" aria-label="Ferramentas disponíveis">
         ${tools.map(
           (tool, index) =>
             html`<tool-card .tool=${tool} .index=${index + 1}></tool-card>`,
         )}
-      </section>
-      `;
+      </section> `;
   }
 }

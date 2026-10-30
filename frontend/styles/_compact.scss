@@ -1,0 +1,116 @@
+// Shared density and legibility for the compact interface.
+.masthead {
+  min-height: 72px;
+}
+.brand img {
+  width: 36px;
+  height: 36px;
+}
+.main-content {
+  padding-top: 28px;
+}
+.page-heading {
+  padding-bottom: 0;
+  border: 0;
+  margin-bottom: 22px;
+}
+.page-heading h1 {
+  font-size: 32px;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.page-heading h1 em {
+  font-family: var(--font-body);
+  color: var(--text);
+  font-style: normal;
+}
+.page-footer {
+  margin-top: 28px;
+  padding-block: 18px;
+}
+.home-intro {
+  padding-bottom: 24px;
+}
+.home-intro h1 {
+  font-size: 36px;
+}
+.tool-card {
+  padding-block: 24px;
+}
+.tool-card h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+.nav-item {
+  font-size: 13px;
+}
+.metric-card p:empty {
+  display: none;
+}
+.chart-readout,
+.chart-slider,
+.chart-legend {
+  font-size: 12px;
+}
+.chart-readout strong {
+  font-size: 13px;
+}
+.summary-title small {
+  font-size: 12px;
+}
+thead th {
+  font-size: 11px;
+}
+th,
+td {
+  padding-block: 12px;
+}
+th:first-child,
+td:first-child {
+  padding-left: 16px;
+}
+th:last-child,
+td:last-child {
+  padding-right: 16px;
+}
+.table-pagination {
+  padding-inline: 16px;
+  font-size: 11px;
+}
+@media (min-width: 1700px) {
+  :root {
+    --content-width: 1600px;
+  }
+  .main-content {
+    padding-top: 28px;
+  }
+  .masthead {
+    min-height: 76px;
+  }
+}
+@media (max-width: 900px) {
+  .sidebar {
+    top: 72px;
+  }
+  .menu-open .menu-scrim {
+    top: 72px;
+  }
+  .masthead {
+    min-height: 72px;
+  }
+}
+@media (max-width: 600px) {
+  .main-content {
+    padding-top: 22px;
+  }
+  .page-heading h1 {
+    font-size: 27px;
+  }
+  .home-intro h1 {
+    font-size: 32px;
+  }
+  .page-footer {
+    margin-top: 24px;
+  }
+}

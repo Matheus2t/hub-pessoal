@@ -34,7 +34,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
   test(`complete calculator and themes at ${width}px`, async ({
     page,
   }, testInfo) => {
-    await page.setViewportSize({ width, height: 900 });
+    await page.setViewportSize({ width, height: width === 1920 ? 1080 : 900 });
     const exceptions: string[] = [];
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
@@ -81,6 +81,18 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     await page.getByRole("button", { name: "Simular investimento" }).click();
     expect((await response).status()).toBe(200);
     await expect(page.locator("metric-card").first()).toContainText("1.333,31");
+    if (width === 1920) {
+      for (const selector of [".simulation-panel", ".metrics-grid"]) {
+        const bounds = await page.locator(selector).boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.y).toBeGreaterThanOrEqual(0);
+        expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(1080);
+      }
+      await page.screenshot({
+        path: testInfo.outputPath("calculator-1920x1080.png"),
+        animations: "disabled",
+      });
+    }
     await expect(page.locator(".chart-balance")).toHaveAttribute("d", /^M/);
     await page.getByRole("slider", { name: "Mês exibido no gráfico" }).focus();
     await page.keyboard.press("Home");

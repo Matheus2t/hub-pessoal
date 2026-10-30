@@ -160,11 +160,8 @@ export class CompoundCalculator extends LightElement {
   render() {
     return html`<div class="page-heading">
         <div>
-          
-          <h1>Calculadora de<br /><em>juros compostos</em></h1>
-          
+          <h1>Calculadora de <em>juros compostos</em></h1>
         </div>
-        
       </div>
       <section
         class="panel simulation-panel"
@@ -279,11 +276,8 @@ export class CompoundCalculator extends LightElement {
           : html`<section class="panel calculator-empty">
               <span class="empty-symbol">${icon("chart")}</span>
               <div>
-                
                 <h2>Resultados</h2>
-                <p>
-                  Preencha os campos e simule.
-                </p>
+                <p>Preencha os campos e simule.</p>
               </div>
               <div class="empty-legend">
                 <span
