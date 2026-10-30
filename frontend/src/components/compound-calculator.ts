@@ -23,25 +23,25 @@ const fieldDefinitions: {
     name: "initial_capital",
     label: "Capital inicial",
     unit: "R$",
-    hint: "Valor disponível para começar",
+    hint: "Valor inicial do investimento",
   },
   {
     name: "monthly_contribution",
     label: "Aporte mensal",
     unit: "R$",
-    hint: "Aplicado ao final de cada mês",
+    hint: "Valor investido todos os meses",
   },
   {
     name: "monthly_rate",
     label: "Taxa de juros mensal",
     unit: "% a.m.",
-    hint: "Rentabilidade estimada por mês",
+    hint: "Rendimento mensal esperado",
   },
   {
     name: "months",
     label: "Prazo da simulação",
     unit: "meses",
-    hint: "De 1 a 600 meses",
+    hint: "Informe um período entre 1 e 600 meses",
   },
 ];
 @customElement("compound-calculator")
@@ -165,14 +165,13 @@ export class CompoundCalculator extends LightElement {
       </div>
       <section
         class="panel simulation-panel"
-        aria-labelledby="parameters-title"
+        aria-labelledby="simulation-title"
       >
         <div class="panel-heading">
           <div>
             <span class="section-index">01</span>
-            <h2 id="parameters-title">Parâmetros</h2>
+            <h2 id="simulation-title">Simulação</h2>
           </div>
-          <span class="subtle">Todos os valores em reais</span>
         </div>
         <form
           novalidate
@@ -196,10 +195,6 @@ export class CompoundCalculator extends LightElement {
             )}
           </div>
           <div class="form-bottom">
-            <p class="form-note">
-              ${icon("info")} Aportes ao final do mês, após a aplicação dos
-              juros.
-            </p>
             <div class="form-actions">
               <button
                 type="button"
