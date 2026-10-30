@@ -1,1 +1,31 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#08111f"><meta name="description" content="2T — ferramentas pessoais para decisões mais claras."><link rel="icon" href="/2t-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/bundle.css"><title>2T — Ferramentas pessoais</title></head><body><app-shell></app-shell><script type="module" src="/bundle.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080d16" />
+    <meta
+      name="description"
+      content="2T — Ferramentas. Utilidades digitais para explorar possibilidades e tomar decisões com mais clareza."
+    />
+    <script>
+      try {
+        var t = localStorage.getItem("2t:theme");
+        document.documentElement.dataset.theme =
+          t === "light" || t === "dark"
+            ? t
+            : matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+      } catch (e) {}
+    </script>
+    <link rel="icon" href="/2t-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>2T — Ferramentas</title>
+  </head>
+  <body>
+    <app-shell></app-shell>
+    <noscript>Ative o JavaScript para utilizar as ferramentas da 2T.</noscript>
+    <script type="module" src="/bundle.js"></script>
+  </body>
+</html>

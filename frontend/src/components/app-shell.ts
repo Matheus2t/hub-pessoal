@@ -1,7 +1,104 @@
-import { LitElement, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import './compound-calculator';
-@customElement('app-shell')
-export class AppShell extends LitElement {
-  render() { return html`<div class="app-layout"><aside class="sidebar"><div class="brand"><img src="/2t-mark.svg" alt="2T" class="brand-logo"><div><strong>2T</strong><small>Ferramentas pessoais</small></div></div><div class="side-label">WORKSPACE</div><nav aria-label="Ferramentas"><a class="nav-item active" href="#calculadora"><span class="nav-icon">↗</span><span>Calculadora</span><b>01</b></a><a class="nav-item disabled" href="#"><span class="nav-icon">＋</span><span>Novas ferramentas</span><b>—</b></a></nav><div class="sidebar-card"><span class="sidebar-card-icon">✦</span><strong>Seu espaço, suas regras.</strong><p>Uma coleção de utilidades para deixar decisões do dia a dia mais simples.</p></div><div class="sidebar-footer"><span class="status-dot"></span> Ambiente local <span class="footer-domain">matheus2t.com</span></div></aside><main class="main-content"><header class="topbar"><div><p class="eyebrow">2T / FINANÇAS</p><h1>Calculadora de juros</h1></div><div class="topbar-meta"><span class="secure-badge"><i></i> Banco configurável</span><div class="avatar" aria-label="Perfil Matheus">M</div></div></header><compound-calculator></compound-calculator></main></div>`; }
+import { html } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { LightElement } from "../ui";
+import { currentPage, pages } from "../catalog";
+import "./sidebar";
+import "./topbar";
+import "./home-page";
+import "./compound-calculator";
+@customElement("app-shell")
+export class AppShell extends LightElement {
+  @state() private page = currentPage();
+  @state() private menuOpen = false;
+  private navigate = () => {
+    this.page = currentPage();
+    this.menuOpen = false;
+    document.title = `${pages[this.page].title} · 2T — Ferramentas`;
+    window.scrollTo({ top: 0 });
+    void this.updateComplete.then(() =>
+      this.querySelector<HTMLElement>("#content")?.focus(),
+    );
+  };
+  private keyboard = (event: KeyboardEvent) => {
+    if (!this.menuOpen) return;
+    if (event.key === "Escape") {
+      this.menuOpen = false;
+      this.querySelector<HTMLButtonElement>(".mobile-menu")?.focus();
+    }
+    if (event.key === "Tab") {
+      const items = Array.from(
+        this.querySelectorAll<HTMLElement>("#sidebar a, .mobile-menu"),
+      );
+      const index = items.indexOf(document.activeElement as HTMLElement);
+      if (event.shiftKey && index === 0) {
+        event.preventDefault();
+        items.at(-1)?.focus();
+      } else if (!event.shiftKey && index === items.length - 1) {
+        event.preventDefault();
+        items[0]?.focus();
+      }
+    }
+  };
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("hashchange", this.navigate);
+    window.addEventListener("keydown", this.keyboard);
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this.navigate);
+    window.removeEventListener("keydown", this.keyboard);
+    document.body.style.overflow = "";
+  }
+  protected updated() {
+    document.body.style.overflow = this.menuOpen ? "hidden" : "";
+  }
+  render() {
+    return html`<a
+        class="skip-link"
+        href="#content"
+        @click=${(e: Event) => {
+          e.preventDefault();
+          this.querySelector<HTMLElement>("#content")?.focus();
+        }}
+        >Pular para o conteúdo</a
+      >
+      <div class="app-layout ${this.menuOpen ? "menu-open" : ""}">
+        <aside id="sidebar" class="sidebar" aria-label="Menu da plataforma">
+          <app-sidebar .page=${this.page}></app-sidebar>
+        </aside>
+        ${this.menuOpen
+          ? html`<button
+              class="menu-scrim"
+              tabindex="-1"
+              aria-label="Fechar menu"
+              @click=${() => (this.menuOpen = false)}
+            ></button>`
+          : ""}
+        <div class="app-body">
+          <app-topbar
+            .page=${this.page}
+            .menuOpen=${this.menuOpen}
+            @menu-toggle=${() => (this.menuOpen = !this.menuOpen)}
+          ></app-topbar>
+          <main
+            id="content"
+            tabindex="-1"
+            class="main-content"
+            ?inert=${this.menuOpen}
+          >
+            <home-page
+              ?hidden=${this.page === "calculator"}
+              .catalogOnly=${this.page === "tools"}
+            ></home-page
+            ><compound-calculator
+              ?hidden=${this.page !== "calculator"}
+            ></compound-calculator>
+            <footer class="page-footer">
+              <span>2T — Ferramentas</span><span>Feito para simplificar.</span>
+            </footer>
+          </main>
+        </div>
+      </div>`;
+  }
 }

@@ -1,0 +1,309 @@
+.app-layout {
+  min-height: 100dvh;
+}
+.sidebar {
+  width: var(--sidebar-width);
+  position: fixed;
+  inset: 0 auto 0 0;
+  background: var(--sidebar);
+  border-right: 1px solid var(--line);
+  z-index: 40;
+  overflow-y: auto;
+}
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-4) var(--space-5);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 var(--space-2) var(--space-12);
+}
+.brand img {
+  border-radius: var(--radius);
+}
+.brand strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.brand-divider {
+  margin: 0 6px;
+  color: var(--line);
+}
+.brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: var(--space-1);
+}
+.nav-label {
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.nav-section {
+  margin-top: var(--space-8);
+}
+.nav-item {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 46px;
+  padding: 10px var(--space-3);
+  margin: var(--space-1) 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--secondary);
+  font-size: 13px;
+}
+.nav-item .icon {
+  width: 18px;
+  height: 18px;
+}
+.nav-item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.nav-item.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.nav-indicator {
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: var(--space-16);
+}
+.sidebar-note {
+  padding: var(--space-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+}
+.sidebar-note > .icon {
+  color: var(--accent);
+  margin-bottom: var(--space-3);
+}
+.sidebar-note strong {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.sidebar-note p {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+.sidebar-footer {
+  border-top: 1px solid var(--line-soft);
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--space-2) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--secondary);
+  font-size: var(--text-sm);
+}
+.mini-mark {
+  font-size: var(--text-lg);
+  font-weight: 750;
+  letter-spacing: -0.08em;
+  color: var(--muted);
+}
+.sidebar-footer small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 2px;
+}
+.app-body {
+  margin-left: var(--sidebar-width);
+}
+.topbar {
+  min-height: 82px;
+  border-bottom: 1px solid var(--line);
+  padding: var(--space-4) var(--space-10);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+.topbar-context {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.topbar-context p {
+  color: var(--muted);
+  font-size: var(--text-xs);
+  margin-bottom: 3px;
+}
+.topbar-context span {
+  font-size: 13px;
+  font-weight: 550;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+.topbar-wordmark {
+  color: var(--secondary);
+  font-weight: 650;
+}
+.topbar-wordmark span {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+.mobile-menu {
+  display: none;
+}
+.main-content {
+  padding: var(--space-10);
+  max-width: var(--content-width);
+  margin: auto;
+}
+.page-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+.page-heading {
+  margin: var(--space-2) 0 var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.page-heading h1 {
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  margin: var(--space-3) 0;
+}
+.page-heading .page-description {
+  font-size: 13px;
+}
+.menu-scrim {
+  display: none;
+}
+@media (min-width: 1700px) {
+  :root {
+    --sidebar-width: 272px;
+  }
+  .main-content {
+    padding: var(--space-12);
+  }
+}
+@media (max-width: 1200px) {
+  .main-content {
+    padding: var(--space-8);
+  }
+  .topbar {
+    padding-inline: var(--space-8);
+  }
+  .heading-badge {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform var(--duration) var(--ease),
+      visibility var(--duration);
+    width: 268px;
+  }
+  .menu-open .sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .menu-open .menu-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    border: 0;
+    z-index: 35;
+  }
+  .app-body {
+    margin-left: 0;
+  }
+  .mobile-menu {
+    display: inline-grid;
+  }
+  .menu-open .topbar {
+    position: relative;
+    z-index: 45;
+  }
+  .menu-open .topbar-context > div,
+  .menu-open .topbar-actions {
+    visibility: hidden;
+  }
+  .menu-open .mobile-menu {
+    background: var(--panel);
+    position: fixed;
+    left: 274px;
+    top: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .main-content {
+    padding: var(--space-6) var(--space-4);
+  }
+  .topbar {
+    min-height: 72px;
+    padding: var(--space-3) var(--space-4);
+  }
+  .topbar-wordmark {
+    display: none;
+  }
+  .topbar-context {
+    gap: var(--space-3);
+  }
+  .page-heading {
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .page-heading h1 {
+    font-size: 26px;
+  }
+  .desktop-break {
+    display: none;
+  }
+  .section-heading {
+    align-items: start;
+    margin-top: var(--space-8);
+  }
+  .section-heading h2 {
+    font-size: 18px;
+  }
+  .count-label {
+    white-space: nowrap;
+  }
+  .page-footer {
+    margin-top: var(--space-8);
+    font-size: 10px;
+  }
+}
