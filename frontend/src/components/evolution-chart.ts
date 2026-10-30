@@ -28,11 +28,12 @@ export class EvolutionChart extends LightElement {
     const first = this.rows[0];
     const initial = Number(first.invested) - Number(first.deposit);
     return [
-      { month: 0, balance: initial, invested: initial },
+      { month: 0, balance: initial, invested: initial, interest: 0 },
       ...this.rows.map((row) => ({
         month: row.month,
         balance: Number(row.balance),
         invested: Number(row.invested),
+        interest: Number(row.balance) - Number(row.invested),
       })),
     ];
   }
@@ -64,7 +65,7 @@ export class EvolutionChart extends LightElement {
       left + (index / (points.length - 1)) * (width - left - right);
     const y = (value: number) =>
       top + (1 - value / max) * (height - top - bottom);
-    const line = (key: "balance" | "invested") =>
+    const line = (key: "balance" | "invested" | "interest") =>
       points
         .map(
           (p, i) =>
@@ -91,12 +92,14 @@ export class EvolutionChart extends LightElement {
       <div class="chart-toolbar">
         <div class="chart-legend">
           <span><i class="legend-dot balance"></i>Patrimônio acumulado</span
-          ><span><i class="legend-dot invested"></i>Total investido</span>
+          ><span><i class="legend-dot invested"></i>Total investido</span
+          ><span><i class="legend-dot interest"></i>Juros acumulados</span>
         </div>
         <div class="chart-readout" aria-live="off">
           <span>Mês ${selected.month}</span
           ><strong>${money(selected.balance)}</strong
-          ><small>Investido: ${money(selected.invested)}</small>
+          ><small>Investido: ${money(selected.invested)}</small
+          ><small>Juros: ${money(selected.interest)}</small>
         </div>
       </div>
       <div class="chart-plot">
@@ -104,7 +107,7 @@ export class EvolutionChart extends LightElement {
           class="evolution-svg"
           viewBox=${`0 0 ${width} ${height}`}
           role="img"
-          aria-label="Evolução mensal do patrimônio acumulado e do total investido"
+          aria-label="Evolução mensal do patrimônio acumulado, total investido e juros acumulados"
           @pointermove=${this.inspect}
           @pointerdown=${this.inspect}
           @pointerleave=${(event: PointerEvent) => {
@@ -122,6 +125,7 @@ export class EvolutionChart extends LightElement {
           />
           <path class="chart-invested" d=${line("invested")} />
           <path class="chart-balance" d=${line("balance")} />
+          <path class="chart-interest" d=${line("interest")} />
           ${Array.from({ length: ticks }, (_, i) => {
             const n = Math.round((i / (ticks - 1)) * (points.length - 1));
             return svg`<text class="chart-axis" text-anchor=${i === 0 ? "start" : i === ticks - 1 ? "end" : "middle"} x=${x(n)} y=${height - 10}>Mês ${points[n].month}</text>`;
@@ -146,21 +150,22 @@ export class EvolutionChart extends LightElement {
             >
               <span>Mês ${selected.month}</span
               ><strong>${money(selected.balance)}</strong
-              ><small>Total investido: ${money(selected.invested)}</small>
+              ><small>Total investido: ${money(selected.invested)}</small
+              ><small>Juros acumulados: ${money(selected.interest)}</small>
             </div>`
           : ""}
       </div>
       <label class="chart-slider"
         ><span
-          >Explorar mês a mês
-          <small>Deslize ou use as setas do teclado</small></span
+          >Explorar mês a mês</span
         ><input
           aria-label="Mês exibido no gráfico"
+          style=${`--slider-progress: ${(active / (points.length - 1)) * 100}%`}
           type="range"
           min="0"
           max=${points.length - 1}
           .value=${String(active)}
-          aria-valuetext=${`Mês ${selected.month}: patrimônio ${money(selected.balance)}, investido ${money(selected.invested)}`}
+          aria-valuetext=${`Mês ${selected.month}: patrimônio ${money(selected.balance)}, investido ${money(selected.invested)}, juros acumulados ${money(selected.interest)}`}
           @input=${(event: Event) =>
             (this.active = Number((event.target as HTMLInputElement).value))}
       /></label>

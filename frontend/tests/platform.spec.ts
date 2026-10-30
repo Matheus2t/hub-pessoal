@@ -94,11 +94,17 @@ for (const width of [1920, 1366, 768, 390, 320]) {
       });
     }
     await expect(page.locator(".chart-balance")).toHaveAttribute("d", /^M/);
+    await expect(page.locator(".chart-interest")).toHaveAttribute("d", /^M/);
+    await expect(page.locator(".chart-legend")).toContainText("Juros acumulados");
+    await expect(page.locator(".chart-slider")).not.toContainText(
+      "Deslize ou use as setas do teclado",
+    );
     await page.getByRole("slider", { name: "Mês exibido no gráfico" }).focus();
     await page.keyboard.press("Home");
     await expect(page.locator(".chart-readout")).toContainText("Mês 0");
     await page.keyboard.press("End");
     await expect(page.locator(".chart-readout")).toContainText("Mês 3");
+    await expect(page.locator(".chart-readout")).toContainText("Juros:");
     await page.locator("summary").click();
     await expect(page.locator("tbody tr")).toHaveCount(3);
     await expect(page.locator("tbody tr").last()).toContainText("1.333,31");
@@ -200,6 +206,9 @@ test("touch chart, mobile navigation and system theme preference", async ({
   await expect(page.locator(".chart-tooltip")).toBeVisible();
   await expect(page.locator(".chart-tooltip")).toContainText(
     "Total investido:",
+  );
+  await expect(page.locator(".chart-tooltip")).toContainText(
+    "Juros acumulados:",
   );
   expect(
     await page.evaluate(

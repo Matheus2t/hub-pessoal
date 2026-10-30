@@ -268,6 +268,10 @@
   height: 0;
   border-top: 2px dashed var(--muted);
 }
+.legend-dot.interest {
+  height: 0;
+  border-top: 2px dotted var(--secondary);
+}
 .chart-readout {
   display: flex;
   align-items: baseline;
@@ -319,6 +323,14 @@
   stroke-width: 1.25;
   stroke-dasharray: 4 5;
 }
+.chart-interest {
+  stroke: var(--secondary);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-dasharray: 1 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .chart-cursor {
   stroke: var(--line);
   stroke-dasharray: 3 4;
@@ -363,17 +375,59 @@
 .chart-slider > span {
   flex-shrink: 0;
 }
-.chart-slider small {
-  display: block;
-  font-size: 9px;
-  color: var(--muted);
-  margin-top: var(--space-1);
-}
 .chart-slider input {
-  accent-color: var(--text);
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
   width: 100%;
-  height: 18px;
+  height: 24px;
+  margin: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
+}
+.chart-slider input::-webkit-slider-runnable-track {
+  height: 2px;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right,
+    var(--text) 0%,
+    var(--text) var(--slider-progress),
+    var(--line) var(--slider-progress),
+    var(--line) 100%);
+}
+.chart-slider input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 24px;
+  margin-top: -11px;
+  border: 0;
+  background: transparent;
+}
+.chart-slider input::-moz-range-track {
+  height: 2px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--line);
+}
+.chart-slider input::-moz-range-progress {
+  height: 2px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--text);
+}
+.chart-slider input::-moz-range-thumb {
+  width: 14px;
+  height: 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.chart-slider input:focus-visible {
+  outline: 1px solid var(--secondary);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 .results-details {
   border: 1px solid var(--line);
@@ -645,9 +699,6 @@ tbody tr:hover {
   .chart-slider {
     flex-wrap: wrap;
     gap: 12px;
-  }
-  .chart-slider small {
-    font-size: 11px;
   }
   .chart-legend {
     font-size: 11px;
