@@ -19,15 +19,16 @@
   margin-top: var(--space-12);
 }
 .home-intro h1 {
-  font-weight: 400;
+  font-weight: 700;
   font-size: clamp(64px, 7.5vw, 108px);
   letter-spacing: -0.065em;
   line-height: 0.98;
 }
 .home-intro h1 em {
-  font-family: var(--font-editorial);
-  font-weight: 400;
-  letter-spacing: -0.065em;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.045em;
   color: var(--secondary);
 }
 .intro-aside {
@@ -62,8 +63,8 @@
   border-bottom: 1px solid var(--line-soft);
 }
 .tool-collection .section-heading h2 {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--secondary);
   letter-spacing: 0;
 }
@@ -94,15 +95,15 @@
 }
 .tool-card h2 {
   font-size: 32px;
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-weight: 700;
+  letter-spacing: -0.035em;
   margin: var(--space-4) 0;
 }
 .tool-card p {
   max-width: 440px;
   color: var(--secondary);
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.55;
 }
 .tool-features {
   display: flex;
@@ -121,7 +122,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-6);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
 }
 .tool-arrow {
   display: grid;
@@ -157,7 +159,7 @@
 .editorial-note h2 {
   font-size: 28px;
   letter-spacing: -0.035em;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.3;
 }
 .editorial-note h2 em {

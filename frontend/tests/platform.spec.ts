@@ -217,3 +217,34 @@ test("touch chart, mobile navigation and system theme preference", async ({
   ).toBe(true);
   await context.close();
 });
+
+test("typography is readable and emphasizes key information", async ({ page }) => {
+  await page.goto("/");
+  const bodyFont = await page.locator("body").evaluate(
+    (element) => getComputedStyle(element).fontFamily,
+  );
+  expect(bodyFont).toContain("IBM Plex Sans");
+  await expect(page.locator(".brand strong")).toBeVisible();
+  expect(
+    await page.locator(".brand strong").evaluate((element) =>
+      Number(getComputedStyle(element).fontWeight),
+    ),
+  ).toBeGreaterThanOrEqual(600);
+  await page.getByRole("link", { name: "Abrir calculadora" }).click();
+  expect(
+    await page.locator(".page-heading h1").evaluate((element) =>
+      Number(getComputedStyle(element).fontWeight),
+    ),
+  ).toBeGreaterThanOrEqual(600);
+  expect(
+    await page.locator(".form-field label").first().evaluate((element) =>
+      Number(getComputedStyle(element).fontWeight),
+    ),
+  ).toBeGreaterThanOrEqual(600);
+  await page.getByRole("button", { name: "Simular investimento" }).click();
+  expect(
+    await page.locator(".metric-card strong").first().evaluate((element) =>
+      Number(getComputedStyle(element).fontWeight),
+    ),
+  ).toBeGreaterThanOrEqual(700);
+});
