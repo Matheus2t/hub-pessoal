@@ -19,6 +19,10 @@ alembic -c backend/alembic.ini upgrade head
 
 Execute a API com `uvicorn app.main:app --app-dir backend --reload` e o frontend com `npm install` seguido de `npm run dev`. Acesse http://localhost:3000.
 
+## Vercel
+
+O frontend é gerado em `dist/` e a API FastAPI usa `api/index.py` como função Python. Em Vercel, configure `DATABASE_URL` com a URL de um MySQL externo com TLS/SSL habilitado e `PUBLIC_HISTORY_ENABLED=false`. As migrações Alembic são manuais e devem ser executadas no banco externo antes de habilitar a calculadora pública; elas não são executadas pela função.
+
 ```powershell
 pytest backend/tests
 ```
