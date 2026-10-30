@@ -1,6 +1,6 @@
-# Hub Pessoal
+# 2T
 
-Primeira versão do Hub Pessoal, com calculadora de juros compostos e histórico local das simulações.
+Plataforma pessoal 2T, com calculadora de juros compostos e histórico local das simulações. Domínio planejado: `matheus2t.com`.
 
 ## Stack
 Frontend: Lit, TypeScript, SCSS e esbuild. Backend: Python, FastAPI e Pydantic. Persistência: MySQL, SQLAlchemy e Alembic. Testes: Pytest.

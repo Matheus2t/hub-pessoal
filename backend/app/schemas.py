@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel,Field,ConfigDict
 class CalculationInput(BaseModel):
@@ -8,4 +9,4 @@ class CalculationResult(BaseModel):
     total_invested:Decimal;total_interest:Decimal;final_amount:Decimal;evolution:list[EvolutionRow]
 class HistoryItem(BaseModel):
     model_config=ConfigDict(from_attributes=True)
-    id:int;initial_capital:Decimal;monthly_contribution:Decimal;monthly_rate:Decimal;months:int;final_amount:Decimal;created_at:str
+    id:int;initial_capital:Decimal;monthly_contribution:Decimal;monthly_rate:Decimal;months:int;final_amount:Decimal;created_at:datetime
