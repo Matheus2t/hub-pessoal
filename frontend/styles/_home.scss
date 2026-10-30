@@ -300,3 +300,9 @@
     gap: var(--space-4);
   }
 }
+.home-intro { padding-bottom:var(--space-8); }
+.home-intro h1 { font-size:clamp(38px,5vw,64px); }
+.tool-card { grid-template-columns:1fr auto; padding-block:var(--space-8); }
+.tool-card h2 { margin-top:0; }
+@media(max-width:600px){.tool-card { grid-template-columns:1fr auto; }.tool-access { grid-column:auto; margin:0; }.tool-access>span:first-child{display:none;}}
+

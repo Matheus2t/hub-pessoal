@@ -39,7 +39,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Menos ruído. Mais clareza." }),
+      page.getByRole("heading", { name: "Ferramentas", exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).toHaveJSProperty(
       "scrollWidth",

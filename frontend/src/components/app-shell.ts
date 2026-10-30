@@ -104,7 +104,7 @@ export class AppShell extends LightElement {
             <footer class="page-footer">
               <span class="footer-signature"
                 ><strong>2T</strong
-                ><span>Ferramentas para o que importa.</span></span
+                ><span>Ferramentas</span></span
               ><span>MATHEUS2T.COM.BR</span>
             </footer>
           </main>

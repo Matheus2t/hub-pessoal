@@ -14,7 +14,7 @@ export const tools: Tool[] = [
     name: "Juros compostos",
     category: "Finanças",
     description:
-      "Entenda o impacto do tempo, dos aportes e dos juros na evolução do seu patrimônio.",
+      "Calcule saldo, aportes e juros por mês.",
     icon: "calculator",
     href: "#/calculadora",
   },

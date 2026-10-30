@@ -160,16 +160,11 @@ export class CompoundCalculator extends LightElement {
   render() {
     return html`<div class="page-heading">
         <div>
-          <p class="eyebrow">FERRAMENTA 01 / FINANÇAS</p>
+          
           <h1>Calculadora de<br /><em>juros compostos</em></h1>
-          <p class="page-description">
-            Planeje seus aportes. Visualize o potencial do seu dinheiro ao longo
-            do tempo.
-          </p>
+          
         </div>
-        <span class="heading-badge"
-          >${icon("calculator")} Planejamento financeiro</span
-        >
+        
       </div>
       <section
         class="panel simulation-panel"
@@ -178,7 +173,7 @@ export class CompoundCalculator extends LightElement {
         <div class="panel-heading">
           <div>
             <span class="section-index">01</span>
-            <h2 id="parameters-title">Defina o seu cenário.</h2>
+            <h2 id="parameters-title">Parâmetros</h2>
           </div>
           <span class="subtle">Todos os valores em reais</span>
         </div>
@@ -244,7 +239,7 @@ export class CompoundCalculator extends LightElement {
           ? html`<div class="section-heading result-heading">
                 <div>
                   <p class="eyebrow">SEU CENÁRIO</p>
-                  <h2>Resultado da simulação</h2>
+                  <h2>Resultados</h2>
                 </div>
                 <span class="result-status ${this.stale ? "stale" : ""}"
                   >${icon(this.stale ? "info" : "check")}${this.stale
@@ -256,20 +251,20 @@ export class CompoundCalculator extends LightElement {
                 <metric-card
                   label="Patrimônio final"
                   .value=${this.result.final_amount}
-                  detail="Capital investido + juros acumulados"
+                  detail=""
                   tone="accent"
                   glyph="chart"
                 ></metric-card
                 ><metric-card
                   label="Total investido"
                   .value=${this.result.total_invested}
-                  detail="Capital inicial + aportes mensais"
+                  detail=""
                   glyph="wallet"
                 ></metric-card
                 ><metric-card
                   label="Juros acumulados"
                   .value=${this.result.total_interest}
-                  detail="Rendimento ao longo do período"
+                  detail=""
                   tone="positive"
                   glyph="layers"
                 ></metric-card>
@@ -284,12 +279,10 @@ export class CompoundCalculator extends LightElement {
           : html`<section class="panel calculator-empty">
               <span class="empty-symbol">${icon("chart")}</span>
               <div>
-                <p class="eyebrow">SEU PRÓXIMO CENÁRIO COMEÇA AQUI</p>
-                <h2>Veja além do valor final.</h2>
+                
+                <h2>Resultados</h2>
                 <p>
-                  Preencha os parâmetros e descubra como os aportes e os
-                  juros<br class="desktop-break" />
-                  participam da construção do seu patrimônio.
+                  Preencha os campos e simule.
                 </p>
               </div>
               <div class="empty-legend">
