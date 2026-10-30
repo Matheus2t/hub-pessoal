@@ -204,12 +204,8 @@ test("touch chart, mobile navigation and system theme preference", async ({
     bounds.y + bounds.height / 2,
   );
   await expect(page.locator(".chart-tooltip")).toBeVisible();
-  await expect(page.locator(".chart-tooltip")).toContainText(
-    "Total investido:",
-  );
-  await expect(page.locator(".chart-tooltip")).toContainText(
-    "Juros acumulados:",
-  );
+  await expect(page.locator(".chart-tooltip")).toContainText("Mês");
+  await expect(page.locator(".chart-tooltip strong")).toContainText("R$");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -247,4 +243,50 @@ test("typography is readable and emphasizes key information", async ({ page }) =
       Number(getComputedStyle(element).fontWeight),
     ),
   ).toBeGreaterThanOrEqual(700);
+});
+
+test("mouse hovering each chart line shows only that series' exact monthly value", async ({ page }) => {
+  await page.goto("/#/calculadora");
+  await page.getByLabel("Capital inicial", { exact: true }).fill("1.000,00");
+  await page.getByLabel("Aporte mensal", { exact: true }).fill("100,00");
+  await page.getByLabel("Taxa de juros mensal", { exact: true }).fill("10,00");
+  await page.getByLabel("Prazo da simulação", { exact: true }).fill("12");
+  await page.getByRole("button", { name: "Simular investimento" }).click();
+  await expect(page.locator(".chart-interest")).toHaveAttribute("d", /^M/);
+
+  const chart = page.locator(".evolution-svg");
+  for (const [series, title] of [
+    ["balance", "Patrimônio acumulado"],
+    ["invested", "Total investido"],
+    ["interest", "Juros acumulados"],
+  ] as const) {
+    const position = await chart.evaluate((element, key) => {
+      const graphic = element as SVGSVGElement;
+      const path = graphic.querySelector<SVGPathElement>(`.chart-${key}`);
+      if (!path) throw Error("Série não encontrada no gráfico");
+      const point = path.getPointAtLength(path.getTotalLength() * 0.93);
+      const matrix = graphic.getScreenCTM();
+      if (!matrix) throw Error("Gráfico sem transformação de coordenadas");
+      const screen = new DOMPoint(point.x, point.y).matrixTransform(matrix);
+      return { x: screen.x, y: screen.y };
+    }, series);
+    await page.mouse.move(position.x, position.y);
+    const tip = page.locator(`.chart-tooltip[data-series="${series}"]`);
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText(title);
+    await expect(tip.locator("strong")).toContainText("R$");
+    await expect(page.locator(`.chart-${series}`)).toHaveClass(/is-inspected/);
+  }
+
+  // As legendas também permitem consultar séries quase sobrepostas.
+  await page.getByRole("button", { name: "Ver total investido" }).hover();
+  await expect(page.locator('.chart-tooltip[data-series="invested"]')).toBeVisible();
+  await page.mouse.move(0, 0);
+  await expect(page.locator(".chart-tooltip")).toHaveCount(0);
+
+  await page.getByRole("slider", { name: "Mês exibido no gráfico" }).focus();
+  await page.keyboard.press("Home");
+  await expect(page.locator(".chart-readout")).toContainText("Mês 0");
+  await page.keyboard.press("End");
+  await expect(page.locator(".chart-readout")).toContainText("Mês 12");
 });

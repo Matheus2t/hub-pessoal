@@ -258,11 +258,29 @@
   flex-wrap: wrap;
   gap: 8px 16px;
 }
-.chart-legend > span,
+.chart-legend-item,
 .empty-legend > span {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+}
+.chart-legend-item {
+  border: 0;
+  padding: 2px 0;
+  background: transparent;
+  color: var(--secondary);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--duration) var(--ease);
+}
+.chart-legend-item:hover,
+.chart-legend-item.is-active {
+  color: var(--text);
+}
+.chart-legend-item:focus-visible {
+  outline: 1px solid var(--text);
+  outline-offset: 4px;
 }
 .legend-dot {
   display: inline-block;
@@ -315,6 +333,10 @@
   font-size: 12px;
   font-weight: 500;
 }
+.chart-hit-area {
+  fill: transparent;
+  pointer-events: all;
+}
 .chart-grid {
   stroke: var(--line-soft);
   stroke-width: 1;
@@ -343,6 +365,11 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.chart-balance.is-inspected,
+.chart-invested.is-inspected,
+.chart-interest.is-inspected {
+  stroke-width: 2.5;
+}
 .chart-cursor {
   stroke: var(--line);
   stroke-dasharray: 3 4;
@@ -354,7 +381,6 @@
 }
 .chart-tooltip {
   position: absolute;
-  top: var(--space-3);
   width: 220px;
   max-width: 100%;
   pointer-events: none;
@@ -371,6 +397,7 @@
 }
 .chart-tooltip strong {
   display: block;
+  color: var(--text);
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.03em;
