@@ -4,6 +4,8 @@
 
 ## Calculadoras financeiras
 
+A página inicial `#/` apresenta a plataforma e suas áreas. O catálogo exclusivo fica em `#/calculadoras`, com busca e filtros por categoria. `#/ferramentas` redireciona para esse catálogo. As rotas individuais das quatro calculadoras permanecem válidas e incluem navegação de volta à área. Layout compartilhado (`app-shell`), início (`home-page`), catálogo (`calculator-catalog`) e ferramentas são componentes separados; o menu principal é definido em `catalog.ts`.
+
 Catálogo com busca: juros compostos (`#/calculadora`), juros simples (`#/juros-simples`), financiamento PRICE (`#/price`) e SAC (`#/sac`). Taxas são sempre informadas pelo usuário. As ferramentas aceitam meses/anos e taxas mensais/anuais; em juros simples a conversão é proporcional, nas demais é efetiva. Os novos endpoints `/api/finance/simple`, `/api/finance/price` e `/api/finance/sac` não usam banco. O endpoint existente preserva a persistência opcional.
 
 Pesquisa, diagnóstico, prioridades, fórmulas, convenções de arredondamento e limitações estão em [docs/finance.md](docs/finance.md). A fonte IBM Plex Sans é carregada pelo Google Fonts com `display=swap` e fallback local; não bloqueia o uso das ferramentas caso o serviço de fontes esteja indisponível.

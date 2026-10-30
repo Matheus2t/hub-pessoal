@@ -19,6 +19,16 @@
 .table-panel { margin-top: 16px; border-radius: 8px; overflow: hidden; }
 .table-panel .results-details { margin: 0; border: 0; }
 finance-calculator { display: block; }
+calculator-catalog { display: block; min-width: 0; }
+.breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+.breadcrumbs a { color: var(--secondary); }
+.breadcrumbs a:hover { color: var(--detail); }
+.platform-name { color: var(--detail); font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.areas-title { font-size: 16px; margin-bottom: 16px; }
+.platform-areas { max-width: 720px; grid-template-columns: minmax(0, 1fr); }
+.category-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.category-filters .button { min-height: 40px; padding: 8px 14px; }
+.category-filters [aria-pressed="true"] { border-color: var(--detail); color: var(--detail); }
 @media (max-width: 400px) {
   .form-actions { flex-direction: column; align-items: stretch; }
   .form-actions .button { width: 100%; min-width: 0; }

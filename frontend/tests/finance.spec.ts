@@ -24,7 +24,7 @@ for (const width of [1366, 390]) {
 }
 
 test('catalog search, annual units and invalid period', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/calculadoras');
   await page.getByRole('searchbox', { name: 'Buscar calculadora' }).fill('SAC');
   await expect(page.locator('tool-card')).toHaveCount(1);
   await page.getByRole('link', { name: 'Abrir Financiamento SAC' }).click();

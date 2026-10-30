@@ -12,7 +12,7 @@ export const tools: Tool[] = [
   {
     id: "compound",
     name: "Juros compostos",
-    category: "Finanças",
+    category: "Investimentos",
     description:
       "Calcule saldo, aportes e juros por mês.",
     icon: "calculator",
@@ -26,13 +26,18 @@ export const pages: Record<Page, { title: string; section: string }> = {
   simple: { title: 'Juros simples', section: 'Investimentos' },
   price: { title: 'Financiamento PRICE', section: 'Crédito' },
   sac: { title: 'Financiamento SAC', section: 'Crédito' },
-  overview: { title: "Visão geral", section: "Seu espaço de ferramentas" },
-  tools: { title: "Ferramentas", section: "Explore a plataforma" },
-  calculator: { title: "Juros compostos", section: "Ferramentas / Finanças" },
+  overview: { title: "Início", section: "2T" },
+  tools: { title: "Calculadoras", section: "Calculadoras" },
+  calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
-    : location.hash === "#/ferramentas"
+    : location.hash === "#/calculadoras" || location.hash === "#/ferramentas"
       ? "tools"
       : "overview";
+
+export const navigation: { page: Page; href: string; label: string }[] = [
+  { page: 'overview', href: '#/', label: 'Início' },
+  { page: 'tools', href: '#/calculadoras', label: 'Calculadoras' },
+];

@@ -1,28 +1,13 @@
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { LightElement } from "../ui";
-import type { Page } from "../catalog";
+import { navigation, type Page } from "../catalog";
 
 @customElement("app-sidebar")
 export class AppSidebar extends LightElement {
   @property() page: Page = "overview";
   render() {
-    const links: { page: Page; href: string; label: string; index: string }[] =
-      [
-        { page: "overview", href: "#/", label: "Visão geral", index: "01" },
-        {
-          page: "tools",
-          href: "#/ferramentas",
-          label: "Ferramentas",
-          index: "02",
-        },
-        {
-          page: "calculator",
-          href: "#/calculadora",
-          label: "Juros compostos",
-          index: "03",
-        },
-      ];
+    const links = navigation.map((link, i) => ({ ...link, index: String(i + 1).padStart(2, "0") }));
     return html`<nav aria-label="Navegação principal">
       ${links.map(
         (link) =>

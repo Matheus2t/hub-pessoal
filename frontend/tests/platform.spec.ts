@@ -39,7 +39,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Ferramentas", exact: true }),
+      page.getByRole("heading", { name: "Sua plataforma de ferramentas", exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).toHaveJSProperty(
       "scrollWidth",
@@ -65,7 +65,8 @@ for (const width of [1920, 1366, 768, 390, 320]) {
         page.getByRole("button", { name: "Abrir menu" }),
       ).toBeFocused();
     }
-    await page.getByRole("link", { name: "Abrir calculadora" }).click();
+    await page.getByRole("link", { name: "Explorar calculadoras" }).click();
+  await page.getByRole("link", { name: "Abrir calculadora" }).click();
     await expect(
       page.getByRole("heading", { name: "Calculadora de juros compostos" }),
     ).toBeVisible();
@@ -191,7 +192,8 @@ test("touch chart, mobile navigation and system theme preference", async ({
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.getByRole("button", { name: "Abrir menu" }).tap();
-  await page.getByRole("link", { name: "Juros compostos", exact: true }).tap();
+  await page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Calculadoras", exact: true }).tap();
+  await page.getByRole("link", { name: "Abrir calculadora" }).tap();
   await expect(page.getByRole("button", { name: "Abrir menu" })).toBeVisible();
   await page.getByRole("button", { name: "Simular investimento" }).tap();
   const plot = page.locator(".evolution-svg");
@@ -226,6 +228,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
       Number(getComputedStyle(element).fontWeight),
     ),
   ).toBeGreaterThanOrEqual(600);
+  await page.getByRole("link", { name: "Explorar calculadoras" }).click();
   await page.getByRole("link", { name: "Abrir calculadora" }).click();
   expect(
     await page.locator(".page-heading h1").evaluate((element) =>

@@ -6,6 +6,7 @@ import { currentPage, pages } from "../catalog";
 import "./sidebar";
 import "./topbar";
 import "./home-page";
+import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
 @customElement("app-shell")
@@ -13,6 +14,7 @@ export class AppShell extends LightElement {
   @state() private page = currentPage();
   @state() private menuOpen = false;
   private navigate = () => {
+    this.normalizeRoute();
     this.page = currentPage();
     this.menuOpen = false;
     document.title = `${pages[this.page].title} · 2T — Ferramentas`;
@@ -43,6 +45,9 @@ export class AppShell extends LightElement {
   };
   connectedCallback() {
     super.connectedCallback();
+    this.normalizeRoute();
+    this.page = currentPage();
+    document.title = `${pages[this.page].title} · 2T — Ferramentas`;
     window.addEventListener("hashchange", this.navigate);
     window.addEventListener("keydown", this.keyboard);
   }
@@ -54,6 +59,9 @@ export class AppShell extends LightElement {
   }
   protected updated() {
     document.body.style.overflow = this.menuOpen ? "hidden" : "";
+  }
+  private normalizeRoute() {
+    if (location.hash === '#/ferramentas') history.replaceState(null, '', '#/calculadoras');
   }
   render() {
     return html`<a
@@ -73,7 +81,7 @@ export class AppShell extends LightElement {
             ></a
           >
           <aside id="sidebar" class="sidebar" aria-label="Menu da plataforma">
-            <app-sidebar .page=${['simple', 'price', 'sac'].includes(this.page) ? 'tools' : this.page}></app-sidebar>
+            <app-sidebar .page=${this.page === 'overview' ? 'overview' : 'tools'}></app-sidebar>
           </aside>
           <app-topbar
             .page=${this.page}
@@ -96,11 +104,10 @@ export class AppShell extends LightElement {
             class="main-content"
             ?inert=${this.menuOpen}
           >
-            <home-page
-              ?hidden=${!["overview", "tools"].includes(this.page)}
-              .catalogOnly=${this.page === "tools"}
-            ></home-page
-            ><compound-calculator
+            ${this.page !== 'overview' ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${this.page === 'tools' ? html`<span aria-current="page">Calculadoras</span>` : html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span><span aria-current="page">${pages[this.page].title}</span>`}</nav>` : ''}
+            <home-page ?hidden=${this.page !== 'overview'}></home-page>
+            ${this.page === 'tools' ? html`<calculator-catalog></calculator-catalog>` : ''}
+            <compound-calculator
               ?hidden=${this.page !== "calculator"}
             ></compound-calculator>
             ${['simple', 'price', 'sac'].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ''}
