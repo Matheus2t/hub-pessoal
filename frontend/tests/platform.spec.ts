@@ -8,6 +8,7 @@ test("HTML, assets, API and financial result are served together", async ({
     ["/bundle.js", "javascript"],
     ["/styles.css", "text/css"],
     ["/2t-mark.svg", "image/svg+xml"],
+    ["/2t-logo.webp", "image/webp"],
   ]) {
     const response = await request.get(path);
     expect(response.status(), path).toBe(200);
@@ -279,4 +280,24 @@ test("mouse hovering each chart line shows only that series' exact monthly value
   await expect(page.locator(".chart-readout")).toContainText("Mês 0");
   await page.keyboard.press("End");
   await expect(page.locator(".chart-readout")).toContainText("Mês 12");
+});
+
+test("nova marca 2T aparece no cabeçalho e rodapé em ambos os temas", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const headerLogo = page.locator(".brand-logo img");
+  const footerLogo = page.locator(".footer-logo img");
+  await expect(headerLogo).toHaveAttribute("src", "/2t-logo.webp");
+  await expect(footerLogo).toHaveAttribute("src", "/2t-logo.webp");
+  await expect(footerLogo).toHaveAttribute("alt", "2T");
+  for (const image of [headerLogo, footerLogo]) {
+    await expect(image).toBeVisible();
+    expect(await image.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  }
+  await page.getByRole("button", { name: "Ativar tema claro" }).click();
+  await expect(headerLogo).toBeVisible();
+  await expect(footerLogo).toBeVisible();
+  await page.getByRole("link", { name: "Calculadoras" }).first().click();
+  await expect(page.locator(".brand-logo img")).toBeVisible();
+  await expect(page.locator(".footer-logo img")).toBeVisible();
 });

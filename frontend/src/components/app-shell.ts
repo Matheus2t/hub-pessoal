@@ -45,7 +45,7 @@ export class AppShell extends LightElement {
     return html`<a class="skip-link" href="#content" @click=${(event: Event) => { event.preventDefault(); this.querySelector<HTMLElement>("#content")?.focus(); }}>Pular para o conteúdo</a>
       <div class="app-layout">
         <header class="masthead">
-          <a class="brand" href="#/" aria-label="2T — início"><img src="/2t-mark.svg" width="32" height="32" alt="" /><strong>Ferramentas</strong></a>
+          <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span><strong>Ferramentas</strong></a>
           <app-sidebar .page=${this.page}></app-sidebar>
           <team-shortcuts .page=${this.page}></team-shortcuts>
           <app-topbar></app-topbar>
@@ -59,7 +59,7 @@ export class AppShell extends LightElement {
           ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
-          <footer class="page-footer"><span>2T</span><span>matheus2t.com.br</span></footer>
+          <footer class="page-footer"><span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span><span>matheus2t.com.br</span></footer>
         </main>
       </div>`;
   }
