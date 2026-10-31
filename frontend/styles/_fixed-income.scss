@@ -35,5 +35,43 @@ fixed-income-page, fixed-income-fields, fixed-income-chart, fixed-income-compari
 .rf-breakdown dd { margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rf-assumptions { margin-top: 28px; border-top: 1px solid var(--line-soft); padding-top: 20px; max-width: 960px; }
 .rf-assumptions p { font-size: 13px; color: var(--secondary); margin-top: 12px; line-height: 1.65; }
+.rf-chart { margin: 24px 0 14px; min-width: 0; }
+.rf-chart figcaption { font-weight: 550; margin-bottom: 12px; }
+.rf-chart svg { display: block; width: 100%; max-height: 340px; overflow: visible; touch-action: pan-y; }
+.rf-chart text { fill: var(--secondary); font: 12px var(--font-body); }
+.rf-chart-grid { stroke: var(--line-soft); }
+.rf-chart-line { stroke: var(--rf-series); vector-effect: non-scaling-stroke; }
+.rf-chart-cursor { stroke: var(--muted); stroke-dasharray: 3 4; }
+.rf-chart-slider { display: grid; gap: 8px; margin-top: 12px; font-size: 13px; color: var(--secondary); }
+.rf-chart-slider input { width: 100%; min-height: 28px; }
+.rf-chart-legend { display: flex; flex-wrap: wrap; gap: 12px 24px; padding: 0; margin: 12px 0 0; list-style: none; font-size: 13px; }
+.rf-chart-legend li { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.rf-chart-legend strong { font-weight: 500; font-variant-numeric: tabular-nums; }
+.rf-line-sample { width: 20px; border-top: 2px solid var(--rf-series); }
+.rf-table-wrap { overflow-x: auto; max-width: 100%; margin: 16px 0; border: 1px solid var(--line-soft); border-radius: 6px; }
+.rf-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rf-table th, .rf-table td { padding: 12px 14px; white-space: nowrap; text-align: right; border-bottom: 1px solid var(--line-soft); }
+.rf-table th:first-child, .rf-table th:last-child, .rf-table td:last-child { text-align: left; }
+.rf-table thead { background: var(--panel); color: var(--secondary); }
+.rf-table th { font-weight: 500; }
+.rf-table caption { text-align: left; font-size: 14px; padding: 14px; }
+.rf-evolution { margin-top: 18px; }
+.rf-pagination { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; }
+.rf-comparison-section { border-top: 1px solid var(--line-soft); margin-top: 28px; padding-top: 20px; }
+.rf-comparison-section > summary { cursor: pointer; font-size: 22px; font-weight: 550; padding: 8px 0; }
+.rf-comparison { margin-top: 16px; }
+.rf-common { margin-top: 18px; }
+.rf-common h3 { font-size: 16px; margin-bottom: 18px; }
+.rf-common > .rf-note { margin-top: 12px; }
+.rf-scenarios { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.rf-scenario { min-width: 0; }
+.rf-scenario h3, .rf-scenario-evolution h3 { font-size: 17px; font-weight: 550; }
+.rf-scenario .rf-fields { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.rf-follow { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 18px; }
+.rf-follow input { width: 18px; height: 18px; }
+.rf-comparison-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.rf-scenario-evolution { margin-top: 24px; }
+@media(max-width:900px) { .rf-scenarios { grid-template-columns: minmax(0,1fr); } }
+@media(max-width:600px) { .rf-scenario .rf-fields { grid-template-columns: minmax(0,1fr); } .rf-chart-legend { flex-direction: column; } .rf-chart svg { min-height: 170px; } }
 @media(max-width:900px) { .rf-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } .rf-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .rf-fields { grid-template-columns: minmax(0,1fr); gap: 16px; } .rf-panel { padding: 18px; } .rf-heading h1 { font-size: 28px; } .rf-heading p { font-size: 14px; } .rf-breakdown dl { grid-template-columns: 1fr; } .rf-breakdown dl div { font-size: 13px; } .rf-metrics { gap: 18px 12px; } .rf-metrics dd { font-size: 21px; } }

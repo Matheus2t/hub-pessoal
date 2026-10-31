@@ -86,3 +86,24 @@ precifica venda antecipada. Selic tambÃ©m Ã© projeÃ§Ã£o de curva, nÃ£o preÃ§o ga
 CDB/LCI/LCA podem ter FGC conforme emissor/regras: atÃ© R$ 250 mil por CPF/CNPJ por
 instituiÃ§Ã£o/conglomerado e teto global de R$ 1 milhÃ£o em quatro anos. NÃ£o analisa
 risco ou elegibilidade de emissores. Tesouro Direto nÃ£o possui cobertura FGC.
+
+
+## Comparação e evolução
+
+Dois a quatro cenários usam exatamente `project`, como a simulação individual.
+Valor, data inicial e horizonte são comuns; índices também são comuns quando usados.
+O vencimento acompanha o horizonte por padrão e pode ser editado individualmente.
+Não há ranking ou recomendação automática. Cada linha identifica a comparabilidade.
+
+Se o vencimento ocorrer antes do horizonte, a série termina no vencimento, mostra
+a data efetiva e não presume reinvestimento ou continuidade de remuneração. Se o
+resgate estiver bloqueado na data comum, o cenário não é considerado comparável
+como caixa. IPCA+ anterior ao vencimento é curva, nunca valor de venda estimado.
+
+Séries incluem a aplicação, aniversários mensais e a data final exata; máximo de
+600 meses, com até 601 pontos incluindo o inicial. Custos são provisionados dia
+a dia, e IR/IOF são recalculados para o prazo de cada ponto; não se repete o imposto
+final na série inteira. Resgates não permitidos são identificados. Tabela expansível
+com paginação de 24 linhas; gráficos próprios, sem dependências, com seleção por
+ponteiro, toque ou controle de data acessível por teclado. As séries do comparador
+terminam no vencimento de cada produto. Não se interpolam retornos ausentes.
