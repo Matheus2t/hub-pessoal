@@ -29,19 +29,65 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
     await expect(page).toHaveURL(new RegExp(`#/${route}$`));
     await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
     await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(10);
-    await expect(page.locator('.sports-schedule .sports-games li').first()).toContainText('31/10/2026');
+    await expect(page.locator('.sports-schedule time').first()).toHaveAttribute('aria-label', /31\/10\/2026/);
     await expect(page.locator('.sports-schedule .sports-games li').first()).toContainText('21:30');
     await expect(page.locator('.sports-table .is-team')).toHaveCount(1);
     await expect(page.locator('.sports-players')).toContainText('Atleta de teste');
     await expect(page.locator('.sports-results')).toContainText('Vitória');
-    await expect(page.locator('.sports-statistics')).toContainText('Estatísticas não cobertas.');
+    await expect(page.locator('.sports-statistics')).toContainText('Estatísticas ainda não disponíveis.');
+    await expect(page.locator('.sports-next .sports-contender')).toHaveCount(2);
+    await expect(page.locator('.sports-results .sports-score')).toHaveAttribute('aria-label', 'Time de teste: 2. Outro time: 1.');
     for (const theme of ['dark', 'light']) {
       await page.evaluate(theme => { document.documentElement.dataset.theme = theme; }, theme);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      expect(await nav.locator('[data-team="76ers"]').evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(244, 244, 244)');
       await page.screenshot({ path: info.outputPath(`${route}-${theme}.png`), fullPage: true, animations: 'disabled' });
     }
   }
   expect(errors).toEqual([]);
+});
+
+test('single fixture and compact unavailable sections keep coverage accessible', async ({ page }) => {
+  await mockSports(page);
+  await page.route('**/api/sports/spfc/schedule', route => route.fulfill({ json: { state: 'available', items: [{ id: 'one', starts_at: '2026-11-05T00:30:00Z', home: 'São Paulo', away: 'Corinthians', competition: 'Brasileirão', season: '2026', venue: 'Morumbi', is_home: true, status: 'Agendado' }], partial: true, note: 'Fonte gratuita limitada a uma partida.', updated_at: '2026-10-31T10:00:00Z' } }));
+  await page.route('**/api/sports/spfc/roster', route => route.fulfill({ json: { state: 'unavailable', items: [], note: 'Não confirma elenco da temporada.', updated_at: '' } }));
+  await page.goto('/#/spfc');
+  await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(1);
+  await expect(page.locator('.sports-schedule .sports-count')).toHaveCount(0);
+  await expect(page.locator('.sports-kickoff')).toContainText('21:30');
+  await expect(page.locator('.sports-kickoff')).toContainText('04/11/2026');
+  await expect(page.locator('.sports-roster')).toContainText('Elenco atualizado ainda não disponível.');
+  expect(await page.locator('.sports-roster').evaluate(element => element.getBoundingClientRect().height)).toBeLessThan(160);
+  await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).not.toBeVisible();
+  await page.getByText('Cobertura dos dados', { exact: false }).click();
+  await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).toBeVisible();
+});
+
+test('retry only reloads the failed section and empty calendar has no invented match', async ({ page }) => {
+  await mockSports(page);
+  let scheduleCalls = 0, rosterCalls = 0;
+  await page.route('**/api/sports/76ers/schedule', route => { scheduleCalls++; return route.fulfill({ json: { state: 'empty', items: [], note: 'Sem jogos anunciados.', updated_at: '' } }); });
+  await page.route('**/api/sports/76ers/roster', route => { rosterCalls++; return route.fulfill({ json: { state: rosterCalls === 1 ? 'error' : 'unavailable', items: [], note: 'Cobertura insuficiente.', updated_at: '' } }); });
+  await page.goto('/#/76ers');
+  await expect(page.locator('.sports-next')).toContainText('Nenhuma partida confirmada na fonte.');
+  await expect(page.locator('.sports-contender')).toHaveCount(0);
+  await page.locator('.sports-roster').getByRole('button', { name: 'Tentar novamente' }).click();
+  await expect(page.locator('.sports-roster')).toContainText('Elenco atualizado ainda não disponível.');
+  expect(scheduleCalls).toBe(1); expect(rosterCalls).toBe(2);
+});
+
+test('away result keeps the selected team score first and table scroll stays internal', async ({ page }) => {
+  await mockSports(page);
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.route('**/api/sports/76ers/results', route => route.fulfill({ json: { state: 'available', items: [{ id: 'away', starts_at: '2026-10-30T23:30:00Z', home: 'Charlotte Hornets', away: 'Philadelphia 76ers', competition: 'NBA', season: '2026-2027', is_home: false, home_score: 99, away_score: 112, outcome: 'V', status: 'Encerrado' }], note: 'Teste de resultado fora de casa.', updated_at: '' } }));
+  await page.goto('/#/76ers');
+  await expect(page.locator('.sports-score')).toHaveAttribute('aria-label', 'Philadelphia 76ers: 112. Charlotte Hornets: 99.');
+  await expect(page.locator('.sports-result')).toContainText('Vitória');
+  const table = page.getByRole('region', { name: 'Tabela de classificação' });
+  await table.evaluate(element => { element.scrollLeft = element.scrollWidth; });
+  expect(await table.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
+  await expect(page.locator('.sports-table tbody th')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
 test('independent errors and missing sports data', async ({ page }) => {

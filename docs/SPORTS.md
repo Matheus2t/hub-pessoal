@@ -140,3 +140,53 @@ O histórico dos três commits da homepage (f0c76da, 33b679d, b465613) foi incor
 por fast-forward, preservando todos os arquivos locais desta implementação.
 
 - `backend/app/config.py` e `.env.example`: chave esportiva opcional somente no backend.
+
+## Redesign das páginas de Times — 31/10/2026
+
+- Identificação do clube com escudo maior e indicadores nomeados (posição, pontos e jogos).
+- Próxima partida em uma superfície principal: mandante e visitante separados, horário
+  de Brasília em destaque e competição/local no rodapé. Estado inicial sem jogo inventado.
+- Calendário com adversário, data curta, horário e mando em colunas; resultados com
+  placar próprio em destaque, vitória/empate/derrota por escrito e indicação da ordem dos pontos.
+- Seções sem caixas repetidas; estados vazios curtos e proporcionais, com link oficial.
+- Tabelas com números alinhados, pontos em destaque, clube selecionado identificado,
+  abreviações explicadas e colunas de posição/equipe fixas na rolagem interna do celular.
+- Estatísticas do clube mantêm competição/temporada; nenhum número novo ou atleta foi inventado.
+- Notas originais de cobertura e horário da consulta permanecem em um detalhe expansível.
+- Escudo do 76ers sobre base neutra clara, sem edição do SVG, geometria ou cores oficiais.
+  Atalhos mantêm alvo de 44px, nome acessível, tooltip, foco e seleção por sublinhado.
+- Retry consulta somente a seção que falhou e bloqueia cliques duplicados enquanto aguarda.
+- Backend, endpoints financeiros, homepage, Ações, fontes globais e Vercel não foram alterados.
+
+### Revisão de cobertura
+
+Revisadas novamente as documentações e os planos oficiais, sem criar contas ou contratar serviços:
+
+- [BALLDONTLIE](https://docs.balldontlie.io/): jogos gratuitos com chave (5 chamadas/minuto);
+  classificação, médias da temporada e líderes ficam fora do gratuito. Não há chave disponível.
+- [football-data.org](https://www.football-data.org/pricing): plano gratuito com fixtures,
+  calendário e tabelas de 12 competições (10 chamadas/minuto); squads/dados aprofundados
+  aparecem em planos superiores. Credencial não fornecida; cobertura não cobre todas as copas.
+- [API-Football](https://www.api-football.com/pricing): 100 chamadas/dia no gratuito, com
+  limitação de temporadas. Sem credencial, a temporada corrente e a licença do uso proposto
+  não foram validadas. Não usamos elencos antigos como alternativa.
+- TheSportsDB permanece como fonte real em produção, com os limites já documentados.
+  Não houve ampliação de cobertura nem ativação de plano pago nesta atualização.
+
+### Arquivos do redesign
+
+`frontend/src/components/team-page.ts`, `sports-games.ts`, `sports-standings.ts`,
+`team-shortcuts.ts`, `frontend/src/sports.ts`, `frontend/styles/_sports.scss`,
+`frontend/tests/sports.spec.ts` e este documento. Nenhum escudo original foi modificado.
+
+O teste opt-in `frontend/tests/tradingview-live.spec.ts` também foi ajustado: reconhece
+somente a tentativa de telemetria Snowplow explicitamente bloqueada pela CSP existente
+e confirma que esse domínio continua fora da política. Erros de widgets, JavaScript e
+outras violações de CSP continuam falhando o teste. Não foi liberado rastreamento nem
+alterada a implementação de Ações.
+
+Validações do redesign: typecheck/build aprovados, 81 testes Python, 48 testes E2E
+principais aprovados e teste opt-in do TradingView real aprovado após o ajuste descrito.
+Inspeção visual das três páginas em 1920, 1366, 768, 390 e 320 px, nos dois temas,
+com dados reais do backend. Sem overflow horizontal ou exceções JavaScript nessas páginas.
+Testes com mocks ficam restritos à suíte, inclusive os cenários de dez jogos e API indisponível.

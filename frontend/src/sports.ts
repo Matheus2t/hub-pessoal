@@ -12,3 +12,4 @@ export interface Metric { label: string; value: number }
 export interface SportsSection { state: 'available' | 'empty' | 'error' | 'unavailable' | 'rate_limited'; items: (Game | Standing | Player | Metric)[]; note: string; updated_at: string; competition?: string; season?: string; partial?: boolean }
 export const sportsDate = (value: string) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(value));
 export const sportsTime = (value: string) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }).format(new Date(value));
+export const sportsDay = (value: string) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: 'short' }).format(new Date(value)).replace(' de ', ' ');

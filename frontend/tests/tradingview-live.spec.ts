@@ -8,10 +8,20 @@ test('official TradingView widgets render all four B3 symbols (live)', async ({ 
   const errors: string[] = [];
   let brapiRequests = 0;
   page.on('pageerror', error => errors.push(error.message));
-  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  page.on('console', message => {
+    if (message.type() !== 'error') return;
+    const text = message.text();
+    // Optional analytics must remain blocked by our CSP. This specific third-party
+    // telemetry attempt is not a widget failure; all other console errors still fail.
+    const blockedTelemetry = text.startsWith("Connecting to 'https://snowplow-pixel.tradingview.com/com.tradingview/track'")
+      && text.includes('violates the following Content Security Policy directive:')
+      && text.includes('connect-src') && text.includes('The action has been blocked.');
+    if (!blockedTelemetry) errors.push(text);
+  });
   page.on('request', request => { if (request.url().includes('/api/market/')) brapiRequests++; });
   await page.setViewportSize({ width: 1366, height: 1000 });
   await page.goto('/#/acoes');
+  await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).not.toHaveAttribute('content', /snowplow-pixel/);
   await expect(page.locator('tv-tickers')).toBeVisible({ timeout: 30000 });
   await expect(page.locator('tradingview-widget [role="status"]')).toHaveCount(0, { timeout: 30000 });
   await page.waitForTimeout(4000); // Allow the provider's private datafeed to paint; no values are read.
