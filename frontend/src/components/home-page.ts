@@ -1,7 +1,6 @@
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { LightElement } from "../ui";
-import "./holiday-calendar";
 
 @customElement("home-page")
 export class HomePage extends LightElement {
@@ -10,8 +9,7 @@ export class HomePage extends LightElement {
       <section class="platform-intro">
         <h1>Início</h1>
       </section>
-      <div class="home-dashboard">
-        <section class="platform-areas" aria-label="Áreas disponíveis">
+      <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras">
           <div class="area-content"><div class="area-copy"><h2>Calculadoras</h2><p>Simule juros, aportes e parcelas de financiamentos.</p></div>
             <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-bars" d="M24 90V78M52 90V68M80 90V55M108 90V42M136 90V24M164 90V10"/><path class="preview-line" d="M10 85C65 85 116 66 190 9"/></svg>
@@ -29,8 +27,6 @@ export class HomePage extends LightElement {
             <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-line" d="M10 90Q90 78 190 16"/><path class="preview-wicks" stroke-dasharray="4 4" d="M10 90Q90 82 190 38"/></svg>
           </div><div class="area-access"><span>Ver renda fixa</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
-        </section>
-        <holiday-calendar></holiday-calendar>
-      </div>`;
+      </section>`;
   }
 }

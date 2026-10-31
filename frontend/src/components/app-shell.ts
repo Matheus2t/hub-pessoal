@@ -1,11 +1,12 @@
 import { html } from "lit";
 import { keyed } from "lit/directives/keyed.js";
 import { customElement, state } from "lit/decorators.js";
-import { LightElement } from "../ui";
+import { LightElement, icon } from "../ui";
 import { currentPage, pages } from "../catalog";
 import "./sidebar";
 import "./topbar";
 import "./home-page";
+import "./holiday-calendar";
 import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
@@ -18,11 +19,20 @@ import "./fixed-income-page";
 export class AppShell extends LightElement {
   @state() private page = currentPage();
   @state() private route = location.hash;
+  private openCalendar = () => {
+    const dialog = this.querySelector<HTMLDialogElement>(".calendar-dialog");
+    if (dialog && !dialog.open) dialog.showModal();
+  };
+  private closeCalendar = () => {
+    const dialog = this.querySelector<HTMLDialogElement>(".calendar-dialog");
+    if (dialog?.open) dialog.close();
+  };
   private normalizeRoute() {
     if (["#/ferramentas"].includes(location.hash))
       history.replaceState(null, "", "#/calculadoras");
   }
   private navigate = () => {
+    this.closeCalendar();
     this.normalizeRoute();
     this.page = currentPage();
     this.route = location.hash;
@@ -59,8 +69,22 @@ export class AppShell extends LightElement {
           ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
-          <footer class="page-footer"><span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span><span>matheus2t.com.br</span></footer>
+          <footer class="page-footer">
+            <span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span>
+            <div class="footer-meta">
+              <button type="button" class="footer-calendar-trigger" aria-label="Abrir calendário de feriados" title="Calendário de feriados" aria-haspopup="dialog" @click=${this.openCalendar}>${icon("calendar")}</button>
+              <span>matheus2t.com.br</span>
+            </div>
+          </footer>
         </main>
+        <dialog class="calendar-dialog" aria-label="Calendário de feriados"
+          @click=${(event: MouseEvent) => { if (event.target === event.currentTarget) this.closeCalendar(); }}>
+          <div class="calendar-dialog-toolbar">
+            <span>Calendário</span>
+            <button type="button" class="calendar-dialog-close" aria-label="Fechar calendário" @click=${this.closeCalendar}>${icon("close")}</button>
+          </div>
+          <holiday-calendar></holiday-calendar>
+        </dialog>
       </div>`;
   }
 }
