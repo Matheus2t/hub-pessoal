@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market";
+export type Page = "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -23,6 +23,9 @@ export const tools: Tool[] = [
   { id: 'sac', name: 'Financiamento SAC', category: 'Calculadoras', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  '76ers': { title: 'Philadelphia 76ers', section: 'Philadelphia 76ers' },
+  spfc: { title: 'São Paulo Futebol Clube', section: 'São Paulo Futebol Clube' },
+  barcelona: { title: 'FC Barcelona', section: 'FC Barcelona' },
   catalog: { title: 'Calculadoras', section: 'Calculadoras' },
   market: { title: 'Mercado de Ações', section: 'Ações' },
   simple: { title: 'Juros simples', section: 'Calculadoras' },
@@ -32,6 +35,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
+  location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
   location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"

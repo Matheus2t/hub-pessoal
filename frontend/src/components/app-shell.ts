@@ -10,6 +10,8 @@ import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
 import "./market-page";
+import "./team-shortcuts";
+import "./team-page";
 
 @customElement("app-shell")
 export class AppShell extends LightElement {
@@ -44,11 +46,13 @@ export class AppShell extends LightElement {
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><img src="/2t-mark.svg" width="32" height="32" alt="" /><strong>Ferramentas</strong></a>
           <app-sidebar .page=${this.page}></app-sidebar>
+          <team-shortcuts .page=${this.page}></team-shortcuts>
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
           ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}<span aria-current="page">${pages[this.page].title}</span></nav>` : ""}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
+          ${['76ers', 'spfc', 'barcelona'].includes(this.page) ? keyed(this.page, html`<team-page .team=${this.page}></team-page>`) : ''}
           ${this.page === 'catalog' ? html`<calculator-catalog title="Calculadoras"></calculator-catalog>` : ''}
           ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>

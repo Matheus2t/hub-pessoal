@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     public_history_enabled: bool=True
     brapi_api_key: SecretStr|None=None
     market_data_public_enabled: bool=False
+    sportsdb_api_key: SecretStr|None=None
     def model_post_init(self, __context):
         if os.getenv('VERCEL') == '1' and 'PUBLIC_HISTORY_ENABLED' not in os.environ:
             self.public_history_enabled = False
