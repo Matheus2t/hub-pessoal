@@ -22,6 +22,11 @@ export class HomePage extends LightElement {
           </div>
           <div class="area-access"><span>Ver ações</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
+        <a class="tool-card area-card area-fixed-income" href="#/renda-fixa">
+          <div class="area-content"><div class="area-copy"><h2>Renda Fixa</h2><p>Simule e compare CDB, LCI, LCA e Tesouro.</p></div>
+            <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-line" d="M10 90Q90 78 190 16"/><path class="preview-wicks" stroke-dasharray="4 4" d="M10 90Q90 82 190 38"/></svg>
+          </div><div class="area-access"><span>Ver renda fixa</span><span class="area-arrow" aria-hidden="true">↗</span></div>
+        </a>
       </section>`;
   }
 }
