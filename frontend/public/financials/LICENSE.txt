@@ -1,0 +1,7 @@
+Database attribution: Comissão de Valores Mobiliários (CVM), DFP, ITR and FCA.
+Source: https://dados.cvm.gov.br/
+Derived database: 2T — https://github.com/Matheus2t/hub-pessoal
+Database license: Open Data Commons Open Database License (ODbL) 1.0.
+License terms: https://opendatacommons.org/licenses/odbl/1-0/
+This notice applies to the financial JSON database, not to the application's source code.
+Dates, versions and source links are included in each record. Accounting data is not real-time market data.
