@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
+export type Page = "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -23,6 +23,10 @@ export const tools: Tool[] = [
   { id: 'sac', name: 'Financiamento SAC', category: 'Calculadoras', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  learn: {title:'2T Learn',section:'Idiomas'},
+  learnEn: {title:'Inglês',section:'2T Learn'},
+  learnRu: {title:'Russo',section:'2T Learn'},
+  learnInvalid: {title:'Página não encontrada',section:'2T Learn'},
   fixedIncome: { title: 'Renda Fixa', section: 'Renda Fixa' },
   '76ers': { title: 'Philadelphia 76ers', section: 'Philadelphia 76ers' },
   spfc: { title: 'São Paulo Futebol Clube', section: 'São Paulo Futebol Clube' },
@@ -36,6 +40,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
+  location.hash === '#/learn' ? 'learn' : location.hash === '#/learn/en' ? 'learnEn' : location.hash === '#/learn/ru' ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
   location.hash === '#/renda-fixa' ? 'fixedIncome' :
   location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
   location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
