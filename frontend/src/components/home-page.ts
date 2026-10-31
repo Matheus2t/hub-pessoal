@@ -7,8 +7,7 @@ export class HomePage extends LightElement {
   render() {
     return html`
       <section class="platform-intro">
-        <h1>Um lugar pra reunir<br><span>o que eu crio e uso.</span></h1>
-        <div class="platform-lead"><p>Comecei com calculadoras e ações. O resto vou adicionando conforme precisar.</p></div>
+        <h1>Início</h1>
       </section>
       <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras">
