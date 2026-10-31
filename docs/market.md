@@ -1,5 +1,9 @@
 # Mercado de Ações V1.2 — Catálogo e pesquisa
 
+## V2 — Análise Financeira 2T
+
+Camada própria offline baseada exclusivamente na CVM, inicialmente ITUB4, PETR4, VALE3, WEGE3 e TOTS3. A análise abre nas páginas individuais, com visão financeira, resultados, balanço, fluxo e indicadores; gráficos acessíveis usam os JSON oficiais normalizados, sem valores dos widgets. Comparação em `#/acoes/comparar`, com exercício comum e deduplicação de emissor. Cobertura/limitações e recebimento/versão do documento são exibidos. Não há múltiplos de mercado nem dívida líquida estimada. Pipeline, fórmulas, licença, amostras de conferência e atualização semanal para revisão em [financial-pipeline.md](financial-pipeline.md). As integrações existentes permanecem preservadas.
+
 ## Etapas 2 e 3 — panorama, análise e empresas
 
 Panorama sob demanda em `#/acoes`: Market Overview oficial, com `BMFBOVESPA:IBOV` (índice, fora do catálogo) e grupos Bancos, Energia e commodities, Indústria e consumo. São nove instrumentos selecionados, não rankings da bolsa. O formato atual oferece modo market-movers com padrão US, mas não foi confirmada cobertura B3 para rankings: nenhuma lista de altas/baixas/volume foi publicada.

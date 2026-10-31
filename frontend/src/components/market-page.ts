@@ -5,6 +5,8 @@ import { findStock, normalizeSearch, searchStocks, sectors } from '../market-cat
 import './tradingview-widget';
 import './market-embed';
 import './company-sections';
+import './financial-comparison';
+import './financial-analysis';
 
 @customElement('market-page')
 export class MarketPage extends LightElement {
@@ -40,6 +42,7 @@ export class MarketPage extends LightElement {
     location.hash = `#/acoes/${selected.symbol}`;
   }
   render() {
+    if (this.symbol === 'COMPARAR') return html`<financial-comparison></financial-comparison>`;
     const stock = findStock(this.symbol);
     if (this.symbol && !stock) return html`<div class="page-heading"><h1>Ação não encontrada</h1></div><p class="market-note" role="alert">Este código não está disponível no catálogo da 2T.</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`;
     const matches = this.filteredStocks;
@@ -47,6 +50,7 @@ export class MarketPage extends LightElement {
     return html`<div class="page-heading"><h1>${stock ? stock.symbol : 'Mercado de Ações'}</h1></div>
       ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div><p class="market-note">Setor na 2T: ${stock.sector} · classificação editorial</p>` : html`
         <p class="market-intro">Consulte ações da B3, acompanhe cotações e analise a evolução dos preços.</p>
+        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a>
         <details class="market-panorama" @toggle=${(event: Event) => { this.panorama = (event.target as HTMLDetailsElement).open; }}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama ? html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>` : nothing}</details>
         <form class="market-search" @submit=${this.search}>
           <label for="stock-search">Buscar ação</label>
@@ -61,7 +65,7 @@ export class MarketPage extends LightElement {
         ${this.error ? html`<p id="market-search-error" class="market-note" role="alert">${this.error}</p>` : nothing}
         <ul id="stock-suggestions" class="stock-suggestions" role="listbox" aria-label="Sugestões de ações" ?hidden=${!this.query || !this.expanded || !suggestions.length}>${suggestions.map((item, index) => html`<li role="presentation"><a id=${`stock-option-${index}`} role="option" aria-selected=${this.active === index} href=${`#/acoes/${item.symbol}`}>${item.symbol} · ${item.name}</a></li>`)}</ul>
         <h2 class="market-section-title">Cotações</h2>`}
-      ${stock ? html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${() => { this.advanced = false; }}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${() => { this.advanced = true; }}>Avançado</button></div>` : nothing}
+      ${stock ? html`<financial-analysis .symbol=${stock.symbol}></financial-analysis><div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${() => { this.advanced = false; }}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${() => { this.advanced = true; }}>Avançado</button></div>` : nothing}
       ${stock && this.advanced ? html`<market-embed kind="advanced-chart" .symbol=${stock.symbol}></market-embed>` : html`<tradingview-widget .kind=${stock ? 'overview' : 'tickers'} .symbol=${stock?.symbol || 'ITUB4'}></tradingview-widget>`}
       <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p>
       ${stock ? html`<company-sections .symbol=${stock.symbol}></company-sections>` : nothing}
