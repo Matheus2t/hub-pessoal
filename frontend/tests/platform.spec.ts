@@ -39,7 +39,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Calcule cenários. Acompanhe o mercado.", exact: true }),
+      page.getByRole("heading", { name: "Faça suas contas. Consulte a Bolsa.", exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).toHaveJSProperty(
       "scrollWidth",
@@ -207,7 +207,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
   const bodyFont = await page.locator("body").evaluate(
     (element) => getComputedStyle(element).fontFamily,
   );
-  expect(bodyFont).toContain("IBM Plex Sans");
+  expect(bodyFont).toContain("Geist");
   await expect(page.locator(".brand strong")).toBeVisible();
   expect(
     await page.locator(".brand strong").evaluate((element) =>
