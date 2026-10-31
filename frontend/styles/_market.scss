@@ -4,6 +4,15 @@
 .market-down { color: var(--market-down); }
 market-page, stock-chart { display: block; min-width: 0; }
 tradingview-widget { display: block; min-width: 0; }
+market-embed { display: block; min-width: 0; }
+.market-embed-mount { height: 560px; }
+.market-embed-mount > * { display: block; width: 100%; height: 100%; }
+.market-embed.company-profile .market-embed-mount { height: 420px; }
+.market-panorama { margin-bottom: 20px; }
+.market-panorama summary { cursor: pointer; padding: 16px 0; font-weight: 600; }
+.market-chart-modes { display: flex; gap: 8px; margin-bottom: 16px; }
+.market-chart-modes [aria-pressed="true"] { border-color: var(--text); background: var(--raised); }
+@media (max-width: 700px) { .market-embed-mount { height: 540px; } }
 .market-identity { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
 .market-identity h2 { font-size: 20px; font-weight: 500; }
 .market-identity .market-back { margin: 0; }
