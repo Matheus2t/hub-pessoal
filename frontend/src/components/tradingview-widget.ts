@@ -27,7 +27,7 @@ function loadTickers(): Promise<void> {
 
 @customElement('tradingview-widget')
 export class TradingViewWidget extends LightElement {
-  @property() kind: 'tickers' | 'overview' = 'overview';
+  @property() kind: 'tickers' | 'overview' | 'financials' = 'overview';
   @property() symbol = 'ITUB4';
   @state() private phase: 'loading' | 'embedded' | 'error' = 'loading';
   private themeObserver?: MutationObserver;
@@ -99,9 +99,9 @@ export class TradingViewWidget extends LightElement {
     const link = document.createElement('a');
     link.href = `https://www.tradingview.com/symbols/BMFBOVESPA-${stock.symbol}/?utm_source=${encodeURIComponent(location.hostname)}&utm_medium=widget_new&utm_campaign=symbol-overview`;
     link.target = '_blank'; link.rel = 'noopener nofollow';
-    link.textContent = `${stock.name} — gráfico por TradingView`;
+    link.textContent = `${stock.name} — ${this.kind === 'financials' ? 'dados financeiros' : 'gráfico'} por TradingView`;
     copyright.appendChild(link); wrapper.append(frameMount, copyright); target.appendChild(wrapper);
-    const script = document.createElement('script'); script.src = OVERVIEW_SCRIPT; script.async = true;
+    const script = document.createElement('script'); script.src = this.kind === 'financials' ? 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js' : OVERVIEW_SCRIPT; script.async = true;
     script.textContent = JSON.stringify({
       symbols: [[stock.name, `${stock.tradingView}|1D`]], width: '100%', height: '100%', autosize: true,
       locale: 'br', colorTheme: theme, isTransparent: false, chartOnly: false, showVolume: false, showMA: false,
@@ -112,6 +112,7 @@ export class TradingViewWidget extends LightElement {
       backgroundColor: theme === 'dark' ? '#0c0c0c' : '#f7f7f7', fontColor: theme === 'dark' ? '#b6b6b6' : '#535353',
       dateRanges: ['1d|1', '1m|30', '3m|60', '12m|1D', '60m|1W', 'all|1M'],
     });
+    if (this.kind === 'financials') script.textContent = JSON.stringify({ symbol: stock.tradingView, width: '100%', height: '100%', colorTheme: theme, isTransparent: false, displayMode: 'regular', locale: 'br' });
     script.onerror = fail;
     this.cleanups.push(() => { script.onerror = null; });
     this.mountObserver = new MutationObserver(() => {
@@ -127,7 +128,7 @@ export class TradingViewWidget extends LightElement {
   render() {
     return html`<section class="tv-panel tv-${this.kind}" aria-label=${this.kind === 'tickers' ? 'Cotações TradingView' : `Gráfico TradingView de ${this.symbol}`}>
       ${this.phase === 'loading' ? html`<p class="tv-loading" role="status">Carregando TradingView…</p>` : nothing}
-      <div class="tv-mount" ?hidden=${this.phase === 'error'}></div>
+      <div class="tv-mount" tabindex=${this.kind === 'financials' ? 0 : nothing} ?hidden=${this.phase === 'error'}></div>
       ${this.phase === 'error' ? html`<div class="market-notice" role="alert"><p>Não foi possível carregar o TradingView. Verifique sua conexão ou o bloqueio de conteúdo externo.</p><button class="button secondary" @click=${this.mount}>Tentar novamente</button></div>` : nothing}
     </section>`;
   }

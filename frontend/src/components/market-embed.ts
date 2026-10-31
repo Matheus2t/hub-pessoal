@@ -9,13 +9,14 @@ export class MarketEmbed extends LightElement {
   @property() kind: 'market-overview' | 'advanced-chart' | 'company-profile' = 'market-overview';
   @property() symbol = 'IBOV';
   @state() private failed = false;
+  @state() private loading = true;
   private generation = 0;
   private observer?: MutationObserver;
   connectedCallback() { super.connectedCallback(); this.observer = new MutationObserver(() => void this.mount()); this.observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); }
   disconnectedCallback() { this.generation++; this.observer?.disconnect(); this.querySelector('.market-embed-mount')?.replaceChildren(); super.disconnectedCallback(); }
   protected updated(changed: Map<PropertyKey, unknown>) { if (changed.has('kind') || changed.has('symbol')) void this.mount(); }
   private async mount() {
-    const generation = ++this.generation; this.failed = false; await this.updateComplete;
+    const generation = ++this.generation; this.failed = false; this.loading = true; await this.updateComplete;
     const target = this.querySelector('.market-embed-mount'); if (!target || !this.isConnected) return;
     target.replaceChildren(); const tag = `tv-${this.kind}`;
     try {
@@ -38,8 +39,8 @@ export class MarketEmbed extends LightElement {
         ]));
       }
       if (this.kind === 'advanced-chart') { widget.setAttribute('show-drawing-toolbar', ''); widget.setAttribute('show-date-ranges', ''); widget.setAttribute('interval', '1D'); }
-      target.appendChild(widget);
+      target.appendChild(widget); this.loading = false;
     } catch { if (generation === this.generation && this.isConnected) this.failed = true; }
   }
-  render() { return html`<section class="market-embed ${this.kind}" aria-label=${this.kind}><div class="market-embed-mount"></div>${this.failed ? html`<p role="alert">Não foi possível carregar o TradingView.</p><button class="button secondary" @click=${this.mount}>Tentar novamente</button>` : ''}</section>`; }
+  render() { return html`<section class="market-embed tv-panel ${this.kind}" aria-label=${this.kind}>${this.loading && !this.failed ? html`<p class="tv-loading" role="status">Carregando TradingView…</p>` : ''}<div class="market-embed-mount" ?hidden=${this.failed}></div>${this.failed ? html`<p role="alert">Não foi possível carregar o TradingView.</p><button class="button secondary" @click=${this.mount}>Tentar novamente</button>` : ''}</section>`; }
 }

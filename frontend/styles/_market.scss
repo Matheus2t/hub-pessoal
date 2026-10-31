@@ -7,7 +7,7 @@ tradingview-widget { display: block; min-width: 0; }
 market-embed { display: block; min-width: 0; }
 .market-embed-mount { height: 560px; }
 .market-embed-mount > * { display: block; width: 100%; height: 100%; }
-.market-embed.company-profile .market-embed-mount { height: 420px; }
+.market-embed.company-profile .market-embed-mount, .market-embed.company-profile tv-company-profile { height: auto; min-height: 180px; }
 .market-panorama { margin-bottom: 20px; }
 .market-panorama summary { cursor: pointer; padding: 16px 0; font-weight: 600; }
 .market-chart-modes { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -20,11 +20,17 @@ market-embed { display: block; min-width: 0; }
 .tv-mount { min-width: 0; }
 .tv-tickers { min-height: 100px; }
 .tv-overview .tv-mount { height: 540px; }
+.tv-financials .tv-mount { height: 560px; }
+.tv-financials .tv-mount { overflow-x: auto; }
+.tv-financials .tradingview-widget-container { min-width: 680px; }
+company-sections { display: block; margin-top: 24px; }
+.related-companies { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; }
+.company-sections a { text-decoration: underline; text-underline-offset: 3px; }
 .tradingview-widget-container { width: 100%; height: 100%; }
 .tradingview-widget-container__widget { height: calc(100% - 32px); width: 100%; }
 .tv-panel .tradingview-widget-copyright { min-height: 32px; display: flex; align-items: center; font-size: 13px; }
 .tv-panel .tradingview-widget-copyright a { color: var(--secondary); }
-.tv-loading { padding: 16px; color: var(--secondary); font-size: 14px; }
+.tv-loading { position: absolute; top: 0; z-index: 1; padding: 16px; background: var(--panel); color: var(--secondary); font-size: 14px; pointer-events: none; }
 .tv-availability { font-size: 12px; }
 .tv-availability a { text-decoration: underline; text-underline-offset: 3px; }
 tv-tickers { display: block; width: 100%; --tv-widget-background-color: var(--bg); --tv-widget-font-family: var(--font-body); --tv-widget-accent-color: var(--text); --tv-widget-text-color: var(--text); --tv-widget-price-text-color: var(--text); }

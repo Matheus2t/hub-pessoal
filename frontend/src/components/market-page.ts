@@ -4,6 +4,7 @@ import { LightElement } from '../ui';
 import { findStock, normalizeSearch, searchStocks, sectors } from '../market-catalog';
 import './tradingview-widget';
 import './market-embed';
+import './company-sections';
 
 @customElement('market-page')
 export class MarketPage extends LightElement {
@@ -44,7 +45,7 @@ export class MarketPage extends LightElement {
     const matches = this.filteredStocks;
     const suggestions = matches.slice(0, 8);
     return html`<div class="page-heading"><h1>${stock ? stock.symbol : 'Mercado de Ações'}</h1></div>
-      ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div>` : html`
+      ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div><p class="market-note">Setor na 2T: ${stock.sector} · classificação editorial</p>` : html`
         <p class="market-intro">Consulte ações da B3, acompanhe cotações e analise a evolução dos preços.</p>
         <details class="market-panorama" @toggle=${(event: Event) => { this.panorama = (event.target as HTMLDetailsElement).open; }}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama ? html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>` : nothing}</details>
         <form class="market-search" @submit=${this.search}>
@@ -63,6 +64,7 @@ export class MarketPage extends LightElement {
       ${stock ? html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${() => { this.advanced = false; }}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${() => { this.advanced = true; }}>Avançado</button></div>` : nothing}
       ${stock && this.advanced ? html`<market-embed kind="advanced-chart" .symbol=${stock.symbol}></market-embed>` : html`<tradingview-widget .kind=${stock ? 'overview' : 'tickers'} .symbol=${stock?.symbol || 'ITUB4'}></tradingview-widget>`}
       <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p>
+      ${stock ? html`<company-sections .symbol=${stock.symbol}></company-sections>` : nothing}
       <p class="market-note tv-availability">Se o widget informar que o ativo não está disponível, consulte a <a href=${stock ? `https://www.tradingview.com/symbols/BMFBOVESPA-${stock.symbol}/` : 'https://www.tradingview.com/markets/stocks-brazil/market-movers-all-stocks/'} target="_blank" rel="noopener noreferrer">página do TradingView</a>. A cobertura é definida pelo provedor.</p>
       ${!stock ? html`<h2 class="market-section-title">Empresas</h2><p class="market-result-count" role="status">${matches.length} ${matches.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}</p>
         ${!matches.length ? html`<p class="market-note">Nenhuma ação encontrada. Ajuste a busca ou o setor.</p>` : nothing}

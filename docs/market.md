@@ -1,5 +1,19 @@
 # Mercado de Ações V1.2 — Catálogo e pesquisa
 
+## Etapas 2 e 3 — panorama, análise e empresas
+
+Panorama sob demanda em `#/acoes`: Market Overview oficial, com `BMFBOVESPA:IBOV` (índice, fora do catálogo) e grupos Bancos, Energia e commodities, Indústria e consumo. São nove instrumentos selecionados, não rankings da bolsa. O formato atual oferece modo market-movers com padrão US, mas não foi confirmada cobertura B3 para rankings: nenhuma lista de altas/baixas/volume foi publicada.
+
+Integração atual: módulos oficiais `/w/br/tv-market-overview.js`, `/w/br/tv-advanced-chart.js` e `/w/br/tv-company-profile.js` em widgets.tradingview-widget.com. Configuração por atributos públicos: `symbol-sectors` com sectionName/symbols, `symbol`, `theme`, `show-drawing-toolbar`, `show-date-ranges`, `interval`. Consulte [panorama](https://www.tradingview.com/widget-docs/widgets/watchlists/market-overview/), [Advanced Chart](https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/) e [perfil](https://www.tradingview.com/widget-docs/widgets/symbol-details/company-profile/). Gráfico simples continua padrão; avançado tem candles, volume, indicadores, desenho e períodos do fornecedor. Apenas um gráfico fica montado. Nenhum conteúdo interno é modificado.
+
+Sobre a empresa e Fundamentos abrem sob demanda, um por vez, com links externos para ausência de cobertura. Fundamental Data usa o [iframe oficial](https://www.tradingview.com/widget-docs/widgets/symbol-details/fundamental-data/) via embed-widget-financials.js, locale br. Em telas estreitas o painel possui rolagem interna para preservar os nomes dos indicadores. Perfil usa altura do conteúdo. Até quatro empresas relacionadas vêm exclusivamente do mesmo setor local, excluindo o ativo atual; são links de navegação.
+
+Cobertura visual real verificada em ITUB4, PETR4, VALE3, WEGE3 e TOTS3: identificação, descrição e setor/indústria, demonstrativos e indicadores. Foram vistos valor de mercado, P/VP (P/B), receita, margens, fluxo de caixa e ROE. P/L aparece em vários ativos, mas estava ausente em WEGE3. Existem outros campos ausentes por empresa; dividend yield e endividamento não são prometidos. Períodos AF/TTM/trimestrais permanecem identificados pelo widget, sem normalização própria. Perfil de TOTS3 apresentou descrição em inglês apesar do locale br. Não há promessa de cobertura integral para as 52 empresas.
+
+Scripts dos módulos carregam uma vez por documento. Componentes são descartados ao fechar/trocar seção, ticker ou gráfico; montagens obsoletas são ignoradas. Tema recria a incorporação. Panorama recolhido evita carga inicial; perfil/fundamentos não carregam antes da interação. A montagem estrutural não comprova dados: a validação inclui capturas reais. CSP existente cobre os novos hosts oficiais sem ampliação de origens. brapi continua bloqueada, sem alterações de backend, chaves ou custos; atribuições e aviso de atraso são preservados.
+
+Validação: typecheck/build, 47 testes Python, testes Playwright de regressão e montagem sob demanda, capturas reais dos cinco ativos, Ibovespa e Advanced Chart; inspeção de desktop, tablet e celular e dos dois temas. Revalidar cobertura e traduções ao atualizar os widgets. Não copiar dados dos iframes nem apresentar campos ausentes como zero.
+
 ## Etapa 1 — catálogo local
 
 52 ações (48 adicionadas), em 13 setores. Cada entrada de `frontend/src/market-catalog.ts` contém ticker, empresa, setor e símbolo BMFBOVESPA. A busca ignora caixa/acentos e combina setor e ordenação por ticker ou empresa. Sugestões limitadas a oito itens; setas selecionam, Enter abre e Escape fecha. A lista completa reflete os filtros e informa a quantidade encontrada. Limpar remove a pesquisa e preserva o setor.
