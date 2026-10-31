@@ -54,7 +54,7 @@ export class FinanceCalculator extends LightElement {
     const result = this.result;
     const loan = result && 'schedule' in result ? result : undefined;
     const investment = result && 'evolution' in result ? result : undefined;
-    return html`<div class="page-heading"><h1>${title}</h1></div>
+    return html`<div class="page-heading"><div><h1>${title}</h1><p class="calculator-lead">${simple ? 'Simule o crescimento do capital sem juros sobre juros.' : this.kind === 'price' ? 'Calcule parcelas constantes e o custo total do financiamento.' : 'Projete parcelas decrescentes e a amortização do saldo.'}</p></div></div>
       <section class="panel simulation-panel" aria-label="Simulação">
         <div class="panel-heading"><h2>Simulação</h2></div>
         <form novalidate @submit=${this.calculate} @field-input=${(event: CustomEvent) => { this.values = { ...this.values, [event.detail.name]: event.detail.value }; this.changed(); }}>
