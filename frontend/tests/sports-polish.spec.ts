@@ -20,12 +20,23 @@ test('La Liga display, crest alignment and no unsupported lineups',async({page},
  await page.goto('/#/spfc');await expect(page.locator('.sports-roster')).toHaveCount(0);
 });
 
-test('confirmed formations render; historical players never become a lineup',async({page})=>{
- await page.goto('/#/');
- await page.evaluate(async()=>{const el=document.createElement('sports-lineup') as any;el.game={starts_at:'2026-10-01T20:00:00Z',home:'Home',away:'Away',lineup:{sport:'football',confirmed:true,formation:'4-3-3',rows:[1,4,3,3].map((n,row)=>Array.from({length:n},(_,i)=>({name:`Player ${row}-${i}`,position:'Provided position',number:i})))}};document.querySelector('main')!.append(el);await el.updateComplete});
- await expect(page.getByRole('group',{name:'Campo de futebol'})).toBeVisible();await expect(page.locator('.sports-lineup-player')).toHaveCount(11);
- await page.evaluate(async()=>{const el=document.querySelector('sports-lineup') as any;el.game={...el.game,lineup:{sport:'basketball',confirmed:true,formation:'Titulares confirmados',rows:[Array.from({length:5},(_,i)=>({name:`Player ${i}`,position:'Provided position',number:i}))]}};await el.updateComplete});
- await expect(page.getByRole('group',{name:'Quadra de basquete'})).toBeVisible();await expect(page.locator('.sports-lineup-player')).toHaveCount(5);
- await page.evaluate(async()=>{const el=document.querySelector('sports-lineup') as any;el.game={...el.game,lineup:{...el.game.lineup,confirmed:false}};await el.updateComplete});
- await expect(page.locator('.sports-lineup')).toHaveCount(0);
+test('team pages never show rosters or formations, even when API includes them', async ({ page }) => {
+  const confirmed = { sport: 'football', confirmed: true, formation: '4-3-3', rows: [[{ name: 'Player', position: 'GK', number: 1 }]] };
+  await page.route('**/api/sports/**', route => route.fulfill({ json: {
+    season: '2026-2027', sections: {
+      schedule: { state: 'available', items: [{ id: 'one', starts_at: '2099-01-01T20:00:00Z', home: 'Home', away: 'Away', is_home: true, competition: 'La Liga', status: 'Agendado', lineup: confirmed }], note: '', updated_at: '' },
+      results: { state: 'empty', items: [], note: '', updated_at: '' },
+      standings: { state: 'empty', items: [], note: '', updated_at: '' },
+      statistics: { state: 'empty', items: [], note: '', updated_at: '' },
+      roster: { state: 'available', items: [{ name: 'Player', position: 'GK', number: 1 }], note: 'Historical players', updated_at: '' }
+    }
+  } }));
+  for (const team of ['76ers', 'spfc', 'barcelona']) {
+    await page.goto('/#/' + team);
+    await expect(page.locator('.sports-schedule')).toBeVisible();
+    await expect(page.locator('.sports-roster, .sports-lineup')).toHaveCount(0);
+    await page.locator('.sports-coverage summary').click();
+    await expect(page.locator('.sports-coverage')).not.toContainText('Historical players');
+    await expect(page.locator('.sports-coverage')).not.toContainText('Elenco');
+  }
 });

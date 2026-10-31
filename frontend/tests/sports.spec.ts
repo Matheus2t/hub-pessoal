@@ -8,7 +8,6 @@ async function mockSports(page: import('@playwright/test').Page) {
     const base = { state: 'available', note: 'Dados simulados apenas no teste.', updated_at: '2026-10-31T10:00:00Z', items: [] as unknown[], competition: 'Liga de teste', season: '2026' };
     if (kind === 'schedule') base.items = Array.from({ length: 10 }, (_, i) => ({ id: String(i), starts_at: `2026-11-${String(i+1).padStart(2,'0')}T00:30:00Z`, home: 'Time de teste', away: `Adversário ${i+1}`, competition: 'Liga de teste', season: '2026', venue: 'Arena de teste', is_home: true, status: 'Agendado' }));
     if (kind === 'standings') base.items = [{ team: 'Time de teste', is_team: true, rank: 1, points: 30, played: 10, wins: 10, draws: 0, losses: 0, goal_difference: 20 }];
-    if (kind === 'roster') base.items = [{ name: 'Atleta de teste', position: 'Atacante', number: 9 }];
     if (kind === 'results') base.items = [{ id: 'old', starts_at: '2026-10-30T22:00:00Z', home: 'Time de teste', away: 'Outro time', competition: 'Liga de teste', season: '2026', is_home: true, home_score: 2, away_score: 1, outcome: 'V', status: 'Encerrado' }];
     if (kind === 'statistics') Object.assign(base, { state: 'unavailable', note: 'Estatísticas não cobertas.' });
     return route.fulfill({ json: base });
@@ -32,7 +31,7 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
     await expect(page.locator('.sports-schedule time').first()).toHaveAttribute('aria-label', /31\/10\/2026/);
     await expect(page.locator('.sports-schedule .sports-games li').first()).toContainText('21:30');
     await expect(page.locator('.sports-table .is-team')).toHaveCount(1);
-    await expect(page.locator('.sports-players')).toContainText('Atleta de teste');
+    await expect(page.locator('.sports-roster, .sports-lineup')).toHaveCount(0);
     await expect(page.locator('.sports-results')).toContainText('Vitória');
     await expect(page.locator('.sports-statistics')).toContainText('Estatísticas ainda não disponíveis.');
     await expect(page.locator('.sports-next .sports-contender')).toHaveCount(2);
@@ -50,7 +49,6 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
 test('single fixture and compact unavailable sections keep coverage accessible', async ({ page }) => {
   await mockSports(page);
   await page.route('**/api/sports/spfc/schedule', route => route.fulfill({ json: { state: 'available', items: [{ id: 'one', starts_at: '2026-11-05T00:30:00Z', home: 'São Paulo', away: 'Corinthians', competition: 'Brasileirão', season: '2026', venue: 'Morumbi', is_home: true, status: 'Agendado' }], partial: true, note: 'Fonte gratuita limitada a uma partida.', updated_at: '2026-10-31T10:00:00Z' } }));
-  await page.route('**/api/sports/spfc/roster', route => route.fulfill({ json: { state: 'unavailable', items: [], note: 'Não confirma elenco da temporada.', updated_at: '' } }));
   await page.goto('/#/spfc');
   await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(1);
   await expect(page.locator('.sports-schedule .sports-count')).toHaveCount(0);
@@ -62,17 +60,17 @@ test('single fixture and compact unavailable sections keep coverage accessible',
   await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).toBeVisible();
 });
 
-test('retry only reloads the failed section and empty calendar has no invented match', async ({ page }) => {
+test('retry only reloads failed standings and empty calendar has no invented match', async ({ page }) => {
   await mockSports(page);
-  let scheduleCalls = 0, rosterCalls = 0;
+  let scheduleCalls = 0, standingCalls = 0;
   await page.route('**/api/sports/76ers/schedule', route => { scheduleCalls++; return route.fulfill({ json: { state: 'empty', items: [], note: 'Sem jogos anunciados.', updated_at: '' } }); });
-  await page.route('**/api/sports/76ers/roster', route => { rosterCalls++; return route.fulfill({ json: { state: rosterCalls === 1 ? 'error' : 'unavailable', items: [], note: 'Cobertura insuficiente.', updated_at: '' } }); });
+  await page.route('**/api/sports/76ers/standings', route => { standingCalls++; return route.fulfill({ json: { state: standingCalls === 1 ? 'error' : 'unavailable', items: [], note: 'Cobertura insuficiente.', updated_at: '' } }); });
   await page.goto('/#/76ers');
   await expect(page.locator('.sports-next')).toContainText('Nenhuma partida confirmada na fonte.');
   await expect(page.locator('.sports-contender')).toHaveCount(0);
-  await page.locator('.sports-roster').getByRole('button', { name: 'Tentar novamente' }).click();
-  await expect(page.locator('.sports-roster')).toContainText('Elenco atualizado ainda não disponível.');
-  expect(scheduleCalls).toBe(1); expect(rosterCalls).toBe(2);
+  await page.locator('.sports-standings').getByRole('button', { name: 'Tentar novamente' }).click();
+  await expect(page.locator('.sports-standings')).toContainText('Classificação não coberta pela fonte atual.');
+  expect(scheduleCalls).toBe(1); expect(standingCalls).toBe(2);
 });
 
 test('away result keeps the selected team score first and table scroll stays internal', async ({ page }) => {
@@ -91,21 +89,21 @@ test('away result keeps the selected team score first and table scroll stays int
 
 test('independent errors and missing sports data', async ({ page }) => {
   await mockSports(page);
-  await page.route('**/api/sports/barcelona/roster', route => route.fulfill({ json: { state: 'rate_limited', items: [], note: 'Limite de consultas atingido.', updated_at: '' } }));
+  await page.route('**/api/sports/barcelona/standings', route => route.fulfill({ json: { state: 'rate_limited', items: [], note: 'Limite de consultas atingido.', updated_at: '' } }));
   await page.goto('/#/barcelona');
-  await expect(page.locator('.sports-roster')).toContainText('Limite de consultas atingido.');
+  await expect(page.locator('.sports-standings')).toContainText('Limite de consultas atingido.');
   await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(10);
-  await expect(page.locator('.sports-roster button')).toHaveText('Tentar novamente');
+  await expect(page.locator('.sports-standings button')).toHaveText('Tentar novamente');
 });
 
 test('season indicators render when covered and errors do not hang', async ({ page }) => {
   await mockSports(page);
   await page.route('**/api/sports/barcelona/statistics', route => route.fulfill({ json: { state: 'available', items: [{ label: 'Gols marcados', value: 40 }, { label: 'Empates', value: 0 }], note: 'Indicadores de teste.', competition: 'Liga de teste', season: '2026', updated_at: '' } }));
-  await page.route('**/api/sports/barcelona/roster', route => route.fulfill({ status: 503, json: { detail: 'Teste' } }));
+  await page.route('**/api/sports/barcelona/results', route => route.fulfill({ status: 503, json: { detail: 'Teste' } }));
   await page.goto('/#/barcelona');
   await expect(page.locator('.sports-metrics')).toContainText('Gols marcados40');
   await expect(page.locator('.sports-metrics')).toContainText('Empates0');
-  await expect(page.locator('.sports-roster')).toContainText('Não foi possível consultar a fonte agora.');
+  await expect(page.locator('.sports-results')).toContainText('Não foi possível consultar a fonte agora.');
   await expect(page.locator('.sports-panel[aria-busy="true"]')).toHaveCount(0);
 });
 

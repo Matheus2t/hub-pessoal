@@ -36,18 +36,19 @@ def test_aggregate_reuses_games_and_standings(monkeypatch):
             data=response.json()['sections']
             assert data['standings']['state']=='available'
             assert data['statistics']['items'][0]['value']==10
-            assert data['roster']['state']=='unavailable'
+            assert 'roster' not in data
             assert 'TEST_ONLY' not in response.text
-        assert len(paths)==4
+        assert len(paths)==3
         assert sum('/standings' in p for p in paths)==1
         assert sum('/matches' in p for p in paths)==1
 
 
 def test_overview_keeps_independent_errors():
-    def load(team,kind): return sports.section('rate_limited' if kind=='roster' else 'empty',note=kind)
+    def load(team,kind): return sports.section('rate_limited' if kind=='statistics' else 'empty',note=kind)
     with patch.object(sports,'load_section',side_effect=load):
         response=TestClient(app).get('/api/sports/76ers?include=all')
-        assert len(response.json()['sections'])==5
+        assert len(response.json()['sections'])==4
+        assert 'roster' not in response.json()['sections']
         assert response.json()['sections']['schedule']['state']=='empty'
         assert 's-maxage=15' in response.headers['cache-control']
 

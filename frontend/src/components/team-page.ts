@@ -3,15 +3,16 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { LightElement } from '../ui';
 import { apiUrl } from '../config';
 import { loadOverview } from '../sports-overview';
-import { competitionName, teams, sportsTime, sportsDate, type Team, type SectionName, type SportsSection, type Game, type Standing, type Player, type Metric } from '../sports';
+import { competitionName, teams, sportsTime, sportsDate, type Team, type SectionName, type SportsSection, type Game, type Standing, type Metric } from '../sports';
 import './sports-games';
 import './sports-standings';
-import './sports-lineup';
 
-const titles: Record<SectionName, string> = { schedule: 'Próximos jogos', standings: 'Classificação', roster: 'Elenco', results: 'Últimos resultados', statistics: 'Estatísticas da temporada' };
-const unavailable: Record<SectionName, string> = {
+type VisibleSection = Exclude<SectionName, 'roster'>;
+const visibleSections: VisibleSection[] = ['schedule', 'results', 'standings', 'statistics'];
+const titles: Record<VisibleSection, string> = { schedule: 'Próximos jogos', standings: 'Classificação', results: 'Últimos resultados', statistics: 'Estatísticas da temporada' };
+const unavailable: Record<VisibleSection, string> = {
   schedule: 'Calendário ainda não disponível.', results: 'Resultados ainda não disponíveis.',
-  standings: 'Classificação não coberta pela fonte atual.', roster: 'Elenco atualizado ainda não disponível.', statistics: 'Estatísticas ainda não disponíveis.',
+  standings: 'Classificação não coberta pela fonte atual.', statistics: 'Estatísticas ainda não disponíveis.',
 };
 
 @customElement('team-page')
@@ -29,7 +30,7 @@ export class TeamPage extends LightElement {
     if (!response.ok) throw new Error('sports');
     return response.json();
   }
-  private async loadSection(kind: SectionName) {
+  private async loadSection(kind: VisibleSection) {
     if (this.pending.includes(kind)) return;
     this.pending = [...this.pending, kind];
     try {
@@ -45,14 +46,13 @@ export class TeamPage extends LightElement {
       if (this.controller.signal.aborted) return;
       this.season = meta.season;
       if (meta.sections) this.sections = meta.sections;
-      else await Promise.all((Object.keys(titles) as SectionName[]).map(kind => this.loadSection(kind)));
+      else await Promise.all(visibleSections.map(kind => this.loadSection(kind)));
     } catch {
-      if (!this.controller.signal.aborted) this.sections = Object.fromEntries((Object.keys(titles) as SectionName[]).map(kind => [kind,{state:'error',items:[],note:'Não foi possível consultar a fonte agora.',updated_at:''}]));
+      if (!this.controller.signal.aborted) this.sections = Object.fromEntries(visibleSections.map(kind => [kind,{state:'error',items:[],note:'Não foi possível consultar a fonte agora.',updated_at:''}]));
     }
   }
-  private section(kind: SectionName) {
+  private section(kind: VisibleSection) {
     const data = this.sections[kind];
-    if(kind === 'roster' && this.team === 'spfc' && !(data?.state === 'available' && data.items.length)) return nothing;
     const available = data?.state === 'available' && data.items.length > 0;
     const error = data && ['error', 'rate_limited'].includes(data.state);
     const loading = !data || this.pending.includes(kind);
@@ -65,10 +65,9 @@ export class TeamPage extends LightElement {
         ${error ? html`<button class="sports-text-button" ?disabled=${loading} @click=${() => this.loadSection(kind)}>${loading ? 'Consultando…' : 'Tentar novamente'}</button>` : html`<a href=${teams[this.team].official} target="_blank" rel="noopener noreferrer">Consultar clube <span aria-hidden="true">↗</span></a>`}</div>`}
     </section>`;
   }
-  private content(kind: SectionName, data: SportsSection) {
+  private content(kind: VisibleSection, data: SportsSection) {
     if (kind === 'schedule' || kind === 'results') return html`<sports-games .games=${data.items as Game[]} .results=${kind === 'results'}></sports-games>`;
     if (kind === 'standings') return html`<sports-standings .rows=${data.items as Standing[]} .competition=${data.competition || ''} .season=${data.season || ''}></sports-standings>`;
-    if (kind === 'roster') { const roster = html`${this.team === '76ers' ? html`<p class="sports-caption">Cadastro histórico; não representa o elenco atual.</p>` : nothing}<ul class="sports-players">${(data.items as Player[]).map(player => html`<li><span class="sports-number">${player.number ?? '—'}</span><div><strong>${player.name}</strong><span>${player.position || 'Posição não informada'}</span>${player.height ? html`<span>Altura: ${player.height} (pés–polegadas)</span>` : nothing}</div></li>`)}</ul>`; return this.team === '76ers' ? html`<details><summary>${data.items.length} jogadores cadastrados · vínculo ativo não confirmado</summary>${roster}</details>` : roster; }
     if (kind === 'statistics') return html`<p class="sports-competition">${competitionName(data.competition || '')} <span>· ${data.season}</span></p><dl class="sports-metrics">${(data.items as Metric[]).map(metric => html`<div><dt>${metric.label}</dt><dd>${metric.value.toLocaleString('pt-BR')}</dd></div>`)}</dl>`;
     return nothing;
   }
@@ -79,7 +78,7 @@ export class TeamPage extends LightElement {
     </section>`;
   }
   private coverage() {
-    const entries = (Object.keys(titles) as SectionName[]).filter(kind => this.sections[kind]);
+    const entries = visibleSections.filter(kind => this.sections[kind]);
     const latest = entries.map(kind => this.sections[kind]!.updated_at).filter(Boolean).sort().at(-1);
     return html`<details class="sports-coverage"><summary>Cobertura dos dados <span>Fonte parcial</span></summary><div><p>Horários de Brasília. Sem vínculo oficial com os clubes.</p><dl>${entries.map(kind => html`<div><dt>${titles[kind]}</dt><dd>${this.sections[kind]!.note || 'Sem observações.'} ${this.sections[kind]!.source ? html`<span>Fonte: ${this.sections[kind]!.source} · ${this.sections[kind]!.updated_at ? sportsDate(this.sections[kind]!.updated_at) + ' ' + sportsTime(this.sections[kind]!.updated_at) : 'sem atualização'}</span>` : nothing}</dd></div>`)}</dl>${latest ? html`<p>Última consulta: ${sportsDate(latest)} às ${sportsTime(latest)}. Os dados podem ter sido atualizados antes dessa consulta.</p>` : nothing}</div></details>`;
   }
@@ -90,8 +89,7 @@ export class TeamPage extends LightElement {
     const season = this.season || this.sections.standings?.season || next?.season;
     return html`<article class="sports-page" data-team=${this.team}><header class="sports-heading"><div class="sports-identity"><span class="sports-crest-frame" data-team=${this.team}><img class="sports-crest" src=${config.crest} width="64" height="72" alt="" /></span><div><p class="sports-eyebrow">${config.competition}${season ? html`<span>${season}</span>` : nothing}</p><h1>${config.name}</h1></div></div>${standing ? html`<dl class="sports-record">${[['Posição', standing.rank == null ? '—' : `${standing.rank}º`], ['Pontos', standing.points ?? '—'], ['Jogos', standing.played ?? '—']].map(([label, value]) => html`<div><dt>${label}</dt><dd>${value}</dd></div>`)}</dl>` : nothing}</header>
       ${this.fixture(next)}
-      ${this.team !== 'spfc' ? html`<sports-lineup .game=${[...(this.sections.schedule?.items || []), ...(this.sections.results?.items || [])].find(item => (item as Game).lineup?.confirmed) as Game | undefined}></sports-lineup>` : nothing}
-      <div class="sports-grid"><div class="sports-column">${this.section('schedule')}${this.section('results')}${this.section('roster')}</div><div class="sports-column">${this.section('standings')}${this.section('statistics')}</div></div>
+      <div class="sports-grid"><div class="sports-column">${this.section('schedule')}${this.section('results')}</div><div class="sports-column">${this.section('standings')}${this.section('statistics')}</div></div>
       ${this.coverage()}
     </article>`;
   }
