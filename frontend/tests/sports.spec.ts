@@ -30,10 +30,14 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
     await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(10);
     await expect(page.locator('.sports-schedule time').first()).toHaveAttribute('aria-label', /31\/10\/2026/);
     await expect(page.locator('.sports-schedule .sports-games li').first()).toContainText('21:30');
-    await expect(page.locator('.sports-table .is-team')).toHaveCount(1);
+    if (route === '76ers') {
+      await expect(page.locator('.sports-standings, .sports-statistics')).toHaveCount(0);
+    } else {
+      await expect(page.locator('.sports-table .is-team')).toHaveCount(1);
+    }
     await expect(page.locator('.sports-roster, .sports-lineup')).toHaveCount(0);
     await expect(page.locator('.sports-results')).toContainText('Vitória');
-    await expect(page.locator('.sports-statistics')).toContainText('Estatísticas ainda não disponíveis.');
+    if (route !== '76ers') await expect(page.locator('.sports-statistics')).toContainText('Estatísticas ainda não disponíveis.');
     await expect(page.locator('.sports-next .sports-contender')).toHaveCount(2);
     await expect(page.locator('.sports-results .sports-score')).toHaveAttribute('aria-label', 'Time de teste: 2. Outro time: 1.');
     for (const theme of ['dark', 'light']) {
@@ -60,12 +64,12 @@ test('single fixture and compact unavailable sections keep coverage accessible',
   await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).toBeVisible();
 });
 
-test('retry only reloads failed standings and empty calendar has no invented match', async ({ page }) => {
+test('football retry only reloads failed standings and empty calendar has no invented match', async ({ page }) => {
   await mockSports(page);
   let scheduleCalls = 0, standingCalls = 0;
-  await page.route('**/api/sports/76ers/schedule', route => { scheduleCalls++; return route.fulfill({ json: { state: 'empty', items: [], note: 'Sem jogos anunciados.', updated_at: '' } }); });
-  await page.route('**/api/sports/76ers/standings', route => { standingCalls++; return route.fulfill({ json: { state: standingCalls === 1 ? 'error' : 'unavailable', items: [], note: 'Cobertura insuficiente.', updated_at: '' } }); });
-  await page.goto('/#/76ers');
+  await page.route('**/api/sports/barcelona/schedule', route => { scheduleCalls++; return route.fulfill({ json: { state: 'empty', items: [], note: 'Sem jogos anunciados.', updated_at: '' } }); });
+  await page.route('**/api/sports/barcelona/standings', route => { standingCalls++; return route.fulfill({ json: { state: standingCalls === 1 ? 'error' : 'unavailable', items: [], note: 'Cobertura insuficiente.', updated_at: '' } }); });
+  await page.goto('/#/barcelona');
   await expect(page.locator('.sports-next')).toContainText('Nenhuma partida confirmada na fonte.');
   await expect(page.locator('.sports-contender')).toHaveCount(0);
   await page.locator('.sports-standings').getByRole('button', { name: 'Tentar novamente' }).click();
@@ -73,17 +77,44 @@ test('retry only reloads failed standings and empty calendar has no invented mat
   expect(scheduleCalls).toBe(1); expect(standingCalls).toBe(2);
 });
 
-test('away result keeps the selected team score first and table scroll stays internal', async ({ page }) => {
+test('away result keeps the selected team score first', async ({ page }) => {
   await mockSports(page);
   await page.setViewportSize({ width: 320, height: 900 });
   await page.route('**/api/sports/76ers/results', route => route.fulfill({ json: { state: 'available', items: [{ id: 'away', starts_at: '2026-10-30T23:30:00Z', home: 'Charlotte Hornets', away: 'Philadelphia 76ers', competition: 'NBA', season: '2026-2027', is_home: false, home_score: 99, away_score: 112, outcome: 'V', status: 'Encerrado' }], note: 'Teste de resultado fora de casa.', updated_at: '' } }));
   await page.goto('/#/76ers');
   await expect(page.locator('.sports-score')).toHaveAttribute('aria-label', 'Philadelphia 76ers: 112. Charlotte Hornets: 99.');
   await expect(page.locator('.sports-result')).toContainText('Vitória');
+  await expect(page.locator('.sports-standings, .sports-statistics')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('football table scroll stays internal on mobile', async ({ page }) => {
+  await mockSports(page);
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/#/spfc');
   const table = page.getByRole('region', { name: 'Tabela de classificação' });
   await table.evaluate(element => { element.scrollLeft = element.scrollWidth; });
   expect(await table.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
   await expect(page.locator('.sports-table tbody th')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('76ers displays results beside upcoming games on desktop and below on mobile', async ({ page }) => {
+  await mockSports(page);
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.goto('/#/76ers');
+  const upcoming = page.locator('.sports-schedule');
+  const previous = page.locator('.sports-results');
+  await expect(upcoming).toBeVisible();
+  await expect(previous).toBeVisible();
+  await expect(page.locator('.sports-standings, .sports-statistics')).toHaveCount(0);
+  const a = await upcoming.boundingBox();
+  const b = await previous.boundingBox();
+  expect(a && b && b.x >= a.x + a.width - 1).toBeTruthy();
+  await page.setViewportSize({ width: 390, height: 900 });
+  const smallA = await upcoming.boundingBox();
+  const smallB = await previous.boundingBox();
+  expect(smallA && smallB && smallB.y >= smallA.y + smallA.height - 1).toBeTruthy();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 

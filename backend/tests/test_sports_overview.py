@@ -46,7 +46,7 @@ def test_aggregate_reuses_games_and_standings(monkeypatch):
 def test_overview_keeps_independent_errors():
     def load(team,kind): return sports.section('rate_limited' if kind=='statistics' else 'empty',note=kind)
     with patch.object(sports,'load_section',side_effect=load):
-        response=TestClient(app).get('/api/sports/76ers?include=all')
+        response=TestClient(app).get('/api/sports/spfc?include=all')
         assert len(response.json()['sections'])==4
         assert 'roster' not in response.json()['sections']
         assert response.json()['sections']['schedule']['state']=='empty'
@@ -71,3 +71,15 @@ def test_retry_after_and_recovery(monkeypatch):
     assert reset_delay({'Retry-After':'bad'})==60
     with patch('app.sports_http.time',return_value=0):
         assert reset_delay({'Retry-After':format_datetime(datetime.fromtimestamp(180,timezone.utc),usegmt=True)})==180
+
+
+def test_nba_overview_only_loads_schedule_and_results():
+    calls=[]
+    def load(team,kind):
+        calls.append((team,kind))
+        return sports.section('empty',note=kind)
+    with patch.object(sports,'load_section',side_effect=load):
+        response=TestClient(app).get('/api/sports/76ers?include=all')
+    assert response.status_code==200
+    assert set(response.json()['sections'])=={'schedule','results'}
+    assert calls==[('76ers','schedule'),('76ers','results')]

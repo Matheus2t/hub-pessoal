@@ -159,7 +159,8 @@ def sports_team(team: str, response: Response, include: str|None=None):
     provider_name, source = ('BALLDONTLIE','https://www.balldontlie.io/') if key and team == '76ers' else ('football-data.org','https://www.football-data.org/') if key else ('TheSportsDB',SOURCE)
     result = dict(team=team, name=config['name'], competition=config['competition'], season=season(team), official=config['official'], timezone='America/Sao_Paulo', provider=provider_name, source=source)
     if include == 'all':
-        result['sections'] = {kind:load_section(team,kind) for kind in ('schedule','results','standings','statistics')}
+        kinds = ('schedule', 'results') if team == '76ers' else ('schedule', 'results', 'standings', 'statistics')
+        result['sections'] = {kind:load_section(team,kind) for kind in kinds}
         failed = any(d['state'] in ('error','rate_limited') for d in result['sections'].values())
         response.headers['Cache-Control'] = 'public, max-age=10, s-maxage=15' if failed else 'public, max-age=60, s-maxage=300'
     return result

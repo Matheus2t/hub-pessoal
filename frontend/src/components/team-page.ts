@@ -9,6 +9,7 @@ import './sports-standings';
 
 type VisibleSection = Exclude<SectionName, 'roster'>;
 const visibleSections: VisibleSection[] = ['schedule', 'results', 'standings', 'statistics'];
+const sectionsFor = (team: Team): VisibleSection[] => team === '76ers' ? ['schedule', 'results'] : visibleSections;
 const titles: Record<VisibleSection, string> = { schedule: 'Próximos jogos', standings: 'Classificação', results: 'Últimos resultados', statistics: 'Estatísticas da temporada' };
 const unavailable: Record<VisibleSection, string> = {
   schedule: 'Calendário ainda não disponível.', results: 'Resultados ainda não disponíveis.',
@@ -46,9 +47,9 @@ export class TeamPage extends LightElement {
       if (this.controller.signal.aborted) return;
       this.season = meta.season;
       if (meta.sections) this.sections = meta.sections;
-      else await Promise.all(visibleSections.map(kind => this.loadSection(kind)));
+      else await Promise.all(sectionsFor(this.team).map(kind => this.loadSection(kind)));
     } catch {
-      if (!this.controller.signal.aborted) this.sections = Object.fromEntries(visibleSections.map(kind => [kind,{state:'error',items:[],note:'Não foi possível consultar a fonte agora.',updated_at:''}]));
+      if (!this.controller.signal.aborted) this.sections = Object.fromEntries(sectionsFor(this.team).map(kind => [kind,{state:'error',items:[],note:'Não foi possível consultar a fonte agora.',updated_at:''}]));
     }
   }
   private section(kind: VisibleSection) {
@@ -78,18 +79,18 @@ export class TeamPage extends LightElement {
     </section>`;
   }
   private coverage() {
-    const entries = visibleSections.filter(kind => this.sections[kind]);
+    const entries = sectionsFor(this.team).filter(kind => this.sections[kind]);
     const latest = entries.map(kind => this.sections[kind]!.updated_at).filter(Boolean).sort().at(-1);
     return html`<details class="sports-coverage"><summary>Cobertura dos dados <span>Fonte parcial</span></summary><div><p>Horários de Brasília. Sem vínculo oficial com os clubes.</p><dl>${entries.map(kind => html`<div><dt>${titles[kind]}</dt><dd>${this.sections[kind]!.note || 'Sem observações.'} ${this.sections[kind]!.source ? html`<span>Fonte: ${this.sections[kind]!.source} · ${this.sections[kind]!.updated_at ? sportsDate(this.sections[kind]!.updated_at) + ' ' + sportsTime(this.sections[kind]!.updated_at) : 'sem atualização'}</span>` : nothing}</dd></div>`)}</dl>${latest ? html`<p>Última consulta: ${sportsDate(latest)} às ${sportsTime(latest)}. Os dados podem ter sido atualizados antes dessa consulta.</p>` : nothing}</div></details>`;
   }
   render() {
     const config = teams[this.team];
     const next = this.sections.schedule?.items[0] as Game | undefined;
-    const standing = this.standingCompetition ? undefined : (this.sections.standings?.items as Standing[] | undefined)?.find(row => row.is_team);
+    const standing = (this.team === '76ers' || this.standingCompetition) ? undefined : (this.sections.standings?.items as Standing[] | undefined)?.find(row => row.is_team);
     const season = this.season || this.sections.standings?.season || next?.season;
     return html`<article class="sports-page" data-team=${this.team}><header class="sports-heading"><div class="sports-identity"><span class="sports-crest-frame" data-team=${this.team}><img class="sports-crest" src=${config.crest} width="64" height="72" alt="" /></span><div><p class="sports-eyebrow">${config.competition}${season ? html`<span>${season}</span>` : nothing}</p><h1>${config.name}</h1></div></div>${standing ? html`<dl class="sports-record">${[['Posição', standing.rank == null ? '—' : `${standing.rank}º`], ['Pontos', standing.points ?? '—'], ['Jogos', standing.played ?? '—']].map(([label, value]) => html`<div><dt>${label}</dt><dd>${value}</dd></div>`)}</dl>` : nothing}</header>
       ${this.fixture(next)}
-      <div class="sports-grid"><div class="sports-column">${this.section('schedule')}${this.section('results')}</div><div class="sports-column">${this.section('standings')}${this.section('statistics')}</div></div>
+      ${this.team === '76ers' ? html`<div class="sports-grid sports-grid--nba"><div class="sports-column">${this.section('schedule')}</div><div class="sports-column">${this.section('results')}</div></div>` : html`<div class="sports-grid"><div class="sports-column">${this.section('schedule')}${this.section('results')}</div><div class="sports-column">${this.section('standings')}${this.section('statistics')}</div></div>`}
       ${this.coverage()}
     </article>`;
   }

@@ -165,3 +165,13 @@ indicadores. `GET /api/sports/{team}?include=all` exclui `roster`, evitando
 requisições aos provedores que não são utilizadas pela interface. Endpoints
 individuais legados permanecem por compatibilidade, mas não são consultados
 pelas páginas. Os demais recursos esportivos permanecem inalterados.
+
+## Layout dos 76ers — calendário e resultados
+
+A página dos 76ers apresenta apenas **Próximos jogos** e **Últimos resultados**,
+lado a lado em telas largas e empilhados em telas menores. Não exibe blocos
+nem notas de cobertura de classificação ou estatísticas indisponíveis. O
+endpoint agregado `/api/sports/76ers?include=all` carrega apenas calendário e
+resultados, preservando classificações e indicadores do São Paulo e Barcelona.
+Os endpoints individuais antigos permanecem para compatibilidade, sem serem
+solicitados pela página do 76ers.
