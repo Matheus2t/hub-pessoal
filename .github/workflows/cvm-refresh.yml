@@ -17,8 +17,16 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/cvm_financials.py --refresh
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: cvm-snapshot-review
-          path: frontend/public/financials
-          retention-days: 7
+      - name: Report coverage for review
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads(Path('frontend/public/financials/manifest.json').read_text(encoding='utf8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf8') as report:
+              report.write('# CVM coverage check\n\n')
+              report.write('Snapshot: ' + manifest['snapshot'] + '\n\n')
+              for symbol, coverage in manifest['coverage'].items():
+                  report.write(f"- {symbol}: {coverage['periods']} periods\n")
+              report.write('\nPublication requires local review, tests and commit. No artifact storage is used.\n')
+          PY
