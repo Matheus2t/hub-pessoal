@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,async({page},info)=>{
  await page.setViewportSize({width,height:900});await page.goto('/#/');
  await expect(page.locator('home-page .tool-card')).toHaveCount(2);
- await expect(page.getByRole('heading',{name:'Faça suas contas. Consulte a Bolsa.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Um lugar pra reunir o que eu crio e uso.'})).toBeVisible();
  await expect(page.locator('.platform-name, .area-index, .area-tag')).toHaveCount(0);
  await expect(page.locator('tool-card, .category-filters, .catalog-search, tradingview-widget')).toHaveCount(0);
  const navigation=page.getByRole('navigation',{name:'Navegação principal'});

@@ -7,8 +7,8 @@ export class HomePage extends LightElement {
   render() {
     return html`
       <section class="platform-intro">
-        <h1>Faça suas contas.<br><span>Consulte a Bolsa.</span></h1>
-        <div class="platform-lead"><p>Simule investimentos e financiamentos. Consulte cotações, gráficos e dados de ações da B3.</p></div>
+        <h1>Um lugar pra reunir<br><span>o que eu crio e uso.</span></h1>
+        <div class="platform-lead"><p>Comecei com calculadoras e ações. O resto vou adicionando conforme precisar.</p></div>
       </section>
       <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras">
