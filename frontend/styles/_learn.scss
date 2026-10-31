@@ -32,3 +32,23 @@ learn-host, learn-page, learn-progress, learn-area-card { display: block; min-wi
 .learn-message .button { margin-top: 16px; }
 @media(max-width:700px) { .learn-languages,.learn-areas { grid-template-columns: minmax(0,1fr); } .learn-heading { align-items: flex-start; flex-direction: column; } .learn-language { padding: 24px; } .learn-progress dl { grid-template-columns: repeat(2,minmax(0,1fr)); } .learn-progress dd { font-size: 22px; } }
 @media(prefers-reduced-motion:reduce) { .learn-language { transition: none; } }
+
+.learn-area-link { display: block; padding: 20px 0; border-top: 1px solid var(--line-soft); }
+.learn-area-link h3 { font-size: 17px; } .learn-area-link p { color: var(--secondary); font-size: 13px; margin: 8px 0; } .learn-area-link span { font-size: 13px; }
+.learn-area-link:hover { background: var(--panel); } .learn-area-link:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.learn-filters { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; margin: 24px 0; }
+.learn-filters label, .learn-session form label { display: grid; gap: 8px; font-size: 14px; }
+.learn-filters input,.learn-filters select,.learn-audio select,.learn-session textarea { min-width: 0; width: 100%; padding: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; }
+.learn-session textarea { min-height: 100px; font-size: 18px; resize: vertical; }
+.learn-session header { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); padding: 18px 0; }
+.learn-session header h2 { font-size: 22px; margin-right: auto; }
+.learn-question { font-size: 26px; line-height: 1.5; margin: 28px 0; }
+.learn-session form .button { margin-top: 16px; } .learn-feedback { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 24px; } .learn-feedback p { margin: 12px 0; }
+.learn-session [role=alert] { padding: 16px; border: 1px solid var(--text); margin-top: 16px; }
+.learn-word-list { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+.learn-word { min-width: 0; padding: 22px; background: var(--panel); border: 1px solid var(--line-soft); border-radius: 8px; }
+.learn-word header { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; } .learn-word h3 { font-size: 23px; } .learn-word p { margin-top: 10px; font-size: 16px; } .learn-word small,.learn-muted { color: var(--secondary); }
+.learn-audio { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 18px 0; } .learn-audio label { display: flex; align-items: center; gap: 8px; font-size: 13px; } .learn-audio select { width: auto; } .learn-audio p { width: 100%; font-size: 13px; color: var(--secondary); }
+.learn-grade,.learn-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 22px 0; } .learn-internal { margin-bottom: 20px; text-decoration: underline; }
+@media(max-width:900px) { .learn-filters { grid-template-columns: 1fr 1fr; } }
+@media(max-width:600px) { .learn-filters,.learn-word-list { grid-template-columns: minmax(0,1fr); } .learn-question { font-size: 22px; } }

@@ -1,0 +1,160 @@
+@Cumprimentos|expressão
+001|hello|здравствуйте|olá|Hello, my name is Ana.|Здравствуйте, меня зовут Анна.|Olá, meu nome é Ana.
+002|goodbye|до свидания|até logo|Goodbye, see you tomorrow.|До свидания, до завтра.|Até logo, até amanhã.
+003|please|пожалуйста|por favor|Please, come in.|Пожалуйста, входите.|Por favor, entre.
+004|thank you|спасибо|obrigado|Thank you for your help.|Спасибо за помощь.|Obrigado pela ajuda.
+005|yes|да|sim|Yes, I understand.|Да, я понимаю.|Sim, eu entendo.
+006|no|нет|não|No, I am not ready.|Нет, я не готов.|Não, não estou pronto.
+007|sorry|извините|desculpe|Sorry, where is the exit?|Извините, где выход?|Desculpe, onde fica a saída?
+008|good morning|доброе утро|bom dia|Good morning, everyone.|Доброе утро всем.|Bom dia a todos.
+009|good evening|добрый вечер|boa noite ao chegar|Good evening, welcome.|Добрый вечер, добро пожаловать.|Boa noite, sejam bem-vindos.
+010|welcome|добро пожаловать|bem-vindo|Welcome to our city.|Добро пожаловать в наш город.|Bem-vindo à nossa cidade.
+@Família e pessoas|substantivo
+011|family|семья|família|My family lives here.|Моя семья живёт здесь.|Minha família mora aqui.
+012|mother|мама|mãe|My mother is a doctor.|Моя мама — врач.|Minha mãe é médica.
+013|father|папа|pai|My father likes music.|Мой папа любит музыку.|Meu pai gosta de música.
+014|sister|сестра|irmã|My sister studies English.|Моя сестра изучает английский.|Minha irmã estuda inglês.
+015|brother|брат|irmão|My brother plays football.|Мой брат играет в футбол.|Meu irmão joga futebol.
+016|friend|друг|amigo|My friend is waiting outside.|Мой друг ждёт на улице.|Meu amigo está esperando lá fora.
+017|child|ребёнок|criança|The child is sleeping.|Ребёнок спит.|A criança está dormindo.
+018|parents|родители|pais|My parents are at home.|Мои родители дома.|Meus pais estão em casa.
+019|name|имя|nome|Please write your name here.|Напишите здесь ваше имя, пожалуйста.|Escreva seu nome aqui, por favor.
+020|people|люди|pessoas|Many people live in this city.|В этом городе живёт много людей.|Muitas pessoas moram nesta cidade.
+@Números e tempo|substantivo
+021|one|один|um|I have one ticket.|У меня один билет.|Tenho um bilhete.
+022|two|два|dois|We need two chairs.|Нам нужны два стула.|Precisamos de duas cadeiras.
+023|three|три|três|There are three books on the table.|На столе три книги.|Há três livros na mesa.
+024|four|четыре|quatro|Four students are waiting.|Четыре студента ждут.|Quatro estudantes estão esperando.
+025|five|пять|cinco|The lesson starts in five minutes.|Урок начнётся через пять минут.|A aula começa em cinco minutos.
+026|ten|десять|dez|The shop opens at ten.|Магазин открывается в десять.|A loja abre às dez.
+027|today|сегодня|hoje|Today I am working from home.|Сегодня я работаю дома.|Hoje estou trabalhando em casa.
+028|tomorrow|завтра|amanhã|Tomorrow we are going to the museum.|Завтра мы идём в музей.|Amanhã vamos ao museu.
+029|yesterday|вчера|ontem|Yesterday it was cold.|Вчера было холодно.|Ontem estava frio.
+030|week|неделя|semana|This week I have two exams.|На этой неделе у меня два экзамена.|Nesta semana tenho duas provas.
+031|month|месяц|mês|Next month we are moving.|В следующем месяце мы переезжаем.|No próximo mês vamos nos mudar.
+032|year|год|ano|This year I want to travel.|В этом году я хочу путешествовать.|Neste ano quero viajar.
+033|morning|утро|manhã|I drink coffee every morning.|Я пью кофе каждое утро.|Bebo café todas as manhãs.
+034|evening|вечер|noite|We are spending the evening at home.|Мы проводим вечер дома.|Vamos passar a noite em casa.
+035|hour|час|hora|The journey takes one hour.|Поездка занимает один час.|A viagem leva uma hora.
+@Alimentação e compras|substantivo
+036|water|вода|água|The water is cold.|Вода холодная.|A água está fria.
+037|bread|хлеб|pão|The bread is fresh.|Хлеб свежий.|O pão está fresco.
+038|milk|молоко|leite|There is milk in the fridge.|В холодильнике есть молоко.|Há leite na geladeira.
+039|coffee|кофе|café|I would like coffee without sugar.|Я хочу кофе без сахара.|Quero café sem açúcar.
+040|tea|чай|chá|The tea is hot.|Чай горячий.|O chá está quente.
+041|apple|яблоко|maçã|This apple is sweet.|Это яблоко сладкое.|Esta maçã é doce.
+042|rice|рис|arroz|The rice is ready.|Рис готов.|O arroz está pronto.
+043|soup|суп|sopa|I am cooking vegetable soup.|Я готовлю овощной суп.|Estou preparando sopa de legumes.
+044|cheese|сыр|queijo|We need cheese for breakfast.|Нам нужен сыр на завтрак.|Precisamos de queijo para o café da manhã.
+045|fish|рыба|peixe|The fish is on the plate.|Рыба на тарелке.|O peixe está no prato.
+046|meat|мясо|carne|I do not eat meat.|Я не ем мясо.|Não como carne.
+047|vegetables|овощи|legumes|Wash the vegetables before cooking.|Вымойте овощи перед приготовлением.|Lave os legumes antes de cozinhar.
+048|fruit|фрукты|frutas|There is fruit on the table.|На столе лежат фрукты.|Há frutas na mesa.
+049|breakfast|завтрак|café da manhã|Breakfast is at eight.|Завтрак в восемь.|O café da manhã é às oito.
+050|lunch|обед|almoço|We are having lunch together.|Мы обедаем вместе.|Estamos almoçando juntos.
+051|dinner|ужин|jantar|Dinner is almost ready.|Ужин почти готов.|O jantar está quase pronto.
+052|shop|магазин|loja|The shop is closed.|Магазин закрыт.|A loja está fechada.
+053|price|цена|preço|What is the price of this bag?|Какая цена у этой сумки?|Qual é o preço desta bolsa?
+054|money|деньги|dinheiro|I left my money at home.|Я оставил деньги дома.|Deixei meu dinheiro em casa.
+055|receipt|чек|recibo|Please keep your receipt.|Пожалуйста, сохраните чек.|Por favor, guarde seu recibo.
+@Casa e rotina|substantivo
+056|house|дом|casa|Our house is near the park.|Наш дом рядом с парком.|Nossa casa fica perto do parque.
+057|room|комната|quarto|My room is small but comfortable.|Моя комната маленькая, но уютная.|Meu quarto é pequeno, mas confortável.
+058|kitchen|кухня|cozinha|The kitchen is downstairs.|Кухня внизу.|A cozinha fica no andar de baixo.
+059|bathroom|ванная|banheiro|The bathroom is on the left.|Ванная слева.|O banheiro fica à esquerda.
+060|door|дверь|porta|Please close the door.|Пожалуйста, закройте дверь.|Por favor, feche a porta.
+061|window|окно|janela|Open the window, please.|Откройте окно, пожалуйста.|Abra a janela, por favor.
+062|table|стол|mesa|Put the keys on the table.|Положите ключи на стол.|Coloque as chaves na mesa.
+063|chair|стул|cadeira|This chair is free.|Этот стул свободен.|Esta cadeira está livre.
+064|bed|кровать|cama|The bed is next to the window.|Кровать стоит рядом с окном.|A cama fica ao lado da janela.
+065|key|ключ|chave|I cannot find my key.|Я не могу найти ключ.|Não consigo encontrar minha chave.
+066|bag|сумка|bolsa|My bag is under the chair.|Моя сумка под стулом.|Minha bolsa está debaixo da cadeira.
+067|clothes|одежда|roupas|These clothes are clean.|Эта одежда чистая.|Estas roupas estão limpas.
+068|shoes|обувь|calçados|Please take off your shoes.|Пожалуйста, снимите обувь.|Por favor, tire os calçados.
+069|light|свет|luz|Turn on the light, please.|Включите свет, пожалуйста.|Acenda a luz, por favor.
+070|garden|сад|jardim|The children are playing in the garden.|Дети играют в саду.|As crianças estão brincando no jardim.
+@Trabalho e estudos|substantivo
+071|work|работа|trabalho|I finish work at six.|Я заканчиваю работу в шесть.|Termino o trabalho às seis.
+072|office|офис|escritório|Our office is on the third floor.|Наш офис на третьем этаже.|Nosso escritório fica no terceiro andar.
+073|meeting|встреча|reunião|The meeting starts in ten minutes.|Встреча начнётся через десять минут.|A reunião começa em dez minutos.
+074|colleague|коллега|colega de trabalho|My colleague speaks Russian.|Мой коллега говорит по-русски.|Meu colega de trabalho fala russo.
+075|job|должность|cargo|This job requires experience.|Эта должность требует опыта.|Este cargo exige experiência.
+076|school|школа|escola|The school is opposite the library.|Школа находится напротив библиотеки.|A escola fica em frente à biblioteca.
+077|university|университет|universidade|She studies at the university.|Она учится в университете.|Ela estuda na universidade.
+078|student|студент|estudante|The student is reading a letter.|Студент читает письмо.|O estudante está lendo uma carta.
+079|teacher|учитель|professor|The teacher explains the rule.|Учитель объясняет правило.|O professor explica a regra.
+080|book|книга|livro|This book has many pictures.|В этой книге много картинок.|Este livro tem muitas imagens.
+081|notebook|тетрадь|caderno|Write the answer in your notebook.|Запишите ответ в тетрадь.|Escreva a resposta no caderno.
+082|lesson|урок|aula|Our lesson lasts forty minutes.|Наш урок длится сорок минут.|Nossa aula dura quarenta minutos.
+083|question|вопрос|pergunta|I have a question about this word.|У меня вопрос об этом слове.|Tenho uma pergunta sobre esta palavra.
+084|answer|ответ|resposta|Your answer is correct.|Ваш ответ правильный.|Sua resposta está correta.
+085|exam|экзамен|prova|The exam is on Friday.|Экзамен в пятницу.|A prova é na sexta-feira.
+@Transporte e viagens|substantivo
+086|bus|автобус|ônibus|The bus stops here.|Автобус останавливается здесь.|O ônibus para aqui.
+087|train|поезд|trem|Our train leaves at noon.|Наш поезд отправляется в полдень.|Nosso trem parte ao meio-dia.
+088|car|машина|carro|My car is in the garage.|Моя машина в гараже.|Meu carro está na garagem.
+089|bicycle|велосипед|bicicleta|He rides a bicycle to work.|Он ездит на работу на велосипеде.|Ele vai de bicicleta para o trabalho.
+090|station|станция|estação|Which station is next?|Какая станция следующая?|Qual é a próxima estação?
+091|airport|аэропорт|aeroporto|We are going to the airport.|Мы едем в аэропорт.|Estamos indo ao aeroporto.
+092|ticket|билет|bilhete|I need a return ticket.|Мне нужен билет туда и обратно.|Preciso de um bilhete de ida e volta.
+093|passport|паспорт|passaporte|Show your passport, please.|Покажите паспорт, пожалуйста.|Mostre seu passaporte, por favor.
+094|hotel|гостиница|hotel|Our hotel is in the city centre.|Наша гостиница в центре города.|Nosso hotel fica no centro da cidade.
+095|street|улица|rua|This street is very quiet.|Эта улица очень тихая.|Esta rua é muito tranquila.
+096|city|город|cidade|I am visiting this city for the first time.|Я впервые в этом городе.|Estou visitando esta cidade pela primeira vez.
+097|map|карта|mapa|Can you show me on the map?|Можете показать мне на карте?|Pode me mostrar no mapa?
+098|left|налево|à esquerda|Turn left at the traffic lights.|Поверните налево на светофоре.|Vire à esquerda no semáforo.
+099|right|направо|à direita|Turn right after the bridge.|Поверните направо после моста.|Vire à direita depois da ponte.
+100|journey|поездка|viagem|The journey was very interesting.|Поездка была очень интересной.|A viagem foi muito interessante.
+@Tecnologia e saúde|substantivo
+101|computer|компьютер|computador|My computer is not working.|Мой компьютер не работает.|Meu computador não está funcionando.
+102|phone|телефон|telefone|Your phone is ringing.|Ваш телефон звонит.|Seu telefone está tocando.
+103|password|пароль|senha|Do not share your password.|Не сообщайте никому свой пароль.|Não compartilhe sua senha.
+104|message|сообщение|mensagem|I received your message.|Я получил ваше сообщение.|Recebi sua mensagem.
+105|internet|интернет|internet|There is no internet here.|Здесь нет интернета.|Não há internet aqui.
+106|website|сайт|site|This website is useful.|Этот сайт полезный.|Este site é útil.
+107|file|файл|arquivo|Save the file before closing it.|Сохраните файл перед закрытием.|Salve o arquivo antes de fechá-lo.
+108|screen|экран|tela|The screen is too bright.|Экран слишком яркий.|A tela está brilhante demais.
+109|doctor|врач|médico|I need to see a doctor.|Мне нужно к врачу.|Preciso consultar um médico.
+110|pharmacy|аптека|farmácia|Is there a pharmacy nearby?|Поблизости есть аптека?|Há uma farmácia por perto?
+@Verbos frequentes|verbo
+111|read|читать|ler|I like to read in the evening.|Я люблю читать вечером.|Gosto de ler à noite.
+112|write|писать|escrever|She likes to write letters.|Она любит писать письма.|Ela gosta de escrever cartas.
+113|speak|говорить|falar|Do you speak English?|Вы говорите по-английски?|Você fala inglês?
+114|listen|слушать|escutar|We listen to the radio every morning.|Мы слушаем радио каждое утро.|Escutamos rádio todas as manhãs.
+115|understand|понимать|entender|I do not understand this sentence.|Я не понимаю это предложение.|Não entendo esta frase.
+116|learn|изучать|estudar|I want to learn Russian.|Я хочу изучать русский язык.|Quero estudar russo.
+117|ask|спрашивать|perguntar|Do not be afraid to ask questions.|Не бойтесь спрашивать.|Não tenha medo de perguntar.
+118|help|помогать|ajudar|I help my parents at weekends.|Я помогаю родителям по выходным.|Ajudo meus pais nos fins de semana.
+119|wait|ждать|esperar|Please wait here.|Пожалуйста, подождите здесь.|Por favor, espere aqui.
+120|buy|покупать|comprar|We buy food on Saturdays.|Мы покупаем продукты по субботам.|Compramos alimentos aos sábados.
+121|cook|готовить|cozinhar|He likes to cook for his family.|Он любит готовить для семьи.|Ele gosta de cozinhar para a família.
+122|eat|есть|comer|What do you usually eat for breakfast?|Что вы обычно едите на завтрак?|O que você costuma comer no café da manhã?
+123|drink|пить|beber|I drink water during the day.|Я пью воду в течение дня.|Bebo água durante o dia.
+124|sleep|спать|dormir|I usually sleep eight hours.|Я обычно сплю восемь часов.|Normalmente durmo oito horas.
+125|walk|гулять|passear|We walk in the park after dinner.|Мы гуляем в парке после ужина.|Passeamos no parque depois do jantar.
+126|travel|путешествовать|viajar|She wants to travel by train.|Она хочет путешествовать на поезде.|Ela quer viajar de trem.
+127|open|открывать|abrir|What time do you open the shop?|Во сколько вы открываете магазин?|A que horas vocês abrem a loja?
+128|close|закрывать|fechar|Please close the window before leaving.|Пожалуйста, закройте окно перед уходом.|Por favor, feche a janela antes de sair.
+129|find|находить|encontrar|I always find something interesting here.|Я всегда нахожу здесь что-нибудь интересное.|Sempre encontro algo interessante aqui.
+130|remember|помнить|lembrar|Do you remember this address?|Вы помните этот адрес?|Você se lembra deste endereço?
+@Qualidades e cotidiano|adjetivo
+131|new|новый|novo|I have a new computer.|У меня новый компьютер.|Tenho um computador novo.
+132|old|старый|antigo|This is an old building.|Это старое здание.|Este é um prédio antigo.
+133|big|большой|grande|They live in a big house.|Они живут в большом доме.|Eles moram em uma casa grande.
+134|small|маленький|pequeno|I would like a small coffee.|Я хочу маленький кофе.|Quero um café pequeno.
+135|good|хороший|bom|This is a good idea.|Это хорошая идея.|Esta é uma boa ideia.
+136|bad|плохой|ruim|The weather is bad today.|Сегодня плохая погода.|O tempo está ruim hoje.
+137|hot|горячий|quente|Be careful, the soup is hot.|Осторожно, суп горячий.|Cuidado, a sopa está quente.
+138|cold|холодный|frio|I prefer cold water.|Я предпочитаю холодную воду.|Prefiro água fria.
+139|easy|лёгкий|fácil|This exercise is easy.|Это упражнение лёгкое.|Este exercício é fácil.
+140|difficult|трудный|difícil|This question is difficult.|Этот вопрос трудный.|Esta pergunta é difícil.
+141|important|важный|importante|I have an important meeting today.|У меня сегодня важная встреча.|Tenho uma reunião importante hoje.
+142|interesting|интересный|interessante|Thank you for an interesting conversation.|Спасибо за интересный разговор.|Obrigado por uma conversa interessante.
+143|beautiful|красивый|bonito|What a beautiful view!|Какой красивый вид!|Que vista bonita!
+144|expensive|дорогой|caro|This restaurant is expensive.|Этот ресторан дорогой.|Este restaurante é caro.
+145|cheap|дешёвый|barato|This ticket is cheap.|Этот билет дешёвый.|Este bilhete é barato.
+146|fast|быстрый|rápido|This is a fast train.|Это быстрый поезд.|Este é um trem rápido.
+147|slow|медленный|lento|The internet connection is slow.|Интернет-соединение медленное.|A conexão com a internet está lenta.
+148|ready|готовый|pronto|Are you ready to leave?|Вы готовы уходить?|Você está pronto para sair?
+149|free|свободный|livre|Are you free this evening?|Вы свободны сегодня вечером?|Você está livre esta noite?
+150|happy|счастливый|feliz|He is a happy person.|Он счастливый человек.|Ele é uma pessoa feliz.

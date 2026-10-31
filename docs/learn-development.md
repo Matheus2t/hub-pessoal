@@ -1,3 +1,90 @@
+# 2T Learn — estado preservado da Etapa B (WIP)
+
+Branch: `codex/2t-learn`. Base da Etapa A: `2663526a96de35ec46cfcc312d7b5a3578d4fd6d`.
+Esta atualização preserva o trabalho conforme a solicitação de economia de uso.
+**Não anuncia conclusão definitiva de 100% da Etapa B. Não houve merge na main ou deploy de produção.**
+
+## Funcionalidades implementadas
+
+- Vocabulário pesquisável por palavra/tradução, filtros por tema e nível, paginação,
+  exemplos e estado de estudo; prática de tradução com registro de tentativas.
+- Flashcards com revelação sem gravação, avaliação Esqueci/Difícil/Bom/Fácil e
+  atualização transacional via recordAttempt + schedule + newCard. Seleção de
+  palavras novas, revisões pendentes, aprendizagem, futuras, frases ou todas.
+- Listening, ditado e escrita, com respostas cadastradas, feedback, variantes
+  explícitas, validação de resposta vazia, próximo item e resumo da sessão.
+- Áudio via adaptador existente: voz no idioma escolhido, repetição/velocidade,
+  indisponibilidade explícita e bloqueio de resposta auditiva antes de ouvir até
+  o fim. Limpeza ao sair/trocar, sem substituir o russo por outro idioma.
+- Tentativas idempotentes por UUID, trava de envio, feedback de sucesso somente
+  após gravação, retry em falhas e guarda contra atualizações visuais atrasadas.
+- Histórico, revisão e estatísticas mantidos no IndexedDB existente, sem migração
+  destrutiva ou alteração da versão dos backups. Tempo registrado com base no
+  período visível da tentativa, limitado a dez minutos por resposta.
+- Rotas en/ru com vocabulary, flashcards, listening, dictation e writing; títulos
+  e breadcrumbs da modalidade. Leitura, Gramática e Avaliações seguem indisponíveis.
+- Learn continua sob demanda. Progresso completo aparece na página do idioma;
+  nas atividades, a questão recebe prioridade de espaço, especialmente no celular.
+
+## Quantidades reais por idioma
+
+| Categoria | Inglês | Russo |
+|---|---:|---:|
+| Vocabulário com exemplos | 150 | 150 |
+| Frases contextualizadas | 50 | 50 |
+| Listening | 30 | 30 |
+| Ditado | 30 | 30 |
+| Escrita | 40 | 40 |
+| Total | 300 | 300 |
+
+A soma da tabela solicitada é 300 por idioma (600 nos dois idiomas), não 600 por
+idioma. Flashcards derivados não entram novamente na contagem. Os exercícios
+reutilizam pedagogicamente palavras/frases do catálogo: não são 600 textos
+independentes originais. Instruções auditivas podem coincidir, mas os estímulos
+são distintos e o validador verifica isso. Os catálogos não contêm fixtures de teste.
+
+Fontes editáveis em `scripts/learn/vocabulary.tsv` e `phrases.tsv`, com IDs
+explícitos. `python scripts/learn/build-catalogs.py` gera os JSON; IDs de exercícios
+são derivados dos IDs das entradas, não de sua posição. Não renumerar IDs existentes.
+Russo em cirílico, gêneros quando pertinentes, ё preservada e transliteração didática
+opcional (não é transcrição fonética). Níveis são referências aproximadas A1/A2.
+**Não houve revisão linguística humana.** Traduções alternativas fora das variantes
+cadastradas não recebem correção semântica; a interface informa essa limitação.
+
+## Validações executadas
+
+- Build final e typecheck: aprovados.
+- `git diff --check`: sem erros.
+- Pytest: 101 aprovados.
+- Testes específicos mais recentes da Etapa B: 11 aprovados, incluindo conteúdo,
+  variantes, fluxos en/ru, ausência de voz, erro de gravação e capturas responsivas.
+- Suíte geral Playwright: 128 aprovados, 1 teste live TradingView optativo desativado.
+- Capturas já geradas nas larguras 1920/1366/768/390/320 em claro e escuro;
+  inspecionadas telas de flashcards, escrita e ditado. Sem overflow nos testes.
+- Áudio automatizado usa mocks controlados: isso NÃO comprova pronúncia nem
+  funcionamento de uma voz real instalada. Nenhuma validação auditiva humana foi feita.
+- A primeira execução específica encontrou um teste que tentava reiniciar uma
+  sessão navegando para o mesmo hash; o teste foi corrigido para encerrar pelas
+  opções e as execuções posteriores passaram. Não houve descarte de progresso.
+
+## Pendências para fechamento definitivo
+
+- Revisão final do material linguístico e das variantes aceitas, sem alegar
+  revisão humana ou certificação CEFR inexistentes.
+- Ampliar a cobertura dos fluxos menos comuns: filtros combinados, revisões
+  vencidas/futuras com históricos extensos e troca de rota durante gravação lenta.
+  Há guardas implementadas, mas não se afirma cobertura automatizada exaustiva.
+- Validar vozes reais nos navegadores/sistemas-alvo quando disponíveis.
+- Reexecutar uma rodada final integral após qualquer correção futura; não iniciar
+  novas funcionalidades para esta preservação de estado.
+- Etapa C permanece fora do escopo: leituras, gramática, avaliações gerais e
+  demais recursos avançados descritos no pedido original.
+
+## Registro histórico da Etapa A (antes da Etapa B)
+
+As contagens zero e avisos de indisponibilidade no registro abaixo descrevem o
+estado anterior; os dados atuais são os da tabela acima.
+
 # 2T Learn — trabalho em andamento
 
 **Etapa A implementada: interface, rotas e seleção de idiomas. O 2T Learn completo continua em desenvolvimento e não está publicado em produção.**
