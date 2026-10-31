@@ -40,6 +40,11 @@ def test_nba_pagination():
         assert get.call_args.args[2]['cursor']==2
 
 
+def test_barcelona_does_not_resolve_espanyol():
+    with patch.object(sports_football.http,'get',return_value={'teams':[{'id':80,'name':'RCD Espanyol de Barcelona'},{'id':81,'name':'FC Barcelona'}]}):
+        assert sports_football.team_info('barcelona',SecretStr('fake'))[0]['id']==81
+
+
 def test_nba_schedules_lifecycle_and_date_only():
     team={'id':22,'full_name':'Philadelphia 76ers'}
     other={'id':1,'full_name':'Opponent'}

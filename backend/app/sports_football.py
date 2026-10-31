@@ -14,8 +14,8 @@ def team_info(team, key):
     code = 'BSA' if team == 'spfc' else 'PD'
     data = http.get(f'/competitions/{code}/teams', key, ttl=21600)
     if not isinstance(data.get('teams'), list): raise DataError()
-    needle = 'sao paulo' if team == 'spfc' else 'barcelona'
-    match = next((t for t in data['teams'] if needle in fold(t.get('name',''))), None)
+    names = ('sao paulo fc','sao paulo futebol clube','sao paulo') if team == 'spfc' else ('fc barcelona','futbol club barcelona')
+    match = next((t for t in data['teams'] if fold(t.get('name','')) in names), None)
     if not match or not isinstance(match.get('id'), int): raise DataError()
     return match, code
 
@@ -36,16 +36,21 @@ def load(team, kind, key, competition=None):
         now = datetime.now(timezone.utc)
         future = kind == 'schedule'
         start, end = (now, now+timedelta(days=365)) if future else (now-timedelta(days=365), now)
-        data = http.get(f'/teams/{tid}/matches', key, {'dateFrom':start.date().isoformat(), 'dateTo':end.date().isoformat(), 'status':'TIMED' if future else 'FINISHED', 'limit':500})
+        data = http.get(f'/teams/{tid}/matches', key, {'dateFrom':start.date().isoformat(), 'dateTo':end.date().isoformat(), 'limit':500})
         if not isinstance(data.get('matches'), list): raise DataError()
         rows = []
         for m in data['matches']:
-            if future and m.get('status') != 'TIMED': continue
+            if future and m.get('status') not in ('TIMED','SCHEDULED'): continue
+            if future and m.get('status') == 'SCHEDULED' and str(m.get('utcDate',''))[11:19] == '00:00:00': continue
             score = (m.get('score') or {}).get('fullTime') or {}
             start_year = (m.get('season') or {}).get('startDate','')[:4]
             end_year = (m.get('season') or {}).get('endDate','')[:4]
             rows.append(dict(idEvent=str(m['id']), idHomeTeam=str(m['homeTeam']['id']), idAwayTeam=str(m['awayTeam']['id']), strHomeTeam=m['homeTeam']['name'], strAwayTeam=m['awayTeam']['name'], strTimestamp=m.get('utcDate'), strStatus='NS' if m.get('status') in ('SCHEDULED','TIMED') else 'FT' if m.get('status') == 'FINISHED' else m.get('status'), intHomeScore=score.get('home'), intAwayScore=score.get('away'), strLeague=m.get('competition',{}).get('name',''), strSeason=start_year if start_year == end_year else start_year+'-'+end_year, strVenue=m.get('venue','')))
-        return result(games(rows,str(tid),future), 'Partidas das competições autorizadas pelo plano. Jogos sem horário confirmado não são exibidos.', partial=True)
+        items=games(rows,str(tid),future)
+        scheduled={str(m['id']) for m in data['matches'] if m.get('status')=='SCHEDULED'}
+        for item in items:
+            if item['id'] in scheduled: item['status']='Horário a confirmar'
+        return result(items, 'Horários fornecidos pela API; partidas SCHEDULED ainda dependem de confirmação. Registros sem horário utilizável não são exibidos.', partial=True)
     if kind in ('standings','statistics'):
         data = http.get(f'/competitions/{code}/standings', key)
         expected = season(team)[:4]
