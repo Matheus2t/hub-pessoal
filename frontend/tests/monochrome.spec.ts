@@ -18,7 +18,8 @@ for (const theme of ['dark', 'light']) {
       const colored = await page.evaluate(() => {
         const bad: string[] = [];
         for (const element of document.querySelectorAll('body *')) {
-          if (!element.getClientRects().length) continue;
+          // Official team badge frames keep their established club colors.
+          if (!element.getClientRects().length || element.matches('.team-crest-frame')) continue;
           for (const pseudo of [null, '::before', '::after']) {
             const style = getComputedStyle(element, pseudo);
             for (const property of ['color', 'background-color', 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color', 'outline-color', 'fill', 'stroke', 'accent-color', 'text-decoration-color']) {

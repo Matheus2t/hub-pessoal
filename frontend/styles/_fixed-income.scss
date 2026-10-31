@@ -5,13 +5,13 @@ fixed-income-page, fixed-income-fields, fixed-income-chart, fixed-income-compari
 .rf-heading p { color: var(--secondary); margin-top: 8px; }
 .rf-note, .rf-field small { font-size: 13px; color: var(--secondary); line-height: 1.5; }
 .rf-page > .rf-note { margin-bottom: 20px; }
-.rf-panel { padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.rf-panel { padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
 .rf-section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
 .rf-page h2 { font-size: 20px; font-weight: 550; }
 .rf-fields { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
 .rf-field { display: grid; align-content: start; gap: 7px; font-size: 14px; min-width: 0; }
 .rf-field > span { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; }
-.rf-field input, .rf-field select { width: 100%; min-width: 0; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); border-radius: 5px; }
+.rf-field input, .rf-field select { width: 100%; min-width: 0; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); background: var(--raised); color: var(--text); border-radius: 6px; }
 .rf-field input:focus-visible, .rf-field select:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .rf-field small:empty { display: none; }
 .rf-cost-inputs { margin-top: 22px; }
@@ -26,7 +26,10 @@ fixed-income-page, fixed-income-fields, fixed-income-chart, fixed-income-compari
 .rf-metrics div { min-width: 0; }
 .rf-metrics dt { font-size: 13px; color: var(--secondary); }
 .rf-metrics dd { margin: 8px 0 0; font-size: clamp(20px,2vw,28px); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; letter-spacing: -.025em; }
-.rf-primary dd { font-weight: 600; }
+.rf-primary dd { font-weight: 600; font-size: clamp(28px,2.8vw,40px); }
+.rf-primary { padding: 20px 24px; background: var(--panel); border-radius: 10px; }
+.rf-metrics > div:not(.rf-primary) { padding-block: 20px; }
+.rf-metrics { align-items: center; grid-template-columns: 1.5fr 1fr 1fr 1fr; }
 .rf-rescue { font-size: 14px; padding: 12px 0; border-block: 1px solid var(--line-soft); }
 .rf-breakdown { margin-top: 16px; }
 .rf-breakdown dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; margin: 12px 0 0; }
@@ -79,3 +82,12 @@ fixed-income-page, fixed-income-fields, fixed-income-chart, fixed-income-compari
 @media(max-width:600px) { .rf-scenario .rf-fields { grid-template-columns: minmax(0,1fr); } .rf-chart-legend { flex-direction: column; } .rf-chart svg { min-height: 170px; } }
 @media(max-width:900px) { .rf-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } .rf-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .rf-fields { grid-template-columns: minmax(0,1fr); gap: 16px; } .rf-panel { padding: 18px; } .rf-heading h1 { font-size: 28px; } .rf-heading p { font-size: 14px; } .rf-breakdown dl { grid-template-columns: 1fr; } .rf-breakdown dl div { font-size: 13px; } .rf-metrics { gap: 18px 12px; } .rf-metrics dd { font-size: 21px; } }
+
+.rf-common { background: transparent; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; padding: 20px 0 24px; }
+.rf-scenario { border-radius: 10px; }
+.rf-results > h2 { font-size: 22px; letter-spacing: -.025em; }
+.rf-breakdown { padding-block: 8px; }
+.rf-chart { padding: 20px 0 12px; border-top: 1px solid var(--line-soft); }
+.rf-comparison-table thead th { font-size: 12px; font-weight: 500; }
+@media(max-width:900px) { .rf-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .rf-primary { grid-column: 1 / -1; } .rf-metrics > div:not(.rf-primary) { padding-block: 8px; } }

@@ -48,33 +48,11 @@ holiday-calendar { display: block; min-width: 0; }
 .calendar-source { display: inline-block; font-size: 11px; color: var(--secondary); margin-top: 8px; text-decoration: underline; text-underline-offset: 2px; }
 .calendar-source:hover { color: var(--text); }
 
-/* All calculators: clearer heading, input focus and readable results. */
-compound-calculator .page-heading,finance-calculator .page-heading { margin-bottom: 22px; padding: 2px 0 0 15px; border-left: 3px solid var(--border-highlight); }
-compound-calculator .page-heading h1,finance-calculator .page-heading h1 { font-size: clamp(28px,3.2vw,40px); line-height: 1.15; letter-spacing: -.045em; }
-.calculator-lead { font-size: 14px; line-height: 1.6; color: var(--secondary); margin-top: 9px; }
-compound-calculator .simulation-panel,finance-calculator .simulation-panel,fixed-income-page .rf-panel { position: relative; overflow: hidden; border: 1px solid var(--border-highlight); border-radius: 10px; background: var(--panel); }
-compound-calculator .simulation-panel::before,finance-calculator .simulation-panel::before,fixed-income-page .rf-panel::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--index-highlight),transparent 78%); opacity: .85; pointer-events: none; }
-compound-calculator .field-input,finance-calculator .field-input,.rf-field input,.rf-field select { border-radius: 7px; min-height: 48px; }
-compound-calculator .field-input:focus-within,finance-calculator .field-input:focus-within { border-color: var(--index-highlight); box-shadow: 0 0 0 2px var(--line-soft); }
-compound-calculator .button.primary,finance-calculator .button.primary { min-height: 46px; padding-inline: 22px; border-radius: 6px; font-weight: 700; }
-compound-calculator .metrics-grid,finance-calculator .metrics-grid { border-radius: 10px; border-color: var(--border-highlight); }
-compound-calculator .metric-card.accent strong,finance-calculator .metric-card.accent strong { letter-spacing: -.045em; }
-compound-calculator .chart-panel,finance-calculator .chart-panel { border-radius: 10px; }
-fixed-income-page .rf-heading { border-left: 3px solid var(--border-highlight); padding-left: 15px; }
-fixed-income-page .rf-heading h1 { font-size: clamp(28px,3.2vw,40px); }
-fixed-income-page .rf-fields { gap: 17px; }
-fixed-income-page .rf-results > h2 { font-size: 22px; font-weight: 600; }
-fixed-income-page .rf-metrics { gap: 12px; }
-fixed-income-page .rf-metrics > div { border: 1px solid var(--line-soft); border-radius: 8px; padding: 17px; background: var(--panel); }
-fixed-income-page .rf-metrics > .rf-primary { border-color: var(--border-highlight); }
-fixed-income-page .rf-metrics > .rf-primary dd { font-size: clamp(24px,2.8vw,34px); }
-
+/* Financial presentation lives in calculator/fixed-income partials. */
 @media(max-width:700px) {
   .calendar-panel { padding: 18px; }
   .calendar-events li { grid-template-columns: 43px minmax(0,1fr); gap: 4px 9px; }
   .calendar-events li small { grid-column: 2; }
-  compound-calculator .page-heading,finance-calculator .page-heading,fixed-income-page .rf-heading { padding-left: 12px; }
-  .calculator-lead { font-size: 13px; }
   fixed-income-page .rf-metrics > div { padding: 13px; }
 }
 
