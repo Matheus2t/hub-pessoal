@@ -48,8 +48,8 @@ export function holidaysForYear(year: number): Holiday[] {
   const friday = moveDate(sunday, -2);
   const corpus = moveDate(sunday, 60);
   return [...dates,
-    { day: friday.getDate(), month: friday.getMonth() + 1, name: "Paixão de Cristo", scope: "Nacional" },
-    { day: corpus.getDate(), month: corpus.getMonth() + 1, name: "Corpus Christi", scope: "Municipal" },
+    { day: friday.getDate(), month: friday.getMonth() + 1, name: "Paixão de Cristo", scope: "Nacional" as const },
+    { day: corpus.getDate(), month: corpus.getMonth() + 1, name: "Corpus Christi", scope: "Municipal" as const },
   ].sort((x, y) => x.month - y.month || x.day - y.day);
 }
 
