@@ -19,7 +19,7 @@ export class ToolCard extends LightElement {
 }
 @customElement("calculator-catalog")
 export class CalculatorCatalog extends LightElement {
-  @property() title = 'Ferramentas';
+  @property() title = 'Calculadoras';
   @state() private search = '';
   @state() private category = 'Calculadoras';
   render() {
@@ -27,7 +27,7 @@ export class CalculatorCatalog extends LightElement {
     const categories = getCategories();
     return html`<section class="home-intro"><h1>${this.title}</h1><label class="catalog-search">Buscar calculadora<input type="search" placeholder="Nome ou categoria" .value=${this.search} @input=${(event: Event) => this.search = (event.target as HTMLInputElement).value}></label></section>
       ${categories.length > 2 ? html`<div class="category-filters" role="group" aria-label="Filtrar por categoria">${categories.map(category => html`<button type="button" class="button secondary" aria-pressed=${this.category === category} @click=${() => this.category = category}>${category}</button>`)}</div>` : ''}
-      <section class="tool-collection" aria-label="Ferramentas disponíveis">
+      <section class="tool-collection" aria-label="Calculadoras disponíveis">
         ${found.map(
           (tool) =>
             html`<tool-card .tool=${tool}></tool-card>`,

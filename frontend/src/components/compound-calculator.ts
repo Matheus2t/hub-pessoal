@@ -164,6 +164,7 @@ export class CompoundCalculator extends LightElement {
     return html`<div class="page-heading">
         <div>
           <h1>Calculadora de <em>juros compostos</em></h1>
+          <p class="calculator-lead">Projete seus aportes, juros e patrimônio ao longo do tempo.</p>
         </div>
       </div>
       <section

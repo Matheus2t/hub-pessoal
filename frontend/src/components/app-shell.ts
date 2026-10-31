@@ -26,7 +26,7 @@ export class AppShell extends LightElement {
     this.normalizeRoute();
     this.page = currentPage();
     this.route = location.hash;
-    document.title = `${pages[this.page].title} · 2T — Ferramentas`;
+    document.title = `${pages[this.page].title} · 2T`;
     window.scrollTo({ top: 0 });
     void this.updateComplete.then(() => this.querySelector<HTMLElement>("#content")?.focus());
   };
@@ -34,7 +34,7 @@ export class AppShell extends LightElement {
     super.connectedCallback();
     this.normalizeRoute();
     this.page = currentPage();
-    document.title = `${pages[this.page].title} · 2T — Ferramentas`;
+    document.title = `${pages[this.page].title} · 2T`;
     window.addEventListener("hashchange", this.navigate);
   }
   disconnectedCallback() {
@@ -45,7 +45,7 @@ export class AppShell extends LightElement {
     return html`<a class="skip-link" href="#content" @click=${(event: Event) => { event.preventDefault(); this.querySelector<HTMLElement>("#content")?.focus(); }}>Pular para o conteúdo</a>
       <div class="app-layout">
         <header class="masthead">
-          <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span><strong>Ferramentas</strong></a>
+          <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
           <team-shortcuts .page=${this.page}></team-shortcuts>
           <app-topbar></app-topbar>
