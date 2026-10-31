@@ -4,5 +4,28 @@ import { LightElement } from "../ui";
 
 @customElement("home-page")
 export class HomePage extends LightElement {
-  render() { return html`<section class="platform-intro"><p class="platform-name">2T</p><h1>Ferramentas e mercado.</h1><p>Cálculos financeiros e consulta ao mercado brasileiro.</p></section><section class="platform-areas" aria-label="Áreas disponíveis"><a class="tool-card" href="#/calculadoras"><div><h2>Calculadoras</h2><p>Investimentos e financiamentos.</p></div><span aria-hidden="true">→</span></a><a class="tool-card" href="#/acoes"><div><h2>Mercado de Ações</h2><p>Empresas da B3, gráficos e análise financeira.</p></div><span aria-hidden="true">→</span></a></section>`; }
+  render() {
+    return html`
+      <section class="platform-intro">
+        <p class="platform-name"><span>2T</span> PLATAFORMA PESSOAL</p>
+        <h1>Calcule cenários.<br><span>Acompanhe o mercado.</span></h1>
+        <div class="platform-lead"><p>Ferramentas para simulações financeiras<br class="desktop-break"> e análise do mercado brasileiro.</p></div>
+      </section>
+      <section class="platform-areas" aria-label="Áreas disponíveis">
+        <a class="tool-card area-card area-calculators" href="#/calculadoras">
+          <div class="area-heading"><span class="area-index" aria-hidden="true">01 /</span><span class="area-tag">SIMULAR</span></div>
+          <div class="area-content"><div class="area-copy"><h2>Calculadoras</h2><p>Simulações de investimentos<br> e financiamentos.</p></div>
+            <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-bars" d="M24 90V78M52 90V68M80 90V55M108 90V42M136 90V24M164 90V10"/><path class="preview-line" d="M10 85C65 85 116 66 190 9"/></svg>
+          </div>
+          <div class="area-access"><span>Explorar calculadoras</span><span class="area-arrow" aria-hidden="true">↗</span></div>
+        </a>
+        <a class="tool-card area-card area-market" href="#/acoes">
+          <div class="area-heading"><span class="area-index" aria-hidden="true">02 /</span><span class="area-tag">ANALISAR</span></div>
+          <div class="area-content"><div class="area-copy"><h2>Mercado de Ações</h2><p>Empresas da B3, gráficos<br> e análise financeira.</p></div>
+            <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-wicks" d="M25 40V90M58 15V65M91 34V91M124 20V78M157 8V60M184 24V76"/><path class="preview-candles" d="M25 55V75M58 26V48M91 49V72M124 36V60M157 20V42M184 35V58"/></svg>
+          </div>
+          <div class="area-access"><span>Explorar mercado</span><span class="area-arrow" aria-hidden="true">↗</span></div>
+        </a>
+      </section>`;
+  }
 }

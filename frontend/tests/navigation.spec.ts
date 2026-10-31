@@ -5,10 +5,12 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  await expect(page.locator('tool-card, .category-filters, .catalog-search, tradingview-widget')).toHaveCount(0);
  const navigation=page.getByRole('navigation',{name:'Navegação principal'});
  await expect(navigation.getByRole('link')).toHaveText(['Início','Calculadoras','Ações']);
+ expect(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1 || document.querySelector('.page-footer')!.getBoundingClientRect().bottom>=innerHeight-50)).toBe(true);
  await page.screenshot({path:info.outputPath('home-dark.png'),fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:'Ativar tema claro'}).click();
  await page.screenshot({path:info.outputPath('home-light.png'),fullPage:true,animations:'disabled'});
- await page.locator('home-page').getByRole('link',{name:/Calculadoras/}).click();
+ await page.locator('home-page').getByRole('link',{name:/Calculadoras/}).focus();
+ await page.keyboard.press('Enter');
  await expect(page.getByRole('heading',{name:'Calculadoras',exact:true})).toBeVisible();
  await expect(page.locator('tool-card')).toHaveCount(4);await expect(page.locator('.category-filters')).toHaveCount(0);
  await page.getByRole('searchbox').fill('sac');await expect(page.locator('tool-card')).toHaveCount(1);
