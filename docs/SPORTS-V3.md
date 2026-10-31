@@ -133,8 +133,10 @@ confirma uma Ãºnica requisiÃ§Ã£o agregada por clube e nenhuma requisiÃ§Ã£o inici
 ## Acabamento dos Times: escudos e escalações
 
 Os escudos de futebol vêm do campo `crest` da football-data.org; os logos NBA
-usam o CDN oficial da NBA, mapeado pela sigla da equipe. São imagens públicas,
-sem credenciais, carregadas diretamente de `crests.football-data.org` e `cdn.nba.com`.
+usam cópias locais do CDN oficial da NBA, mapeadas pela sigla da equipe. São imagens
+públicas, sem credenciais. O futebol carrega de `crests.football-data.org`; os 30 logos
+NBA ficam em `/teams/nba/`. Isso evita o ERR_HTTP2_PROTOCOL_ERROR observado no CDN
+no teste real do navegador, apesar de o mesmo asset responder HTTP 200 via curl.
 A CSP autoriza somente essas duas novas origens. O responsável pelo projeto
 confirmou autorização de uso para clubes, adversários e equipes das tabelas.
 Imagens ausentes, inválidas ou com erro são omitidas sem placeholder.

@@ -14,7 +14,7 @@ def crest(value):
 
 def nba_crest(team):
     ident=NBA_IDS.get(team.get('abbreviation',''))
-    return f'https://cdn.nba.com/logos/nba/{ident}/primary/L/logo.svg' if ident else None
+    return f'/teams/nba/{ident}.svg' if ident else None
 
 def football_lineup(side):
     """Only use complete provider lineups whose stated formation matches positions."""
