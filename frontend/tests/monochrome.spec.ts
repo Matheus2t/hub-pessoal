@@ -32,10 +32,21 @@ for (const theme of ['dark', 'light']) {
       });
       expect(colored).toEqual([]);
     };
-    for (const route of ['', 'calculadora', 'juros-simples', 'price', 'sac']) {
+    for (const route of ['', 'calculadoras', 'acoes/comparar', 'calculadora', 'juros-simples', 'price', 'sac']) {
       await page.goto(`/#/${route}`);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-      if (!route) {
+      if (route === 'calculadoras') {
+        await expect(page.locator('.category-filters button')).toHaveText(['Calculadoras', 'Todas']);
+        await expect(page.getByRole('button', { name: 'Calculadoras', exact: true })).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('tool-card')).toHaveCount(4);
+        await page.getByRole('button', { name: 'Todas', exact: true }).click();
+        await expect(page.locator('tool-card')).toHaveCount(4);
+        await check();
+        await page.screenshot({ path: `test-results/catalog-${theme}.png` });
+      } else if (route === 'acoes/comparar') {
+        await expect(page.locator('financial-comparison table')).toBeVisible();
+        await check();
+      } else if (!route) {
         const card = page.getByRole('link', { name: 'Abrir calculadora' });
         await card.hover();
         await card.focus();

@@ -1,5 +1,4 @@
-:root { --market-up: #97b6a0; --market-down: #d2a0a0; }
-:root[data-theme="light"] { --market-up: #356442; --market-down: #8b3e3e; }
+:root { --market-up: var(--text); --market-down: var(--secondary); }
 .market-up { color: var(--market-up); }
 .market-down { color: var(--market-down); }
 market-page, stock-chart { display: block; min-width: 0; }
