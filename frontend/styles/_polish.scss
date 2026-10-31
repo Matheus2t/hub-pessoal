@@ -1,16 +1,20 @@
 /* 2T: vertical quick-access cards and discreet footer calendar. */
-home-page { justify-content: flex-start; gap: 22px; padding-block: 20px 40px; }
-.platform-intro { width: 100%; max-width: 900px; margin-inline: auto; }
-.platform-areas { grid-template-columns: minmax(0,1fr); width: 100%; max-width: 900px; margin-inline: auto; gap: 12px; }
-home-page .area-card { min-height: 156px; padding: 18px 22px 14px; gap: 13px; border: 1px solid var(--line-soft); border-radius: 10px; background: var(--panel); }
+home-page { justify-content: center; gap: 28px; padding-block: 24px 40px; }
+.platform-intro { width: 100%; max-width: 1080px; margin-inline: auto; }
+.platform-areas { grid-template-columns: repeat(3,minmax(0,1fr)); width: 100%; max-width: 1080px; margin-inline: auto; gap: 24px; align-items: stretch; }
+home-page .area-card { aspect-ratio: 3 / 4; min-height: 0; height: auto; padding: 28px; gap: 22px; border: 1px solid var(--line-soft); border-radius: 10px; background: var(--panel); }
 home-page .area-market { background: var(--panel); }
-home-page .area-content { grid-template-columns: minmax(0,1fr) 124px; gap: 18px; }
-home-page .area-copy h2 { font-size: 22px; font-weight: 600; letter-spacing: -.03em; margin-bottom: 6px; }
-home-page .area-copy p { font-size: 13px; max-width: 48ch; }
-home-page .area-preview { max-height: 75px; }
-home-page .area-access { padding-top: 10px; }
+home-page .area-content { display: flex; flex-direction: column; align-items: stretch; justify-content: space-between; gap: 24px; }
+home-page .area-icon { width: 32px; height: 32px; color: var(--secondary); }
+home-page .area-icon .icon { width: 32px; height: 32px; }
+home-page .area-copy h2 { font-size: 24px; font-weight: 600; letter-spacing: -.03em; margin-bottom: 10px; }
+home-page .area-copy p { font-size: 14px; max-width: 28ch; }
+home-page .area-preview { width: 100%; max-height: 125px; margin-top: auto; }
+home-page .area-access { padding-top: 16px; margin-top: auto; }
 home-page .area-card:hover { border-color: var(--border-highlight); }
-.platform-intro h1 { font-size: clamp(34px,4vw,46px); }
+.platform-intro h1 { font-size: clamp(32px,3vw,42px); }
+@media(max-width:1000px) { .platform-areas { grid-template-columns: repeat(2,minmax(0,1fr)); max-width: 700px; } .platform-intro { max-width: 700px; } }
+@media(max-width:600px) { .platform-areas { grid-template-columns: minmax(0,1fr); max-width: 350px; gap: 20px; } .platform-intro { max-width: 350px; } home-page .area-card { padding: 24px; aspect-ratio: 3 / 4; } home-page { padding-block: 8px 28px; gap: 24px; } home-page .area-copy h2 { font-size: 23px; } }
 
 holiday-calendar { display: block; min-width: 0; }
 .calendar-panel { background: var(--panel); border: 1px solid var(--line-soft); border-radius: 10px; padding: 22px; min-width: 0; }
@@ -66,11 +70,6 @@ fixed-income-page .rf-metrics > .rf-primary { border-color: var(--border-highlig
 fixed-income-page .rf-metrics > .rf-primary dd { font-size: clamp(24px,2.8vw,34px); }
 
 @media(max-width:700px) {
-  home-page { padding-block: 10px 24px; gap: 20px; }
-  home-page .area-card { min-height: 142px; padding: 16px 18px 13px; gap: 9px; }
-  home-page .area-content { grid-template-columns: minmax(0,1fr) 88px; gap: 10px; }
-  home-page .area-copy h2 { font-size: 19px; }
-  home-page .area-preview { max-height: 64px; }
   .calendar-panel { padding: 18px; }
   .calendar-events li { grid-template-columns: 43px minmax(0,1fr); gap: 4px 9px; }
   .calendar-events li small { grid-column: 2; }

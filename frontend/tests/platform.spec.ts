@@ -314,8 +314,8 @@ test("footer calendar opens on demand and navigates holidays", async ({ page }) 
   await expect(cards).toHaveCount(3);
   const a=await cards.nth(0).boundingBox(),b=await cards.nth(1).boundingBox(),c=await cards.nth(2).boundingBox();
   if(!a||!b||!c)throw Error("Cards da home não renderizados");
-  expect(b.y).toBeGreaterThanOrEqual(a.y+a.height-1);
-  expect(c.y).toBeGreaterThanOrEqual(b.y+b.height-1);
+  expect(Math.abs(b.y-a.y)).toBeLessThan(2);
+  expect(Math.abs(c.y-a.y)).toBeLessThan(2);
   await trigger.click();
   await expect(dialog).toBeVisible();
   await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");
