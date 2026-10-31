@@ -41,6 +41,7 @@ class Player(BaseModel):
     name: str
     position: str
     number: int | None
+    height: str | None = None
 
 
 class SportsSection(BaseModel):

@@ -1,5 +1,9 @@
 # Times na 2T
 
+**V3:** os adaptadores football-data.org e BALLDONTLIE foram implementados.
+Consulte [SPORTS-V3.md](SPORTS-V3.md) para configuração e limites atuais; as seções
+abaixo registram também a pesquisa e as entregas anteriores.
+
 Rotas independentes: `#/76ers`, `#/spfc`, `#/barcelona`. Backend em
 `/api/sports/{team}` e `/api/sports/{team}/{schedule|results|standings|roster|statistics}`.
 Sem banco ou credencial obrigatória. Não cria assinatura nem altera os serviços financeiros.

@@ -81,7 +81,21 @@ def section(state, items=None, note='', **extra):
     return dict(state=state, items=items or [], note=note, updated_at=datetime.now(timezone.utc).isoformat(), source=SOURCE, **extra)
 
 
-def load_section(team, kind):
+def load_section(team, kind, competition=None):
+    key = settings.balldontlie_api_key if team == '76ers' else settings.football_data_api_key
+    if key:
+        from .sports_http import DataError
+        from . import sports_nba, sports_football
+        source = 'https://www.balldontlie.io/' if team == '76ers' else 'https://www.football-data.org/'
+        try:
+            result = sports_nba.load(team,kind,key) if team == '76ers' else sports_football.load(team,kind,key,competition) if competition else sports_football.load(team,kind,key)
+            return SportsSection.model_validate(result).model_dump()
+        except DataError as exc:
+            return dict(section(exc.state,note='Acesso não autorizado ou recurso não coberto.' if exc.state == 'unavailable' else 'Limite de consultas atingido.' if exc.state == 'rate_limited' else 'Não foi possível consultar a fonte agora.'),source=source)
+        except (KeyError,TypeError,ValueError,AttributeError):
+            return dict(section('error',note='Formato inesperado da fonte esportiva.'),source=source)
+    if competition:
+        return section('unavailable',note='Competição adicional exige nova credencial football-data.org configurada.')
     config = TEAMS[team]
     current = season(team)
     if kind == 'statistics':
@@ -126,10 +140,12 @@ def load_section(team, kind):
 
 
 @router.get('/{team}/{kind}', response_model=SportsSection)
-def sports_section(team: str, kind: str, response: Response):
+def sports_section(team: str, kind: str, response: Response, competition: str|None=None):
     if team not in TEAMS or kind not in ('schedule', 'results', 'standings', 'roster', 'statistics'):
         raise HTTPException(404, 'Seção não encontrada.')
-    result = load_section(team, kind)
+    if competition is not None and (competition != 'CL' or team != 'barcelona' or kind != 'standings'):
+        raise HTTPException(422,'Competição não suportada nesta seção.')
+    result = load_section(team, kind, competition)
     response.headers['Cache-Control'] = 'public, max-age=60, s-maxage=300' if result['state'] in ('available', 'empty', 'unavailable') else 'no-store'
     return result
 
@@ -139,4 +155,6 @@ def sports_team(team: str):
     if team not in TEAMS:
         raise HTTPException(404, 'Time não encontrado.')
     config = TEAMS[team]
-    return dict(team=team, name=config['name'], competition=config['competition'], season=season(team), official=config['official'], timezone='America/Sao_Paulo', provider='TheSportsDB', source=SOURCE)
+    key = settings.balldontlie_api_key if team == '76ers' else settings.football_data_api_key
+    provider_name, source = ('BALLDONTLIE','https://www.balldontlie.io/') if key and team == '76ers' else ('football-data.org','https://www.football-data.org/') if key else ('TheSportsDB',SOURCE)
+    return dict(team=team, name=config['name'], competition=config['competition'], season=season(team), official=config['official'], timezone='America/Sao_Paulo', provider=provider_name, source=source)

@@ -109,3 +109,17 @@ test('season indicators render when covered and errors do not hang', async ({ pa
   await expect(page.locator('.sports-roster')).toContainText('Não foi possível consultar a fonte agora.');
   await expect(page.locator('.sports-panel[aria-busy="true"]')).toHaveCount(0);
 });
+
+test('Champions selection queries coverage without mixing league summary', async ({ page }) => {
+  await mockSports(page);
+  let calls=0;
+  await page.route('**/api/sports/barcelona/standings?competition=CL',route=>{calls++;return route.fulfill({json:{state:'unavailable',items:[],note:'Competição não coberta pelo plano.',source:'https://www.football-data.org/',updated_at:'2026-10-31T10:00:00Z'}})});
+  await page.goto('/#/barcelona');
+  await page.getByLabel('Competição da classificação').selectOption('CL');
+  await expect(page.locator('.sports-standings')).toContainText('Classificação não coberta pela fonte atual.');
+  await expect(page.locator('.sports-record')).toHaveCount(0);
+  await expect(page.locator('.sports-schedule li')).toHaveCount(10);
+  await page.locator('.sports-coverage summary').click();
+  await expect(page.locator('.sports-coverage')).toContainText('https://www.football-data.org/');
+  expect(calls).toBe(1);
+});
