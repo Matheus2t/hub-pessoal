@@ -6,6 +6,7 @@ import { currentPage, pages } from "../catalog";
 import "./sidebar";
 import "./topbar";
 import "./home-page";
+import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
 import "./market-page";
@@ -16,7 +17,7 @@ export class AppShell extends LightElement {
   @state() private route = location.hash;
   private normalizeRoute() {
     if (["#/ferramentas"].includes(location.hash))
-      history.replaceState(null, "", "#/");
+      history.replaceState(null, "", "#/calculadoras");
   }
   private navigate = () => {
     this.normalizeRoute();
@@ -46,7 +47,7 @@ export class AppShell extends LightElement {
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span><span aria-current="page">${pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}<span aria-current="page">${pages[this.page].title}</span></nav>` : ""}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           ${this.page === 'catalog' ? html`<calculator-catalog title="Calculadoras"></calculator-catalog>` : ''}
           ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}

@@ -39,7 +39,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     page.on("pageerror", (error) => exceptions.push(error.message));
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Ferramentas", exact: true }),
+      page.getByRole("heading", { name: "Ferramentas e mercado.", exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).toHaveJSProperty(
       "scrollWidth",
@@ -52,6 +52,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
         animations: "disabled",
       });
     await expect(page.getByRole("button", { name: "Abrir menu" })).toHaveCount(0);
+  await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
   await page.getByRole("link", { name: "Abrir calculadora" }).click();
     await expect(
       page.getByRole("heading", { name: "Calculadora de juros compostos" }),
@@ -177,6 +178,7 @@ test("touch chart, mobile navigation and system theme preference", async ({
   const page = await context.newPage();
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
   await page.getByRole("link", { name: "Abrir calculadora" }).tap();
   await expect(page.getByRole("button", { name: "Abrir menu" })).toHaveCount(0);
   await page.getByRole("button", { name: "Simular investimento" }).tap();
@@ -212,6 +214,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
       Number(getComputedStyle(element).fontWeight),
     ),
   ).toBeGreaterThanOrEqual(600);
+  await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
   await page.getByRole("link", { name: "Abrir calculadora" }).click();
   expect(
     await page.locator(".page-heading h1").evaluate((element) =>

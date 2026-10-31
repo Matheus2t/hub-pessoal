@@ -24,8 +24,9 @@ export class CalculatorCatalog extends LightElement {
   @state() private category = 'Calculadoras';
   render() {
     const found = filterTools(this.category, this.search);
+    const categories = getCategories();
     return html`<section class="home-intro"><h1>${this.title}</h1><label class="catalog-search">Buscar calculadora<input type="search" placeholder="Nome ou categoria" .value=${this.search} @input=${(event: Event) => this.search = (event.target as HTMLInputElement).value}></label></section>
-      <div class="category-filters" role="group" aria-label="Filtrar por categoria">${getCategories().map(category => html`<button type="button" class="button secondary" aria-pressed=${this.category === category} @click=${() => this.category = category}>${category}</button>`)}</div>
+      ${categories.length > 2 ? html`<div class="category-filters" role="group" aria-label="Filtrar por categoria">${categories.map(category => html`<button type="button" class="button secondary" aria-pressed=${this.category === category} @click=${() => this.category = category}>${category}</button>`)}</div>` : ''}
       <section class="tool-collection" aria-label="Ferramentas disponíveis">
         ${found.map(
           (tool) =>
