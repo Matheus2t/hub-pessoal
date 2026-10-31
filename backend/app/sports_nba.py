@@ -1,6 +1,7 @@
 """Free BALLDONTLIE games and players. No paid endpoints or inferred standings."""
 from datetime import datetime, timezone, timedelta
 from .sports_http import SportsHTTP, DataError
+from .sports_assets import nba_crest
 
 http = SportsHTTP('https://api.balldontlie.io/v1', 'Authorization', 5)
 
@@ -52,4 +53,9 @@ def load(team,kind,key):
         if m.get('postponed'): continue
         if not final and not scheduled: continue
         normalized.append(dict(idEvent=str(m['id']),idHomeTeam=str(m['home_team']['id']),idAwayTeam=str(m['visitor_team']['id']),strHomeTeam=m['home_team']['full_name'],strAwayTeam=m['visitor_team']['full_name'],strTimestamp=when,strStatus='FT' if final else 'NS',intHomeScore=m.get('home_team_score') if final else None,intAwayScore=m.get('visitor_team_score') if final else None,strLeague='NBA',strSeason=str(m.get('season',year))+'-'+str(int(m.get('season',year))+1),strSport='Basketball'))
-    return result(games(normalized,str(tid),kind=='schedule',now),'Jogos retornados pela NBA API. Inclui os tipos de partida presentes na fonte; sem classificação ou médias pagas.')
+    items=games(normalized,str(tid),kind=='schedule',now)
+    for item in items:
+        raw=next(m for m in rows if str(m['id'])==item['id'])
+        item['home_crest']=nba_crest(raw['home_team'])
+        item['away_crest']=nba_crest(raw['visitor_team'])
+    return result(items,'Jogos retornados pela NBA API. Inclui os tipos de partida presentes na fonte; sem classificação ou médias pagas.')

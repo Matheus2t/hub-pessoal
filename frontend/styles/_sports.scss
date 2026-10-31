@@ -1,5 +1,25 @@
 // Sports-only surfaces; official crest colors are never altered.
 :root { --sports-crest-bg: #f4f4f4; --sports-crest-line: #d8d8d8; }
+.sports-standings > label.sports-competition { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; }
+.sports-standings select { min-width: 0; flex: 1; max-width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
+.sports-standings select:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.sports-team-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+team-crest { display: inline-flex; flex: 0 0 auto; }
+team-crest:empty { display: none; }
+team-crest img { width: 24px; height: 24px; object-fit: contain; }
+.sports-table team-crest img { width: 20px; height: 20px; }
+.sports-lineup { margin: 24px 0 32px; max-width: 760px; }
+.sports-lineup h2 { font-size: 19px; }
+.sports-lineup header p { color: var(--secondary); font-size: 13px; margin: 8px 0 16px; }
+.sports-pitch { position: relative; display: grid; gap: 24px; padding: 24px 12px; border-radius: 6px; background: #13231c; color: #f3f3f3; border: 1px solid #62766b; }
+.sports-pitch::before { content: ''; position: absolute; inset: 12px; border: 1px solid #62766b; background: radial-gradient(circle at center, transparent 39px, #62766b 40px, transparent 41px); pointer-events: none; }
+.sports-pitch::after { content: ''; position: absolute; top: 50%; left: 12px; right: 12px; border-top: 1px solid #62766b; pointer-events: none; }
+.sports-pitch.basketball { background: #2a241e; }
+.sports-lineup-row { display: grid; gap: 6px; position: relative; z-index: 1; }
+.sports-lineup-player { text-align: center; min-width: 0; display: grid; justify-items: center; gap: 5px; }
+.sports-lineup-player > span { border-radius: 50%; background: #e9ecea; color: #15201b; padding: 6px; width: 34px; }
+.sports-lineup-player strong { font-size: 12px; overflow-wrap: anywhere; }
+.sports-lineup-player small { font-size: 10px; }
 team-shortcuts { display: block; }
 .team-shortcuts { display: flex; align-items: center; gap: 6px; border-left: 1px solid var(--line); padding-left: 16px; }
 .team-shortcuts a { position: relative; display: grid; place-items: center; width: 44px; min-height: 44px; border-radius: var(--radius-lg); color: var(--text); }

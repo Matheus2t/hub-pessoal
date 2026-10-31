@@ -16,6 +16,9 @@ class Game(BaseModel):
     home_score: int | None
     away_score: int | None
     outcome: Literal['V', 'E', 'D'] | None
+    home_crest: str | None = None
+    away_crest: str | None = None
+    lineup: dict | None = None
 
 
 class Standing(BaseModel):
@@ -30,6 +33,7 @@ class Standing(BaseModel):
     goal_difference: int | None
     goals_for: int | None = None
     goals_against: int | None = None
+    crest: str | None = None
 
 
 class Metric(BaseModel):

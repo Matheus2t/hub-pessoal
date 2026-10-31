@@ -3,9 +3,10 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { LightElement } from '../ui';
 import { apiUrl } from '../config';
 import { loadOverview } from '../sports-overview';
-import { teams, sportsTime, sportsDate, type Team, type SectionName, type SportsSection, type Game, type Standing, type Player, type Metric } from '../sports';
+import { competitionName, teams, sportsTime, sportsDate, type Team, type SectionName, type SportsSection, type Game, type Standing, type Player, type Metric } from '../sports';
 import './sports-games';
 import './sports-standings';
+import './sports-lineup';
 
 const titles: Record<SectionName, string> = { schedule: 'Próximos jogos', standings: 'Classificação', roster: 'Elenco', results: 'Últimos resultados', statistics: 'Estatísticas da temporada' };
 const unavailable: Record<SectionName, string> = {
@@ -51,6 +52,7 @@ export class TeamPage extends LightElement {
   }
   private section(kind: SectionName) {
     const data = this.sections[kind];
+    if(kind === 'roster' && this.team === 'spfc' && !(data?.state === 'available' && data.items.length)) return nothing;
     const available = data?.state === 'available' && data.items.length > 0;
     const error = data && ['error', 'rate_limited'].includes(data.state);
     const loading = !data || this.pending.includes(kind);
@@ -67,13 +69,13 @@ export class TeamPage extends LightElement {
     if (kind === 'schedule' || kind === 'results') return html`<sports-games .games=${data.items as Game[]} .results=${kind === 'results'}></sports-games>`;
     if (kind === 'standings') return html`<sports-standings .rows=${data.items as Standing[]} .competition=${data.competition || ''} .season=${data.season || ''}></sports-standings>`;
     if (kind === 'roster') { const roster = html`${this.team === '76ers' ? html`<p class="sports-caption">Cadastro histórico; não representa o elenco atual.</p>` : nothing}<ul class="sports-players">${(data.items as Player[]).map(player => html`<li><span class="sports-number">${player.number ?? '—'}</span><div><strong>${player.name}</strong><span>${player.position || 'Posição não informada'}</span>${player.height ? html`<span>Altura: ${player.height} (pés–polegadas)</span>` : nothing}</div></li>`)}</ul>`; return this.team === '76ers' ? html`<details><summary>${data.items.length} jogadores cadastrados · vínculo ativo não confirmado</summary>${roster}</details>` : roster; }
-    if (kind === 'statistics') return html`<p class="sports-competition">${data.competition} <span>· ${data.season}</span></p><dl class="sports-metrics">${(data.items as Metric[]).map(metric => html`<div><dt>${metric.label}</dt><dd>${metric.value.toLocaleString('pt-BR')}</dd></div>`)}</dl>`;
+    if (kind === 'statistics') return html`<p class="sports-competition">${competitionName(data.competition || '')} <span>· ${data.season}</span></p><dl class="sports-metrics">${(data.items as Metric[]).map(metric => html`<div><dt>${metric.label}</dt><dd>${metric.value.toLocaleString('pt-BR')}</dd></div>`)}</dl>`;
     return nothing;
   }
   private fixture(next: Game | undefined) {
     return html`<section class="sports-next" aria-labelledby="next-match-heading"><div class="sports-next-label"><h2 id="next-match-heading">Próxima partida</h2><span>${next ? `${next.is_home ? 'Em casa' : 'Fora de casa'} · ${next.status}` : 'Calendário'}</span></div>
       ${next ? html`<div class="sports-next-body"><div class="sports-contender"><span>Mandante</span><strong>${next.home}</strong></div><div class="sports-kickoff"><time datetime=${next.starts_at}>${sportsTime(next.starts_at)}</time><div><span>${sportsDate(next.starts_at)}</span><small>Horário de Brasília</small></div></div><div class="sports-contender sports-away"><span>Visitante</span><strong>${next.away}</strong></div></div>
-      <div class="sports-next-footer"><span>${next.competition}</span>${next.venue ? html`<span>${next.venue}</span>` : nothing}</div>` : html`<p class="sports-next-empty" role="status">${!this.sections.schedule ? 'Consultando calendário…' : this.sections.schedule.state === 'empty' ? 'Nenhuma partida confirmada na fonte.' : 'Próxima partida ainda não disponível.'}</p>`}
+      <div class="sports-next-footer"><span>${competitionName(next.competition)}</span>${next.venue ? html`<span>${next.venue}</span>` : nothing}</div>` : html`<p class="sports-next-empty" role="status">${!this.sections.schedule ? 'Consultando calendário…' : this.sections.schedule.state === 'empty' ? 'Nenhuma partida confirmada na fonte.' : 'Próxima partida ainda não disponível.'}</p>`}
     </section>`;
   }
   private coverage() {
@@ -88,6 +90,7 @@ export class TeamPage extends LightElement {
     const season = this.season || this.sections.standings?.season || next?.season;
     return html`<article class="sports-page" data-team=${this.team}><header class="sports-heading"><div class="sports-identity"><span class="sports-crest-frame" data-team=${this.team}><img class="sports-crest" src=${config.crest} width="64" height="72" alt="" /></span><div><p class="sports-eyebrow">${config.competition}${season ? html`<span>${season}</span>` : nothing}</p><h1>${config.name}</h1></div></div>${standing ? html`<dl class="sports-record">${[['Posição', standing.rank == null ? '—' : `${standing.rank}º`], ['Pontos', standing.points ?? '—'], ['Jogos', standing.played ?? '—']].map(([label, value]) => html`<div><dt>${label}</dt><dd>${value}</dd></div>`)}</dl>` : nothing}</header>
       ${this.fixture(next)}
+      ${this.team !== 'spfc' ? html`<sports-lineup .game=${[...(this.sections.schedule?.items || []), ...(this.sections.results?.items || [])].find(item => (item as Game).lineup?.confirmed) as Game | undefined}></sports-lineup>` : nothing}
       <div class="sports-grid"><div class="sports-column">${this.section('schedule')}${this.section('results')}${this.section('roster')}</div><div class="sports-column">${this.section('standings')}${this.section('statistics')}</div></div>
       ${this.coverage()}
     </article>`;

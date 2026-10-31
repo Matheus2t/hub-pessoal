@@ -2,6 +2,7 @@
 import unicodedata
 from datetime import datetime, timezone, timedelta
 from .sports_http import SportsHTTP, DataError
+from .sports_assets import crest, football_lineup
 
 http = SportsHTTP('https://api.football-data.org/v4', 'X-Auth-Token', 10)
 
@@ -49,6 +50,10 @@ def load(team, kind, key, competition=None):
         scheduled={str(m['id']) for m in data['matches'] if m.get('status')=='SCHEDULED'}
         for item in items:
             if item['id'] in scheduled: item['status']='Horário a confirmar'
+            raw=next(m for m in data['matches'] if str(m['id'])==item['id'])
+            item['home_crest']=crest(raw['homeTeam'].get('crest'))
+            item['away_crest']=crest(raw['awayTeam'].get('crest'))
+            item['lineup']=football_lineup(raw['homeTeam'] if item['is_home'] else raw['awayTeam'])
         return result(items, 'Horários fornecidos pela API; partidas SCHEDULED ainda dependem de confirmação. Registros sem horário utilizável não são exibidos.', partial=True)
     if kind in ('standings','statistics'):
         data = http.get(f'/competitions/{code}/standings', key)
@@ -58,7 +63,7 @@ def load(team, kind, key, competition=None):
         if not isinstance(tables,list): raise DataError()
         table = next((t.get('table') for t in tables if t.get('type') == 'TOTAL' and any((r.get('team') or {}).get('id') == tid for r in t.get('table',[]))), None)
         if not isinstance(table,list): raise DataError('unavailable')
-        rows = [dict(team=r['team']['name'],is_team=r['team']['id']==tid,rank=r.get('position'),points=r.get('points'),played=r.get('playedGames'),wins=r.get('won'),draws=r.get('draw'),losses=r.get('lost'),goal_difference=r.get('goalDifference'),goals_for=r.get('goalsFor'),goals_against=r.get('goalsAgainst')) for r in table]
+        rows = [dict(crest=crest(r['team'].get('crest')),team=r['team']['name'],is_team=r['team']['id']==tid,rank=r.get('position'),points=r.get('points'),played=r.get('playedGames'),wins=r.get('won'),draws=r.get('draw'),losses=r.get('lost'),goal_difference=r.get('goalDifference'),goals_for=r.get('goalsFor'),goals_against=r.get('goalsAgainst')) for r in table]
         if not any(r['is_team'] for r in rows): raise DataError('unavailable')
         if kind == 'statistics':
             own = next((r for r in rows if r['is_team']),{})

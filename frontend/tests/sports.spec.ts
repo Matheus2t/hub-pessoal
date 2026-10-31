@@ -56,8 +56,7 @@ test('single fixture and compact unavailable sections keep coverage accessible',
   await expect(page.locator('.sports-schedule .sports-count')).toHaveCount(0);
   await expect(page.locator('.sports-kickoff')).toContainText('21:30');
   await expect(page.locator('.sports-kickoff')).toContainText('04/11/2026');
-  await expect(page.locator('.sports-roster')).toContainText('Elenco atualizado ainda não disponível.');
-  expect(await page.locator('.sports-roster').evaluate(element => element.getBoundingClientRect().height)).toBeLessThan(160);
+  await expect(page.locator('.sports-roster')).toHaveCount(0);
   await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).not.toBeVisible();
   await page.getByText('Cobertura dos dados', { exact: false }).click();
   await expect(page.getByText('Fonte gratuita limitada a uma partida.', { exact: true })).toBeVisible();
@@ -92,8 +91,8 @@ test('away result keeps the selected team score first and table scroll stays int
 
 test('independent errors and missing sports data', async ({ page }) => {
   await mockSports(page);
-  await page.route('**/api/sports/spfc/roster', route => route.fulfill({ json: { state: 'rate_limited', items: [], note: 'Limite de consultas atingido.', updated_at: '' } }));
-  await page.goto('/#/spfc');
+  await page.route('**/api/sports/barcelona/roster', route => route.fulfill({ json: { state: 'rate_limited', items: [], note: 'Limite de consultas atingido.', updated_at: '' } }));
+  await page.goto('/#/barcelona');
   await expect(page.locator('.sports-roster')).toContainText('Limite de consultas atingido.');
   await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(10);
   await expect(page.locator('.sports-roster button')).toHaveText('Tentar novamente');

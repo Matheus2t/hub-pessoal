@@ -5,8 +5,10 @@ export const teams = {
 } as const;
 export type Team = keyof typeof teams;
 export type SectionName = 'schedule' | 'results' | 'standings' | 'roster' | 'statistics';
-export interface Game { id: string; starts_at: string; home: string; away: string; competition: string; season: string; venue: string; is_home: boolean; status: string; home_score: number | null; away_score: number | null; outcome: string | null }
-export interface Standing { team: string; is_team: boolean; rank: number | null; points: number | null; played: number | null; wins: number | null; draws: number | null; losses: number | null; goal_difference: number | null }
+export interface Lineup { sport: "football" | "basketball"; confirmed: boolean; formation: string; rows: Player[][] }
+export const competitionName = (name: string) => /^primera divisi[oó]n$/i.test(name.trim()) ? "La Liga" : name;
+export interface Game { home_crest?: string | null; away_crest?: string | null; lineup?: Lineup | null; id: string; starts_at: string; home: string; away: string; competition: string; season: string; venue: string; is_home: boolean; status: string; home_score: number | null; away_score: number | null; outcome: string | null }
+export interface Standing { crest?: string | null; team: string; is_team: boolean; rank: number | null; points: number | null; played: number | null; wins: number | null; draws: number | null; losses: number | null; goal_difference: number | null }
 export interface Player { height?: string | null; name: string; position: string; number: number | null }
 export interface Metric { label: string; value: number }
 export interface SportsSection { source?: string; state: 'available' | 'empty' | 'error' | 'unavailable' | 'rate_limited'; items: (Game | Standing | Player | Metric)[]; note: string; updated_at: string; competition?: string; season?: string; partial?: boolean }

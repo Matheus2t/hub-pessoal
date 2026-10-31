@@ -128,3 +128,28 @@ aprovados e 1 opt-in TradingView nÃ£o executado. O teste instrumentado de futebo
 confirma quatro chamadas totais mesmo executando duas cargas agregadas na mesma
 instÃ¢ncia: partidas e tabela consultadas somente uma vez. O teste de navegaÃ§Ã£o rÃ¡pida
 confirma uma Ãºnica requisiÃ§Ã£o agregada por clube e nenhuma requisiÃ§Ã£o inicial de seÃ§Ã£o.
+
+
+## Acabamento dos Times: escudos e escalações
+
+Os escudos de futebol vêm do campo `crest` da football-data.org; os logos NBA
+usam o CDN oficial da NBA, mapeado pela sigla da equipe. São imagens públicas,
+sem credenciais, carregadas diretamente de `crests.football-data.org` e `cdn.nba.com`.
+A CSP autoriza somente essas duas novas origens. O responsável pelo projeto
+confirmou autorização de uso para clubes, adversários e equipes das tabelas.
+Imagens ausentes, inválidas ou com erro são omitidas sem placeholder.
+
+O SPFC não exibe elenco vazio ou indisponível. O nome La Liga é normalizado apenas
+na apresentação; os nomes e IDs recebidos do provedor permanecem intactos.
+
+O componente de escalação aceita somente formação confirmada, jogadores e posições
+completos: 11 no futebol ou 5 no basquete. O adaptador de futebol aproveita o payload
+de partidas já consultado, quando existir uma formação compatível e completa. Não
+consulta endpoints adicionais nem infere titulares do cadastro. No plano atual,
+os payloads observados não confirmam escalação; campo e quadra ficam ocultos.
+A API gratuita NBA não confirma quinteto: a documentação restringe Lineups ao plano
+GOAT. Não foi contratado plano nem adicionado consumo pago. O cadastro histórico
+continua identificado e recolhido, nunca convertido em escalação.
+
+Referências: https://docs.football-data.org/general/v4/match.html e
+https://nba.balldontlie.io/ (Lineups). Formações de teste existem somente nos testes.
