@@ -50,7 +50,9 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
       }));
       expect(badge.background).not.toBe('rgb(244, 244, 244)');
       expect(badge.radius).toBe('9px');
-      expect(badge.imageWidth).toBe(28);
+      expect(badge.imageWidth).toBe(30);
+      await expect(nav.locator('[data-team="76ers"] img')).toHaveAttribute('src', '/teams/76ers-contrast.svg');
+      expect(await nav.locator('[data-team="76ers"]').evaluate(element => getComputedStyle(element).backgroundImage)).toContain('gradient');
       await page.screenshot({ path: info.outputPath(`${route}-${theme}.png`), fullPage: true, animations: 'disabled' });
     }
   }

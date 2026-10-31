@@ -1,5 +1,5 @@
 export const teams = {
-  '76ers': { name: 'Philadelphia 76ers', crest: '/teams/76ers.svg', competition: 'NBA', official: 'https://www.nba.com/sixers/' },
+  '76ers': { name: 'Philadelphia 76ers', crest: '/teams/76ers-contrast.svg', competition: 'NBA', official: 'https://www.nba.com/sixers/' },
   spfc: { name: 'São Paulo Futebol Clube', crest: '/teams/spfc.png', competition: 'Brasileirão Série A', official: 'https://www.saopaulofc.net/' },
   barcelona: { name: 'FC Barcelona', crest: '/teams/barcelona.png', competition: 'La Liga', official: 'https://www.fcbarcelona.com/en/football/first-team' },
 } as const;
