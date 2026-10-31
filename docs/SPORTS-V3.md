@@ -90,3 +90,41 @@ confirmar elenco atual e recente.
 O cadastro NBA é apresentado em detalhe recolhido e explicitamente histórico, evitando
 que a página mostre 268 atletas como elenco atual. Validação final: 95 testes Python;
 revalidação esportiva com 11 testes Playwright aprovados.
+
+## Correção de consumo — carga inicial agregada
+
+`GET /api/sports/{team}?include=all` reúne as cinco seções sequencialmente na mesma
+execução. As falhas permanecem independentes. Os endpoints individuais continuam
+disponíveis para retry e Champions. Não há fan-out paralelo para os provedores.
+
+Futebol consulta uma única lista da temporada para calendário e resultados. A mesma
+tabela serve à classificação e aos indicadores, com os mesmos parâmetros de cache.
+Em cache frio: quatro chamadas por clube (descoberta, partidas, tabela, elenco). Na NBA:
+uma descoberta + páginas de jogos + páginas de jogadores; no cenário observado, cinco
+chamadas (1+1+3). Jogos e resultados reutilizam a mesma coleção. Paginação tem limite
+de segurança de três páginas e nunca anuncia truncamento como conjunto completo.
+O limite gratuito pode adiar a última página em calendários maiores; os jogos já
+obtidos continuam disponíveis e o elenco informa a indisponibilidade temporária.
+
+No navegador, a carga inicial faz uma chamada agregada por time e compartilha promessas
+em andamento entre componentes de rota. Voltar rapidamente ao mesmo clube reutiliza
+a resposta por 60s (15s quando alguma seção falhou). Sair da página não cancela e
+reinicia a requisição compartilhada; timeout de 55s evita loading infinito.
+
+Cache HTTP/CDN: respostas agregadas úteis usam max-age=60/s-maxage=300; respostas com
+falhas parciais usam 10/15s para amortecer navegação repetida sem ocultar falhas por muito
+tempo. Valores em cache válidos são consultados antes de verificar o bloqueio de quota.
+Não se reutilizam dados expirados sem identificação. Sem cache válido, há estado de erro.
+
+Transportes serializam misses por provedor em cada instância e respeitam 10/min e 5/min.
+429 bloqueia novas chamadas por pelo menos 60s e pelo tempo maior informado em
+Retry-After (segundos ou data HTTP) / X-RequestCounter-Reset. Quota restante zero
+também aciona pausa. Respostas 401/403/404 têm cache negativo de 5min, separado por
+fingerprint da credencial, evitando reconsultar recursos não autorizados. Não há
+loops de retry, nem promessa de um limitador global entre instâncias serverless.
+
+Verificação da correção: typecheck/build aprovados; 98 testes Python; 50 Playwright
+aprovados e 1 opt-in TradingView não executado. O teste instrumentado de futebol
+confirma quatro chamadas totais mesmo executando duas cargas agregadas na mesma
+instância: partidas e tabela consultadas somente uma vez. O teste de navegação rápida
+confirma uma única requisição agregada por clube e nenhuma requisição inicial de seção.

@@ -151,10 +151,15 @@ def sports_section(team: str, kind: str, response: Response, competition: str|No
 
 
 @router.get('/{team}')
-def sports_team(team: str):
+def sports_team(team: str, response: Response, include: str|None=None):
     if team not in TEAMS:
         raise HTTPException(404, 'Time não encontrado.')
     config = TEAMS[team]
     key = settings.balldontlie_api_key if team == '76ers' else settings.football_data_api_key
     provider_name, source = ('BALLDONTLIE','https://www.balldontlie.io/') if key and team == '76ers' else ('football-data.org','https://www.football-data.org/') if key else ('TheSportsDB',SOURCE)
-    return dict(team=team, name=config['name'], competition=config['competition'], season=season(team), official=config['official'], timezone='America/Sao_Paulo', provider=provider_name, source=source)
+    result = dict(team=team, name=config['name'], competition=config['competition'], season=season(team), official=config['official'], timezone='America/Sao_Paulo', provider=provider_name, source=source)
+    if include == 'all':
+        result['sections'] = {kind:load_section(team,kind) for kind in ('schedule','results','standings','statistics','roster')}
+        failed = any(d['state'] in ('error','rate_limited') for d in result['sections'].values())
+        response.headers['Cache-Control'] = 'public, max-age=10, s-maxage=15' if failed else 'public, max-age=60, s-maxage=300'
+    return result

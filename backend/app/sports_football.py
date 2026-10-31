@@ -35,8 +35,7 @@ def load(team, kind, key, competition=None):
     if kind in ('schedule','results'):
         now = datetime.now(timezone.utc)
         future = kind == 'schedule'
-        start, end = (now, now+timedelta(days=365)) if future else (now-timedelta(days=365), now)
-        data = http.get(f'/teams/{tid}/matches', key, {'dateFrom':start.date().isoformat(), 'dateTo':end.date().isoformat(), 'limit':500})
+        data = http.get(f'/teams/{tid}/matches', key, {'season':int(season(team)[:4]), 'limit':500})
         if not isinstance(data.get('matches'), list): raise DataError()
         rows = []
         for m in data['matches']:

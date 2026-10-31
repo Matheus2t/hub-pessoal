@@ -2,6 +2,7 @@ import { html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { LightElement } from '../ui';
 import { apiUrl } from '../config';
+import { loadOverview } from '../sports-overview';
 import { teams, sportsTime, sportsDate, type Team, type SectionName, type SportsSection, type Game, type Standing, type Player, type Metric } from '../sports';
 import './sports-games';
 import './sports-standings';
@@ -22,8 +23,8 @@ export class TeamPage extends LightElement {
   private controller = new AbortController();
   connectedCallback() { super.connectedCallback(); void this.load(); }
   disconnectedCallback() { this.controller.abort(); super.disconnectedCallback(); }
-  private async fetch(path: string) {
-    const response = await fetch(apiUrl(path), { signal: AbortSignal.any([this.controller.signal, AbortSignal.timeout(25000)]) });
+  private async fetch(path: string, timeout = 25000) {
+    const response = await fetch(apiUrl(path), { signal: AbortSignal.any([this.controller.signal, AbortSignal.timeout(timeout)]) });
     if (!response.ok) throw new Error('sports');
     return response.json();
   }
@@ -38,8 +39,15 @@ export class TeamPage extends LightElement {
     } finally { this.pending = this.pending.filter(item => item !== kind); }
   }
   private async load() {
-    void this.fetch(`/api/sports/${this.team}`).then(meta => { this.season = meta.season; }).catch(() => { /* Sections remain independently usable. */ });
-    await Promise.all((Object.keys(titles) as SectionName[]).map(kind => this.loadSection(kind)));
+    try {
+      const meta = await loadOverview(this.team);
+      if (this.controller.signal.aborted) return;
+      this.season = meta.season;
+      if (meta.sections) this.sections = meta.sections;
+      else await Promise.all((Object.keys(titles) as SectionName[]).map(kind => this.loadSection(kind)));
+    } catch {
+      if (!this.controller.signal.aborted) this.sections = Object.fromEntries((Object.keys(titles) as SectionName[]).map(kind => [kind,{state:'error',items:[],note:'Não foi possível consultar a fonte agora.',updated_at:''}]));
+    }
   }
   private section(kind: SectionName) {
     const data = this.sections[kind];
