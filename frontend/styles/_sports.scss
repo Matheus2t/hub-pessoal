@@ -1,5 +1,13 @@
 // Sports-only surfaces; official crest colors are never altered.
-:root { --sports-crest-bg: #f4f4f4; --sports-crest-line: #d8d8d8; }
+:root {
+  // Muted blue-grey backing makes the native blue/red mark readable without a white ball.
+  --sports-76ers-backdrop: #cad6e3;
+  --sports-76ers-outline: #879cb6;
+}
+:root[data-theme='light'] {
+  --sports-76ers-backdrop: #e5ebf3;
+  --sports-76ers-outline: #b4c3d6;
+}
 .sports-standings > label.sports-competition { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; }
 .sports-standings select { min-width: 0; flex: 1; max-width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
 .sports-standings select:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
@@ -28,8 +36,13 @@ team-shortcuts { display: block; }
 .team-shortcuts a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 .team-crest-frame { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; }
 .team-shortcuts img { width: 26px; height: 26px; object-fit: contain; }
-.team-crest-frame[data-team='76ers'], .sports-crest-frame[data-team='76ers'] { background: var(--sports-crest-bg); border: 1px solid var(--sports-crest-line); }
-.team-crest-frame[data-team='76ers'] img { width: 24px; height: 24px; }
+.team-crest-frame[data-team='76ers'], .sports-crest-frame[data-team='76ers'] {
+  background: var(--sports-76ers-backdrop);
+  border: 1px solid var(--sports-76ers-outline);
+  border-radius: 16px;
+}
+.team-crest-frame[data-team='76ers'] { width: 34px; height: 34px; border-radius: 9px; }
+.team-crest-frame[data-team='76ers'] img { width: 28px; height: 28px; object-fit: contain; }
 .sports-page { display: block; min-width: 0; }
 .sports-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 28px; }
 .sports-identity { display: flex; align-items: center; gap: 20px; min-width: 0; }

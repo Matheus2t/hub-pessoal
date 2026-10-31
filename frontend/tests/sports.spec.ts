@@ -43,7 +43,14 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
     for (const theme of ['dark', 'light']) {
       await page.evaluate(theme => { document.documentElement.dataset.theme = theme; }, theme);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      expect(await nav.locator('[data-team="76ers"]').evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(244, 244, 244)');
+      const badge = await nav.locator('[data-team="76ers"]').evaluate(element => ({
+        background: getComputedStyle(element).backgroundColor,
+        radius: getComputedStyle(element).borderRadius,
+        imageWidth: (element.querySelector('img') as HTMLImageElement).getBoundingClientRect().width,
+      }));
+      expect(badge.background).not.toBe('rgb(244, 244, 244)');
+      expect(badge.radius).toBe('9px');
+      expect(badge.imageWidth).toBe(28);
       await page.screenshot({ path: info.outputPath(`${route}-${theme}.png`), fullPage: true, animations: 'disabled' });
     }
   }
