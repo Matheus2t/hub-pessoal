@@ -107,3 +107,37 @@ final na série inteira. Resgates não permitidos são identificados. Tabela expans
 com paginação de 24 linhas; gráficos próprios, sem dependências, com seleção por
 ponteiro, toque ou controle de data acessível por teclado. As séries do comparador
 terminam no vencimento de cada produto. Não se interpolam retornos ausentes.
+
+
+## Validação da V1
+
+- `npm run typecheck` e `npm run build`: aprovados.
+- `python -m pytest -q backend/tests`: 101 testes aprovados.
+- `npm run test:e2e`: 89 aprovados, 1 teste live optativo TradingView desativado.
+- Renda Fixa: 27 testes matemáticos + 8 de interface, também reexecutados isoladamente.
+- Oráculos independentes: Python Decimal com precisão 60 para CDI e multiplicador
+  diário; fórmulas fechadas independentes para somas de custódia; identidades de
+  composição e deflação para IPCA+. Não usa screenshots para provar matemática.
+- Cobertura: R$ 1.000/10.000/100.000, taxas zero e negativas, 100%/110%/90% CDI,
+  LCA prefixada, IOF de 15/30 dias e tabela completa, todas as fronteiras de IR,
+  custódia Selic com estoque adicional e cruzamento da isenção, IPCA+, carência,
+  comparação de 2–4 cenários e vencimentos distintos, datas inválidas, anos
+  bissextos, fins de mês, limite de 600 meses, paginação e controles por teclado.
+- Layouts 1920, 1366, 768, 390 e 320 px; temas claro/escuro; inspeção visual;
+  nenhuma rolagem horizontal da página (tabelas possuem rolagem própria).
+- Regressão: quatro calculadoras, navegação, catálogo das 52 ações, CVM, widgets,
+  proteções da brapi e Times incluídos na suíte existente.
+- A interface de Renda Fixa não faz POST nem consulta APIs externas de taxas.
+
+Não requer novas chaves, dependências, banco ou serviço pago. Histórico opcional
+não foi incluído: os dados são mantidos em memória durante a navegação na área.
+Limpar/recarregar/sair descarta os cenários. O tema usa a preferência já existente.
+
+Exemplos usados **somente em testes**, não taxas correntes:
+
+| Hipótese | Resultado líquido independente |
+| --- | ---: |
+| R$ 1.000, CDI 12%, CDB 100%, 365 dias | R$ 1.099,00 |
+| R$ 10.000, CDI 12%, CDB 110%, 730 dias | R$ 12.406,77 |
+| R$ 10.000, CDI 12%, CDB 100%, 15 dias | R$ 10.018,09 |
+| R$ 10.000, IPCA 4% e real 6%, 365 dias, custos zero | R$ 10.844,80 |

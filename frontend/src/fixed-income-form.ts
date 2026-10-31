@@ -3,7 +3,8 @@ import {addMonths,isoDate,type Investment,type Product} from './fixed-income';
 export type NumericKey='amount'|'cdi'|'percentage'|'fixed'|'selic'|'spread'|'inflation'|'real'|'custody'|'fee'|'otherSelic'|'grace';
 export type InvestmentDraft=Omit<Investment,NumericKey>&Record<NumericKey,string>;
 export function newInvestment(product:Product='cdb'):InvestmentDraft {
-  const start=isoDate(Date.now());
+  const now=new Date();
+  const start=isoDate(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
   return {product,amount:'',start,maturity:addMonths(start,24),indexation:'cdi',cdi:'',percentage:'',fixed:'',selic:'',spread:'0',inflation:'',real:'',custody:'0,20',fee:'0',otherSelic:'0',liquidity:product==='lci'||product==='lca'||product==='ipca'?'maturity':'daily',grace:'0'};
 }
 export function readInvestment(d:InvestmentDraft):Investment {

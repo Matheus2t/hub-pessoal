@@ -14,14 +14,14 @@ export class FixedIncomeFields extends LightElement {
     this.dispatchEvent(new CustomEvent('draft-change',{detail:next,bubbles:true}));
   }
   private number(key:NumericKey,label:string,unit:string,hint='') {
-    return html`<label class="rf-field"><span>${label} <small>${unit}</small></span><input inputmode="decimal" autocomplete="off" .value=${this.draft[key]} @input=${(e:Event)=>this.change(key,(e.target as HTMLInputElement).value)} aria-description=${hint||nothing} /><small>${hint||nothing}</small></label>`;
+    return html`<label class="rf-field"><span>${label} <small>${unit}</small></span><input inputmode="decimal" autocomplete="off" .value=${this.draft[key]} @input=${(e:Event)=>this.change(key,(e.target as HTMLInputElement).value)} aria-description=${hint||nothing} title=${hint||nothing} /><small>${hint||nothing}</small></label>`;
   }
   render() {
     const d=this.draft,treasury=isTreasury(d.product),letter=d.product==='lci'||d.product==='lca',cdi=d.product==='cdb'||letter&&d.indexation==='cdi';
     return html`<div class="rf-fields">
-      <label class="rf-field"><span>Investimento</span><select .value=${d.product} @change=${(e:Event)=>this.change('product',(e.target as HTMLSelectElement).value)}>${Object.entries(productNames).map(([key,name])=>html`<option value=${key}>${name}</option>`)}</select></label>
+      <label class="rf-field"><span>Investimento</span><select aria-label="Investimento" .value=${d.product} @change=${(e:Event)=>this.change('product',(e.target as HTMLSelectElement).value)}>${Object.entries(productNames).map(([key,name])=>html`<option value=${key} .selected=${d.product===key}>${name}</option>`)}</select></label>
       ${!this.shared?this.number('amount','Valor aplicado','R$'):nothing}
-      ${letter?html`<label class="rf-field"><span>Remuneração</span><select .value=${d.indexation} @change=${(e:Event)=>this.change('indexation',(e.target as HTMLSelectElement).value)}><option value="cdi">Percentual do CDI</option><option value="fixed">Prefixada</option></select></label>`:nothing}
+      ${letter?html`<label class="rf-field"><span>Remuneração</span><select aria-label="Remuneração" .value=${d.indexation} @change=${(e:Event)=>this.change('indexation',(e.target as HTMLSelectElement).value)}><option value="cdi" .selected=${d.indexation==='cdi'}>Percentual do CDI</option><option value="fixed" .selected=${d.indexation==='fixed'}>Prefixada</option></select></label>`:nothing}
       ${cdi?html`${!this.shared?this.number('cdi','CDI anual','% a.a.','Hipótese constante, informada por você.'):nothing}${this.number('percentage','Percentual do CDI','% CDI','Percentual contratado sobre a taxa diária equivalente.')}`:nothing}
       ${letter&&d.indexation==='fixed'?this.number('fixed','Taxa prefixada','% a.a.'):nothing}
       ${d.product==='selic'?html`${!this.shared?this.number('selic','Selic anual','% a.a.','Hipótese constante, informada por você.'):nothing}${this.number('spread','Taxa adicional anual','% a.a.','Zero se não houver adicional. Composição de fatores, como aproximação.')}`:nothing}
