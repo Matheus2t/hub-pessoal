@@ -57,7 +57,9 @@ team-shortcuts { display: block; }
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .16));
 }
 .team-crest-frame[data-team='76ers'] { width: 34px; height: 34px; border-radius: 9px; }
-.team-crest-frame[data-team='76ers'] img { width: 30px; height: 30px; }
+// Leave a clear gap between the 76 and the varsity stripe at icon size.
+.team-crest-frame[data-team='76ers'] img { width: 30px; height: 30px; transform: translateY(-2px); }
+.team-crest-frame[data-team='76ers']::before { height: 2px; }
 .team-shortcuts a:hover .team-crest-frame[data-team='76ers'],
 .team-shortcuts a:focus-visible .team-crest-frame[data-team='76ers'] {
   border-color: rgba(205, 225, 255, .90);
