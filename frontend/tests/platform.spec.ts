@@ -300,40 +300,56 @@ test("nova marca 2T aparece no cabeçalho e rodapé em ambos os temas", async ({
   await expect(page.locator(".footer-logo img")).toBeVisible();
 });
 
-test("home vertical cards, month navigation and Brazilian holidays", async ({ page }) => {
+test("footer calendar opens on demand and navigates holidays", async ({ page }) => {
   await page.clock.setFixedTime(new Date("2026-10-31T15:00:00-03:00"));
   await page.setViewportSize({width:1366,height:900});
   await page.goto("/#/");
   await expect(page).toHaveTitle("Início · 2T");
-  await expect(page.locator(".brand strong")).toHaveCount(0);
-  await expect(page.locator("holiday-calendar")).toBeVisible();
-  await expect(page.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");
-  await expect(page.locator(".calendar-events")).toContainText("Nossa Senhora Aparecida");
+  await expect(page.locator("home-page holiday-calendar")).toHaveCount(0);
+  const trigger=page.getByRole("button",{name:"Abrir calendário de feriados"});
+  await expect(trigger).toBeVisible();
+  const dialog=page.getByRole("dialog",{name:"Calendário de feriados"});
+  await expect(dialog).not.toBeVisible();
   const cards=page.locator("home-page .area-card");
   await expect(cards).toHaveCount(3);
   const a=await cards.nth(0).boundingBox(),b=await cards.nth(1).boundingBox(),c=await cards.nth(2).boundingBox();
   if(!a||!b||!c)throw Error("Cards da home não renderizados");
   expect(b.y).toBeGreaterThanOrEqual(a.y+a.height-1);
   expect(c.y).toBeGreaterThanOrEqual(b.y+b.height-1);
-  await page.getByRole("button",{name:"Próximo mês"}).click();
-  await expect(page.locator(".calendar-navigation h3")).toHaveText("Novembro de 2026");
-  await expect(page.locator(".calendar-events li")).toHaveCount(3);
-  await expect(page.locator(".calendar-events")).toContainText("Consciência Negra");
-  await page.getByRole("button",{name:"Hoje"}).click();
-  await expect(page.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");
-  await page.getByRole("button",{name:"Mês anterior"}).click();
-  await expect(page.locator(".calendar-events")).toContainText("Independência do Brasil");
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");
+  await expect(dialog.locator(".calendar-events")).toContainText("Nossa Senhora Aparecida");
+  await dialog.getByRole("button",{name:"Próximo mês"}).click();
+  await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Novembro de 2026");
+  await expect(dialog.locator(".calendar-events li")).toHaveCount(3);
+  await expect(dialog.locator(".calendar-events")).toContainText("Consciência Negra");
+  await dialog.getByRole("button",{name:"Hoje"}).click();
+  await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await trigger.click();
+  await dialog.getByRole("button",{name:"Fechar calendário"}).click();
+  await expect(dialog).not.toBeVisible();
 });
 
-test("holiday calendar distinguishes state and municipal holidays on mobile", async ({page})=>{
+test("footer calendar shows local holidays on mobile and is available on other pages", async ({page})=>{
   await page.clock.setFixedTime(new Date("2026-07-09T12:00:00-03:00"));
   await page.setViewportSize({width:390,height:844});
   await page.goto("/");
-  await expect(page.locator(".calendar-events")).toContainText("Revolução Constitucionalista");
-  await expect(page.locator(".calendar-events")).toContainText("Estadual");
-  for(let i=0;i<6;i++)await page.getByRole("button",{name:"Mês anterior"}).click();
-  await expect(page.locator(".calendar-navigation h3")).toHaveText("Janeiro de 2026");
-  await expect(page.locator(".calendar-events")).toContainText("Aniversário de São Paulo");
-  await expect(page.locator(".calendar-events")).toContainText("Municipal");
+  const dialog=page.getByRole("dialog",{name:"Calendário de feriados"});
+  await page.getByRole("button",{name:"Abrir calendário de feriados"}).click();
+  await expect(dialog.locator(".calendar-events")).toContainText("Revolução Constitucionalista");
+  await expect(dialog.locator(".calendar-events")).toContainText("Estadual");
+  for(let i=0;i<6;i++)await dialog.getByRole("button",{name:"Mês anterior"}).click();
+  await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Janeiro de 2026");
+  await expect(dialog.locator(".calendar-events")).toContainText("Aniversário de São Paulo");
+  await expect(dialog.locator(".calendar-events")).toContainText("Municipal");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await dialog.getByRole("button",{name:"Fechar calendário"}).click();
+  await page.locator("home-page").getByRole("link",{name:/Calculadoras/}).click();
+  await page.getByRole("button",{name:"Abrir calendário de feriados"}).click();
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
 });

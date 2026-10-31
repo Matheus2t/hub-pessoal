@@ -9,6 +9,7 @@ export type IconName =
   | "home"
   | "grid"
   | "calculator"
+  | "calendar"
   | "arrow"
   | "chart"
   | "wallet"
@@ -24,6 +25,7 @@ const paths: Record<IconName, unknown> = {
   home: svg`<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/>`,
   grid: svg`<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>`,
   calculator: svg`<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 10h2m4 0h2M8 14h2m4 0h2M8 18h2m4 0h2"/>`,
+  calendar: svg`<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h2M14 14h2M8 18h2"/>`,
   arrow: svg`<path d="M4 12h16m-6-6 6 6-6 6"/>`,
   chart: svg`<path d="M3 3v18h18M6 15l5-5 4 3 6-8"/>`,
   wallet: svg`<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18m-5 4h5v4h-5Z"/>`,
