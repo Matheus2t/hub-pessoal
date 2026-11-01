@@ -13,6 +13,8 @@ async function store(page:Page){
 test('catalog review: stable references, Russian gender, ё and accepted variants',()=>{
  for(const l of ['en','ru']){
   const c=catalogs[l];expect(c.words.map(w=>w.id)).toEqual(Array.from({length:150},(_,i)=>`${l}-word-${String(i+1).padStart(3,'0')}`));
+  expect(c.phrases!.map(w=>w.id)).toEqual(Array.from({length:50},(_,i)=>`${l}-phrase-${String(i+1).padStart(3,'0')}`));
+  for(const [skill,ids] of [['listening',Array.from({length:30},(_,i)=>i+1)],['dictation',[17,...Array.from({length:29},(_,i)=>i+32)]],['writing',Array.from({length:40},(_,i)=>i+61)]] as const)expect(c.exercises.filter(e=>e.skill===skill).map(e=>e.id)).toEqual(ids.map(id=>`${l}-${skill}-${String(id).padStart(3,'0')}`));
   for(const e of c.exercises){const word=c.words.find(w=>w.id===e.wordIds[0])!;expect(word).toBeTruthy();expect(e.level).toBe(word.level);expect(e.topic).toBe(word.topic);if(e.skill==='dictation'){expect(e.answers).toEqual([word.example]);expect(e.audio).toBe(word.example);}for(const a of e.answers)expect(evaluateAnswer(a,e.answers,e.acceptYoAsE)).toBe(true);}
   expect(c.exercises.find(e=>e.id===`${l}-listening-009`)!.answers).toContain('boa noite');
  }
@@ -27,6 +29,7 @@ for(const l of ['en','ru'] as Language[])test(`combined vocabulary filters and p
  await page.getByLabel('Buscar palavra ou tradução').fill('viagem');await expect(page.locator('.learn-word')).toHaveCount(1);
  await page.getByLabel('Buscar palavra ou tradução').fill('água');await expect(page.locator('.learn-word')).toHaveCount(0);await expect(page.getByRole('button',{name:'Iniciar prática'})).toBeDisabled();
  await page.getByLabel('Buscar palavra ou tradução').fill('');await page.getByLabel('Nível').selectOption('');await expect(page.locator('.learn-word')).toHaveCount(15);await expect(page.locator('.learn-pagination')).toContainText('Página 1');
+ await page.getByRole('combobox',{name:/^Tema/}).selectOption('');await page.getByLabel('Buscar palavra ou tradução').fill('boa noite');await page.getByRole('button',{name:'Iniciar prática'}).click();await page.getByLabel('Sua resposta').fill('Boa noite!');await page.getByRole('button',{name:'Verificar resposta'}).click();await expect(page.locator('.learn-feedback')).toContainText('correto');
 });
 test('large v1 backup preserves due dates, language isolation and review filters after reload',async({page})=>{
  await page.goto('/#/learn/en');await store(page);const now=Date.now();

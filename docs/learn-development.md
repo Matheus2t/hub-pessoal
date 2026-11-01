@@ -1,32 +1,55 @@
-# 2T Learn — estado preservado da Etapa B (WIP)
+# 2T Learn — Etapa B concluída
 
-Branch: `codex/2t-learn`. Base da Etapa A: `2663526a96de35ec46cfcc312d7b5a3578d4fd6d`.
-Esta atualização preserva o trabalho conforme a solicitação de economia de uso.
-**Não anuncia conclusão definitiva de 100% da Etapa B. Não houve merge na main ou deploy de produção.**
+Revisão final: 01/11/2026. Branch: `codex/2t-learn`.
+Base preservada: `bcc1183e996a0290022277a8d5acc20d2f23787c`.
+Checkpoint de recuperação da auditoria: `6be0c4c` (também enviado ao GitHub).
 
-## Funcionalidades implementadas
+**Etapa B concluída no escopo funcional: Vocabulário, Flashcards, Listening,
+Ditado e Escrita, em Inglês e Russo. Sem regressões bloqueantes conhecidas.**
+Não houve merge na main nem publicação de produção. Etapa C não foi iniciada.
 
-- Vocabulário pesquisável por palavra/tradução, filtros por tema e nível, paginação,
-  exemplos e estado de estudo; prática de tradução com registro de tentativas.
-- Flashcards com revelação sem gravação, avaliação Esqueci/Difícil/Bom/Fácil e
-  atualização transacional via recordAttempt + schedule + newCard. Seleção de
-  palavras novas, revisões pendentes, aprendizagem, futuras, frases ou todas.
-- Listening, ditado e escrita, com respostas cadastradas, feedback, variantes
-  explícitas, validação de resposta vazia, próximo item e resumo da sessão.
-- Áudio via adaptador existente: voz no idioma escolhido, repetição/velocidade,
-  indisponibilidade explícita e bloqueio de resposta auditiva antes de ouvir até
-  o fim. Limpeza ao sair/trocar, sem substituir o russo por outro idioma.
-- Tentativas idempotentes por UUID, trava de envio, feedback de sucesso somente
-  após gravação, retry em falhas e guarda contra atualizações visuais atrasadas.
-- Histórico, revisão e estatísticas mantidos no IndexedDB existente, sem migração
-  destrutiva ou alteração da versão dos backups. Tempo registrado com base no
-  período visível da tentativa, limitado a dez minutos por resposta.
-- Rotas en/ru com vocabulary, flashcards, listening, dictation e writing; títulos
-  e breadcrumbs da modalidade. Leitura, Gramática e Avaliações seguem indisponíveis.
-- Learn continua sob demanda. Progresso completo aparece na página do idioma;
-  nas atividades, a questão recebe prioridade de espaço, especialmente no celular.
+## Revisado e corrigido
 
-## Quantidades reais por idioma
+- Revisão assistida dos 150 vocábulos e 50 frases de cada idioma e dos exercícios
+  derivados: grafia, exemplos, traduções, referências, classes gramaticais,
+  gêneros russos, cirílico, transliteração didática e política de е/ё.
+- Corrigido o gênero de `кровать` para feminino. Exceções de gênero ficam
+  explícitas no gerador. Classes de numerais/advérbios passam a usar IDs estáveis,
+  evitando depender da posição dessas entradas no arquivo-fonte.
+- Reclassificadas frases com construções mais complexas de A1 para A2 aproximado.
+  Esses níveis são orientativos: não houve certificação CEFR nem revisão humana.
+- Acrescentadas variantes explícitas de tradução em vocabulário e listening
+  (por exemplo, “boa noite”, “obrigada”, “uma”, “duas”) e de escrita
+  (por exemplo, “city center”, “round-trip ticket”, “He cycles to work”).
+  Retirada uma variante que acrescentava “por favor” à frase original em russo.
+  Nenhuma correção semântica automática foi introduzida.
+- A transição assíncrona do flashcard usa o idioma capturado na tentativa, sem
+  depender de uma propriedade que possa mudar enquanto o banco abre.
+- Novos testes cobrem filtros combinados, paginação, variantes, todos os graus,
+  revisões vencidas/futuras, histórico extenso e navegação durante escrita lenta.
+- Capturas agora abrangem as cinco modalidades, ambos os idiomas e temas.
+  Cada idioma usa uma página de teste separada para não sobrepor mocks de voz.
+
+## Funcionalidades validadas
+
+- Vocabulário: busca por palavra/tradução, filtros de tema e nível individuais e
+  combinados, paginação, exemplos, pronúncia quando disponível e tentativas salvas.
+- Flashcards: revelação sem escrita, Esqueci/Difícil/Bom/Fácil, intervalos e datas,
+  filtros de novas/pendentes/aprendizagem/futuras/frases/todas e recarga persistente.
+- Listening e ditado: idioma correto, repetição, velocidade, erro de reprodução,
+  ausência de voz e envio bloqueado até a conclusão do áudio; feedback e gravação.
+- Escrita: respostas corretas/incorretas/vazias, variantes cadastradas, explicação,
+  avanço e resumo da sessão. Ditado mantém ё distinta de е e normaliza caixa,
+  espaços e pontuação conforme o núcleo existente.
+- IndexedDB v1 preservado: deduplicação, falha de escrita/retry, transação atômica,
+  rollback, isolamento en/ru, recarga e restauração de backup v1 compatível.
+  Teste de volume utiliza 2.000 tentativas e 200 cartões, verifica todos os registros
+  e datas restaurados e os filtros nos dois idiomas. São fixtures exclusivas de teste.
+- Gravação pendente durante mudança de idioma e rota salva somente a tentativa
+  original, sem misturar o novo idioma ou inserir feedback na sessão substituta.
+  Não há migração destrutiva, renumeração ou alteração de versão do backup.
+
+## Conteúdo final
 
 | Categoria | Inglês | Russo |
 |---|---:|---:|
@@ -37,48 +60,66 @@ Esta atualização preserva o trabalho conforme a solicitação de economia de u
 | Escrita | 40 | 40 |
 | Total | 300 | 300 |
 
-A soma da tabela solicitada é 300 por idioma (600 nos dois idiomas), não 600 por
-idioma. Flashcards derivados não entram novamente na contagem. Os exercícios
-reutilizam pedagogicamente palavras/frases do catálogo: não são 600 textos
-independentes originais. Instruções auditivas podem coincidir, mas os estímulos
-são distintos e o validador verifica isso. Os catálogos não contêm fixtures de teste.
+Total geral: **600 itens**. Flashcards derivados não são contados novamente.
+Os exercícios reutilizam contextos do vocabulário; não são 600 textos independentes.
+Fontes: `scripts/learn/vocabulary.tsv`, `phrases.tsv` e `build-catalogs.py`.
+Comparação com o commit WIP confirmou todos os 600 IDs na mesma ordem.
+Executar novamente o gerador produziu JSON idêntico (SHA-256 dos arquivos).
 
-Fontes editáveis em `scripts/learn/vocabulary.tsv` e `phrases.tsv`, com IDs
-explícitos. `python scripts/learn/build-catalogs.py` gera os JSON; IDs de exercícios
-são derivados dos IDs das entradas, não de sua posição. Não renumerar IDs existentes.
-Russo em cirílico, gêneros quando pertinentes, ё preservada e transliteração didática
-opcional (não é transcrição fonética). Níveis são referências aproximadas A1/A2.
-**Não houve revisão linguística humana.** Traduções alternativas fora das variantes
-cadastradas não recebem correção semântica; a interface informa essa limitação.
+## Validação final e reprodução
 
-## Validações executadas
+- `npm run build`: aprovado, incluindo `tsc --noEmit` e build esbuild/SCSS.
+- `$env:PYTHONPATH='backend'; python -m pytest backend/tests -q --basetemp=.vercel/pytest-learn-b-final-20261101`:
+  **101 aprovados**. Usar um novo sufixo de pasta temporária em futuras execuções
+  evita conflitos de permissão com artefatos existentes.
+- `npx playwright test --output=.vercel/learn-b-final`: **136 aprovados, 1 falho,
+  1 ignorado** na execução integral. O caso falho de proteção pública brapi exige
+  servidor com `VERCEL=1`; o servidor inicial estava em modo local, no qual a
+  disponibilidade é intencional. Nenhum código de mercado foi alterado.
+- Servidor isolado com `VERCEL=1`, `PUBLIC_HISTORY_ENABLED=false` e
+  `MARKET_DATA_PUBLIC_ENABLED=false` em 8124; `/api/health` confirmado HTTP 200.
+  Com `BASE_URL=http://127.0.0.1:8124`, repetidos somente o caso brapi e os cinco
+  testes de capturas com o isolamento de mocks corrigido: **6 aprovados**.
+- Resultado consolidado: **137 testes distintos aprovados e 1 ignorado**.
+  Os 9 testes adicionais da auditoria passaram na rodada integral. O teste live
+  TradingView é optativo, permaneceu desativado e não conta como aprovado.
+- Capturas finais: 1920/1366/768/390/320 px × en/ru × claro/escuro × cinco
+  modalidades = **100 capturas**, sem overflow horizontal nos testes.
+  Inspeção visual dos painéis de revisão das cinco larguras e amostras em tamanho
+  original confirmou disposição, quebras de linha e legibilidade; sem redesign.
+- Artefatos locais ignorados pelo Git: `.vercel/learn-b-final` e
+  `.vercel/learn-b-final-verified`. `git diff --check`: aprovado.
 
-- Build final e typecheck: aprovados.
-- `git diff --check`: sem erros.
-- Pytest: 101 aprovados.
-- Testes específicos mais recentes da Etapa B: 11 aprovados, incluindo conteúdo,
-  variantes, fluxos en/ru, ausência de voz, erro de gravação e capturas responsivas.
-- Suíte geral Playwright: 128 aprovados, 1 teste live TradingView optativo desativado.
-- Capturas já geradas nas larguras 1920/1366/768/390/320 em claro e escuro;
-  inspecionadas telas de flashcards, escrita e ditado. Sem overflow nos testes.
-- Áudio automatizado usa mocks controlados: isso NÃO comprova pronúncia nem
-  funcionamento de uma voz real instalada. Nenhuma validação auditiva humana foi feita.
-- A primeira execução específica encontrou um teste que tentava reiniciar uma
-  sessão navegando para o mesmo hash; o teste foi corrigido para encerrar pelas
-  opções e as execuções posteriores passaram. Não houve descarte de progresso.
+O servidor deve estar acessível antes do Playwright. Para reproduzir a suíte inteira,
+na raiz do projeto, iniciar um terminal com:
 
-## Pendências para fechamento definitivo
+```powershell
+$env:VERCEL='1'
+$env:PUBLIC_HISTORY_ENABLED='false'
+$env:MARKET_DATA_PUBLIC_ENABLED='false'
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8123
+```
 
-- Revisão final do material linguístico e das variantes aceitas, sem alegar
-  revisão humana ou certificação CEFR inexistentes.
-- Ampliar a cobertura dos fluxos menos comuns: filtros combinados, revisões
-  vencidas/futuras com históricos extensos e troca de rota durante gravação lenta.
-  Há guardas implementadas, mas não se afirma cobertura automatizada exaustiva.
-- Validar vozes reais nos navegadores/sistemas-alvo quando disponíveis.
-- Reexecutar uma rodada final integral após qualquer correção futura; não iniciar
-  novas funcionalidades para esta preservação de estado.
-- Etapa C permanece fora do escopo: leituras, gramática, avaliações gerais e
-  demais recursos avançados descritos no pedido original.
+Em outro terminal: `Invoke-WebRequest http://127.0.0.1:8123/api/health`, depois
+`npx playwright test`. Essas variáveis simulam políticas de produção somente no
+servidor local de testes; não representam deploy ou alteração na Vercel.
+
+## Limitações restantes e gravidade
+
+- **Não bloqueante no escopo aprovado:** o Edge automatizado retornou zero vozes
+  reais em `speechSynthesis.getVoices()`. Reprodução, erro, término, velocidade e
+  seleção de idioma foram testados com mocks, não por audição real. Listening e
+  ditado dependem de voz en/ru disponibilizada pelo navegador/sistema do usuário;
+  sem ela, a interface informa indisponibilidade e impede respostas sem áudio.
+  Resta conferir pronúncia e vozes reais nos dispositivos-alvo.
+- **Limite editorial não bloqueante:** revisão assistida, sem revisor linguístico
+  humano, certificação CEFR ou garantia de cobrir todas as traduções possíveis.
+  Transliteração russa é didática, não fonética; a distinção е/ё é intencional.
+  Variantes não cadastradas podem ser legítimas e a interface avisa essa limitação.
+- **Teste externo optativo não executado:** TradingView live, fora da Etapa B.
+- Não há pendência funcional bloqueante identificada nas cinco modalidades.
+  Leitura, gramática, avaliações gerais, plano diário, dashboard avançado, UI de
+  backup e sincronização continuam fora do escopo; não foram implementados.
 
 ## Registro histórico da Etapa A (antes da Etapa B)
 

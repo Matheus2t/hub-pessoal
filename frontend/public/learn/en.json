@@ -198,10 +198,7 @@
       "exampleTranslation": "Meu amigo está esperando lá fora.",
       "level": "A1",
       "topic": "Família e pessoas",
-      "part": "substantivo",
-      "translationVariants": [
-        "amiga"
-      ]
+      "part": "substantivo"
     },
     {
       "id": "en-word-017",
@@ -2495,8 +2492,7 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "amigo",
-        "amiga"
+        "amigo"
       ],
       "audio": "friend",
       "explanation": "A palavra ou expressão significa «amigo». Observe o exemplo: Meu amigo está esperando lá fora.",

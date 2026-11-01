@@ -11,7 +11,7 @@ phrases=[l.split('|') for l in Path('scripts/learn/phrases.tsv').read_text(encod
 assert len(phrases)==50
 assert len({r[3] for r in rows})==150, 'Duplicate vocabulary ID'
 assert len({r[0] for r in phrases})==50, 'Duplicate phrase ID'
-translation_variants={'001':['oi'],'002':['até mais','tchau'],'004':['obrigada'],'007':['com licença','perdão'],'009':['boa noite'],'010':['bem-vinda','bem-vindos','bem-vindas'],'016':['amiga'],'021':['uma'],'022':['duas']}
+translation_variants={'001':['oi'],'002':['até mais','tchau'],'004':['obrigada'],'007':['com licença','perdão'],'009':['boa noite'],'010':['bem-vinda','bem-vindos','bem-vindas'],'021':['uma'],'022':['duas']}
 for language,column in [('en',0),('ru',1)]:
  words=[]
  for index,(f,topic,part,stable) in enumerate(rows):

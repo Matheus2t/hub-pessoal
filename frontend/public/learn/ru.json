@@ -219,9 +219,6 @@
       "level": "A1",
       "topic": "Família e pessoas",
       "part": "substantivo",
-      "translationVariants": [
-        "amiga"
-      ],
       "gender": "masculino",
       "transliteration": "drug"
     },
@@ -2734,8 +2731,7 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "amigo",
-        "amiga"
+        "amigo"
       ],
       "audio": "друг",
       "explanation": "A palavra ou expressão significa «amigo». Observe o exemplo: Meu amigo está esperando lá fora.",
