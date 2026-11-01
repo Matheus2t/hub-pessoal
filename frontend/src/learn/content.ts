@@ -3,6 +3,12 @@ export interface Exercise {id:string;language:Language;skill:Skill;topic:string;
 export interface Reading {id:string;language:Language;title:string;topic:string;level:Word['level'];text:string;translation:string;vocabulary:string[];questionIds:string[]}
 export interface Lesson {id:string;language:Language;title:string;topic:string;level:Word['level'];objective:string;explanation:string;examples:{text:string;translation:string}[];commonErrors:string;questionIds:string[]}
 export interface Curriculum {language:Language;version:1;words:Word[];phrases?:Word[];exercises:Exercise[];readings?:Reading[];lessons?:Lesson[]}
+/** Labels and explanations are Portuguese; target-language answers are marked separately. */
+export function answerLanguage(e:Exercise):Language|'pt-BR' {
+ if(['vocabulary','listening','reading'].includes(e.skill)||e.skill==='test'&&['Vocabulário','Compreensão'].includes(e.topic))return 'pt-BR';
+ if(e.language==='ru'&&!/[А-Яа-яЁё]/.test(e.answers[0]))return 'pt-BR';
+ return e.language;
+}
 /** Content must pass before it can be exposed by the UI. No placeholder generation. */
 export function validateCurriculum(data:Curriculum):void {
   if(!['en','ru'].includes(data.language)||data.version!==1)throw Error('Idioma ou versão de conteúdo inválidos.');
