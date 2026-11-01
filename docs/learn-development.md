@@ -56,6 +56,15 @@ Etapas A, B, C, D e E concluídas no escopo funcional homologado.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilidades reportadas.
   CSP e permissões preservadas. Arquivos sensíveis permanecem fora do Git.
 
+Verificação posterior, no deployment documental `dpl_EKT3dyxaYKnvyXtw62zm6XYaupwR`
+(SHA `ce6bb3c`): os mesmos estáticos, APIs e 39 rotas passaram. Houve um registro
+não bloqueante no console ao abrir Ações: o pixel de rastreamento externo
+`snowplow-pixel.tradingview.com` foi bloqueado pela CSP existente. Não houve
+pageError, falha de request ou HTTP >=400 observado nessa passagem. O zero de
+consoleErrors acima descreve a primeira execução, não uma garantia de ausência
+permanente de mensagens de terceiros. A CSP não foi ampliada para permitir tracking.
+Não é bloqueio do Learn nem motivo para rollback de funcionalidades aprovadas.
+
 ## Conteúdo, dados e limitações públicas
 
 Por idioma: **150 palavras, 50 frases, 30 listening, 30 ditados, 40 escritas,
