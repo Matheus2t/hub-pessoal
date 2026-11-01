@@ -311,7 +311,7 @@ test("footer calendar opens on demand and navigates holidays", async ({ page }) 
   const dialog=page.getByRole("dialog",{name:"Calendário de feriados"});
   await expect(dialog).not.toBeVisible();
   const cards=page.locator("home-page .area-card");
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(4);
   const a=await cards.nth(0).boundingBox(),b=await cards.nth(1).boundingBox(),c=await cards.nth(2).boundingBox();
   if(!a||!b||!c)throw Error("Cards da home não renderizados");
   expect(Math.abs(b.y-a.y)).toBeLessThan(2);

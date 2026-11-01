@@ -27,6 +27,11 @@ export class HomePage extends LightElement {
             <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true" focusable="false"><path class="preview-grid" d="M10 90H190M10 60H190M10 30H190"/><path class="preview-line" d="M10 90Q90 78 190 16"/><path class="preview-wicks" stroke-dasharray="4 4" d="M10 90Q90 82 190 38"/></svg>
           </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
+        <a class="tool-card area-card area-learn" href="#/learn"><span class="area-icon">${icon("layers")}</span>
+          <div class="area-content"><div class="area-copy"><h2>2T Learn</h2><p>Inglês e russo. Vocabulário, exercícios e revisões.</p></div>
+            <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true"><path class="preview-line" d="M20 20h65q15 0 15 15v65q-15-12-30-12H20Zm160 0h-65q-15 0-15 15v65q15-12 30-12h50Z"/><path class="preview-grid" d="M34 40h40m-40 15h40m-40 15h30m62-30h40m-40 15h40m-40 15h30"/></svg>
+          </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
+        </a>
       </section>`;
   }
 }

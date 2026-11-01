@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,async({page},info)=>{
  await page.setViewportSize({width,height:900});await page.goto('/#/');
- await expect(page.locator('home-page .tool-card')).toHaveCount(3);
+ await expect(page.locator('home-page .tool-card')).toHaveCount(4);
  await expect(page.getByRole('heading',{name:'Início',exact:true})).toBeVisible();
  await expect(page.locator('home-page .platform-lead')).toHaveCount(0);
  await expect(page.locator('.platform-name, .area-index, .area-tag')).toHaveCount(0);

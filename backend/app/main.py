@@ -1,4 +1,5 @@
 from pathlib import Path
+import mimetypes
 from decimal import Decimal, InvalidOperation, localcontext
 from fastapi import Depends,FastAPI,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,6 +14,8 @@ from .schemas import CalculationInput,CalculationResult,HistoryItem
 from .finance import router as finance_router
 from .market import router as market_router
 from .sports import router as sports_router
+# Serverless Linux images may omit WebP from their system MIME database.
+mimetypes.add_type('image/webp', '.webp')
 app=FastAPI(title='Hub Pessoal API',version='1.0.0')
 app.include_router(finance_router)
 app.include_router(market_router)

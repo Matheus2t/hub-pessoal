@@ -1,0 +1,5924 @@
+{
+  "language": "ru",
+  "version": 1,
+  "words": [
+    {
+      "id": "ru-word-001",
+      "language": "ru",
+      "word": "здравствуйте",
+      "translation": "olá",
+      "example": "Здравствуйте, меня зовут Анна.",
+      "exampleTranslation": "Olá, meu nome é Ana.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "oi"
+      ],
+      "transliteration": "zdravstvuyte"
+    },
+    {
+      "id": "ru-word-002",
+      "language": "ru",
+      "word": "до свидания",
+      "translation": "até logo",
+      "example": "До свидания, до завтра.",
+      "exampleTranslation": "Até logo, até amanhã.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "até mais",
+        "tchau"
+      ],
+      "transliteration": "do svidaniya"
+    },
+    {
+      "id": "ru-word-003",
+      "language": "ru",
+      "word": "пожалуйста",
+      "translation": "por favor",
+      "example": "Пожалуйста, входите.",
+      "exampleTranslation": "Por favor, entre.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "transliteration": "pozhaluysta"
+    },
+    {
+      "id": "ru-word-004",
+      "language": "ru",
+      "word": "спасибо",
+      "translation": "obrigado",
+      "example": "Спасибо за помощь.",
+      "exampleTranslation": "Obrigado pela ajuda.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "obrigada"
+      ],
+      "transliteration": "spasibo"
+    },
+    {
+      "id": "ru-word-005",
+      "language": "ru",
+      "word": "да",
+      "translation": "sim",
+      "example": "Да, я понимаю.",
+      "exampleTranslation": "Sim, eu entendo.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "transliteration": "da"
+    },
+    {
+      "id": "ru-word-006",
+      "language": "ru",
+      "word": "нет",
+      "translation": "não",
+      "example": "Нет, я не готов.",
+      "exampleTranslation": "Não, não estou pronto.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "transliteration": "net"
+    },
+    {
+      "id": "ru-word-007",
+      "language": "ru",
+      "word": "извините",
+      "translation": "desculpe",
+      "example": "Извините, где выход?",
+      "exampleTranslation": "Desculpe, onde fica a saída?",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "com licença",
+        "perdão"
+      ],
+      "transliteration": "izvinite"
+    },
+    {
+      "id": "ru-word-008",
+      "language": "ru",
+      "word": "доброе утро",
+      "translation": "bom dia",
+      "example": "Доброе утро всем.",
+      "exampleTranslation": "Bom dia a todos.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "transliteration": "dobroe utro"
+    },
+    {
+      "id": "ru-word-009",
+      "language": "ru",
+      "word": "добрый вечер",
+      "translation": "boa noite ao chegar",
+      "example": "Добрый вечер, добро пожаловать.",
+      "exampleTranslation": "Boa noite, sejam bem-vindos.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "boa noite"
+      ],
+      "transliteration": "dobryy vecher"
+    },
+    {
+      "id": "ru-word-010",
+      "language": "ru",
+      "word": "добро пожаловать",
+      "translation": "bem-vindo",
+      "example": "Добро пожаловать в наш город.",
+      "exampleTranslation": "Bem-vindo à nossa cidade.",
+      "level": "A1",
+      "topic": "Cumprimentos",
+      "part": "expressão",
+      "translationVariants": [
+        "bem-vinda",
+        "bem-vindos",
+        "bem-vindas"
+      ],
+      "transliteration": "dobro pozhalovatʹ"
+    },
+    {
+      "id": "ru-word-011",
+      "language": "ru",
+      "word": "семья",
+      "translation": "família",
+      "example": "Моя семья живёт здесь.",
+      "exampleTranslation": "Minha família mora aqui.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "semʹya"
+    },
+    {
+      "id": "ru-word-012",
+      "language": "ru",
+      "word": "мама",
+      "translation": "mãe",
+      "example": "Моя мама — врач.",
+      "exampleTranslation": "Minha mãe é médica.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "mama"
+    },
+    {
+      "id": "ru-word-013",
+      "language": "ru",
+      "word": "папа",
+      "translation": "pai",
+      "example": "Мой папа любит музыку.",
+      "exampleTranslation": "Meu pai gosta de música.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "papa"
+    },
+    {
+      "id": "ru-word-014",
+      "language": "ru",
+      "word": "сестра",
+      "translation": "irmã",
+      "example": "Моя сестра изучает английский.",
+      "exampleTranslation": "Minha irmã estuda inglês.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "sestra"
+    },
+    {
+      "id": "ru-word-015",
+      "language": "ru",
+      "word": "брат",
+      "translation": "irmão",
+      "example": "Мой брат играет в футбол.",
+      "exampleTranslation": "Meu irmão joga futebol.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "brat"
+    },
+    {
+      "id": "ru-word-016",
+      "language": "ru",
+      "word": "друг",
+      "translation": "amigo",
+      "example": "Мой друг ждёт на улице.",
+      "exampleTranslation": "Meu amigo está esperando lá fora.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "drug"
+    },
+    {
+      "id": "ru-word-017",
+      "language": "ru",
+      "word": "ребёнок",
+      "translation": "criança",
+      "example": "Ребёнок спит.",
+      "exampleTranslation": "A criança está dormindo.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "rebyonok"
+    },
+    {
+      "id": "ru-word-018",
+      "language": "ru",
+      "word": "родители",
+      "translation": "pais",
+      "example": "Мои родители дома.",
+      "exampleTranslation": "Meus pais estão em casa.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "plural",
+      "transliteration": "roditeli"
+    },
+    {
+      "id": "ru-word-019",
+      "language": "ru",
+      "word": "имя",
+      "translation": "nome",
+      "example": "Напишите здесь ваше имя, пожалуйста.",
+      "exampleTranslation": "Escreva seu nome aqui, por favor.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "imya"
+    },
+    {
+      "id": "ru-word-020",
+      "language": "ru",
+      "word": "люди",
+      "translation": "pessoas",
+      "example": "В этом городе живёт много людей.",
+      "exampleTranslation": "Muitas pessoas moram nesta cidade.",
+      "level": "A1",
+      "topic": "Família e pessoas",
+      "part": "substantivo",
+      "gender": "plural",
+      "transliteration": "lyudi"
+    },
+    {
+      "id": "ru-word-021",
+      "language": "ru",
+      "word": "один",
+      "translation": "um",
+      "example": "У меня один билет.",
+      "exampleTranslation": "Tenho um bilhete.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "translationVariants": [
+        "uma"
+      ],
+      "transliteration": "odin"
+    },
+    {
+      "id": "ru-word-022",
+      "language": "ru",
+      "word": "два",
+      "translation": "dois",
+      "example": "Нам нужны два стула.",
+      "exampleTranslation": "Precisamos de duas cadeiras.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "translationVariants": [
+        "duas"
+      ],
+      "transliteration": "dva"
+    },
+    {
+      "id": "ru-word-023",
+      "language": "ru",
+      "word": "три",
+      "translation": "três",
+      "example": "На столе три книги.",
+      "exampleTranslation": "Há três livros na mesa.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "transliteration": "tri"
+    },
+    {
+      "id": "ru-word-024",
+      "language": "ru",
+      "word": "четыре",
+      "translation": "quatro",
+      "example": "Четыре студента ждут.",
+      "exampleTranslation": "Quatro estudantes estão esperando.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "transliteration": "chetyre"
+    },
+    {
+      "id": "ru-word-025",
+      "language": "ru",
+      "word": "пять",
+      "translation": "cinco",
+      "example": "Урок начнётся через пять минут.",
+      "exampleTranslation": "A aula começa em cinco minutos.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "transliteration": "pyatʹ"
+    },
+    {
+      "id": "ru-word-026",
+      "language": "ru",
+      "word": "десять",
+      "translation": "dez",
+      "example": "Магазин открывается в десять.",
+      "exampleTranslation": "A loja abre às dez.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "numeral",
+      "transliteration": "desyatʹ"
+    },
+    {
+      "id": "ru-word-027",
+      "language": "ru",
+      "word": "сегодня",
+      "translation": "hoje",
+      "example": "Сегодня я работаю дома.",
+      "exampleTranslation": "Hoje estou trabalhando em casa.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "advérbio",
+      "transliteration": "segodnya"
+    },
+    {
+      "id": "ru-word-028",
+      "language": "ru",
+      "word": "завтра",
+      "translation": "amanhã",
+      "example": "Завтра мы идём в музей.",
+      "exampleTranslation": "Amanhã vamos ao museu.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "advérbio",
+      "transliteration": "zavtra"
+    },
+    {
+      "id": "ru-word-029",
+      "language": "ru",
+      "word": "вчера",
+      "translation": "ontem",
+      "example": "Вчера было холодно.",
+      "exampleTranslation": "Ontem estava frio.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "advérbio",
+      "transliteration": "vchera"
+    },
+    {
+      "id": "ru-word-030",
+      "language": "ru",
+      "word": "неделя",
+      "translation": "semana",
+      "example": "На этой неделе у меня два экзамена.",
+      "exampleTranslation": "Nesta semana tenho duas provas.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "nedelya"
+    },
+    {
+      "id": "ru-word-031",
+      "language": "ru",
+      "word": "месяц",
+      "translation": "mês",
+      "example": "В следующем месяце мы переезжаем.",
+      "exampleTranslation": "No próximo mês vamos nos mudar.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "mesyats"
+    },
+    {
+      "id": "ru-word-032",
+      "language": "ru",
+      "word": "год",
+      "translation": "ano",
+      "example": "В этом году я хочу путешествовать.",
+      "exampleTranslation": "Neste ano quero viajar.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "god"
+    },
+    {
+      "id": "ru-word-033",
+      "language": "ru",
+      "word": "утро",
+      "translation": "manhã",
+      "example": "Я пью кофе каждое утро.",
+      "exampleTranslation": "Bebo café todas as manhãs.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "utro"
+    },
+    {
+      "id": "ru-word-034",
+      "language": "ru",
+      "word": "вечер",
+      "translation": "noite",
+      "example": "Мы проводим вечер дома.",
+      "exampleTranslation": "Vamos passar a noite em casa.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "vecher"
+    },
+    {
+      "id": "ru-word-035",
+      "language": "ru",
+      "word": "час",
+      "translation": "hora",
+      "example": "Поездка занимает один час.",
+      "exampleTranslation": "A viagem leva uma hora.",
+      "level": "A1",
+      "topic": "Números e tempo",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "chas"
+    },
+    {
+      "id": "ru-word-036",
+      "language": "ru",
+      "word": "вода",
+      "translation": "água",
+      "example": "Вода холодная.",
+      "exampleTranslation": "A água está fria.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "voda"
+    },
+    {
+      "id": "ru-word-037",
+      "language": "ru",
+      "word": "хлеб",
+      "translation": "pão",
+      "example": "Хлеб свежий.",
+      "exampleTranslation": "O pão está fresco.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "khleb"
+    },
+    {
+      "id": "ru-word-038",
+      "language": "ru",
+      "word": "молоко",
+      "translation": "leite",
+      "example": "В холодильнике есть молоко.",
+      "exampleTranslation": "Há leite na geladeira.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "moloko"
+    },
+    {
+      "id": "ru-word-039",
+      "language": "ru",
+      "word": "кофе",
+      "translation": "café",
+      "example": "Я хочу кофе без сахара.",
+      "exampleTranslation": "Quero café sem açúcar.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "kofe"
+    },
+    {
+      "id": "ru-word-040",
+      "language": "ru",
+      "word": "чай",
+      "translation": "chá",
+      "example": "Чай горячий.",
+      "exampleTranslation": "O chá está quente.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "chay"
+    },
+    {
+      "id": "ru-word-041",
+      "language": "ru",
+      "word": "яблоко",
+      "translation": "maçã",
+      "example": "Это яблоко сладкое.",
+      "exampleTranslation": "Esta maçã é doce.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "yabloko"
+    },
+    {
+      "id": "ru-word-042",
+      "language": "ru",
+      "word": "рис",
+      "translation": "arroz",
+      "example": "Рис готов.",
+      "exampleTranslation": "O arroz está pronto.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "ris"
+    },
+    {
+      "id": "ru-word-043",
+      "language": "ru",
+      "word": "суп",
+      "translation": "sopa",
+      "example": "Я готовлю овощной суп.",
+      "exampleTranslation": "Estou preparando sopa de legumes.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "sup"
+    },
+    {
+      "id": "ru-word-044",
+      "language": "ru",
+      "word": "сыр",
+      "translation": "queijo",
+      "example": "Нам нужен сыр на завтрак.",
+      "exampleTranslation": "Precisamos de queijo para o café da manhã.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "syr"
+    },
+    {
+      "id": "ru-word-045",
+      "language": "ru",
+      "word": "рыба",
+      "translation": "peixe",
+      "example": "Рыба на тарелке.",
+      "exampleTranslation": "O peixe está no prato.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "ryba"
+    },
+    {
+      "id": "ru-word-046",
+      "language": "ru",
+      "word": "мясо",
+      "translation": "carne",
+      "example": "Я не ем мясо.",
+      "exampleTranslation": "Não como carne.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "myaso"
+    },
+    {
+      "id": "ru-word-047",
+      "language": "ru",
+      "word": "овощи",
+      "translation": "legumes",
+      "example": "Вымойте овощи перед приготовлением.",
+      "exampleTranslation": "Lave os legumes antes de cozinhar.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "plural",
+      "transliteration": "ovoshchi"
+    },
+    {
+      "id": "ru-word-048",
+      "language": "ru",
+      "word": "фрукты",
+      "translation": "frutas",
+      "example": "На столе лежат фрукты.",
+      "exampleTranslation": "Há frutas na mesa.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "plural",
+      "transliteration": "frukty"
+    },
+    {
+      "id": "ru-word-049",
+      "language": "ru",
+      "word": "завтрак",
+      "translation": "café da manhã",
+      "example": "Завтрак в восемь.",
+      "exampleTranslation": "O café da manhã é às oito.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "zavtrak"
+    },
+    {
+      "id": "ru-word-050",
+      "language": "ru",
+      "word": "обед",
+      "translation": "almoço",
+      "example": "Мы обедаем вместе.",
+      "exampleTranslation": "Estamos almoçando juntos.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "obed"
+    },
+    {
+      "id": "ru-word-051",
+      "language": "ru",
+      "word": "ужин",
+      "translation": "jantar",
+      "example": "Ужин почти готов.",
+      "exampleTranslation": "O jantar está quase pronto.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "uzhin"
+    },
+    {
+      "id": "ru-word-052",
+      "language": "ru",
+      "word": "магазин",
+      "translation": "loja",
+      "example": "Магазин закрыт.",
+      "exampleTranslation": "A loja está fechada.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "magazin"
+    },
+    {
+      "id": "ru-word-053",
+      "language": "ru",
+      "word": "цена",
+      "translation": "preço",
+      "example": "Какая цена у этой сумки?",
+      "exampleTranslation": "Qual é o preço desta bolsa?",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "tsena"
+    },
+    {
+      "id": "ru-word-054",
+      "language": "ru",
+      "word": "деньги",
+      "translation": "dinheiro",
+      "example": "Я оставил деньги дома.",
+      "exampleTranslation": "Deixei meu dinheiro em casa.",
+      "level": "A1",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "plural",
+      "transliteration": "denʹgi"
+    },
+    {
+      "id": "ru-word-055",
+      "language": "ru",
+      "word": "чек",
+      "translation": "recibo",
+      "example": "Пожалуйста, сохраните чек.",
+      "exampleTranslation": "Por favor, guarde seu recibo.",
+      "level": "A2",
+      "topic": "Alimentação e compras",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "chek"
+    },
+    {
+      "id": "ru-word-056",
+      "language": "ru",
+      "word": "дом",
+      "translation": "casa",
+      "example": "Наш дом рядом с парком.",
+      "exampleTranslation": "Nossa casa fica perto do parque.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "dom"
+    },
+    {
+      "id": "ru-word-057",
+      "language": "ru",
+      "word": "комната",
+      "translation": "quarto",
+      "example": "Моя комната маленькая, но уютная.",
+      "exampleTranslation": "Meu quarto é pequeno, mas confortável.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "komnata"
+    },
+    {
+      "id": "ru-word-058",
+      "language": "ru",
+      "word": "кухня",
+      "translation": "cozinha",
+      "example": "Кухня внизу.",
+      "exampleTranslation": "A cozinha fica no andar de baixo.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "kukhnya"
+    },
+    {
+      "id": "ru-word-059",
+      "language": "ru",
+      "word": "ванная",
+      "translation": "banheiro",
+      "example": "Ванная слева.",
+      "exampleTranslation": "O banheiro fica à esquerda.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "vannaya"
+    },
+    {
+      "id": "ru-word-060",
+      "language": "ru",
+      "word": "дверь",
+      "translation": "porta",
+      "example": "Пожалуйста, закройте дверь.",
+      "exampleTranslation": "Por favor, feche a porta.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "dverʹ"
+    },
+    {
+      "id": "ru-word-061",
+      "language": "ru",
+      "word": "окно",
+      "translation": "janela",
+      "example": "Откройте окно, пожалуйста.",
+      "exampleTranslation": "Abra a janela, por favor.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "okno"
+    },
+    {
+      "id": "ru-word-062",
+      "language": "ru",
+      "word": "стол",
+      "translation": "mesa",
+      "example": "Положите ключи на стол.",
+      "exampleTranslation": "Coloque as chaves na mesa.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "stol"
+    },
+    {
+      "id": "ru-word-063",
+      "language": "ru",
+      "word": "стул",
+      "translation": "cadeira",
+      "example": "Этот стул свободен.",
+      "exampleTranslation": "Esta cadeira está livre.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "stul"
+    },
+    {
+      "id": "ru-word-064",
+      "language": "ru",
+      "word": "кровать",
+      "translation": "cama",
+      "example": "Кровать стоит рядом с окном.",
+      "exampleTranslation": "A cama fica ao lado da janela.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "krovatʹ"
+    },
+    {
+      "id": "ru-word-065",
+      "language": "ru",
+      "word": "ключ",
+      "translation": "chave",
+      "example": "Я не могу найти ключ.",
+      "exampleTranslation": "Não consigo encontrar minha chave.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "klyuch"
+    },
+    {
+      "id": "ru-word-066",
+      "language": "ru",
+      "word": "сумка",
+      "translation": "bolsa",
+      "example": "Моя сумка под стулом.",
+      "exampleTranslation": "Minha bolsa está debaixo da cadeira.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "sumka"
+    },
+    {
+      "id": "ru-word-067",
+      "language": "ru",
+      "word": "одежда",
+      "translation": "roupas",
+      "example": "Эта одежда чистая.",
+      "exampleTranslation": "Estas roupas estão limpas.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "odezhda"
+    },
+    {
+      "id": "ru-word-068",
+      "language": "ru",
+      "word": "обувь",
+      "translation": "calçados",
+      "example": "Пожалуйста, снимите обувь.",
+      "exampleTranslation": "Por favor, tire os calçados.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "obuvʹ"
+    },
+    {
+      "id": "ru-word-069",
+      "language": "ru",
+      "word": "свет",
+      "translation": "luz",
+      "example": "Включите свет, пожалуйста.",
+      "exampleTranslation": "Acenda a luz, por favor.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "svet"
+    },
+    {
+      "id": "ru-word-070",
+      "language": "ru",
+      "word": "сад",
+      "translation": "jardim",
+      "example": "Дети играют в саду.",
+      "exampleTranslation": "As crianças estão brincando no jardim.",
+      "level": "A1",
+      "topic": "Casa e rotina",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "sad"
+    },
+    {
+      "id": "ru-word-071",
+      "language": "ru",
+      "word": "работа",
+      "translation": "trabalho",
+      "example": "Я заканчиваю работу в шесть.",
+      "exampleTranslation": "Termino o trabalho às seis.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "rabota"
+    },
+    {
+      "id": "ru-word-072",
+      "language": "ru",
+      "word": "офис",
+      "translation": "escritório",
+      "example": "Наш офис на третьем этаже.",
+      "exampleTranslation": "Nosso escritório fica no terceiro andar.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "ofis"
+    },
+    {
+      "id": "ru-word-073",
+      "language": "ru",
+      "word": "встреча",
+      "translation": "reunião",
+      "example": "Встреча начнётся через десять минут.",
+      "exampleTranslation": "A reunião começa em dez minutos.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "vstrecha"
+    },
+    {
+      "id": "ru-word-074",
+      "language": "ru",
+      "word": "коллега",
+      "translation": "colega de trabalho",
+      "example": "Мой коллега говорит по-русски.",
+      "exampleTranslation": "Meu colega de trabalho fala russo.",
+      "level": "A2",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "comum",
+      "transliteration": "kollega"
+    },
+    {
+      "id": "ru-word-075",
+      "language": "ru",
+      "word": "должность",
+      "translation": "cargo",
+      "example": "Эта должность требует опыта.",
+      "exampleTranslation": "Este cargo exige experiência.",
+      "level": "A2",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "dolzhnostʹ"
+    },
+    {
+      "id": "ru-word-076",
+      "language": "ru",
+      "word": "школа",
+      "translation": "escola",
+      "example": "Школа находится напротив библиотеки.",
+      "exampleTranslation": "A escola fica em frente à biblioteca.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "shkola"
+    },
+    {
+      "id": "ru-word-077",
+      "language": "ru",
+      "word": "университет",
+      "translation": "universidade",
+      "example": "Она учится в университете.",
+      "exampleTranslation": "Ela estuda na universidade.",
+      "level": "A2",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "universitet"
+    },
+    {
+      "id": "ru-word-078",
+      "language": "ru",
+      "word": "студент",
+      "translation": "estudante",
+      "example": "Студент читает письмо.",
+      "exampleTranslation": "O estudante está lendo uma carta.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "student"
+    },
+    {
+      "id": "ru-word-079",
+      "language": "ru",
+      "word": "учитель",
+      "translation": "professor",
+      "example": "Учитель объясняет правило.",
+      "exampleTranslation": "O professor explica a regra.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "uchitelʹ"
+    },
+    {
+      "id": "ru-word-080",
+      "language": "ru",
+      "word": "книга",
+      "translation": "livro",
+      "example": "В этой книге много картинок.",
+      "exampleTranslation": "Este livro tem muitas imagens.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "kniga"
+    },
+    {
+      "id": "ru-word-081",
+      "language": "ru",
+      "word": "тетрадь",
+      "translation": "caderno",
+      "example": "Запишите ответ в тетрадь.",
+      "exampleTranslation": "Escreva a resposta no caderno.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "tetradʹ"
+    },
+    {
+      "id": "ru-word-082",
+      "language": "ru",
+      "word": "урок",
+      "translation": "aula",
+      "example": "Наш урок длится сорок минут.",
+      "exampleTranslation": "Nossa aula dura quarenta minutos.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "urok"
+    },
+    {
+      "id": "ru-word-083",
+      "language": "ru",
+      "word": "вопрос",
+      "translation": "pergunta",
+      "example": "У меня вопрос об этом слове.",
+      "exampleTranslation": "Tenho uma pergunta sobre esta palavra.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "vopros"
+    },
+    {
+      "id": "ru-word-084",
+      "language": "ru",
+      "word": "ответ",
+      "translation": "resposta",
+      "example": "Ваш ответ правильный.",
+      "exampleTranslation": "Sua resposta está correta.",
+      "level": "A1",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "otvet"
+    },
+    {
+      "id": "ru-word-085",
+      "language": "ru",
+      "word": "экзамен",
+      "translation": "prova",
+      "example": "Экзамен в пятницу.",
+      "exampleTranslation": "A prova é na sexta-feira.",
+      "level": "A2",
+      "topic": "Trabalho e estudos",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "ekzamen"
+    },
+    {
+      "id": "ru-word-086",
+      "language": "ru",
+      "word": "автобус",
+      "translation": "ônibus",
+      "example": "Автобус останавливается здесь.",
+      "exampleTranslation": "O ônibus para aqui.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "avtobus"
+    },
+    {
+      "id": "ru-word-087",
+      "language": "ru",
+      "word": "поезд",
+      "translation": "trem",
+      "example": "Наш поезд отправляется в полдень.",
+      "exampleTranslation": "Nosso trem parte ao meio-dia.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "poezd"
+    },
+    {
+      "id": "ru-word-088",
+      "language": "ru",
+      "word": "машина",
+      "translation": "carro",
+      "example": "Моя машина в гараже.",
+      "exampleTranslation": "Meu carro está na garagem.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "mashina"
+    },
+    {
+      "id": "ru-word-089",
+      "language": "ru",
+      "word": "велосипед",
+      "translation": "bicicleta",
+      "example": "Он ездит на работу на велосипеде.",
+      "exampleTranslation": "Ele vai de bicicleta para o trabalho.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "velosiped"
+    },
+    {
+      "id": "ru-word-090",
+      "language": "ru",
+      "word": "станция",
+      "translation": "estação",
+      "example": "Какая станция следующая?",
+      "exampleTranslation": "Qual é a próxima estação?",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "stantsiya"
+    },
+    {
+      "id": "ru-word-091",
+      "language": "ru",
+      "word": "аэропорт",
+      "translation": "aeroporto",
+      "example": "Мы едем в аэропорт.",
+      "exampleTranslation": "Estamos indo ao aeroporto.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "aeroport"
+    },
+    {
+      "id": "ru-word-092",
+      "language": "ru",
+      "word": "билет",
+      "translation": "bilhete",
+      "example": "Мне нужен билет туда и обратно.",
+      "exampleTranslation": "Preciso de um bilhete de ida e volta.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "bilet"
+    },
+    {
+      "id": "ru-word-093",
+      "language": "ru",
+      "word": "паспорт",
+      "translation": "passaporte",
+      "example": "Покажите паспорт, пожалуйста.",
+      "exampleTranslation": "Mostre seu passaporte, por favor.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "pasport"
+    },
+    {
+      "id": "ru-word-094",
+      "language": "ru",
+      "word": "гостиница",
+      "translation": "hotel",
+      "example": "Наша гостиница в центре города.",
+      "exampleTranslation": "Nosso hotel fica no centro da cidade.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "gostinitsa"
+    },
+    {
+      "id": "ru-word-095",
+      "language": "ru",
+      "word": "улица",
+      "translation": "rua",
+      "example": "Эта улица очень тихая.",
+      "exampleTranslation": "Esta rua é muito tranquila.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "ulitsa"
+    },
+    {
+      "id": "ru-word-096",
+      "language": "ru",
+      "word": "город",
+      "translation": "cidade",
+      "example": "Я впервые в этом городе.",
+      "exampleTranslation": "Estou visitando esta cidade pela primeira vez.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "gorod"
+    },
+    {
+      "id": "ru-word-097",
+      "language": "ru",
+      "word": "карта",
+      "translation": "mapa",
+      "example": "Можете показать мне на карте?",
+      "exampleTranslation": "Pode me mostrar no mapa?",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "karta"
+    },
+    {
+      "id": "ru-word-098",
+      "language": "ru",
+      "word": "налево",
+      "translation": "à esquerda",
+      "example": "Поверните налево на светофоре.",
+      "exampleTranslation": "Vire à esquerda no semáforo.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "advérbio",
+      "transliteration": "nalevo"
+    },
+    {
+      "id": "ru-word-099",
+      "language": "ru",
+      "word": "направо",
+      "translation": "à direita",
+      "example": "Поверните направо после моста.",
+      "exampleTranslation": "Vire à direita depois da ponte.",
+      "level": "A1",
+      "topic": "Transporte e viagens",
+      "part": "advérbio",
+      "transliteration": "napravo"
+    },
+    {
+      "id": "ru-word-100",
+      "language": "ru",
+      "word": "поездка",
+      "translation": "viagem",
+      "example": "Поездка была очень интересной.",
+      "exampleTranslation": "A viagem foi muito interessante.",
+      "level": "A2",
+      "topic": "Transporte e viagens",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "poezdka"
+    },
+    {
+      "id": "ru-word-101",
+      "language": "ru",
+      "word": "компьютер",
+      "translation": "computador",
+      "example": "Мой компьютер не работает.",
+      "exampleTranslation": "Meu computador não está funcionando.",
+      "level": "A1",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "kompʹyuter"
+    },
+    {
+      "id": "ru-word-102",
+      "language": "ru",
+      "word": "телефон",
+      "translation": "telefone",
+      "example": "Ваш телефон звонит.",
+      "exampleTranslation": "Seu telefone está tocando.",
+      "level": "A1",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "telefon"
+    },
+    {
+      "id": "ru-word-103",
+      "language": "ru",
+      "word": "пароль",
+      "translation": "senha",
+      "example": "Не сообщайте никому свой пароль.",
+      "exampleTranslation": "Não compartilhe sua senha.",
+      "level": "A2",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "parolʹ"
+    },
+    {
+      "id": "ru-word-104",
+      "language": "ru",
+      "word": "сообщение",
+      "translation": "mensagem",
+      "example": "Я получил ваше сообщение.",
+      "exampleTranslation": "Recebi sua mensagem.",
+      "level": "A1",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "neutro",
+      "transliteration": "soobshchenie"
+    },
+    {
+      "id": "ru-word-105",
+      "language": "ru",
+      "word": "интернет",
+      "translation": "internet",
+      "example": "Здесь нет интернета.",
+      "exampleTranslation": "Não há internet aqui.",
+      "level": "A1",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "internet"
+    },
+    {
+      "id": "ru-word-106",
+      "language": "ru",
+      "word": "сайт",
+      "translation": "site",
+      "example": "Этот сайт полезный.",
+      "exampleTranslation": "Este site é útil.",
+      "level": "A2",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "sayt"
+    },
+    {
+      "id": "ru-word-107",
+      "language": "ru",
+      "word": "файл",
+      "translation": "arquivo",
+      "example": "Сохраните файл перед закрытием.",
+      "exampleTranslation": "Salve o arquivo antes de fechá-lo.",
+      "level": "A2",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "fayl"
+    },
+    {
+      "id": "ru-word-108",
+      "language": "ru",
+      "word": "экран",
+      "translation": "tela",
+      "example": "Экран слишком яркий.",
+      "exampleTranslation": "A tela está brilhante demais.",
+      "level": "A2",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "ekran"
+    },
+    {
+      "id": "ru-word-109",
+      "language": "ru",
+      "word": "врач",
+      "translation": "médico",
+      "example": "Мне нужно к врачу.",
+      "exampleTranslation": "Preciso consultar um médico.",
+      "level": "A1",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "masculino",
+      "transliteration": "vrach"
+    },
+    {
+      "id": "ru-word-110",
+      "language": "ru",
+      "word": "аптека",
+      "translation": "farmácia",
+      "example": "Поблизости есть аптека?",
+      "exampleTranslation": "Há uma farmácia por perto?",
+      "level": "A2",
+      "topic": "Tecnologia e saúde",
+      "part": "substantivo",
+      "gender": "feminino",
+      "transliteration": "apteka"
+    },
+    {
+      "id": "ru-word-111",
+      "language": "ru",
+      "word": "читать",
+      "translation": "ler",
+      "example": "Я люблю читать вечером.",
+      "exampleTranslation": "Gosto de ler à noite.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "chitatʹ"
+    },
+    {
+      "id": "ru-word-112",
+      "language": "ru",
+      "word": "писать",
+      "translation": "escrever",
+      "example": "Она любит писать письма.",
+      "exampleTranslation": "Ela gosta de escrever cartas.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "pisatʹ"
+    },
+    {
+      "id": "ru-word-113",
+      "language": "ru",
+      "word": "говорить",
+      "translation": "falar",
+      "example": "Вы говорите по-английски?",
+      "exampleTranslation": "Você fala inglês?",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "govoritʹ"
+    },
+    {
+      "id": "ru-word-114",
+      "language": "ru",
+      "word": "слушать",
+      "translation": "escutar",
+      "example": "Мы слушаем радио каждое утро.",
+      "exampleTranslation": "Escutamos rádio todas as manhãs.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "slushatʹ"
+    },
+    {
+      "id": "ru-word-115",
+      "language": "ru",
+      "word": "понимать",
+      "translation": "entender",
+      "example": "Я не понимаю это предложение.",
+      "exampleTranslation": "Não entendo esta frase.",
+      "level": "A2",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "ponimatʹ"
+    },
+    {
+      "id": "ru-word-116",
+      "language": "ru",
+      "word": "изучать",
+      "translation": "estudar",
+      "example": "Я хочу изучать русский язык.",
+      "exampleTranslation": "Quero estudar russo.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "izuchatʹ"
+    },
+    {
+      "id": "ru-word-117",
+      "language": "ru",
+      "word": "спрашивать",
+      "translation": "perguntar",
+      "example": "Не бойтесь спрашивать.",
+      "exampleTranslation": "Não tenha medo de perguntar.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "sprashivatʹ"
+    },
+    {
+      "id": "ru-word-118",
+      "language": "ru",
+      "word": "помогать",
+      "translation": "ajudar",
+      "example": "Я помогаю родителям по выходным.",
+      "exampleTranslation": "Ajudo meus pais nos fins de semana.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "pomogatʹ"
+    },
+    {
+      "id": "ru-word-119",
+      "language": "ru",
+      "word": "ждать",
+      "translation": "esperar",
+      "example": "Пожалуйста, подождите здесь.",
+      "exampleTranslation": "Por favor, espere aqui.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "zhdatʹ"
+    },
+    {
+      "id": "ru-word-120",
+      "language": "ru",
+      "word": "покупать",
+      "translation": "comprar",
+      "example": "Мы покупаем продукты по субботам.",
+      "exampleTranslation": "Compramos alimentos aos sábados.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "pokupatʹ"
+    },
+    {
+      "id": "ru-word-121",
+      "language": "ru",
+      "word": "готовить",
+      "translation": "cozinhar",
+      "example": "Он любит готовить для семьи.",
+      "exampleTranslation": "Ele gosta de cozinhar para a família.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "gotovitʹ"
+    },
+    {
+      "id": "ru-word-122",
+      "language": "ru",
+      "word": "есть",
+      "translation": "comer",
+      "example": "Что вы обычно едите на завтрак?",
+      "exampleTranslation": "O que você costuma comer no café da manhã?",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "estʹ"
+    },
+    {
+      "id": "ru-word-123",
+      "language": "ru",
+      "word": "пить",
+      "translation": "beber",
+      "example": "Я пью воду в течение дня.",
+      "exampleTranslation": "Bebo água durante o dia.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "pitʹ"
+    },
+    {
+      "id": "ru-word-124",
+      "language": "ru",
+      "word": "спать",
+      "translation": "dormir",
+      "example": "Я обычно сплю восемь часов.",
+      "exampleTranslation": "Normalmente durmo oito horas.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "spatʹ"
+    },
+    {
+      "id": "ru-word-125",
+      "language": "ru",
+      "word": "гулять",
+      "translation": "passear",
+      "example": "Мы гуляем в парке после ужина.",
+      "exampleTranslation": "Passeamos no parque depois do jantar.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "gulyatʹ"
+    },
+    {
+      "id": "ru-word-126",
+      "language": "ru",
+      "word": "путешествовать",
+      "translation": "viajar",
+      "example": "Она хочет путешествовать на поезде.",
+      "exampleTranslation": "Ela quer viajar de trem.",
+      "level": "A2",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "puteshestvovatʹ"
+    },
+    {
+      "id": "ru-word-127",
+      "language": "ru",
+      "word": "открывать",
+      "translation": "abrir",
+      "example": "Во сколько вы открываете магазин?",
+      "exampleTranslation": "A que horas vocês abrem a loja?",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "otkryvatʹ"
+    },
+    {
+      "id": "ru-word-128",
+      "language": "ru",
+      "word": "закрывать",
+      "translation": "fechar",
+      "example": "Пожалуйста, закройте окно перед уходом.",
+      "exampleTranslation": "Por favor, feche a janela antes de sair.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "zakryvatʹ"
+    },
+    {
+      "id": "ru-word-129",
+      "language": "ru",
+      "word": "находить",
+      "translation": "encontrar",
+      "example": "Я всегда нахожу здесь что-нибудь интересное.",
+      "exampleTranslation": "Sempre encontro algo interessante aqui.",
+      "level": "A1",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "nakhoditʹ"
+    },
+    {
+      "id": "ru-word-130",
+      "language": "ru",
+      "word": "помнить",
+      "translation": "lembrar",
+      "example": "Вы помните этот адрес?",
+      "exampleTranslation": "Você se lembra deste endereço?",
+      "level": "A2",
+      "topic": "Verbos frequentes",
+      "part": "verbo",
+      "transliteration": "pomnitʹ"
+    },
+    {
+      "id": "ru-word-131",
+      "language": "ru",
+      "word": "новый",
+      "translation": "novo",
+      "example": "У меня новый компьютер.",
+      "exampleTranslation": "Tenho um computador novo.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "novyy"
+    },
+    {
+      "id": "ru-word-132",
+      "language": "ru",
+      "word": "старый",
+      "translation": "antigo",
+      "example": "Это старое здание.",
+      "exampleTranslation": "Este é um prédio antigo.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "staryy"
+    },
+    {
+      "id": "ru-word-133",
+      "language": "ru",
+      "word": "большой",
+      "translation": "grande",
+      "example": "Они живут в большом доме.",
+      "exampleTranslation": "Eles moram em uma casa grande.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "bolʹshoy"
+    },
+    {
+      "id": "ru-word-134",
+      "language": "ru",
+      "word": "маленький",
+      "translation": "pequeno",
+      "example": "Я хочу маленький кофе.",
+      "exampleTranslation": "Quero um café pequeno.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "malenʹkiy"
+    },
+    {
+      "id": "ru-word-135",
+      "language": "ru",
+      "word": "хороший",
+      "translation": "bom",
+      "example": "Это хорошая идея.",
+      "exampleTranslation": "Esta é uma boa ideia.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "khoroshiy"
+    },
+    {
+      "id": "ru-word-136",
+      "language": "ru",
+      "word": "плохой",
+      "translation": "ruim",
+      "example": "Сегодня плохая погода.",
+      "exampleTranslation": "O tempo está ruim hoje.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "plokhoy"
+    },
+    {
+      "id": "ru-word-137",
+      "language": "ru",
+      "word": "горячий",
+      "translation": "quente",
+      "example": "Осторожно, суп горячий.",
+      "exampleTranslation": "Cuidado, a sopa está quente.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "goryachiy"
+    },
+    {
+      "id": "ru-word-138",
+      "language": "ru",
+      "word": "холодный",
+      "translation": "frio",
+      "example": "Я предпочитаю холодную воду.",
+      "exampleTranslation": "Prefiro água fria.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "kholodnyy"
+    },
+    {
+      "id": "ru-word-139",
+      "language": "ru",
+      "word": "лёгкий",
+      "translation": "fácil",
+      "example": "Это упражнение лёгкое.",
+      "exampleTranslation": "Este exercício é fácil.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "lyogkiy"
+    },
+    {
+      "id": "ru-word-140",
+      "language": "ru",
+      "word": "трудный",
+      "translation": "difícil",
+      "example": "Этот вопрос трудный.",
+      "exampleTranslation": "Esta pergunta é difícil.",
+      "level": "A2",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "trudnyy"
+    },
+    {
+      "id": "ru-word-141",
+      "language": "ru",
+      "word": "важный",
+      "translation": "importante",
+      "example": "У меня сегодня важная встреча.",
+      "exampleTranslation": "Tenho uma reunião importante hoje.",
+      "level": "A2",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "vazhnyy"
+    },
+    {
+      "id": "ru-word-142",
+      "language": "ru",
+      "word": "интересный",
+      "translation": "interessante",
+      "example": "Спасибо за интересный разговор.",
+      "exampleTranslation": "Obrigado por uma conversa interessante.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "interesnyy"
+    },
+    {
+      "id": "ru-word-143",
+      "language": "ru",
+      "word": "красивый",
+      "translation": "bonito",
+      "example": "Какой красивый вид!",
+      "exampleTranslation": "Que vista bonita!",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "krasivyy"
+    },
+    {
+      "id": "ru-word-144",
+      "language": "ru",
+      "word": "дорогой",
+      "translation": "caro",
+      "example": "Этот ресторан дорогой.",
+      "exampleTranslation": "Este restaurante é caro.",
+      "level": "A2",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "dorogoy"
+    },
+    {
+      "id": "ru-word-145",
+      "language": "ru",
+      "word": "дешёвый",
+      "translation": "barato",
+      "example": "Этот билет дешёвый.",
+      "exampleTranslation": "Este bilhete é barato.",
+      "level": "A2",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "deshyovyy"
+    },
+    {
+      "id": "ru-word-146",
+      "language": "ru",
+      "word": "быстрый",
+      "translation": "rápido",
+      "example": "Это быстрый поезд.",
+      "exampleTranslation": "Este é um trem rápido.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "bystryy"
+    },
+    {
+      "id": "ru-word-147",
+      "language": "ru",
+      "word": "медленный",
+      "translation": "lento",
+      "example": "Интернет-соединение медленное.",
+      "exampleTranslation": "A conexão com a internet está lenta.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "medlennyy"
+    },
+    {
+      "id": "ru-word-148",
+      "language": "ru",
+      "word": "готовый",
+      "translation": "pronto",
+      "example": "Вы готовы уходить?",
+      "exampleTranslation": "Você está pronto para sair?",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "gotovyy"
+    },
+    {
+      "id": "ru-word-149",
+      "language": "ru",
+      "word": "свободный",
+      "translation": "livre",
+      "example": "Вы свободны сегодня вечером?",
+      "exampleTranslation": "Você está livre esta noite?",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "svobodnyy"
+    },
+    {
+      "id": "ru-word-150",
+      "language": "ru",
+      "word": "счастливый",
+      "translation": "feliz",
+      "example": "Он счастливый человек.",
+      "exampleTranslation": "Ele é uma pessoa feliz.",
+      "level": "A1",
+      "topic": "Qualidades e cotidiano",
+      "part": "adjetivo",
+      "transliteration": "schastlivyy"
+    }
+  ],
+  "phrases": [
+    {
+      "id": "ru-phrase-001",
+      "language": "ru",
+      "word": "Не могли бы вы говорить медленнее?",
+      "translation": "Você poderia falar mais devagar, por favor?",
+      "example": "Не могли бы вы говорить медленнее?",
+      "exampleTranslation": "Você poderia falar mais devagar, por favor?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-002",
+      "language": "ru",
+      "word": "Я изучаю английский и русский языки.",
+      "translation": "Estou estudando inglês e russo.",
+      "example": "Я изучаю английский и русский языки.",
+      "exampleTranslation": "Estou estudando inglês e russo.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-003",
+      "language": "ru",
+      "word": "Повторите последнее слово, пожалуйста.",
+      "translation": "Você poderia repetir a última palavra?",
+      "example": "Повторите последнее слово, пожалуйста.",
+      "exampleTranslation": "Você poderia repetir a última palavra?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-004",
+      "language": "ru",
+      "word": "Как пишется ваша фамилия?",
+      "translation": "Como se escreve seu sobrenome?",
+      "example": "Как пишется ваша фамилия?",
+      "exampleTranslation": "Como se escreve seu sobrenome?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-005",
+      "language": "ru",
+      "word": "Я здесь с понедельника.",
+      "translation": "Estou aqui desde segunda-feira.",
+      "example": "Я здесь с понедельника.",
+      "exampleTranslation": "Estou aqui desde segunda-feira.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-006",
+      "language": "ru",
+      "word": "Это мой первый визит в Россию.",
+      "translation": "Esta é minha primeira visita à Rússia.",
+      "example": "Это мой первый визит в Россию.",
+      "exampleTranslation": "Esta é minha primeira visita à Rússia.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-007",
+      "language": "ru",
+      "word": "Я ищу ближайшую станцию.",
+      "translation": "Estou procurando a estação mais próxima.",
+      "example": "Я ищу ближайшую станцию.",
+      "exampleTranslation": "Estou procurando a estação mais próxima.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-008",
+      "language": "ru",
+      "word": "Этот автобус идёт в центр?",
+      "translation": "Este ônibus vai para o centro?",
+      "example": "Этот автобус идёт в центр?",
+      "exampleTranslation": "Este ônibus vai para o centro?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-009",
+      "language": "ru",
+      "word": "Где можно купить билет?",
+      "translation": "Onde posso comprar um bilhete?",
+      "example": "Где можно купить билет?",
+      "exampleTranslation": "Onde posso comprar um bilhete?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-010",
+      "language": "ru",
+      "word": "Это место занято?",
+      "translation": "Este lugar está ocupado?",
+      "example": "Это место занято?",
+      "exampleTranslation": "Este lugar está ocupado?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-011",
+      "language": "ru",
+      "word": "Я хотел бы забронировать номер на две ночи.",
+      "translation": "Gostaria de reservar um quarto por duas noites.",
+      "example": "Я хотел бы забронировать номер на две ночи.",
+      "exampleTranslation": "Gostaria de reservar um quarto por duas noites.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-012",
+      "language": "ru",
+      "word": "Во сколько подают завтрак?",
+      "translation": "A que horas o café da manhã é servido?",
+      "example": "Во сколько подают завтрак?",
+      "exampleTranslation": "A que horas o café da manhã é servido?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-013",
+      "language": "ru",
+      "word": "Можно меню, пожалуйста?",
+      "translation": "Pode me trazer o cardápio, por favor?",
+      "example": "Можно меню, пожалуйста?",
+      "exampleTranslation": "Pode me trazer o cardápio, por favor?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-014",
+      "language": "ru",
+      "word": "У меня аллергия на орехи.",
+      "translation": "Tenho alergia a castanhas.",
+      "example": "У меня аллергия на орехи.",
+      "exampleTranslation": "Tenho alergia a castanhas.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-015",
+      "language": "ru",
+      "word": "Можно счёт, пожалуйста?",
+      "translation": "Pode nos trazer a conta, por favor?",
+      "example": "Можно счёт, пожалуйста?",
+      "exampleTranslation": "Pode nos trazer a conta, por favor?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-016",
+      "language": "ru",
+      "word": "Можно заплатить картой?",
+      "translation": "Posso pagar com cartão?",
+      "example": "Можно заплатить картой?",
+      "exampleTranslation": "Posso pagar com cartão?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-017",
+      "language": "ru",
+      "word": "Я просто смотрю, спасибо.",
+      "translation": "Estou só olhando, obrigado.",
+      "example": "Я просто смотрю, спасибо.",
+      "exampleTranslation": "Estou só olhando, obrigado.",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-018",
+      "language": "ru",
+      "word": "У вас есть это меньшего размера?",
+      "translation": "Você tem isto em um tamanho menor?",
+      "example": "У вас есть это меньшего размера?",
+      "exampleTranslation": "Você tem isto em um tamanho menor?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-019",
+      "language": "ru",
+      "word": "Я хотел бы вернуть этот товар.",
+      "translation": "Gostaria de devolver este produto.",
+      "example": "Я хотел бы вернуть этот товар.",
+      "exampleTranslation": "Gostaria de devolver este produto.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-020",
+      "language": "ru",
+      "word": "Вы можете дать мне чек?",
+      "translation": "Você pode me dar um recibo?",
+      "example": "Вы можете дать мне чек?",
+      "exampleTranslation": "Você pode me dar um recibo?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-021",
+      "language": "ru",
+      "word": "У меня назначена встреча на три часа.",
+      "translation": "Tenho um compromisso marcado para as três.",
+      "example": "У меня назначена встреча на три часа.",
+      "exampleTranslation": "Tenho um compromisso marcado para as três.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-022",
+      "language": "ru",
+      "word": "Я опоздаю на десять минут.",
+      "translation": "Vou me atrasar dez minutos.",
+      "example": "Я опоздаю на десять минут.",
+      "exampleTranslation": "Vou me atrasar dez minutos.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-023",
+      "language": "ru",
+      "word": "Давайте встретимся перед библиотекой.",
+      "translation": "Vamos nos encontrar em frente à biblioteca.",
+      "example": "Давайте встретимся перед библиотекой.",
+      "exampleTranslation": "Vamos nos encontrar em frente à biblioteca.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-024",
+      "language": "ru",
+      "word": "Хотите ещё чаю?",
+      "translation": "Você gostaria de mais chá?",
+      "example": "Хотите ещё чаю?",
+      "exampleTranslation": "Você gostaria de mais chá?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-025",
+      "language": "ru",
+      "word": "Я уже отправил электронное письмо.",
+      "translation": "Já enviei o e-mail.",
+      "example": "Я уже отправил электронное письмо.",
+      "exampleTranslation": "Já enviei o e-mail.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-026",
+      "language": "ru",
+      "word": "Вы можете прислать мне адрес?",
+      "translation": "Você pode me enviar o endereço?",
+      "example": "Вы можете прислать мне адрес?",
+      "exampleTranslation": "Você pode me enviar o endereço?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-027",
+      "language": "ru",
+      "word": "Я не могу подключиться к интернету.",
+      "translation": "Não consigo me conectar à internet.",
+      "example": "Я не могу подключиться к интернету.",
+      "exampleTranslation": "Não consigo me conectar à internet.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-028",
+      "language": "ru",
+      "word": "Файл слишком большой для отправки.",
+      "translation": "O arquivo é grande demais para enviar.",
+      "example": "Файл слишком большой для отправки.",
+      "exampleTranslation": "O arquivo é grande demais para enviar.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-029",
+      "language": "ru",
+      "word": "Пожалуйста, не выключайте компьютер.",
+      "translation": "Por favor, não desligue o computador.",
+      "example": "Пожалуйста, не выключайте компьютер.",
+      "exampleTranslation": "Por favor, não desligue o computador.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-030",
+      "language": "ru",
+      "word": "Мне нужно зарядить телефон.",
+      "translation": "Preciso carregar meu telefone.",
+      "example": "Мне нужно зарядить телефон.",
+      "exampleTranslation": "Preciso carregar meu telefone.",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-031",
+      "language": "ru",
+      "word": "Где ближайшая аптека?",
+      "translation": "Onde fica a farmácia mais próxima?",
+      "example": "Где ближайшая аптека?",
+      "exampleTranslation": "Onde fica a farmácia mais próxima?",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-032",
+      "language": "ru",
+      "word": "У меня болит голова.",
+      "translation": "Estou com dor de cabeça.",
+      "example": "У меня болит голова.",
+      "exampleTranslation": "Estou com dor de cabeça.",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-033",
+      "language": "ru",
+      "word": "Я сегодня плохо себя чувствую.",
+      "translation": "Não estou me sentindo bem hoje.",
+      "example": "Я сегодня плохо себя чувствую.",
+      "exampleTranslation": "Não estou me sentindo bem hoje.",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-034",
+      "language": "ru",
+      "word": "Вы можете вызвать врача?",
+      "translation": "Você pode chamar um médico?",
+      "example": "Вы можете вызвать врача?",
+      "exampleTranslation": "Você pode chamar um médico?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-035",
+      "language": "ru",
+      "word": "Мне нужна помощь с этой анкетой.",
+      "translation": "Preciso de ajuda com este formulário.",
+      "example": "Мне нужна помощь с этой анкетой.",
+      "exampleTranslation": "Preciso de ajuda com este formulário.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-036",
+      "language": "ru",
+      "word": "Я обычно встаю в семь.",
+      "translation": "Normalmente me levanto às sete.",
+      "example": "Я обычно встаю в семь.",
+      "exampleTranslation": "Normalmente me levanto às sete.",
+      "level": "A1",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-037",
+      "language": "ru",
+      "word": "Сегодня вечером я собираюсь остаться дома.",
+      "translation": "Vou ficar em casa esta noite.",
+      "example": "Сегодня вечером я собираюсь остаться дома.",
+      "exampleTranslation": "Vou ficar em casa esta noite.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-038",
+      "language": "ru",
+      "word": "Завтра мы ужинаем с друзьями.",
+      "translation": "Amanhã vamos jantar com amigos.",
+      "example": "Завтра мы ужинаем с друзьями.",
+      "exampleTranslation": "Amanhã vamos jantar com amigos.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-039",
+      "language": "ru",
+      "word": "Я забыл принести тетрадь.",
+      "translation": "Esqueci de trazer meu caderno.",
+      "example": "Я забыл принести тетрадь.",
+      "exampleTranslation": "Esqueci de trazer meu caderno.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-040",
+      "language": "ru",
+      "word": "Вы можете объяснить это правило ещё раз?",
+      "translation": "Você pode explicar esta regra novamente?",
+      "example": "Вы можете объяснить это правило ещё раз?",
+      "exampleTranslation": "Você pode explicar esta regra novamente?",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-041",
+      "language": "ru",
+      "word": "Я предпочитаю читать, а не смотреть телевизор.",
+      "translation": "Prefiro ler a assistir à televisão.",
+      "example": "Я предпочитаю читать, а не смотреть телевизор.",
+      "exampleTranslation": "Prefiro ler a assistir à televisão.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-042",
+      "language": "ru",
+      "word": "Если пойдёт дождь, мы поедем на автобусе.",
+      "translation": "Se chover, vamos de ônibus.",
+      "example": "Если пойдёт дождь, мы поедем на автобусе.",
+      "exampleTranslation": "Se chover, vamos de ônibus.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-043",
+      "language": "ru",
+      "word": "Я не знаю, как туда добраться.",
+      "translation": "Não sei como chegar lá.",
+      "example": "Я не знаю, как туда добраться.",
+      "exampleTranslation": "Não sei como chegar lá.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-044",
+      "language": "ru",
+      "word": "Музей закрыт по вторникам.",
+      "translation": "O museu fecha às terças-feiras.",
+      "example": "Музей закрыт по вторникам.",
+      "exampleTranslation": "O museu fecha às terças-feiras.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-045",
+      "language": "ru",
+      "word": "Вам не нужно ничего приносить.",
+      "translation": "Você não precisa trazer nada.",
+      "example": "Вам не нужно ничего приносить.",
+      "exampleTranslation": "Você não precisa trazer nada.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-046",
+      "language": "ru",
+      "word": "Я хотел бы попрактиковаться в разговорной речи.",
+      "translation": "Gostaria de praticar a conversação.",
+      "example": "Я хотел бы попрактиковаться в разговорной речи.",
+      "exampleTranslation": "Gostaria de praticar a conversação.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-047",
+      "language": "ru",
+      "word": "У этого слова два разных значения.",
+      "translation": "Esta palavra tem dois significados diferentes.",
+      "example": "У этого слова два разных значения.",
+      "exampleTranslation": "Esta palavra tem dois significados diferentes.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-048",
+      "language": "ru",
+      "word": "Пожалуйста, скажите мне, если я сделаю ошибку.",
+      "translation": "Por favor, me avise se eu cometer um erro.",
+      "example": "Пожалуйста, скажите мне, если я сделаю ошибку.",
+      "exampleTranslation": "Por favor, me avise se eu cometer um erro.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-049",
+      "language": "ru",
+      "word": "У нас достаточно времени до отправления поезда.",
+      "translation": "Temos tempo suficiente antes da partida do trem.",
+      "example": "У нас достаточно времени до отправления поезда.",
+      "exampleTranslation": "Temos tempo suficiente antes da partida do trem.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    },
+    {
+      "id": "ru-phrase-050",
+      "language": "ru",
+      "word": "Мне понравился наш разговор.",
+      "translation": "Gostei da nossa conversa.",
+      "example": "Мне понравился наш разговор.",
+      "exampleTranslation": "Gostei da nossa conversa.",
+      "level": "A2",
+      "topic": "Expressões contextualizadas",
+      "part": "frase"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ru-listening-001",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "olá",
+        "oi"
+      ],
+      "audio": "здравствуйте",
+      "explanation": "A palavra ou expressão significa «olá». Observe o exemplo: Olá, meu nome é Ana.",
+      "wordIds": [
+        "ru-word-001"
+      ]
+    },
+    {
+      "id": "ru-listening-002",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "até logo",
+        "até mais",
+        "tchau"
+      ],
+      "audio": "до свидания",
+      "explanation": "A palavra ou expressão significa «até logo». Observe o exemplo: Até logo, até amanhã.",
+      "wordIds": [
+        "ru-word-002"
+      ]
+    },
+    {
+      "id": "ru-listening-003",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "por favor"
+      ],
+      "audio": "пожалуйста",
+      "explanation": "A palavra ou expressão significa «por favor». Observe o exemplo: Por favor, entre.",
+      "wordIds": [
+        "ru-word-003"
+      ]
+    },
+    {
+      "id": "ru-listening-004",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "obrigado",
+        "obrigada"
+      ],
+      "audio": "спасибо",
+      "explanation": "A palavra ou expressão significa «obrigado». Observe o exemplo: Obrigado pela ajuda.",
+      "wordIds": [
+        "ru-word-004"
+      ]
+    },
+    {
+      "id": "ru-listening-005",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "sim"
+      ],
+      "audio": "да",
+      "explanation": "A palavra ou expressão significa «sim». Observe o exemplo: Sim, eu entendo.",
+      "wordIds": [
+        "ru-word-005"
+      ]
+    },
+    {
+      "id": "ru-listening-006",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "não"
+      ],
+      "audio": "нет",
+      "explanation": "A palavra ou expressão significa «não». Observe o exemplo: Não, não estou pronto.",
+      "wordIds": [
+        "ru-word-006"
+      ]
+    },
+    {
+      "id": "ru-listening-007",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "desculpe",
+        "com licença",
+        "perdão"
+      ],
+      "audio": "извините",
+      "explanation": "A palavra ou expressão significa «desculpe». Observe o exemplo: Desculpe, onde fica a saída?",
+      "wordIds": [
+        "ru-word-007"
+      ]
+    },
+    {
+      "id": "ru-listening-008",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "bom dia"
+      ],
+      "audio": "доброе утро",
+      "explanation": "A palavra ou expressão significa «bom dia». Observe o exemplo: Bom dia a todos.",
+      "wordIds": [
+        "ru-word-008"
+      ]
+    },
+    {
+      "id": "ru-listening-009",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "boa noite ao chegar",
+        "boa noite"
+      ],
+      "audio": "добрый вечер",
+      "explanation": "A palavra ou expressão significa «boa noite ao chegar». Observe o exemplo: Boa noite, sejam bem-vindos.",
+      "wordIds": [
+        "ru-word-009"
+      ]
+    },
+    {
+      "id": "ru-listening-010",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Cumprimentos",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "bem-vindo",
+        "bem-vinda",
+        "bem-vindos",
+        "bem-vindas"
+      ],
+      "audio": "добро пожаловать",
+      "explanation": "A palavra ou expressão significa «bem-vindo». Observe o exemplo: Bem-vindo à nossa cidade.",
+      "wordIds": [
+        "ru-word-010"
+      ]
+    },
+    {
+      "id": "ru-listening-011",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "família"
+      ],
+      "audio": "семья",
+      "explanation": "A palavra ou expressão significa «família». Observe o exemplo: Minha família mora aqui.",
+      "wordIds": [
+        "ru-word-011"
+      ]
+    },
+    {
+      "id": "ru-listening-012",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "mãe"
+      ],
+      "audio": "мама",
+      "explanation": "A palavra ou expressão significa «mãe». Observe o exemplo: Minha mãe é médica.",
+      "wordIds": [
+        "ru-word-012"
+      ]
+    },
+    {
+      "id": "ru-listening-013",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "pai"
+      ],
+      "audio": "папа",
+      "explanation": "A palavra ou expressão significa «pai». Observe o exemplo: Meu pai gosta de música.",
+      "wordIds": [
+        "ru-word-013"
+      ]
+    },
+    {
+      "id": "ru-listening-014",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "irmã"
+      ],
+      "audio": "сестра",
+      "explanation": "A palavra ou expressão significa «irmã». Observe o exemplo: Minha irmã estuda inglês.",
+      "wordIds": [
+        "ru-word-014"
+      ]
+    },
+    {
+      "id": "ru-listening-015",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "irmão"
+      ],
+      "audio": "брат",
+      "explanation": "A palavra ou expressão significa «irmão». Observe o exemplo: Meu irmão joga futebol.",
+      "wordIds": [
+        "ru-word-015"
+      ]
+    },
+    {
+      "id": "ru-listening-016",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "amigo"
+      ],
+      "audio": "друг",
+      "explanation": "A palavra ou expressão significa «amigo». Observe o exemplo: Meu amigo está esperando lá fora.",
+      "wordIds": [
+        "ru-word-016"
+      ]
+    },
+    {
+      "id": "ru-listening-017",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "criança"
+      ],
+      "audio": "ребёнок",
+      "explanation": "A palavra ou expressão significa «criança». Observe o exemplo: A criança está dormindo.",
+      "wordIds": [
+        "ru-word-017"
+      ]
+    },
+    {
+      "id": "ru-listening-018",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "pais"
+      ],
+      "audio": "родители",
+      "explanation": "A palavra ou expressão significa «pais». Observe o exemplo: Meus pais estão em casa.",
+      "wordIds": [
+        "ru-word-018"
+      ]
+    },
+    {
+      "id": "ru-listening-019",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "nome"
+      ],
+      "audio": "имя",
+      "explanation": "A palavra ou expressão significa «nome». Observe o exemplo: Escreva seu nome aqui, por favor.",
+      "wordIds": [
+        "ru-word-019"
+      ]
+    },
+    {
+      "id": "ru-listening-020",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "pessoas"
+      ],
+      "audio": "люди",
+      "explanation": "A palavra ou expressão significa «pessoas». Observe o exemplo: Muitas pessoas moram nesta cidade.",
+      "wordIds": [
+        "ru-word-020"
+      ]
+    },
+    {
+      "id": "ru-listening-021",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "um",
+        "uma"
+      ],
+      "audio": "один",
+      "explanation": "A palavra ou expressão significa «um». Observe o exemplo: Tenho um bilhete.",
+      "wordIds": [
+        "ru-word-021"
+      ]
+    },
+    {
+      "id": "ru-listening-022",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "dois",
+        "duas"
+      ],
+      "audio": "два",
+      "explanation": "A palavra ou expressão significa «dois». Observe o exemplo: Precisamos de duas cadeiras.",
+      "wordIds": [
+        "ru-word-022"
+      ]
+    },
+    {
+      "id": "ru-listening-023",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "três"
+      ],
+      "audio": "три",
+      "explanation": "A palavra ou expressão significa «três». Observe o exemplo: Há três livros na mesa.",
+      "wordIds": [
+        "ru-word-023"
+      ]
+    },
+    {
+      "id": "ru-listening-024",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "quatro"
+      ],
+      "audio": "четыре",
+      "explanation": "A palavra ou expressão significa «quatro». Observe o exemplo: Quatro estudantes estão esperando.",
+      "wordIds": [
+        "ru-word-024"
+      ]
+    },
+    {
+      "id": "ru-listening-025",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "cinco"
+      ],
+      "audio": "пять",
+      "explanation": "A palavra ou expressão significa «cinco». Observe o exemplo: A aula começa em cinco minutos.",
+      "wordIds": [
+        "ru-word-025"
+      ]
+    },
+    {
+      "id": "ru-listening-026",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "dez"
+      ],
+      "audio": "десять",
+      "explanation": "A palavra ou expressão significa «dez». Observe o exemplo: A loja abre às dez.",
+      "wordIds": [
+        "ru-word-026"
+      ]
+    },
+    {
+      "id": "ru-listening-027",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "hoje"
+      ],
+      "audio": "сегодня",
+      "explanation": "A palavra ou expressão significa «hoje». Observe o exemplo: Hoje estou trabalhando em casa.",
+      "wordIds": [
+        "ru-word-027"
+      ]
+    },
+    {
+      "id": "ru-listening-028",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "amanhã"
+      ],
+      "audio": "завтра",
+      "explanation": "A palavra ou expressão significa «amanhã». Observe o exemplo: Amanhã vamos ao museu.",
+      "wordIds": [
+        "ru-word-028"
+      ]
+    },
+    {
+      "id": "ru-listening-029",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "ontem"
+      ],
+      "audio": "вчера",
+      "explanation": "A palavra ou expressão significa «ontem». Observe o exemplo: Ontem estava frio.",
+      "wordIds": [
+        "ru-word-029"
+      ]
+    },
+    {
+      "id": "ru-listening-030",
+      "language": "ru",
+      "skill": "listening",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Ouça e escreva o significado em português.",
+      "answers": [
+        "semana"
+      ],
+      "audio": "неделя",
+      "explanation": "A palavra ou expressão significa «semana». Observe o exemplo: Nesta semana tenho duas provas.",
+      "wordIds": [
+        "ru-word-030"
+      ]
+    },
+    {
+      "id": "ru-dictation-017",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Família e pessoas",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Ребёнок спит."
+      ],
+      "audio": "Ребёнок спит.",
+      "explanation": "Sentido da frase: A criança está dormindo.",
+      "wordIds": [
+        "ru-word-017"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-032",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "В этом году я хочу путешествовать."
+      ],
+      "audio": "В этом году я хочу путешествовать.",
+      "explanation": "Sentido da frase: Neste ano quero viajar.",
+      "wordIds": [
+        "ru-word-032"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-033",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Я пью кофе каждое утро."
+      ],
+      "audio": "Я пью кофе каждое утро.",
+      "explanation": "Sentido da frase: Bebo café todas as manhãs.",
+      "wordIds": [
+        "ru-word-033"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-034",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Мы проводим вечер дома."
+      ],
+      "audio": "Мы проводим вечер дома.",
+      "explanation": "Sentido da frase: Vamos passar a noite em casa.",
+      "wordIds": [
+        "ru-word-034"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-035",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Números e tempo",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Поездка занимает один час."
+      ],
+      "audio": "Поездка занимает один час.",
+      "explanation": "Sentido da frase: A viagem leva uma hora.",
+      "wordIds": [
+        "ru-word-035"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-036",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Вода холодная."
+      ],
+      "audio": "Вода холодная.",
+      "explanation": "Sentido da frase: A água está fria.",
+      "wordIds": [
+        "ru-word-036"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-037",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Хлеб свежий."
+      ],
+      "audio": "Хлеб свежий.",
+      "explanation": "Sentido da frase: O pão está fresco.",
+      "wordIds": [
+        "ru-word-037"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-038",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "В холодильнике есть молоко."
+      ],
+      "audio": "В холодильнике есть молоко.",
+      "explanation": "Sentido da frase: Há leite na geladeira.",
+      "wordIds": [
+        "ru-word-038"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-039",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Я хочу кофе без сахара."
+      ],
+      "audio": "Я хочу кофе без сахара.",
+      "explanation": "Sentido da frase: Quero café sem açúcar.",
+      "wordIds": [
+        "ru-word-039"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-040",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Чай горячий."
+      ],
+      "audio": "Чай горячий.",
+      "explanation": "Sentido da frase: O chá está quente.",
+      "wordIds": [
+        "ru-word-040"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-041",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Это яблоко сладкое."
+      ],
+      "audio": "Это яблоко сладкое.",
+      "explanation": "Sentido da frase: Esta maçã é doce.",
+      "wordIds": [
+        "ru-word-041"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-042",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Рис готов."
+      ],
+      "audio": "Рис готов.",
+      "explanation": "Sentido da frase: O arroz está pronto.",
+      "wordIds": [
+        "ru-word-042"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-043",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Я готовлю овощной суп."
+      ],
+      "audio": "Я готовлю овощной суп.",
+      "explanation": "Sentido da frase: Estou preparando sopa de legumes.",
+      "wordIds": [
+        "ru-word-043"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-044",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Нам нужен сыр на завтрак."
+      ],
+      "audio": "Нам нужен сыр на завтрак.",
+      "explanation": "Sentido da frase: Precisamos de queijo para o café da manhã.",
+      "wordIds": [
+        "ru-word-044"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-045",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Рыба на тарелке."
+      ],
+      "audio": "Рыба на тарелке.",
+      "explanation": "Sentido da frase: O peixe está no prato.",
+      "wordIds": [
+        "ru-word-045"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-046",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Я не ем мясо."
+      ],
+      "audio": "Я не ем мясо.",
+      "explanation": "Sentido da frase: Não como carne.",
+      "wordIds": [
+        "ru-word-046"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-047",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Вымойте овощи перед приготовлением."
+      ],
+      "audio": "Вымойте овощи перед приготовлением.",
+      "explanation": "Sentido da frase: Lave os legumes antes de cozinhar.",
+      "wordIds": [
+        "ru-word-047"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-048",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "На столе лежат фрукты."
+      ],
+      "audio": "На столе лежат фрукты.",
+      "explanation": "Sentido da frase: Há frutas na mesa.",
+      "wordIds": [
+        "ru-word-048"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-049",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Завтрак в восемь."
+      ],
+      "audio": "Завтрак в восемь.",
+      "explanation": "Sentido da frase: O café da manhã é às oito.",
+      "wordIds": [
+        "ru-word-049"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-050",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Мы обедаем вместе."
+      ],
+      "audio": "Мы обедаем вместе.",
+      "explanation": "Sentido da frase: Estamos almoçando juntos.",
+      "wordIds": [
+        "ru-word-050"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-051",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Ужин почти готов."
+      ],
+      "audio": "Ужин почти готов.",
+      "explanation": "Sentido da frase: O jantar está quase pronto.",
+      "wordIds": [
+        "ru-word-051"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-052",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Магазин закрыт."
+      ],
+      "audio": "Магазин закрыт.",
+      "explanation": "Sentido da frase: A loja está fechada.",
+      "wordIds": [
+        "ru-word-052"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-053",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Какая цена у этой сумки?"
+      ],
+      "audio": "Какая цена у этой сумки?",
+      "explanation": "Sentido da frase: Qual é o preço desta bolsa?",
+      "wordIds": [
+        "ru-word-053"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-054",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Я оставил деньги дома."
+      ],
+      "audio": "Я оставил деньги дома.",
+      "explanation": "Sentido da frase: Deixei meu dinheiro em casa.",
+      "wordIds": [
+        "ru-word-054"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-055",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Alimentação e compras",
+      "level": "A2",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Пожалуйста, сохраните чек."
+      ],
+      "audio": "Пожалуйста, сохраните чек.",
+      "explanation": "Sentido da frase: Por favor, guarde seu recibo.",
+      "wordIds": [
+        "ru-word-055"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-056",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Наш дом рядом с парком."
+      ],
+      "audio": "Наш дом рядом с парком.",
+      "explanation": "Sentido da frase: Nossa casa fica perto do parque.",
+      "wordIds": [
+        "ru-word-056"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-057",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Моя комната маленькая, но уютная."
+      ],
+      "audio": "Моя комната маленькая, но уютная.",
+      "explanation": "Sentido da frase: Meu quarto é pequeno, mas confortável.",
+      "wordIds": [
+        "ru-word-057"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-058",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Кухня внизу."
+      ],
+      "audio": "Кухня внизу.",
+      "explanation": "Sentido da frase: A cozinha fica no andar de baixo.",
+      "wordIds": [
+        "ru-word-058"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-059",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Ванная слева."
+      ],
+      "audio": "Ванная слева.",
+      "explanation": "Sentido da frase: O banheiro fica à esquerda.",
+      "wordIds": [
+        "ru-word-059"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-dictation-060",
+      "language": "ru",
+      "skill": "dictation",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Escreva exatamente a frase que ouviu.",
+      "answers": [
+        "Пожалуйста, закройте дверь."
+      ],
+      "audio": "Пожалуйста, закройте дверь.",
+      "explanation": "Sentido da frase: Por favor, feche a porta.",
+      "wordIds": [
+        "ru-word-060"
+      ],
+      "acceptYoAsE": false
+    },
+    {
+      "id": "ru-writing-061",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Abra a janela, por favor.",
+      "answers": [
+        "Откройте окно, пожалуйста.",
+        "Пожалуйста, откройте окно."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: окно (janela). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-061"
+      ]
+    },
+    {
+      "id": "ru-writing-062",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Coloque as chaves na mesa.",
+      "answers": [
+        "Положите ключи на стол.",
+        "Ключи положите на стол."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: стол (mesa). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-062"
+      ]
+    },
+    {
+      "id": "ru-writing-063",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Esta cadeira está livre.",
+      "answers": [
+        "Этот стул свободен."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: стул (cadeira). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-063"
+      ]
+    },
+    {
+      "id": "ru-writing-064",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: A cama fica ao lado da janela.",
+      "answers": [
+        "Кровать стоит рядом с окном."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: кровать (cama). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-064"
+      ]
+    },
+    {
+      "id": "ru-writing-065",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Não consigo encontrar minha chave.",
+      "answers": [
+        "Я не могу найти ключ.",
+        "Я не могу найти свой ключ."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: ключ (chave). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-065"
+      ]
+    },
+    {
+      "id": "ru-writing-066",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Minha bolsa está debaixo da cadeira.",
+      "answers": [
+        "Моя сумка под стулом."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: сумка (bolsa). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-066"
+      ]
+    },
+    {
+      "id": "ru-writing-067",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Estas roupas estão limpas.",
+      "answers": [
+        "Эта одежда чистая."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: одежда (roupas). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-067"
+      ]
+    },
+    {
+      "id": "ru-writing-068",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Por favor, tire os calçados.",
+      "answers": [
+        "Пожалуйста, снимите обувь.",
+        "Снимите обувь, пожалуйста."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: обувь (calçados). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-068"
+      ]
+    },
+    {
+      "id": "ru-writing-069",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: Acenda a luz, por favor.",
+      "answers": [
+        "Включите свет, пожалуйста."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: свет (luz). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-069"
+      ]
+    },
+    {
+      "id": "ru-writing-070",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Casa e rotina",
+      "level": "A1",
+      "prompt": "Traduza: As crianças estão brincando no jardim.",
+      "answers": [
+        "Дети играют в саду."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: сад (jardim). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-070"
+      ]
+    },
+    {
+      "id": "ru-writing-071",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Termino o trabalho às seis.",
+      "answers": [
+        "Я заканчиваю работу в шесть."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: работа (trabalho). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-071"
+      ]
+    },
+    {
+      "id": "ru-writing-072",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Nosso escritório fica no terceiro andar.",
+      "answers": [
+        "Наш офис на третьем этаже."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: офис (escritório). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-072"
+      ]
+    },
+    {
+      "id": "ru-writing-073",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: A reunião começa em dez minutos.",
+      "answers": [
+        "Встреча начнётся через десять минут."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: встреча (reunião). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-073"
+      ]
+    },
+    {
+      "id": "ru-writing-074",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A2",
+      "prompt": "Traduza: Meu colega de trabalho fala russo.",
+      "answers": [
+        "Мой коллега говорит по-русски."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: коллега (colega de trabalho). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-074"
+      ]
+    },
+    {
+      "id": "ru-writing-075",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A2",
+      "prompt": "Traduza: Este cargo exige experiência.",
+      "answers": [
+        "Эта должность требует опыта."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: должность (cargo). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-075"
+      ]
+    },
+    {
+      "id": "ru-writing-076",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: A escola fica em frente à biblioteca.",
+      "answers": [
+        "Школа находится напротив библиотеки."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: школа (escola). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-076"
+      ]
+    },
+    {
+      "id": "ru-writing-077",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A2",
+      "prompt": "Traduza: Ela estuda na universidade.",
+      "answers": [
+        "Она учится в университете."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: университет (universidade). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-077"
+      ]
+    },
+    {
+      "id": "ru-writing-078",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: O estudante está lendo uma carta.",
+      "answers": [
+        "Студент читает письмо."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: студент (estudante). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-078"
+      ]
+    },
+    {
+      "id": "ru-writing-079",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: O professor explica a regra.",
+      "answers": [
+        "Учитель объясняет правило."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: учитель (professor). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-079"
+      ]
+    },
+    {
+      "id": "ru-writing-080",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Este livro tem muitas imagens.",
+      "answers": [
+        "В этой книге много картинок."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: книга (livro). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-080"
+      ]
+    },
+    {
+      "id": "ru-writing-081",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Escreva a resposta no caderno.",
+      "answers": [
+        "Запишите ответ в тетрадь."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: тетрадь (caderno). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-081"
+      ]
+    },
+    {
+      "id": "ru-writing-082",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Nossa aula dura quarenta minutos.",
+      "answers": [
+        "Наш урок длится сорок минут."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: урок (aula). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-082"
+      ]
+    },
+    {
+      "id": "ru-writing-083",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Tenho uma pergunta sobre esta palavra.",
+      "answers": [
+        "У меня вопрос об этом слове.",
+        "У меня есть вопрос об этом слове."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: вопрос (pergunta). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-083"
+      ]
+    },
+    {
+      "id": "ru-writing-084",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A1",
+      "prompt": "Traduza: Sua resposta está correta.",
+      "answers": [
+        "Ваш ответ правильный.",
+        "Ваш ответ верный."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: ответ (resposta). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-084"
+      ]
+    },
+    {
+      "id": "ru-writing-085",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Trabalho e estudos",
+      "level": "A2",
+      "prompt": "Traduza: A prova é na sexta-feira.",
+      "answers": [
+        "Экзамен в пятницу.",
+        "Экзамен будет в пятницу."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: экзамен (prova). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-085"
+      ]
+    },
+    {
+      "id": "ru-writing-086",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: O ônibus para aqui.",
+      "answers": [
+        "Автобус останавливается здесь."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: автобус (ônibus). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-086"
+      ]
+    },
+    {
+      "id": "ru-writing-087",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Nosso trem parte ao meio-dia.",
+      "answers": [
+        "Наш поезд отправляется в полдень."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: поезд (trem). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-087"
+      ]
+    },
+    {
+      "id": "ru-writing-088",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Meu carro está na garagem.",
+      "answers": [
+        "Моя машина в гараже."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: машина (carro). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-088"
+      ]
+    },
+    {
+      "id": "ru-writing-089",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Ele vai de bicicleta para o trabalho.",
+      "answers": [
+        "Он ездит на работу на велосипеде.",
+        "Он ездит на велосипеде на работу."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: велосипед (bicicleta). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-089"
+      ]
+    },
+    {
+      "id": "ru-writing-090",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Qual é a próxima estação?",
+      "answers": [
+        "Какая станция следующая?"
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: станция (estação). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-090"
+      ]
+    },
+    {
+      "id": "ru-writing-091",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Estamos indo ao aeroporto.",
+      "answers": [
+        "Мы едем в аэропорт."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: аэропорт (aeroporto). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-091"
+      ]
+    },
+    {
+      "id": "ru-writing-092",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Preciso de um bilhete de ida e volta.",
+      "answers": [
+        "Мне нужен билет туда и обратно."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: билет (bilhete). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-092"
+      ]
+    },
+    {
+      "id": "ru-writing-093",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Mostre seu passaporte, por favor.",
+      "answers": [
+        "Покажите паспорт, пожалуйста."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: паспорт (passaporte). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-093"
+      ]
+    },
+    {
+      "id": "ru-writing-094",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Nosso hotel fica no centro da cidade.",
+      "answers": [
+        "Наша гостиница в центре города.",
+        "Наш отель в центре города."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: гостиница (hotel). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-094"
+      ]
+    },
+    {
+      "id": "ru-writing-095",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Esta rua é muito tranquila.",
+      "answers": [
+        "Эта улица очень тихая."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: улица (rua). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-095"
+      ]
+    },
+    {
+      "id": "ru-writing-096",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Estou visitando esta cidade pela primeira vez.",
+      "answers": [
+        "Я впервые в этом городе."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: город (cidade). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-096"
+      ]
+    },
+    {
+      "id": "ru-writing-097",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Pode me mostrar no mapa?",
+      "answers": [
+        "Можете показать мне на карте?"
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: карта (mapa). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-097"
+      ]
+    },
+    {
+      "id": "ru-writing-098",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Vire à esquerda no semáforo.",
+      "answers": [
+        "Поверните налево на светофоре."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: налево (à esquerda). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-098"
+      ]
+    },
+    {
+      "id": "ru-writing-099",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A1",
+      "prompt": "Traduza: Vire à direita depois da ponte.",
+      "answers": [
+        "Поверните направо после моста."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: направо (à direita). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-099"
+      ]
+    },
+    {
+      "id": "ru-writing-100",
+      "language": "ru",
+      "skill": "writing",
+      "topic": "Transporte e viagens",
+      "level": "A2",
+      "prompt": "Traduza: A viagem foi muito interessante.",
+      "answers": [
+        "Поездка была очень интересной."
+      ],
+      "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: поездка (viagem). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
+      "wordIds": [
+        "ru-word-100"
+      ]
+    },
+    {
+      "id": "ru-reading-01-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Por que Lena consegue tomar café com o irmão às segundas?",
+      "answers": [
+        "começa às dez",
+        "ela começa a trabalhar às dez"
+      ],
+      "explanation": "O início às dez deixa tempo para o café em família.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-01-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Quem usa transporte coletivo?",
+      "answers": [
+        "o irmão",
+        "o irmão de Lena"
+      ],
+      "explanation": "O irmão pega o ônibus; Lena vai a pé.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-01-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "O que Lena quer proteger da chuva?",
+      "answers": [
+        "os livros",
+        "livros"
+      ],
+      "explanation": "A bolsa protege os livros da chuva.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-02-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Por que Pedro troca as maçãs por bananas?",
+      "answers": [
+        "as maçãs estão caras",
+        "porque as maçãs estão caras"
+      ],
+      "explanation": "A troca é motivada pelo preço das maçãs.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-02-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Para que ele guarda parte do dinheiro?",
+      "answers": [
+        "para o ônibus",
+        "para voltar de ônibus",
+        "para o ônibus de volta"
+      ],
+      "explanation": "Ele ainda precisa pagar a viagem de volta.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-02-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "A irmã aceita a troca?",
+      "answers": [
+        "sim",
+        "sim, para a sobremesa"
+      ],
+      "explanation": "Ela diz que as bananas servem para a sobremesa.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-03-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Quando os amigos estudam?",
+      "answers": [
+        "às quartas",
+        "às quartas-feiras",
+        "quarta-feira"
+      ],
+      "explanation": "O encontro acontece às quartas, depois do trabalho.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-03-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Por que os dois praticam leitura em voz alta?",
+      "answers": [
+        "porque trocam de função",
+        "porque trocam de papel"
+      ],
+      "explanation": "Depois da primeira leitura, eles trocam de função.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-03-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "O que tentam entender antes de traduzir tudo?",
+      "answers": [
+        "a ideia principal",
+        "a ideia central"
+      ],
+      "explanation": "A prioridade é o sentido geral do texto.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-04-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem leva comida?",
+      "answers": [
+        "Nina"
+      ],
+      "explanation": "Nina leva sopa.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-04-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Por que colocam a cadeira perto da porta?",
+      "answers": [
+        "para a avó ver as crianças",
+        "para ela ver as crianças brincando"
+      ],
+      "explanation": "A posição permite acompanhar as crianças sem andar longe.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-04-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem ajuda no jardim?",
+      "answers": [
+        "o irmão",
+        "o irmão de Nina"
+      ],
+      "explanation": "O irmão cuida do jardim enquanto o pai conserta a cadeira.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-05-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual é o novo horário?",
+      "answers": [
+        "dez e meia",
+        "10h30",
+        "10:30"
+      ],
+      "explanation": "A reunião passa das nove para dez e meia.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-05-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual problema a mudança resolve?",
+      "answers": [
+        "Rosa poderá participar",
+        "permite a participação de Rosa"
+      ],
+      "explanation": "A equipe evita começar antes de Rosa chegar.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-05-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "O que cada pessoa deve preparar?",
+      "answers": [
+        "uma pergunta",
+        "1 pergunta"
+      ],
+      "explanation": "O e-mail pede uma pergunta por participante.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-06-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Como Ilya evita perder o texto?",
+      "answers": [
+        "salva num arquivo",
+        "salvando em um arquivo",
+        "salva em um arquivo"
+      ],
+      "explanation": "Salvar o arquivo preserva a mensagem antes de a conexão voltar.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-06-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "O problema afeta apenas o computador?",
+      "answers": [
+        "não",
+        "não, o telefone também"
+      ],
+      "explanation": "O telefone também está sem conexão.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-06-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Quantas vezes ele envia a mensagem quando a conexão volta?",
+      "answers": [
+        "uma vez",
+        "1 vez"
+      ],
+      "explanation": "Ele espera e envia o texto apenas uma vez.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-07-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "De qual plataforma o trem sairá?",
+      "answers": [
+        "quatro",
+        "4",
+        "plataforma quatro"
+      ],
+      "explanation": "O anúncio substitui a informação inicial da plataforma dois.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-07-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que houve mudança?",
+      "answers": [
+        "outro trem ocupa a plataforma dois",
+        "há outro trem na plataforma dois"
+      ],
+      "explanation": "A plataforma original ainda está ocupada.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-07-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que Sara não compra um lanche?",
+      "answers": [
+        "para não perder o trem",
+        "para chegar ao trem a tempo"
+      ],
+      "explanation": "Ela prioriza chegar a tempo com os quinze minutos disponíveis.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-08-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Qual é a prioridade de Pavel?",
+      "answers": [
+        "dormir bem",
+        "descansar",
+        "dormir"
+      ],
+      "explanation": "A prova cedo torna o descanso mais importante que uma escrivaninha.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-08-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "O quarto silencioso custa mais?",
+      "answers": [
+        "não",
+        "não, custa o mesmo"
+      ],
+      "explanation": "A recepção oferece o mesmo preço.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-08-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Por que a falta de escrivaninha não o incomoda?",
+      "answers": [
+        "já terminou de estudar",
+        "porque já terminou de estudar"
+      ],
+      "explanation": "Ele não precisa estudar mais naquela noite.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-09-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Por que o molho é excluído?",
+      "answers": [
+        "contém leite",
+        "porque contém leite"
+      ],
+      "explanation": "Um dos amigos não pode consumir leite.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-09-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "O queijo fica misturado no prato principal?",
+      "answers": [
+        "não",
+        "não, é servido separado"
+      ],
+      "explanation": "Servir o queijo separado permite a escolha individual.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-09-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Qual é a vantagem da escolha do prato?",
+      "answers": [
+        "todos podem compartilhar",
+        "todos podem comer o mesmo prato"
+      ],
+      "explanation": "A adaptação evita preparar pratos principais separados.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-10-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O que a aluna pede?",
+      "answers": [
+        "que ele fale devagar",
+        "falar devagar"
+      ],
+      "explanation": "Ela precisa de uma fala mais lenta para acompanhar.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-reading-10-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "Como Amir ajuda sem tirar a vez da aluna?",
+      "answers": [
+        "dando exemplos",
+        "dá um exemplo",
+        "com exemplos"
+      ],
+      "explanation": "Ele oferece um exemplo em vez de responder por ela.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-reading-10-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O encontro será repetido?",
+      "answers": [
+        "sim",
+        "sim, na próxima semana"
+      ],
+      "explanation": "Eles combinam se encontrar na semana seguinte.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-grammar-01-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Escreva em cirílico a palavra russa para casa (dom).",
+      "answers": [
+        "дом"
+      ],
+      "explanation": "Дом é escrito com д, о e м.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-01-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Qual letra aparece em ёлка: е ou ё?",
+      "answers": [
+        "ё"
+      ],
+      "explanation": "Ёлка começa com ё, incluindo os dois pontos.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-01-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Qual letra cirílica corresponde aproximadamente a r: Р ou П?",
+      "answers": [
+        "Р"
+      ],
+      "explanation": "Р tem o som aproximado de r; П corresponde a p.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-02-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Complete com o pronome para “nós”: ___ дома.",
+      "answers": [
+        "мы"
+      ],
+      "explanation": "Мы significa nós.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-02-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Complete para “ela”: ___ учительница.",
+      "answers": [
+        "она"
+      ],
+      "explanation": "Она é o pronome feminino singular.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-02-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Escreva o pronome usado para “vocês”.",
+      "answers": [
+        "вы"
+      ],
+      "explanation": "Вы pode indicar vocês ou tratamento respeitoso.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-03-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de окно?",
+      "answers": [
+        "neutro"
+      ],
+      "explanation": "A janela окно é um substantivo neutro.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-03-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de папа?",
+      "answers": [
+        "masculino"
+      ],
+      "explanation": "Папа se refere ao pai e é masculino.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-03-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de кровать?",
+      "answers": [
+        "feminino"
+      ],
+      "explanation": "Кровать é feminino, apesar de terminar em -ь.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-04-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de стол.",
+      "answers": [
+        "столы"
+      ],
+      "explanation": "Стол recebe -ы.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-04-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de книга.",
+      "answers": [
+        "книги"
+      ],
+      "explanation": "Depois de г, a grafia usa и.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-04-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de окно.",
+      "answers": [
+        "окна"
+      ],
+      "explanation": "O neutro окно tem plural окна.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-05-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ стол. (meu)",
+      "answers": [
+        "мой"
+      ],
+      "explanation": "Стол é masculino: мой.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-05-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ сумка. (minha)",
+      "answers": [
+        "моя"
+      ],
+      "explanation": "Сумка é feminino: моя.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-05-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ имя. (meu)",
+      "answers": [
+        "моё"
+      ],
+      "explanation": "Имя é neutro: моё, com ё.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-06-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Я ___ книгу. (читать)",
+      "answers": [
+        "читаю"
+      ],
+      "explanation": "A forma de я é читаю.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-06-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Она ___ письмо. (читать)",
+      "answers": [
+        "читает"
+      ],
+      "explanation": "A forma de она é читает.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-06-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Мы ___ вместе. (читать)",
+      "answers": [
+        "читаем"
+      ],
+      "explanation": "A forma de мы é читаем.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-07-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete: Я ___ работаю сегодня.",
+      "answers": [
+        "не"
+      ],
+      "explanation": "A ação работаю é negada com не.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-07-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete a resposta: ___, спасибо. (não, obrigado)",
+      "answers": [
+        "нет"
+      ],
+      "explanation": "A resposta negativa independente usa нет.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-07-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete: Она ___ читает газету.",
+      "answers": [
+        "не"
+      ],
+      "explanation": "A negação da ação vem antes de читает.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-08-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete a pergunta “Onde fica a estação?”: ___ станция?",
+      "answers": [
+        "где"
+      ],
+      "explanation": "Где pergunta por localização.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-08-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete “Quem é?”: ___ это?",
+      "answers": [
+        "кто"
+      ],
+      "explanation": "Кто pergunta por pessoas.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-08-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete “Quando é o exame?”: ___ экзамен?",
+      "answers": [
+        "когда"
+      ],
+      "explanation": "Когда pergunta pelo momento.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-09-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Complete: Я читаю ___. (книга)",
+      "answers": [
+        "книгу"
+      ],
+      "explanation": "Книга muda para книгу no acusativo singular.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-09-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Complete: Я вижу ___. (машина)",
+      "answers": [
+        "машину"
+      ],
+      "explanation": "Машина passa a машину como objeto direto.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-09-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Na frase “Мама читает книгу”, quem é o sujeito?",
+      "answers": [
+        "мама"
+      ],
+      "explanation": "Мама está no nominativo e realiza a ação.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-10-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: ___ книга. (um livro)",
+      "answers": [
+        "одна"
+      ],
+      "explanation": "Книга é feminino: одна.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-grammar-10-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: ___ книги. (dois livros)",
+      "answers": [
+        "две"
+      ],
+      "explanation": "Com книга, usa-se две.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-grammar-10-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: пять ___. (стол)",
+      "answers": [
+        "столов"
+      ],
+      "explanation": "Depois de пять, neste exemplo usa-se столов.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-test-01",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza a palavra «хлеб».",
+      "answers": [
+        "pão"
+      ],
+      "explanation": "Bread e хлеб significam pão.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-02",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa «аптека»?",
+      "answers": [
+        "farmácia"
+      ],
+      "explanation": "É o estabelecimento onde se compram medicamentos.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-03",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Qual é o significado de «завтра»?",
+      "answers": [
+        "amanhã"
+      ],
+      "explanation": "A palavra aponta para o dia seguinte.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-04",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza «родители» para português.",
+      "answers": [
+        "pais"
+      ],
+      "explanation": "A referência é aos pais, não aos parentes em geral.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-05",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa «ключ»?",
+      "answers": [
+        "chave"
+      ],
+      "explanation": "No vocabulário cotidiano, é chave.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-06",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza «дешёвый».",
+      "answers": [
+        "barato",
+        "barata"
+      ],
+      "explanation": "O adjetivo indica preço baixo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-07",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “obrigado” em russo.",
+      "answers": [
+        "спасибо"
+      ],
+      "explanation": "É uma forma de agradecimento.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-08",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “bom dia” em russo.",
+      "answers": [
+        "доброе утро"
+      ],
+      "explanation": "É a saudação usada pela manhã.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-09",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “estação” em russo.",
+      "answers": [
+        "станция"
+      ],
+      "explanation": "Station/станция nomeiam a estação neste contexto de transporte.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-10",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza para russo: “água fria”.",
+      "answers": [
+        "холодная вода"
+      ],
+      "explanation": "O adjetivo vem antes do nome; em russo concorda no feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-11",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “minha família” em russo.",
+      "answers": [
+        "моя семья"
+      ],
+      "explanation": "O possessivo russo concorda com семья.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-12",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza “um livro novo” para russo.",
+      "answers": [
+        "новая книга"
+      ],
+      "explanation": "Inglês usa artigo indefinido; russo não tem esse artigo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-13",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Магазин закрывается в шесть. Сейчас пять». A loja já fechou?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Ainda falta uma hora para o fechamento.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-14",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Лия берёт зонт, потому что идёт дождь». Por que leva um guarda-chuva?",
+      "answers": [
+        "porque está chovendo",
+        "por causa da chuva"
+      ],
+      "explanation": "O motivo explícito é a chuva.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-15",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Автобус полный, поэтому мы идём пешком». Como seguem viagem?",
+      "answers": [
+        "a pé",
+        "caminhando"
+      ],
+      "explanation": "Como o ônibus está cheio, seguem a pé.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-16",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Я хотел чай, но был только кофе». Havia chá?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Só havia café, apesar da preferência por chá.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-17",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Билет на столе, а не в сумке». Onde está o bilhete?",
+      "answers": [
+        "na mesa",
+        "sobre a mesa"
+      ],
+      "explanation": "A frase contrasta a mesa com a bolsa.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-18",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Нина занимается до ужина, а потом отдыхает». O que faz depois do jantar?",
+      "answers": [
+        "descansa",
+        "ela descansa"
+      ],
+      "explanation": "O descanso vem depois do jantar.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-19",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete com “eles”: ___ учителя.",
+      "answers": [
+        "они"
+      ],
+      "explanation": "O sujeito plural pede are em inglês; они significa eles em russo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-20",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Diga o gênero de сообщение.",
+      "answers": [
+        "neutro"
+      ],
+      "explanation": "Interesting começa com som vocálico; сообщение é neutro.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-21",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: Ты ___ книгу. (читать)",
+      "answers": [
+        "читаешь"
+      ],
+      "explanation": "Tom é terceira pessoa singular; ты pede читаешь.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-22",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete “O que é isto?”: ___ это?",
+      "answers": [
+        "что"
+      ],
+      "explanation": "Inglês usa do com they; что pergunta por algo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-23",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: Я вижу ___. (сумка)",
+      "answers": [
+        "сумку"
+      ],
+      "explanation": "Duas bolsas pedem are; сумка muda para сумку como objeto.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-24",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: ___ окна. (minhas janelas)",
+      "answers": [
+        "мои"
+      ],
+      "explanation": "Ação em andamento usa -ing; мои concorda com o plural.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-25",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Estou em casa.”",
+      "answers": [
+        "я дома"
+      ],
+      "explanation": "Inglês precisa de am; russo geralmente omite a cópula no presente.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-26",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Nós lemos todos os dias.”",
+      "answers": [
+        "мы читаем каждый день"
+      ],
+      "explanation": "A expressão temporal descreve uma rotina.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-27",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Ela não trabalha hoje.”",
+      "answers": [
+        "она не работает сегодня",
+        "сегодня она не работает"
+      ],
+      "explanation": "A negativa inglesa usa does not; a russa usa не antes do verbo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-28",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Onde está meu livro?”",
+      "answers": [
+        "где моя книга"
+      ],
+      "explanation": "A pergunta pede localização; книга é feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-29",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Eu tenho duas cadeiras.”",
+      "answers": [
+        "у меня два стула"
+      ],
+      "explanation": "A posse russa usa у меня; dois pede стула neste exemplo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-30",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Até amanhã!”",
+      "answers": [
+        "до завтра"
+      ],
+      "explanation": "É uma despedida com referência ao próximo dia.",
+      "wordIds": []
+    }
+  ],
+  "readings": [
+    {
+      "id": "ru-reading-01",
+      "language": "ru",
+      "title": "Uma manhã sem pressa",
+      "topic": "Rotina",
+      "level": "A1",
+      "text": "Лена работает в библиотеке рядом с домом. По понедельникам она начинает работать в десять, поэтому завтракает с братом. Он готовит чай, а она режет хлеб. Они выходят вместе, но он едет на автобусе, а она идёт пешком. Сегодня идёт дождь. Лена кладёт книги в сумку, чтобы они не промокли.",
+      "translation": "Lena trabalha numa biblioteca perto de casa. Às segundas começa às dez e por isso toma café da manhã com o irmão. Ele prepara chá enquanto ela corta pão. Eles saem juntos, mas ele pega o ônibus e ela vai a pé. Hoje chove. Lena põe os livros numa bolsa para não molharem.",
+      "vocabulary": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "questionIds": [
+        "ru-reading-01-q1",
+        "ru-reading-01-q2",
+        "ru-reading-01-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-02",
+      "language": "ru",
+      "title": "A lista do mercado",
+      "topic": "Compras",
+      "level": "A1",
+      "text": "У Педро короткий список покупок: молоко, рис и яблоки. В магазине яблоки дорогие. Он покупает бананы и оставляет немного денег на автобус домой. Перед выходом он проверяет чек. Его сестра готовит обед, поэтому он звонит ей и объясняет замену. Она говорит, что бананы подойдут на десерт.",
+      "translation": "Pedro tem uma lista curta: leite, arroz e maçãs. Na loja, as maçãs estão caras. Ele compra bananas no lugar e guarda dinheiro para o ônibus de volta. Confere o recibo antes de sair. A irmã prepara o almoço, então ele liga para explicar a troca. Ela diz que bananas servem para a sobremesa.",
+      "vocabulary": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "questionIds": [
+        "ru-reading-02-q1",
+        "ru-reading-02-q2",
+        "ru-reading-02-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-03",
+      "language": "ru",
+      "title": "Estudar em dupla",
+      "topic": "Estudos",
+      "level": "A1",
+      "text": "Мила и её друг учат английский по средам. После работы они встречаются за кухонным столом. Мила читает короткий текст вслух, а друг записывает новые слова в тетрадь. Потом они меняются ролями. Они не переводят каждое слово: сначала стараются понять главную мысль. Следующий урок будет о поездках на поезде.",
+      "translation": "Mila e seu amigo estudam inglês às quartas. Encontram-se à mesa da cozinha depois do trabalho. Mila lê um texto em voz alta e o amigo anota palavras novas num caderno. Depois trocam de função. Primeiro tentam entender a ideia principal, sem traduzir tudo. A próxima aula será sobre viagens de trem.",
+      "vocabulary": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "questionIds": [
+        "ru-reading-03-q1",
+        "ru-reading-03-q2",
+        "ru-reading-03-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-04",
+      "language": "ru",
+      "title": "O sábado da família",
+      "topic": "Família",
+      "level": "A1",
+      "text": "В субботу к бабушке приезжают Нина, её папа и брат. Нина привозит суп. Папа чинит стул, а брат помогает в саду. Бабушка не может далеко ходить, но любит сидеть на улице. После обеда они ставят стул рядом с дверью, чтобы она могла смотреть, как играют дети.",
+      "translation": "No sábado, Nina, seu pai e seu irmão visitam a avó. Nina leva sopa, o pai conserta uma cadeira e o irmão ajuda no jardim. A avó não consegue andar longe, mas gosta de ficar ao ar livre. Depois do almoço colocam uma cadeira perto da porta para que ela veja as crianças brincando.",
+      "vocabulary": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "questionIds": [
+        "ru-reading-04-q1",
+        "ru-reading-04-q2",
+        "ru-reading-04-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-05",
+      "language": "ru",
+      "title": "Reunião com outro horário",
+      "topic": "Trabalho",
+      "level": "A2",
+      "text": "Небольшая команда планирует встречу в пятницу в девять. Их коллега Роза работает в другом городе и не может приехать раньше десяти. Команда решает не начинать без неё и переносит встречу на половину одиннадцатого. Новый час сообщают по электронной почте и просят каждого подготовить один вопрос. Теперь Роза сможет участвовать и представить свой отчёт.",
+      "translation": "Uma equipe marca uma reunião para sexta às nove. Rosa trabalha em outra cidade e não chega antes das dez. A equipe transfere o encontro para dez e meia, avisa por e-mail e pede uma pergunta de cada pessoa. Rosa poderá participar e apresentar seu relatório.",
+      "vocabulary": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "questionIds": [
+        "ru-reading-05-q1",
+        "ru-reading-05-q2",
+        "ru-reading-05-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-06",
+      "language": "ru",
+      "title": "Uma conexão interrompida",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "text": "Илья пишет важное сообщение, когда перестаёт работать интернет. Он не закрывает компьютер. Сначала он сохраняет текст в файл. Он проверяет телефон и видит, что связи там тоже нет. Вместо того чтобы много раз отправлять одно сообщение, он ждёт. Когда связь появляется, он один раз отправляет сохранённый текст и проверяет, что сообщение дошло.",
+      "translation": "Ilya escreve uma mensagem importante quando a internet para. Primeiro salva o texto num arquivo. O telefone também está sem conexão. Ele espera, em vez de reenviar várias vezes. Quando a conexão volta, envia o texto salvo uma vez e confere a entrega.",
+      "vocabulary": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "questionIds": [
+        "ru-reading-06-q1",
+        "ru-reading-06-q2",
+        "ru-reading-06-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-07",
+      "language": "ru",
+      "title": "A plataforma mudou",
+      "topic": "Transporte",
+      "level": "A2",
+      "text": "На станции Сара ищет поезд к морю на второй платформе. По объявлению поезд отправится с четвёртой платформы, потому что на второй ещё стоит другой поезд. У Сары пятнадцать минут. Она проверяет указатель, идёт к четвёртой платформе и по дороге не покупает еду. Сегодня успеть на поезд важнее, чем перекусить.",
+      "translation": "Na estação, Sara procura o trem para o litoral na plataforma dois. Um anúncio informa a saída na quatro porque outro trem ainda ocupa a dois. Ela tem quinze minutos, confere a placa e vai direto para a plataforma quatro, sem comprar comida. Hoje prioriza pegar o trem.",
+      "vocabulary": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "questionIds": [
+        "ru-reading-07-q1",
+        "ru-reading-07-q2",
+        "ru-reading-07-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-08",
+      "language": "ru",
+      "title": "Uma hospedagem tranquila",
+      "topic": "Viagens",
+      "level": "A2",
+      "text": "В гостинице Павлу предлагают номер с окнами на оживлённую улицу. Утром у него ранний экзамен, и ему нужно выспаться. Он спрашивает, есть ли более тихий номер. Администратор находит номер с окнами в сад за ту же цену, но без письменного стола. Павел соглашается: он уже закончил готовиться и хочет только хорошо отдохнуть.",
+      "translation": "Oferecem a Pavel um quarto voltado para uma rua movimentada. Ele tem prova cedo e precisa dormir. A recepção encontra um quarto mais silencioso, voltado para o jardim, pelo mesmo preço, mas sem escrivaninha. Pavel aceita porque já terminou de estudar.",
+      "vocabulary": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "questionIds": [
+        "ru-reading-08-q1",
+        "ru-reading-08-q2",
+        "ru-reading-08-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-09",
+      "language": "ru",
+      "title": "O jantar compartilhado",
+      "topic": "Alimentação",
+      "level": "A2",
+      "text": "Четверо друзей готовят ужин. Один не ест мясо, а другой не может пить молоко. Они выбирают рис, овощи и рыбу, а сыр подают отдельно. Перед готовкой они моют овощи и читают состав соуса. В нём есть молоко, поэтому они его не используют. Все могут есть общее блюдо, и отдельно готовить ничего не нужно.",
+      "translation": "Quatro amigos preparam jantar. Um não come carne e outro não pode beber leite. Escolhem arroz, legumes e peixe, com queijo separado. Lavam os legumes e leem o rótulo do molho. Como contém leite, não o usam. Todos conseguem compartilhar o prato principal.",
+      "vocabulary": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "questionIds": [
+        "ru-reading-09-q1",
+        "ru-reading-09-q2",
+        "ru-reading-09-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-10",
+      "language": "ru",
+      "title": "Uma conversa na biblioteca",
+      "topic": "Conversas",
+      "level": "A2",
+      "text": "После языкового занятия Амир замечает, что новая студентка сидит одна. Он спрашивает, хочет ли она десять минут потренироваться говорить. Она соглашается, но просит говорить медленно. Амир начинает с вопросов о книгах и делает паузу после каждого вопроса. Когда она не может вспомнить слово, он приводит пример, а не отвечает за неё. Они решают встретиться снова на следующей неделе.",
+      "translation": "Após a aula de idiomas, Amir convida uma nova aluna para dez minutos de conversação. Ela aceita e pede que ele fale devagar. Ele pergunta sobre livros, faz pausas e dá exemplos quando ela esquece uma palavra, sem responder por ela. Combinam outro encontro para a próxima semana.",
+      "vocabulary": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "questionIds": [
+        "ru-reading-10-q1",
+        "ru-reading-10-q2",
+        "ru-reading-10-q3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "ru-grammar-01",
+      "language": "ru",
+      "title": "Cirílico e leitura",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "objective": "Reconhecer letras russas e preservar ё.",
+      "explanation": "Algumas letras lembram as latinas, mas têm outro som: В corresponde aproximadamente a v, Н a n e Р a r. Ё é uma letra distinta de Е. A transliteração serve de apoio e não substitui a leitura em cirílico.",
+      "examples": [
+        {
+          "text": "мама",
+          "translation": "mamãe"
+        },
+        {
+          "text": "дом",
+          "translation": "casa"
+        }
+      ],
+      "commonErrors": "Não leia Р como p latino nem substitua ё automaticamente por е.",
+      "questionIds": [
+        "ru-grammar-01-q1",
+        "ru-grammar-01-q2",
+        "ru-grammar-01-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-02",
+      "language": "ru",
+      "title": "Pronomes pessoais russos",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "objective": "Escolher o sujeito adequado.",
+      "explanation": "Я, ты, он, она, оно, мы, вы e они indicam pessoas e grupos. Вы pode ser plural ou tratamento respeitoso. No presente, a ligação equivalente a “ser” costuma ficar implícita.",
+      "examples": [
+        {
+          "text": "Я студент.",
+          "translation": "Sou estudante."
+        },
+        {
+          "text": "Мы дома.",
+          "translation": "Estamos em casa."
+        }
+      ],
+      "commonErrors": "Não acrescente automaticamente есть a toda frase equivalente a ser/estar.",
+      "questionIds": [
+        "ru-grammar-02-q1",
+        "ru-grammar-02-q2",
+        "ru-grammar-02-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-03",
+      "language": "ru",
+      "title": "Gênero dos substantivos",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "objective": "Identificar padrões e exceções de gênero.",
+      "explanation": "Muitos nomes em consoante são masculinos, em -а/-я femininos e em -о/-е neutros. Há exceções: папа é masculino, имя é neutro. Nomes em -ь precisam ser aprendidos com seu gênero: дверь é feminino.",
+      "examples": [
+        {
+          "text": "новый стол",
+          "translation": "mesa nova"
+        },
+        {
+          "text": "новая дверь",
+          "translation": "porta nova"
+        }
+      ],
+      "commonErrors": "A terminação -а não torna папа feminino; -ь sozinho não determina o gênero.",
+      "questionIds": [
+        "ru-grammar-03-q1",
+        "ru-grammar-03-q2",
+        "ru-grammar-03-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-04",
+      "language": "ru",
+      "title": "Singular e plural",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "objective": "Reconhecer plurais frequentes.",
+      "explanation": "Muitos plurais terminam em -ы ou -и. Depois de г, к, х, ж, ч, ш, щ, escreve-se и em vez de ы. Existem plurais irregulares, que devem ser aprendidos em contexto.",
+      "examples": [
+        {
+          "text": "стол — столы",
+          "translation": "mesa — mesas"
+        },
+        {
+          "text": "книга — книги",
+          "translation": "livro — livros"
+        }
+      ],
+      "commonErrors": "Não forme o plural de todas as palavras acrescentando apenas ы.",
+      "questionIds": [
+        "ru-grammar-04-q1",
+        "ru-grammar-04-q2",
+        "ru-grammar-04-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-05",
+      "language": "ru",
+      "title": "Possessivos russos",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "objective": "Concordar possessivos com o objeto.",
+      "explanation": "Мой, моя, моё e мои concordam com o nome possuído: masculino, feminino, neutro e plural. O gênero da pessoa que fala não altera essas formas.",
+      "examples": [
+        {
+          "text": "моя книга",
+          "translation": "meu livro"
+        },
+        {
+          "text": "моё окно",
+          "translation": "minha janela"
+        }
+      ],
+      "commonErrors": "A concordância segue o substantivo russo, não o gênero da tradução portuguesa.",
+      "questionIds": [
+        "ru-grammar-05-q1",
+        "ru-grammar-05-q2",
+        "ru-grammar-05-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-06",
+      "language": "ru",
+      "title": "Verbos no presente",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "objective": "Escolher formas verbais frequentes.",
+      "explanation": "Verbos mudam conforme a pessoa. Em читать, temos я читаю, ты читаешь, он/она читает, мы читаем, вы читаете, они читают. Aprenda o padrão em frases, sem supor que todos os verbos seguem a mesma conjugação.",
+      "examples": [
+        {
+          "text": "Я читаю книгу.",
+          "translation": "Leio um livro."
+        },
+        {
+          "text": "Они читают дома.",
+          "translation": "Eles leem em casa."
+        }
+      ],
+      "commonErrors": "Não use o infinitivo читать depois do sujeito quando ele é o verbo principal.",
+      "questionIds": [
+        "ru-grammar-06-q1",
+        "ru-grammar-06-q2",
+        "ru-grammar-06-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-07",
+      "language": "ru",
+      "title": "Negação com не e нет",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "objective": "Negar ações e existência.",
+      "explanation": "Не costuma vir antes do verbo ou elemento negado: я не знаю. Нет pode responder “não” ou indicar ausência. Nesta introdução, pratique frases fixas sem generalizar regras de caso ainda não estudadas.",
+      "examples": [
+        {
+          "text": "Я не понимаю.",
+          "translation": "Não entendo."
+        },
+        {
+          "text": "Нет, спасибо.",
+          "translation": "Não, obrigado."
+        }
+      ],
+      "commonErrors": "Não use нет no lugar de не imediatamente antes de um verbo nestas frases.",
+      "questionIds": [
+        "ru-grammar-07-q1",
+        "ru-grammar-07-q2",
+        "ru-grammar-07-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-08",
+      "language": "ru",
+      "title": "Perguntas em russo",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "objective": "Reconhecer palavras interrogativas.",
+      "explanation": "Perguntas podem usar entonação ou palavras como кто (quem), что (o quê), где (onde), когда (quando) e сколько (quanto/quantos). Não é necessário um auxiliar equivalente a do.",
+      "examples": [
+        {
+          "text": "Где школа?",
+          "translation": "Onde fica a escola?"
+        },
+        {
+          "text": "Кто это?",
+          "translation": "Quem é?"
+        }
+      ],
+      "commonErrors": "Não introduza um auxiliar de inglês numa pergunta russa.",
+      "questionIds": [
+        "ru-grammar-08-q1",
+        "ru-grammar-08-q2",
+        "ru-grammar-08-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-09",
+      "language": "ru",
+      "title": "Nominativo e acusativo inicial",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "objective": "Distinguir sujeito e objeto direto simples.",
+      "explanation": "O nominativo nomeia o sujeito. O acusativo marca muitos objetos diretos. Em nomes femininos regulares, -а costuma mudar para -у: книга → книгу. Nomes masculinos inanimados como стол mantêm a forma. Esta lição não cobre todo o sistema de casos.",
+      "examples": [
+        {
+          "text": "Мама читает книгу.",
+          "translation": "Mamãe lê um livro."
+        },
+        {
+          "text": "Я вижу стол.",
+          "translation": "Vejo uma mesa."
+        }
+      ],
+      "commonErrors": "Não deixe книга no nominativo quando funciona como objeto de читаю.",
+      "questionIds": [
+        "ru-grammar-09-q1",
+        "ru-grammar-09-q2",
+        "ru-grammar-09-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-10",
+      "language": "ru",
+      "title": "Números e concordância básica",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "objective": "Usar um, dois e cinco com nomes simples.",
+      "explanation": "Один concorda em gênero: один стол, одна книга, одно окно. Depois de dois, três e quatro, exemplos simples usam a forma стола; depois de cinco, столов. Aqui praticamos apenas esses grupos, sem abranger todos os números compostos e casos.",
+      "examples": [
+        {
+          "text": "две книги",
+          "translation": "dois livros"
+        },
+        {
+          "text": "пять столов",
+          "translation": "cinco mesas"
+        }
+      ],
+      "commonErrors": "Use две com nomes femininos como книга; não generalize a forma plural nominativa após todo numeral.",
+      "questionIds": [
+        "ru-grammar-10-q1",
+        "ru-grammar-10-q2",
+        "ru-grammar-10-q3"
+      ]
+    }
+  ]
+}

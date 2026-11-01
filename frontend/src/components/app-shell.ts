@@ -2,7 +2,7 @@ import { html } from "lit";
 import { keyed } from "lit/directives/keyed.js";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement, icon } from "../ui";
-import { currentPage, pages } from "../catalog";
+import { currentPage, pages, learnActivities } from "../catalog";
 import "./sidebar";
 import "./topbar";
 import "./home-page";
@@ -14,11 +14,13 @@ import "./market-page";
 import "./team-shortcuts";
 import "./team-page";
 import "./fixed-income-page";
+import "../learn/host";
 
 @customElement("app-shell")
 export class AppShell extends LightElement {
   @state() private page = currentPage();
   @state() private route = location.hash;
+  private pageTitle(){const mode=['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]:undefined;return mode?`${mode} · ${pages[this.page].title}`:pages[this.page].title}
   private openCalendar = () => {
     const dialog = this.querySelector<HTMLDialogElement>(".calendar-dialog");
     if (dialog && !dialog.open) dialog.showModal();
@@ -36,7 +38,7 @@ export class AppShell extends LightElement {
     this.normalizeRoute();
     this.page = currentPage();
     this.route = location.hash;
-    document.title = `${pages[this.page].title} · 2T`;
+    document.title = `${this.pageTitle()} · 2T`;
     window.scrollTo({ top: 0 });
     void this.updateComplete.then(() => this.querySelector<HTMLElement>("#content")?.focus());
   };
@@ -44,7 +46,7 @@ export class AppShell extends LightElement {
     super.connectedCallback();
     this.normalizeRoute();
     this.page = currentPage();
-    document.title = `${pages[this.page].title} · 2T`;
+    document.title = `${this.pageTitle()} · 2T`;
     window.addEventListener("hashchange", this.navigate);
   }
   disconnectedCallback() {
@@ -61,7 +63,8 @@ export class AppShell extends LightElement {
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}<span aria-current="page">${pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
+          ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           ${this.page === 'fixedIncome' ? html`<fixed-income-page></fixed-income-page>` : ''}
           ${['76ers', 'spfc', 'barcelona'].includes(this.page) ? keyed(this.page, html`<team-page .team=${this.page}></team-page>`) : ''}
