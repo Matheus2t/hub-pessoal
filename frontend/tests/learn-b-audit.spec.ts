@@ -15,7 +15,7 @@ test('catalog review: stable references, Russian gender, ё and accepted variant
   const c=catalogs[l];expect(c.words.map(w=>w.id)).toEqual(Array.from({length:150},(_,i)=>`${l}-word-${String(i+1).padStart(3,'0')}`));
   expect(c.phrases!.map(w=>w.id)).toEqual(Array.from({length:50},(_,i)=>`${l}-phrase-${String(i+1).padStart(3,'0')}`));
   for(const [skill,ids] of [['listening',Array.from({length:30},(_,i)=>i+1)],['dictation',[17,...Array.from({length:29},(_,i)=>i+32)]],['writing',Array.from({length:40},(_,i)=>i+61)]] as const)expect(c.exercises.filter(e=>e.skill===skill).map(e=>e.id)).toEqual(ids.map(id=>`${l}-${skill}-${String(id).padStart(3,'0')}`));
-  for(const e of c.exercises){const word=c.words.find(w=>w.id===e.wordIds[0])!;expect(word).toBeTruthy();expect(e.level).toBe(word.level);expect(e.topic).toBe(word.topic);if(e.skill==='dictation'){expect(e.answers).toEqual([word.example]);expect(e.audio).toBe(word.example);}for(const a of e.answers)expect(evaluateAnswer(a,e.answers,e.acceptYoAsE)).toBe(true);}
+  for(const e of c.exercises.filter(e=>['listening','dictation','writing'].includes(e.skill))){const word=c.words.find(w=>w.id===e.wordIds[0])!;expect(word).toBeTruthy();expect(e.level).toBe(word.level);expect(e.topic).toBe(word.topic);if(e.skill==='dictation'){expect(e.answers).toEqual([word.example]);expect(e.audio).toBe(word.example);}for(const a of e.answers)expect(evaluateAnswer(a,e.answers,e.acceptYoAsE)).toBe(true);}
   expect(c.exercises.find(e=>e.id===`${l}-listening-009`)!.answers).toContain('boa noite');
  }
  expect(catalogs.ru.words.find(w=>w.word==='кровать')!.gender).toBe('feminino');

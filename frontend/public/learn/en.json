@@ -3850,6 +3850,1846 @@
       "wordIds": [
         "en-word-100"
       ]
+    },
+    {
+      "id": "en-reading-01-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Por que Lena consegue tomar café com o irmão às segundas?",
+      "answers": [
+        "começa às dez",
+        "ela começa a trabalhar às dez"
+      ],
+      "explanation": "O início às dez deixa tempo para o café em família.",
+      "wordIds": [
+        "en-word-015",
+        "en-word-037",
+        "en-word-040"
+      ],
+      "unitId": "en-reading-01"
+    },
+    {
+      "id": "en-reading-01-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Quem usa transporte coletivo?",
+      "answers": [
+        "o irmão",
+        "o irmão de Lena"
+      ],
+      "explanation": "O irmão pega o ônibus; Lena vai a pé.",
+      "wordIds": [
+        "en-word-015",
+        "en-word-037",
+        "en-word-040"
+      ],
+      "unitId": "en-reading-01"
+    },
+    {
+      "id": "en-reading-01-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "O que Lena quer proteger da chuva?",
+      "answers": [
+        "os livros",
+        "livros"
+      ],
+      "explanation": "A bolsa protege os livros da chuva.",
+      "wordIds": [
+        "en-word-015",
+        "en-word-037",
+        "en-word-040"
+      ],
+      "unitId": "en-reading-01"
+    },
+    {
+      "id": "en-reading-02-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Por que Pedro troca as maçãs por bananas?",
+      "answers": [
+        "as maçãs estão caras",
+        "porque as maçãs estão caras"
+      ],
+      "explanation": "A troca é motivada pelo preço das maçãs.",
+      "wordIds": [
+        "en-word-038",
+        "en-word-041",
+        "en-word-055"
+      ],
+      "unitId": "en-reading-02"
+    },
+    {
+      "id": "en-reading-02-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Para que ele guarda parte do dinheiro?",
+      "answers": [
+        "para o ônibus",
+        "para voltar de ônibus",
+        "para o ônibus de volta"
+      ],
+      "explanation": "Ele ainda precisa pagar a viagem de volta.",
+      "wordIds": [
+        "en-word-038",
+        "en-word-041",
+        "en-word-055"
+      ],
+      "unitId": "en-reading-02"
+    },
+    {
+      "id": "en-reading-02-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "A irmã aceita a troca?",
+      "answers": [
+        "sim",
+        "sim, para a sobremesa"
+      ],
+      "explanation": "Ela diz que as bananas servem para a sobremesa.",
+      "wordIds": [
+        "en-word-038",
+        "en-word-041",
+        "en-word-055"
+      ],
+      "unitId": "en-reading-02"
+    },
+    {
+      "id": "en-reading-03-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Quando os amigos estudam?",
+      "answers": [
+        "às quartas",
+        "às quartas-feiras",
+        "quarta-feira"
+      ],
+      "explanation": "O encontro acontece às quartas, depois do trabalho.",
+      "wordIds": [
+        "en-word-081",
+        "en-word-082",
+        "en-word-087"
+      ],
+      "unitId": "en-reading-03"
+    },
+    {
+      "id": "en-reading-03-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Por que os dois praticam leitura em voz alta?",
+      "answers": [
+        "porque trocam de função",
+        "porque trocam de papel"
+      ],
+      "explanation": "Depois da primeira leitura, eles trocam de função.",
+      "wordIds": [
+        "en-word-081",
+        "en-word-082",
+        "en-word-087"
+      ],
+      "unitId": "en-reading-03"
+    },
+    {
+      "id": "en-reading-03-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "O que tentam entender antes de traduzir tudo?",
+      "answers": [
+        "a ideia principal",
+        "a ideia central"
+      ],
+      "explanation": "A prioridade é o sentido geral do texto.",
+      "wordIds": [
+        "en-word-081",
+        "en-word-082",
+        "en-word-087"
+      ],
+      "unitId": "en-reading-03"
+    },
+    {
+      "id": "en-reading-04-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem leva comida?",
+      "answers": [
+        "Nina"
+      ],
+      "explanation": "Nina leva sopa.",
+      "wordIds": [
+        "en-word-011",
+        "en-word-043",
+        "en-word-070"
+      ],
+      "unitId": "en-reading-04"
+    },
+    {
+      "id": "en-reading-04-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Por que colocam a cadeira perto da porta?",
+      "answers": [
+        "para a avó ver as crianças",
+        "para ela ver as crianças brincando"
+      ],
+      "explanation": "A posição permite acompanhar as crianças sem andar longe.",
+      "wordIds": [
+        "en-word-011",
+        "en-word-043",
+        "en-word-070"
+      ],
+      "unitId": "en-reading-04"
+    },
+    {
+      "id": "en-reading-04-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem ajuda no jardim?",
+      "answers": [
+        "o irmão",
+        "o irmão de Nina"
+      ],
+      "explanation": "O irmão cuida do jardim enquanto o pai conserta a cadeira.",
+      "wordIds": [
+        "en-word-011",
+        "en-word-043",
+        "en-word-070"
+      ],
+      "unitId": "en-reading-04"
+    },
+    {
+      "id": "en-reading-05-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual é o novo horário?",
+      "answers": [
+        "dez e meia",
+        "10h30",
+        "10:30"
+      ],
+      "explanation": "A reunião passa das nove para dez e meia.",
+      "wordIds": [
+        "en-word-073",
+        "en-word-074",
+        "en-word-083"
+      ],
+      "unitId": "en-reading-05"
+    },
+    {
+      "id": "en-reading-05-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual problema a mudança resolve?",
+      "answers": [
+        "Rosa poderá participar",
+        "permite a participação de Rosa"
+      ],
+      "explanation": "A equipe evita começar antes de Rosa chegar.",
+      "wordIds": [
+        "en-word-073",
+        "en-word-074",
+        "en-word-083"
+      ],
+      "unitId": "en-reading-05"
+    },
+    {
+      "id": "en-reading-05-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "O que cada pessoa deve preparar?",
+      "answers": [
+        "uma pergunta",
+        "1 pergunta"
+      ],
+      "explanation": "O e-mail pede uma pergunta por participante.",
+      "wordIds": [
+        "en-word-073",
+        "en-word-074",
+        "en-word-083"
+      ],
+      "unitId": "en-reading-05"
+    },
+    {
+      "id": "en-reading-06-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Como Ilya evita perder o texto?",
+      "answers": [
+        "salva num arquivo",
+        "salvando em um arquivo",
+        "salva em um arquivo"
+      ],
+      "explanation": "Salvar o arquivo preserva a mensagem antes de a conexão voltar.",
+      "wordIds": [
+        "en-word-103",
+        "en-word-104",
+        "en-word-107"
+      ],
+      "unitId": "en-reading-06"
+    },
+    {
+      "id": "en-reading-06-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "O problema afeta apenas o computador?",
+      "answers": [
+        "não",
+        "não, o telefone também"
+      ],
+      "explanation": "O telefone também está sem conexão.",
+      "wordIds": [
+        "en-word-103",
+        "en-word-104",
+        "en-word-107"
+      ],
+      "unitId": "en-reading-06"
+    },
+    {
+      "id": "en-reading-06-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Quantas vezes ele envia a mensagem quando a conexão volta?",
+      "answers": [
+        "uma vez",
+        "1 vez"
+      ],
+      "explanation": "Ele espera e envia o texto apenas uma vez.",
+      "wordIds": [
+        "en-word-103",
+        "en-word-104",
+        "en-word-107"
+      ],
+      "unitId": "en-reading-06"
+    },
+    {
+      "id": "en-reading-07-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "De qual plataforma o trem sairá?",
+      "answers": [
+        "quatro",
+        "4",
+        "plataforma quatro"
+      ],
+      "explanation": "O anúncio substitui a informação inicial da plataforma dois.",
+      "wordIds": [
+        "en-word-087",
+        "en-word-090",
+        "en-word-092"
+      ],
+      "unitId": "en-reading-07"
+    },
+    {
+      "id": "en-reading-07-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que houve mudança?",
+      "answers": [
+        "outro trem ocupa a plataforma dois",
+        "há outro trem na plataforma dois"
+      ],
+      "explanation": "A plataforma original ainda está ocupada.",
+      "wordIds": [
+        "en-word-087",
+        "en-word-090",
+        "en-word-092"
+      ],
+      "unitId": "en-reading-07"
+    },
+    {
+      "id": "en-reading-07-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que Sara não compra um lanche?",
+      "answers": [
+        "para não perder o trem",
+        "para chegar ao trem a tempo"
+      ],
+      "explanation": "Ela prioriza chegar a tempo com os quinze minutos disponíveis.",
+      "wordIds": [
+        "en-word-087",
+        "en-word-090",
+        "en-word-092"
+      ],
+      "unitId": "en-reading-07"
+    },
+    {
+      "id": "en-reading-08-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Qual é a prioridade de Pavel?",
+      "answers": [
+        "dormir bem",
+        "descansar",
+        "dormir"
+      ],
+      "explanation": "A prova cedo torna o descanso mais importante que uma escrivaninha.",
+      "wordIds": [
+        "en-word-085",
+        "en-word-094",
+        "en-word-095"
+      ],
+      "unitId": "en-reading-08"
+    },
+    {
+      "id": "en-reading-08-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "O quarto silencioso custa mais?",
+      "answers": [
+        "não",
+        "não, custa o mesmo"
+      ],
+      "explanation": "A recepção oferece o mesmo preço.",
+      "wordIds": [
+        "en-word-085",
+        "en-word-094",
+        "en-word-095"
+      ],
+      "unitId": "en-reading-08"
+    },
+    {
+      "id": "en-reading-08-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Por que a falta de escrivaninha não o incomoda?",
+      "answers": [
+        "já terminou de estudar",
+        "porque já terminou de estudar"
+      ],
+      "explanation": "Ele não precisa estudar mais naquela noite.",
+      "wordIds": [
+        "en-word-085",
+        "en-word-094",
+        "en-word-095"
+      ],
+      "unitId": "en-reading-08"
+    },
+    {
+      "id": "en-reading-09-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Por que o molho é excluído?",
+      "answers": [
+        "contém leite",
+        "porque contém leite"
+      ],
+      "explanation": "Um dos amigos não pode consumir leite.",
+      "wordIds": [
+        "en-word-042",
+        "en-word-045",
+        "en-word-047"
+      ],
+      "unitId": "en-reading-09"
+    },
+    {
+      "id": "en-reading-09-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "O queijo fica misturado no prato principal?",
+      "answers": [
+        "não",
+        "não, é servido separado"
+      ],
+      "explanation": "Servir o queijo separado permite a escolha individual.",
+      "wordIds": [
+        "en-word-042",
+        "en-word-045",
+        "en-word-047"
+      ],
+      "unitId": "en-reading-09"
+    },
+    {
+      "id": "en-reading-09-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Qual é a vantagem da escolha do prato?",
+      "answers": [
+        "todos podem compartilhar",
+        "todos podem comer o mesmo prato"
+      ],
+      "explanation": "A adaptação evita preparar pratos principais separados.",
+      "wordIds": [
+        "en-word-042",
+        "en-word-045",
+        "en-word-047"
+      ],
+      "unitId": "en-reading-09"
+    },
+    {
+      "id": "en-reading-10-q1",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O que a aluna pede?",
+      "answers": [
+        "que ele fale devagar",
+        "falar devagar"
+      ],
+      "explanation": "Ela precisa de uma fala mais lenta para acompanhar.",
+      "wordIds": [
+        "en-word-080",
+        "en-word-113",
+        "en-word-130"
+      ],
+      "unitId": "en-reading-10"
+    },
+    {
+      "id": "en-reading-10-q2",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "Como Amir ajuda sem tirar a vez da aluna?",
+      "answers": [
+        "dando exemplos",
+        "dá um exemplo",
+        "com exemplos"
+      ],
+      "explanation": "Ele oferece um exemplo em vez de responder por ela.",
+      "wordIds": [
+        "en-word-080",
+        "en-word-113",
+        "en-word-130"
+      ],
+      "unitId": "en-reading-10"
+    },
+    {
+      "id": "en-reading-10-q3",
+      "language": "en",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O encontro será repetido?",
+      "answers": [
+        "sim",
+        "sim, na próxima semana"
+      ],
+      "explanation": "Eles combinam se encontrar na semana seguinte.",
+      "wordIds": [
+        "en-word-080",
+        "en-word-113",
+        "en-word-130"
+      ],
+      "unitId": "en-reading-10"
+    },
+    {
+      "id": "en-grammar-01-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Verb to be",
+      "level": "A1",
+      "prompt": "Complete: I ___ a student.",
+      "answers": [
+        "am"
+      ],
+      "explanation": "I combina com am.",
+      "wordIds": [],
+      "unitId": "en-grammar-01"
+    },
+    {
+      "id": "en-grammar-01-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Verb to be",
+      "level": "A1",
+      "prompt": "Complete: She ___ at the library.",
+      "answers": [
+        "is"
+      ],
+      "explanation": "She combina com is.",
+      "wordIds": [],
+      "unitId": "en-grammar-01"
+    },
+    {
+      "id": "en-grammar-01-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Verb to be",
+      "level": "A1",
+      "prompt": "Complete: We ___ ready.",
+      "answers": [
+        "are"
+      ],
+      "explanation": "We combina com are.",
+      "wordIds": [],
+      "unitId": "en-grammar-01"
+    },
+    {
+      "id": "en-grammar-02-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais",
+      "level": "A1",
+      "prompt": "Substitua “Pedro and I”: ___ are friends.",
+      "answers": [
+        "we"
+      ],
+      "explanation": "O grupo inclui quem fala: we.",
+      "wordIds": [],
+      "unitId": "en-grammar-02"
+    },
+    {
+      "id": "en-grammar-02-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais",
+      "level": "A1",
+      "prompt": "Retome “the computer”: ___ is slow.",
+      "answers": [
+        "it"
+      ],
+      "explanation": "Um computador singular é retomado por it.",
+      "wordIds": [],
+      "unitId": "en-grammar-02"
+    },
+    {
+      "id": "en-grammar-02-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais",
+      "level": "A1",
+      "prompt": "Retome “Ana”: ___ works here.",
+      "answers": [
+        "she"
+      ],
+      "explanation": "Ana é retomada por she.",
+      "wordIds": [],
+      "unitId": "en-grammar-02"
+    },
+    {
+      "id": "en-grammar-03-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Artigos a, an e the",
+      "level": "A1",
+      "prompt": "Complete com a ou an: ___ orange.",
+      "answers": [
+        "an"
+      ],
+      "explanation": "Orange começa com som vocálico.",
+      "wordIds": [],
+      "unitId": "en-grammar-03"
+    },
+    {
+      "id": "en-grammar-03-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Artigos a, an e the",
+      "level": "A1",
+      "prompt": "Complete com a ou an: ___ university.",
+      "answers": [
+        "a"
+      ],
+      "explanation": "University começa com som de /j/, como em you.",
+      "wordIds": [],
+      "unitId": "en-grammar-03"
+    },
+    {
+      "id": "en-grammar-03-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Artigos a, an e the",
+      "level": "A1",
+      "prompt": "Complete: I bought a book. ___ book is short.",
+      "answers": [
+        "the"
+      ],
+      "explanation": "O livro já foi introduzido e está definido.",
+      "wordIds": [],
+      "unitId": "en-grammar-03"
+    },
+    {
+      "id": "en-grammar-04-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Presente simples",
+      "level": "A1",
+      "prompt": "Complete com work: He ___ in an office.",
+      "answers": [
+        "works"
+      ],
+      "explanation": "He pede a forma works.",
+      "wordIds": [],
+      "unitId": "en-grammar-04"
+    },
+    {
+      "id": "en-grammar-04-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Presente simples",
+      "level": "A1",
+      "prompt": "Complete com study: She ___ Russian.",
+      "answers": [
+        "studies"
+      ],
+      "explanation": "Consoante + y muda para -ies.",
+      "wordIds": [],
+      "unitId": "en-grammar-04"
+    },
+    {
+      "id": "en-grammar-04-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Presente simples",
+      "level": "A1",
+      "prompt": "Complete com go: They ___ by bus.",
+      "answers": [
+        "go"
+      ],
+      "explanation": "They usa a forma básica go.",
+      "wordIds": [],
+      "unitId": "en-grammar-04"
+    },
+    {
+      "id": "en-grammar-05-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Perguntas e negativas",
+      "level": "A2",
+      "prompt": "Complete: ___ you speak English?",
+      "answers": [
+        "do"
+      ],
+      "explanation": "You forma a pergunta com do.",
+      "wordIds": [],
+      "unitId": "en-grammar-05"
+    },
+    {
+      "id": "en-grammar-05-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Perguntas e negativas",
+      "level": "A2",
+      "prompt": "Complete: She ___ not eat fish.",
+      "answers": [
+        "does"
+      ],
+      "explanation": "She usa does na negativa.",
+      "wordIds": [],
+      "unitId": "en-grammar-05"
+    },
+    {
+      "id": "en-grammar-05-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Perguntas e negativas",
+      "level": "A2",
+      "prompt": "Complete: Does he ___ here? (live)",
+      "answers": [
+        "live"
+      ],
+      "explanation": "Depois de does, use live sem -s.",
+      "wordIds": [],
+      "unitId": "en-grammar-05"
+    },
+    {
+      "id": "en-grammar-06-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Possessivos",
+      "level": "A2",
+      "prompt": "Complete: I have a sister. ___ name is Nina.",
+      "answers": [
+        "her"
+      ],
+      "explanation": "O nome pertence à irmã: her.",
+      "wordIds": [],
+      "unitId": "en-grammar-06"
+    },
+    {
+      "id": "en-grammar-06-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Possessivos",
+      "level": "A2",
+      "prompt": "Complete: We live here. This is ___ house.",
+      "answers": [
+        "our"
+      ],
+      "explanation": "O possuidor we corresponde a our.",
+      "wordIds": [],
+      "unitId": "en-grammar-06"
+    },
+    {
+      "id": "en-grammar-06-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Possessivos",
+      "level": "A2",
+      "prompt": "Complete: They have tickets. These are ___ tickets.",
+      "answers": [
+        "their"
+      ],
+      "explanation": "They corresponde a their.",
+      "wordIds": [],
+      "unitId": "en-grammar-06"
+    },
+    {
+      "id": "en-grammar-07-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Preposições de lugar e tempo",
+      "level": "A2",
+      "prompt": "Complete: The cup is ___ the table. (sobre)",
+      "answers": [
+        "on"
+      ],
+      "explanation": "Sobre uma superfície: on.",
+      "wordIds": [],
+      "unitId": "en-grammar-07"
+    },
+    {
+      "id": "en-grammar-07-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Preposições de lugar e tempo",
+      "level": "A2",
+      "prompt": "Complete: We meet ___ Friday.",
+      "answers": [
+        "on"
+      ],
+      "explanation": "Dias da semana usam on.",
+      "wordIds": [],
+      "unitId": "en-grammar-07"
+    },
+    {
+      "id": "en-grammar-07-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Preposições de lugar e tempo",
+      "level": "A2",
+      "prompt": "Complete: The bus leaves ___ six o’clock.",
+      "answers": [
+        "at"
+      ],
+      "explanation": "Horário específico usa at.",
+      "wordIds": [],
+      "unitId": "en-grammar-07"
+    },
+    {
+      "id": "en-grammar-08-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "There is e there are",
+      "level": "A2",
+      "prompt": "Complete: There ___ one apple.",
+      "answers": [
+        "is"
+      ],
+      "explanation": "One apple é singular.",
+      "wordIds": [],
+      "unitId": "en-grammar-08"
+    },
+    {
+      "id": "en-grammar-08-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "There is e there are",
+      "level": "A2",
+      "prompt": "Complete: There ___ three people outside.",
+      "answers": [
+        "are"
+      ],
+      "explanation": "Three people é plural.",
+      "wordIds": [],
+      "unitId": "en-grammar-08"
+    },
+    {
+      "id": "en-grammar-08-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "There is e there are",
+      "level": "A2",
+      "prompt": "Complete a pergunta: ___ there a pharmacy nearby?",
+      "answers": [
+        "is"
+      ],
+      "explanation": "A pergunta singular começa com is.",
+      "wordIds": [],
+      "unitId": "en-grammar-08"
+    },
+    {
+      "id": "en-grammar-09-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Present Continuous",
+      "level": "A2",
+      "prompt": "Complete com read: I am ___ now.",
+      "answers": [
+        "reading"
+      ],
+      "explanation": "Read recebe -ing.",
+      "wordIds": [],
+      "unitId": "en-grammar-09"
+    },
+    {
+      "id": "en-grammar-09-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Present Continuous",
+      "level": "A2",
+      "prompt": "Complete: She ___ writing a message.",
+      "answers": [
+        "is"
+      ],
+      "explanation": "She exige is antes de writing.",
+      "wordIds": [],
+      "unitId": "en-grammar-09"
+    },
+    {
+      "id": "en-grammar-09-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Present Continuous",
+      "level": "A2",
+      "prompt": "Complete com run: They are ___ in the park.",
+      "answers": [
+        "running"
+      ],
+      "explanation": "Run dobra a consoante final em running.",
+      "wordIds": [],
+      "unitId": "en-grammar-09"
+    },
+    {
+      "id": "en-grammar-10-q1",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Passado simples inicial",
+      "level": "A2",
+      "prompt": "Complete com visit: We ___ the museum yesterday.",
+      "answers": [
+        "visited"
+      ],
+      "explanation": "Visit é regular: visited.",
+      "wordIds": [],
+      "unitId": "en-grammar-10"
+    },
+    {
+      "id": "en-grammar-10-q2",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Passado simples inicial",
+      "level": "A2",
+      "prompt": "Complete com go: He ___ home yesterday.",
+      "answers": [
+        "went"
+      ],
+      "explanation": "O passado de go é went.",
+      "wordIds": [],
+      "unitId": "en-grammar-10"
+    },
+    {
+      "id": "en-grammar-10-q3",
+      "language": "en",
+      "skill": "grammar",
+      "topic": "Passado simples inicial",
+      "level": "A2",
+      "prompt": "Complete: They did not ___ the file. (save)",
+      "answers": [
+        "save"
+      ],
+      "explanation": "Did not pede a forma básica save.",
+      "wordIds": [],
+      "unitId": "en-grammar-10"
+    },
+    {
+      "id": "en-test-01",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza a palavra “bread”.",
+      "answers": [
+        "pão"
+      ],
+      "explanation": "Bread e хлеб significam pão.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-02",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa “pharmacy”?",
+      "answers": [
+        "farmácia"
+      ],
+      "explanation": "É o estabelecimento onde se compram medicamentos.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-03",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Qual é o significado de “tomorrow”?",
+      "answers": [
+        "amanhã"
+      ],
+      "explanation": "A palavra aponta para o dia seguinte.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-04",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza “parents” para português.",
+      "answers": [
+        "pais"
+      ],
+      "explanation": "A referência é aos pais, não aos parentes em geral.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-05",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa “key”?",
+      "answers": [
+        "chave"
+      ],
+      "explanation": "No vocabulário cotidiano, é chave.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-06",
+      "language": "en",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza “cheap”.",
+      "answers": [
+        "barato",
+        "barata"
+      ],
+      "explanation": "O adjetivo indica preço baixo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-07",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “obrigado” em inglês.",
+      "answers": [
+        "thank you",
+        "thanks"
+      ],
+      "explanation": "É uma forma de agradecimento.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-08",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “bom dia” em inglês.",
+      "answers": [
+        "good morning"
+      ],
+      "explanation": "É a saudação usada pela manhã.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-09",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “estação” em inglês.",
+      "answers": [
+        "station"
+      ],
+      "explanation": "Station/станция nomeiam a estação neste contexto de transporte.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-10",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza para inglês: “água fria”.",
+      "answers": [
+        "cold water"
+      ],
+      "explanation": "O adjetivo vem antes do nome; em russo concorda no feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-11",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “minha família” em inglês.",
+      "answers": [
+        "my family"
+      ],
+      "explanation": "O possessivo russo concorda com семья.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-12",
+      "language": "en",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza “um livro novo” para inglês.",
+      "answers": [
+        "a new book"
+      ],
+      "explanation": "Inglês usa artigo indefinido; russo não tem esse artigo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-13",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “The shop closes at six. It is five now.” A loja já fechou?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Ainda falta uma hora para o fechamento.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-14",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “Lia takes an umbrella because it is raining.” Por que leva um guarda-chuva?",
+      "answers": [
+        "porque está chovendo",
+        "por causa da chuva"
+      ],
+      "explanation": "O motivo explícito é a chuva.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-15",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “The bus is full, so we walk.” Como seguem viagem?",
+      "answers": [
+        "a pé",
+        "caminhando"
+      ],
+      "explanation": "Como o ônibus está cheio, seguem a pé.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-16",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “I wanted tea, but there was only coffee.” Havia chá?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Só havia café, apesar da preferência por chá.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-17",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “The ticket is on the table, not in the bag.” Onde está o bilhete?",
+      "answers": [
+        "na mesa",
+        "sobre a mesa"
+      ],
+      "explanation": "A frase contrasta a mesa com a bolsa.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-18",
+      "language": "en",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: “Nina studies before dinner and rests afterwards.” O que faz depois do jantar?",
+      "answers": [
+        "descansa",
+        "ela descansa"
+      ],
+      "explanation": "O descanso vem depois do jantar.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-19",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: My brothers ___ teachers.",
+      "answers": [
+        "are"
+      ],
+      "explanation": "O sujeito plural pede are em inglês; они significa eles em russo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-20",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: It is ___ interesting lesson.",
+      "answers": [
+        "an"
+      ],
+      "explanation": "Interesting começa com som vocálico; сообщение é neutro.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-21",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: Tom ___ breakfast at seven. (eat)",
+      "answers": [
+        "eats"
+      ],
+      "explanation": "Tom é terceira pessoa singular; ты pede читаешь.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-22",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: ___ they live near the station?",
+      "answers": [
+        "do"
+      ],
+      "explanation": "Inglês usa do com they; что pergunta por algo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-23",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: There ___ two bags by the door.",
+      "answers": [
+        "are"
+      ],
+      "explanation": "Duas bolsas pedem are; сумка muda para сумку como objeto.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-24",
+      "language": "en",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: We are ___ tea now. (drink)",
+      "answers": [
+        "drinking"
+      ],
+      "explanation": "Ação em andamento usa -ing; мои concorda com o plural.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-25",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Estou em casa.”",
+      "answers": [
+        "I am at home",
+        "I'm at home",
+        "I am home"
+      ],
+      "explanation": "Inglês precisa de am; russo geralmente omite a cópula no presente.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-26",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Nós lemos todos os dias.”",
+      "answers": [
+        "we read every day"
+      ],
+      "explanation": "A expressão temporal descreve uma rotina.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-27",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Ela não trabalha hoje.”",
+      "answers": [
+        "she does not work today",
+        "she doesn't work today"
+      ],
+      "explanation": "A negativa inglesa usa does not; a russa usa не antes do verbo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-28",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Onde está meu livro?”",
+      "answers": [
+        "where is my book"
+      ],
+      "explanation": "A pergunta pede localização; книга é feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-29",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Eu tenho duas cadeiras.”",
+      "answers": [
+        "I have two chairs",
+        "I've got two chairs"
+      ],
+      "explanation": "A posse russa usa у меня; dois pede стула neste exemplo.",
+      "wordIds": []
+    },
+    {
+      "id": "en-test-30",
+      "language": "en",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Até amanhã!”",
+      "answers": [
+        "see you tomorrow"
+      ],
+      "explanation": "É uma despedida com referência ao próximo dia.",
+      "wordIds": []
+    }
+  ],
+  "readings": [
+    {
+      "id": "en-reading-01",
+      "language": "en",
+      "title": "Uma manhã sem pressa",
+      "topic": "Rotina",
+      "level": "A1",
+      "text": "Lena works at a library near her home. On Mondays she starts at ten, so she has breakfast with her brother. He makes tea while she cuts bread. They leave together, but he takes the bus and she walks. Today it is raining. Lena puts her books in a bag to keep them dry.",
+      "translation": "Lena trabalha numa biblioteca perto de casa. Às segundas começa às dez e por isso toma café da manhã com o irmão. Ele prepara chá enquanto ela corta pão. Eles saem juntos, mas ele pega o ônibus e ela vai a pé. Hoje chove. Lena põe os livros numa bolsa para não molharem.",
+      "vocabulary": [
+        "en-word-015",
+        "en-word-037",
+        "en-word-040"
+      ],
+      "questionIds": [
+        "en-reading-01-q1",
+        "en-reading-01-q2",
+        "en-reading-01-q3"
+      ]
+    },
+    {
+      "id": "en-reading-02",
+      "language": "en",
+      "title": "A lista do mercado",
+      "topic": "Compras",
+      "level": "A1",
+      "text": "Pedro has a short shopping list: milk, rice and apples. At the shop, the apples are expensive. He buys bananas instead and keeps some money for the bus home. He checks the receipt before leaving. His sister is cooking lunch, so he calls her to explain the change. She says that bananas are fine for dessert.",
+      "translation": "Pedro tem uma lista curta: leite, arroz e maçãs. Na loja, as maçãs estão caras. Ele compra bananas no lugar e guarda dinheiro para o ônibus de volta. Confere o recibo antes de sair. A irmã prepara o almoço, então ele liga para explicar a troca. Ela diz que bananas servem para a sobremesa.",
+      "vocabulary": [
+        "en-word-038",
+        "en-word-041",
+        "en-word-055"
+      ],
+      "questionIds": [
+        "en-reading-02-q1",
+        "en-reading-02-q2",
+        "en-reading-02-q3"
+      ]
+    },
+    {
+      "id": "en-reading-03",
+      "language": "en",
+      "title": "Estudar em dupla",
+      "topic": "Estudos",
+      "level": "A1",
+      "text": "Mila and her friend study English on Wednesdays. They meet at the kitchen table after work. Mila reads a short text aloud, and her friend writes new words in a notebook. Then they change roles. They do not translate every word: first they try to understand the main idea. Their next lesson is about travelling by train.",
+      "translation": "Mila e seu amigo estudam inglês às quartas. Encontram-se à mesa da cozinha depois do trabalho. Mila lê um texto em voz alta e o amigo anota palavras novas num caderno. Depois trocam de função. Primeiro tentam entender a ideia principal, sem traduzir tudo. A próxima aula será sobre viagens de trem.",
+      "vocabulary": [
+        "en-word-081",
+        "en-word-082",
+        "en-word-087"
+      ],
+      "questionIds": [
+        "en-reading-03-q1",
+        "en-reading-03-q2",
+        "en-reading-03-q3"
+      ]
+    },
+    {
+      "id": "en-reading-04",
+      "language": "en",
+      "title": "O sábado da família",
+      "topic": "Família",
+      "level": "A1",
+      "text": "On Saturday, three people visit their grandmother: Nina, her father and her brother. Nina brings soup. Her father repairs a chair, and her brother helps in the garden. Their grandmother cannot walk far, but she enjoys sitting outside. After lunch they put a chair near the door so she can watch the children play.",
+      "translation": "No sábado, Nina, seu pai e seu irmão visitam a avó. Nina leva sopa, o pai conserta uma cadeira e o irmão ajuda no jardim. A avó não consegue andar longe, mas gosta de ficar ao ar livre. Depois do almoço colocam uma cadeira perto da porta para que ela veja as crianças brincando.",
+      "vocabulary": [
+        "en-word-011",
+        "en-word-043",
+        "en-word-070"
+      ],
+      "questionIds": [
+        "en-reading-04-q1",
+        "en-reading-04-q2",
+        "en-reading-04-q3"
+      ]
+    },
+    {
+      "id": "en-reading-05",
+      "language": "en",
+      "title": "Reunião com outro horário",
+      "topic": "Trabalho",
+      "level": "A2",
+      "text": "A small team plans a meeting for nine on Friday. Their colleague Rosa works from another city and cannot arrive before ten. Instead of starting without her, the team moves the meeting to half past ten. They send the new time by email and ask everyone to bring one question. Rosa can now take part and share her report.",
+      "translation": "Uma equipe marca uma reunião para sexta às nove. Rosa trabalha em outra cidade e não chega antes das dez. A equipe transfere o encontro para dez e meia, avisa por e-mail e pede uma pergunta de cada pessoa. Rosa poderá participar e apresentar seu relatório.",
+      "vocabulary": [
+        "en-word-073",
+        "en-word-074",
+        "en-word-083"
+      ],
+      "questionIds": [
+        "en-reading-05-q1",
+        "en-reading-05-q2",
+        "en-reading-05-q3"
+      ]
+    },
+    {
+      "id": "en-reading-06",
+      "language": "en",
+      "title": "Uma conexão interrompida",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "text": "Ilya is writing an important message when the internet stops working. He does not close the computer. First he saves the text in a file. He checks the phone and sees that it also has no connection. Rather than sending the same message many times, he waits. When the connection returns, he sends the saved text once and checks that it arrived.",
+      "translation": "Ilya escreve uma mensagem importante quando a internet para. Primeiro salva o texto num arquivo. O telefone também está sem conexão. Ele espera, em vez de reenviar várias vezes. Quando a conexão volta, envia o texto salvo uma vez e confere a entrega.",
+      "vocabulary": [
+        "en-word-103",
+        "en-word-104",
+        "en-word-107"
+      ],
+      "questionIds": [
+        "en-reading-06-q1",
+        "en-reading-06-q2",
+        "en-reading-06-q3"
+      ]
+    },
+    {
+      "id": "en-reading-07",
+      "language": "en",
+      "title": "A plataforma mudou",
+      "topic": "Transporte",
+      "level": "A2",
+      "text": "At the station, Sara looks for the train to the coast on platform two. An announcement says that it will leave from platform four because another train is still at platform two. Sara has fifteen minutes. She checks the sign, walks to platform four and buys no food on the way. Catching the train is more important than a snack today.",
+      "translation": "Na estação, Sara procura o trem para o litoral na plataforma dois. Um anúncio informa a saída na quatro porque outro trem ainda ocupa a dois. Ela tem quinze minutos, confere a placa e vai direto para a plataforma quatro, sem comprar comida. Hoje prioriza pegar o trem.",
+      "vocabulary": [
+        "en-word-087",
+        "en-word-090",
+        "en-word-092"
+      ],
+      "questionIds": [
+        "en-reading-07-q1",
+        "en-reading-07-q2",
+        "en-reading-07-q3"
+      ]
+    },
+    {
+      "id": "en-reading-08",
+      "language": "en",
+      "title": "Uma hospedagem tranquila",
+      "topic": "Viagens",
+      "level": "A2",
+      "text": "A hotel offers Pavel a room facing a busy street. He has an early exam the next morning and needs to sleep. He asks whether there is a quieter room. The receptionist finds one facing the garden for the same price, but it has no desk. Pavel accepts it: he has already finished studying and only wants a good night of rest.",
+      "translation": "Oferecem a Pavel um quarto voltado para uma rua movimentada. Ele tem prova cedo e precisa dormir. A recepção encontra um quarto mais silencioso, voltado para o jardim, pelo mesmo preço, mas sem escrivaninha. Pavel aceita porque já terminou de estudar.",
+      "vocabulary": [
+        "en-word-085",
+        "en-word-094",
+        "en-word-095"
+      ],
+      "questionIds": [
+        "en-reading-08-q1",
+        "en-reading-08-q2",
+        "en-reading-08-q3"
+      ]
+    },
+    {
+      "id": "en-reading-09",
+      "language": "en",
+      "title": "O jantar compartilhado",
+      "topic": "Alimentação",
+      "level": "A2",
+      "text": "Four friends are preparing dinner. One friend does not eat meat, and another cannot drink milk. They choose rice, vegetables and fish, with cheese served separately. Before cooking, they wash the vegetables and read the sauce label. It contains milk, so they leave it out. Everyone can share the main meal without needing a separate dish.",
+      "translation": "Quatro amigos preparam jantar. Um não come carne e outro não pode beber leite. Escolhem arroz, legumes e peixe, com queijo separado. Lavam os legumes e leem o rótulo do molho. Como contém leite, não o usam. Todos conseguem compartilhar o prato principal.",
+      "vocabulary": [
+        "en-word-042",
+        "en-word-045",
+        "en-word-047"
+      ],
+      "questionIds": [
+        "en-reading-09-q1",
+        "en-reading-09-q2",
+        "en-reading-09-q3"
+      ]
+    },
+    {
+      "id": "en-reading-10",
+      "language": "en",
+      "title": "Uma conversa na biblioteca",
+      "topic": "Conversas",
+      "level": "A2",
+      "text": "After a language class, Amir notices that a new student is sitting alone. He asks if she wants to practise speaking for ten minutes. She agrees but says she needs people to speak slowly. Amir starts with questions about books and pauses after each question. When she cannot remember a word, he gives an example instead of answering for her. They decide to meet again next week.",
+      "translation": "Após a aula de idiomas, Amir convida uma nova aluna para dez minutos de conversação. Ela aceita e pede que ele fale devagar. Ele pergunta sobre livros, faz pausas e dá exemplos quando ela esquece uma palavra, sem responder por ela. Combinam outro encontro para a próxima semana.",
+      "vocabulary": [
+        "en-word-080",
+        "en-word-113",
+        "en-word-130"
+      ],
+      "questionIds": [
+        "en-reading-10-q1",
+        "en-reading-10-q2",
+        "en-reading-10-q3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "en-grammar-01",
+      "language": "en",
+      "title": "Verb to be",
+      "topic": "Verb to be",
+      "level": "A1",
+      "objective": "Relacionar sujeito e am/is/are.",
+      "explanation": "No presente, use I am, he/she/it is e you/we/they are. O verbo liga o sujeito a identidade, estado ou lugar; não é preciso acrescentar do.",
+      "examples": [
+        {
+          "text": "I am at home.",
+          "translation": "Estou em casa."
+        },
+        {
+          "text": "They are tired.",
+          "translation": "Eles estão cansados."
+        }
+      ],
+      "commonErrors": "Não escreva “I is” ou “They is”.",
+      "questionIds": [
+        "en-grammar-01-q1",
+        "en-grammar-01-q2",
+        "en-grammar-01-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-02",
+      "language": "en",
+      "title": "Pronomes pessoais",
+      "topic": "Pronomes pessoais",
+      "level": "A1",
+      "objective": "Substituir sujeitos por pronomes.",
+      "explanation": "I, you, he, she, it, we e they ocupam o lugar do sujeito. It costuma retomar coisas ou animais sem gênero especificado. They pode retomar várias pessoas.",
+      "examples": [
+        {
+          "text": "Mila is here. She is early.",
+          "translation": "Mila está aqui. Ela chegou cedo."
+        },
+        {
+          "text": "The books are new. They are useful.",
+          "translation": "Os livros são novos. Eles são úteis."
+        }
+      ],
+      "commonErrors": "Não use him ou her como sujeito nestes exemplos.",
+      "questionIds": [
+        "en-grammar-02-q1",
+        "en-grammar-02-q2",
+        "en-grammar-02-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-03",
+      "language": "en",
+      "title": "Artigos a, an e the",
+      "topic": "Artigos a, an e the",
+      "level": "A1",
+      "objective": "Distinguir introdução e referência definida.",
+      "explanation": "Use a/an para um item singular contável ainda não definido. A escolha segue o som inicial: an apple, mas a university. The indica algo identificável no contexto.",
+      "examples": [
+        {
+          "text": "I need a pen.",
+          "translation": "Preciso de uma caneta."
+        },
+        {
+          "text": "The pen on the table is mine.",
+          "translation": "A caneta sobre a mesa é minha."
+        }
+      ],
+      "commonErrors": "A escolha entre a e an depende do som, não só da letra.",
+      "questionIds": [
+        "en-grammar-03-q1",
+        "en-grammar-03-q2",
+        "en-grammar-03-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-04",
+      "language": "en",
+      "title": "Presente simples",
+      "topic": "Presente simples",
+      "level": "A1",
+      "objective": "Descrever rotinas e fatos.",
+      "explanation": "Use a forma básica com I/you/we/they. Em frases afirmativas com he/she/it, normalmente acrescente -s; algumas formas mudam, como goes e studies.",
+      "examples": [
+        {
+          "text": "I work on Mondays.",
+          "translation": "Trabalho às segundas."
+        },
+        {
+          "text": "She studies at night.",
+          "translation": "Ela estuda à noite."
+        }
+      ],
+      "commonErrors": "O -s da terceira pessoa não acompanha I.",
+      "questionIds": [
+        "en-grammar-04-q1",
+        "en-grammar-04-q2",
+        "en-grammar-04-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-05",
+      "language": "en",
+      "title": "Perguntas e negativas",
+      "topic": "Perguntas e negativas",
+      "level": "A2",
+      "objective": "Usar do/does com verbos de ação.",
+      "explanation": "No presente simples, use do/does antes do sujeito em perguntas. Em negativas, use do not/does not; o verbo principal volta à forma básica. To be segue outra estrutura.",
+      "examples": [
+        {
+          "text": "Does she work here?",
+          "translation": "Ela trabalha aqui?"
+        },
+        {
+          "text": "He does not drive.",
+          "translation": "Ele não dirige."
+        }
+      ],
+      "commonErrors": "Não escreva “Does she works?”: does já marca a terceira pessoa.",
+      "questionIds": [
+        "en-grammar-05-q1",
+        "en-grammar-05-q2",
+        "en-grammar-05-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-06",
+      "language": "en",
+      "title": "Possessivos",
+      "topic": "Possessivos",
+      "level": "A2",
+      "objective": "Indicar a quem algo pertence.",
+      "explanation": "My, your, his, her, its, our e their vêm antes de um nome. His e her se relacionam ao possuidor, não ao objeto. Não confunda its possessivo com it is.",
+      "examples": [
+        {
+          "text": "This is her bag.",
+          "translation": "Esta é a bolsa dela."
+        },
+        {
+          "text": "Our train is late.",
+          "translation": "Nosso trem está atrasado."
+        }
+      ],
+      "commonErrors": "My não varia para singular e plural dos objetos.",
+      "questionIds": [
+        "en-grammar-06-q1",
+        "en-grammar-06-q2",
+        "en-grammar-06-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-07",
+      "language": "en",
+      "title": "Preposições de lugar e tempo",
+      "topic": "Preposições de lugar e tempo",
+      "level": "A2",
+      "objective": "Usar relações espaciais e horários básicos.",
+      "explanation": "In indica interior ou períodos como meses. On pode indicar superfície ou dias. At é usado em horários específicos. O contexto define a relação.",
+      "examples": [
+        {
+          "text": "The key is in the bag.",
+          "translation": "A chave está dentro da bolsa."
+        },
+        {
+          "text": "The lesson starts at eight.",
+          "translation": "A aula começa às oito."
+        }
+      ],
+      "commonErrors": "Não traduza toda ocorrência de “em” pela mesma preposição.",
+      "questionIds": [
+        "en-grammar-07-q1",
+        "en-grammar-07-q2",
+        "en-grammar-07-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-08",
+      "language": "en",
+      "title": "There is e there are",
+      "topic": "There is e there are",
+      "level": "A2",
+      "objective": "Expressar existência.",
+      "explanation": "There is apresenta algo singular; there are apresenta vários itens. A estrutura não descreve posse e não se traduz literalmente como “lá é”.",
+      "examples": [
+        {
+          "text": "There is a chair near the door.",
+          "translation": "Há uma cadeira perto da porta."
+        },
+        {
+          "text": "There are two windows.",
+          "translation": "Há duas janelas."
+        }
+      ],
+      "commonErrors": "Não use there is para uma lista plural como three books.",
+      "questionIds": [
+        "en-grammar-08-q1",
+        "en-grammar-08-q2",
+        "en-grammar-08-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-09",
+      "language": "en",
+      "title": "Present Continuous",
+      "topic": "Present Continuous",
+      "level": "A2",
+      "objective": "Descrever ações em andamento.",
+      "explanation": "Use am/is/are + verbo em -ing para ações acontecendo agora. Não omita o verbo to be. Algumas grafias mudam: write → writing e run → running.",
+      "examples": [
+        {
+          "text": "I am reading now.",
+          "translation": "Estou lendo agora."
+        },
+        {
+          "text": "They are cooking dinner.",
+          "translation": "Eles estão preparando o jantar."
+        }
+      ],
+      "commonErrors": "“She reading” está incompleto: falta is.",
+      "questionIds": [
+        "en-grammar-09-q1",
+        "en-grammar-09-q2",
+        "en-grammar-09-q3"
+      ]
+    },
+    {
+      "id": "en-grammar-10",
+      "language": "en",
+      "title": "Passado simples inicial",
+      "topic": "Passado simples inicial",
+      "level": "A2",
+      "objective": "Relatar acontecimentos encerrados.",
+      "explanation": "Verbos regulares costumam receber -ed. Irregulares têm formas próprias, como went. Em negativas com did not, volte à forma básica. Yesterday situa a ação no passado.",
+      "examples": [
+        {
+          "text": "We visited our friend yesterday.",
+          "translation": "Visitamos nosso amigo ontem."
+        },
+        {
+          "text": "She did not go to work.",
+          "translation": "Ela não foi ao trabalho."
+        }
+      ],
+      "commonErrors": "Não combine did com o verbo já no passado.",
+      "questionIds": [
+        "en-grammar-10-q1",
+        "en-grammar-10-q2",
+        "en-grammar-10-q3"
+      ]
     }
   ]
 }

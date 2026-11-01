@@ -4083,6 +4083,1842 @@
       "wordIds": [
         "ru-word-100"
       ]
+    },
+    {
+      "id": "ru-reading-01-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Por que Lena consegue tomar café com o irmão às segundas?",
+      "answers": [
+        "começa às dez",
+        "ela começa a trabalhar às dez"
+      ],
+      "explanation": "O início às dez deixa tempo para o café em família.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-01-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "Quem usa transporte coletivo?",
+      "answers": [
+        "o irmão",
+        "o irmão de Lena"
+      ],
+      "explanation": "O irmão pega o ônibus; Lena vai a pé.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-01-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Rotina",
+      "level": "A1",
+      "prompt": "O que Lena quer proteger da chuva?",
+      "answers": [
+        "os livros",
+        "livros"
+      ],
+      "explanation": "A bolsa protege os livros da chuva.",
+      "wordIds": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "unitId": "ru-reading-01"
+    },
+    {
+      "id": "ru-reading-02-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Por que Pedro troca as maçãs por bananas?",
+      "answers": [
+        "as maçãs estão caras",
+        "porque as maçãs estão caras"
+      ],
+      "explanation": "A troca é motivada pelo preço das maçãs.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-02-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "Para que ele guarda parte do dinheiro?",
+      "answers": [
+        "para o ônibus",
+        "para voltar de ônibus",
+        "para o ônibus de volta"
+      ],
+      "explanation": "Ele ainda precisa pagar a viagem de volta.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-02-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Compras",
+      "level": "A1",
+      "prompt": "A irmã aceita a troca?",
+      "answers": [
+        "sim",
+        "sim, para a sobremesa"
+      ],
+      "explanation": "Ela diz que as bananas servem para a sobremesa.",
+      "wordIds": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "unitId": "ru-reading-02"
+    },
+    {
+      "id": "ru-reading-03-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Quando os amigos estudam?",
+      "answers": [
+        "às quartas",
+        "às quartas-feiras",
+        "quarta-feira"
+      ],
+      "explanation": "O encontro acontece às quartas, depois do trabalho.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-03-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "Por que os dois praticam leitura em voz alta?",
+      "answers": [
+        "porque trocam de função",
+        "porque trocam de papel"
+      ],
+      "explanation": "Depois da primeira leitura, eles trocam de função.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-03-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Estudos",
+      "level": "A1",
+      "prompt": "O que tentam entender antes de traduzir tudo?",
+      "answers": [
+        "a ideia principal",
+        "a ideia central"
+      ],
+      "explanation": "A prioridade é o sentido geral do texto.",
+      "wordIds": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "unitId": "ru-reading-03"
+    },
+    {
+      "id": "ru-reading-04-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem leva comida?",
+      "answers": [
+        "Nina"
+      ],
+      "explanation": "Nina leva sopa.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-04-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Por que colocam a cadeira perto da porta?",
+      "answers": [
+        "para a avó ver as crianças",
+        "para ela ver as crianças brincando"
+      ],
+      "explanation": "A posição permite acompanhar as crianças sem andar longe.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-04-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Família",
+      "level": "A1",
+      "prompt": "Quem ajuda no jardim?",
+      "answers": [
+        "o irmão",
+        "o irmão de Nina"
+      ],
+      "explanation": "O irmão cuida do jardim enquanto o pai conserta a cadeira.",
+      "wordIds": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "unitId": "ru-reading-04"
+    },
+    {
+      "id": "ru-reading-05-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual é o novo horário?",
+      "answers": [
+        "dez e meia",
+        "10h30",
+        "10:30"
+      ],
+      "explanation": "A reunião passa das nove para dez e meia.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-05-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "Qual problema a mudança resolve?",
+      "answers": [
+        "Rosa poderá participar",
+        "permite a participação de Rosa"
+      ],
+      "explanation": "A equipe evita começar antes de Rosa chegar.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-05-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Trabalho",
+      "level": "A2",
+      "prompt": "O que cada pessoa deve preparar?",
+      "answers": [
+        "uma pergunta",
+        "1 pergunta"
+      ],
+      "explanation": "O e-mail pede uma pergunta por participante.",
+      "wordIds": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "unitId": "ru-reading-05"
+    },
+    {
+      "id": "ru-reading-06-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Como Ilya evita perder o texto?",
+      "answers": [
+        "salva num arquivo",
+        "salvando em um arquivo",
+        "salva em um arquivo"
+      ],
+      "explanation": "Salvar o arquivo preserva a mensagem antes de a conexão voltar.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-06-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "O problema afeta apenas o computador?",
+      "answers": [
+        "não",
+        "não, o telefone também"
+      ],
+      "explanation": "O telefone também está sem conexão.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-06-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "prompt": "Quantas vezes ele envia a mensagem quando a conexão volta?",
+      "answers": [
+        "uma vez",
+        "1 vez"
+      ],
+      "explanation": "Ele espera e envia o texto apenas uma vez.",
+      "wordIds": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "unitId": "ru-reading-06"
+    },
+    {
+      "id": "ru-reading-07-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "De qual plataforma o trem sairá?",
+      "answers": [
+        "quatro",
+        "4",
+        "plataforma quatro"
+      ],
+      "explanation": "O anúncio substitui a informação inicial da plataforma dois.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-07-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que houve mudança?",
+      "answers": [
+        "outro trem ocupa a plataforma dois",
+        "há outro trem na plataforma dois"
+      ],
+      "explanation": "A plataforma original ainda está ocupada.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-07-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Transporte",
+      "level": "A2",
+      "prompt": "Por que Sara não compra um lanche?",
+      "answers": [
+        "para não perder o trem",
+        "para chegar ao trem a tempo"
+      ],
+      "explanation": "Ela prioriza chegar a tempo com os quinze minutos disponíveis.",
+      "wordIds": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "unitId": "ru-reading-07"
+    },
+    {
+      "id": "ru-reading-08-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Qual é a prioridade de Pavel?",
+      "answers": [
+        "dormir bem",
+        "descansar",
+        "dormir"
+      ],
+      "explanation": "A prova cedo torna o descanso mais importante que uma escrivaninha.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-08-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "O quarto silencioso custa mais?",
+      "answers": [
+        "não",
+        "não, custa o mesmo"
+      ],
+      "explanation": "A recepção oferece o mesmo preço.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-08-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Viagens",
+      "level": "A2",
+      "prompt": "Por que a falta de escrivaninha não o incomoda?",
+      "answers": [
+        "já terminou de estudar",
+        "porque já terminou de estudar"
+      ],
+      "explanation": "Ele não precisa estudar mais naquela noite.",
+      "wordIds": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "unitId": "ru-reading-08"
+    },
+    {
+      "id": "ru-reading-09-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Por que o molho é excluído?",
+      "answers": [
+        "contém leite",
+        "porque contém leite"
+      ],
+      "explanation": "Um dos amigos não pode consumir leite.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-09-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "O queijo fica misturado no prato principal?",
+      "answers": [
+        "não",
+        "não, é servido separado"
+      ],
+      "explanation": "Servir o queijo separado permite a escolha individual.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-09-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Alimentação",
+      "level": "A2",
+      "prompt": "Qual é a vantagem da escolha do prato?",
+      "answers": [
+        "todos podem compartilhar",
+        "todos podem comer o mesmo prato"
+      ],
+      "explanation": "A adaptação evita preparar pratos principais separados.",
+      "wordIds": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "unitId": "ru-reading-09"
+    },
+    {
+      "id": "ru-reading-10-q1",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O que a aluna pede?",
+      "answers": [
+        "que ele fale devagar",
+        "falar devagar"
+      ],
+      "explanation": "Ela precisa de uma fala mais lenta para acompanhar.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-reading-10-q2",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "Como Amir ajuda sem tirar a vez da aluna?",
+      "answers": [
+        "dando exemplos",
+        "dá um exemplo",
+        "com exemplos"
+      ],
+      "explanation": "Ele oferece um exemplo em vez de responder por ela.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-reading-10-q3",
+      "language": "ru",
+      "skill": "reading",
+      "topic": "Conversas",
+      "level": "A2",
+      "prompt": "O encontro será repetido?",
+      "answers": [
+        "sim",
+        "sim, na próxima semana"
+      ],
+      "explanation": "Eles combinam se encontrar na semana seguinte.",
+      "wordIds": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "unitId": "ru-reading-10"
+    },
+    {
+      "id": "ru-grammar-01-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Escreva em cirílico a palavra russa para casa (dom).",
+      "answers": [
+        "дом"
+      ],
+      "explanation": "Дом é escrito com д, о e м.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-01-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Qual letra aparece em ёлка: е ou ё?",
+      "answers": [
+        "ё"
+      ],
+      "explanation": "Ёлка começa com ё, incluindo os dois pontos.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-01-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "prompt": "Qual letra cirílica corresponde aproximadamente a r: Р ou П?",
+      "answers": [
+        "Р"
+      ],
+      "explanation": "Р tem o som aproximado de r; П corresponde a p.",
+      "wordIds": [],
+      "unitId": "ru-grammar-01"
+    },
+    {
+      "id": "ru-grammar-02-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Complete com o pronome para “nós”: ___ дома.",
+      "answers": [
+        "мы"
+      ],
+      "explanation": "Мы significa nós.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-02-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Complete para “ela”: ___ учительница.",
+      "answers": [
+        "она"
+      ],
+      "explanation": "Она é o pronome feminino singular.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-02-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "prompt": "Escreva o pronome usado para “vocês”.",
+      "answers": [
+        "вы"
+      ],
+      "explanation": "Вы pode indicar vocês ou tratamento respeitoso.",
+      "wordIds": [],
+      "unitId": "ru-grammar-02"
+    },
+    {
+      "id": "ru-grammar-03-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de окно?",
+      "answers": [
+        "neutro"
+      ],
+      "explanation": "A janela окно é um substantivo neutro.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-03-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de папа?",
+      "answers": [
+        "masculino"
+      ],
+      "explanation": "Папа se refere ao pai e é masculino.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-03-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "prompt": "Qual é o gênero de кровать?",
+      "answers": [
+        "feminino"
+      ],
+      "explanation": "Кровать é feminino, apesar de terminar em -ь.",
+      "wordIds": [],
+      "unitId": "ru-grammar-03"
+    },
+    {
+      "id": "ru-grammar-04-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de стол.",
+      "answers": [
+        "столы"
+      ],
+      "explanation": "Стол recebe -ы.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-04-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de книга.",
+      "answers": [
+        "книги"
+      ],
+      "explanation": "Depois de г, a grafia usa и.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-04-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "prompt": "Escreva o plural de окно.",
+      "answers": [
+        "окна"
+      ],
+      "explanation": "O neutro окно tem plural окна.",
+      "wordIds": [],
+      "unitId": "ru-grammar-04"
+    },
+    {
+      "id": "ru-grammar-05-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ стол. (meu)",
+      "answers": [
+        "мой"
+      ],
+      "explanation": "Стол é masculino: мой.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-05-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ сумка. (minha)",
+      "answers": [
+        "моя"
+      ],
+      "explanation": "Сумка é feminino: моя.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-05-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "prompt": "Complete: ___ имя. (meu)",
+      "answers": [
+        "моё"
+      ],
+      "explanation": "Имя é neutro: моё, com ё.",
+      "wordIds": [],
+      "unitId": "ru-grammar-05"
+    },
+    {
+      "id": "ru-grammar-06-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Я ___ книгу. (читать)",
+      "answers": [
+        "читаю"
+      ],
+      "explanation": "A forma de я é читаю.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-06-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Она ___ письмо. (читать)",
+      "answers": [
+        "читает"
+      ],
+      "explanation": "A forma de она é читает.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-06-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "prompt": "Complete: Мы ___ вместе. (читать)",
+      "answers": [
+        "читаем"
+      ],
+      "explanation": "A forma de мы é читаем.",
+      "wordIds": [],
+      "unitId": "ru-grammar-06"
+    },
+    {
+      "id": "ru-grammar-07-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete: Я ___ работаю сегодня.",
+      "answers": [
+        "не"
+      ],
+      "explanation": "A ação работаю é negada com не.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-07-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete a resposta: ___, спасибо. (não, obrigado)",
+      "answers": [
+        "нет"
+      ],
+      "explanation": "A resposta negativa independente usa нет.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-07-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "prompt": "Complete: Она ___ читает газету.",
+      "answers": [
+        "не"
+      ],
+      "explanation": "A negação da ação vem antes de читает.",
+      "wordIds": [],
+      "unitId": "ru-grammar-07"
+    },
+    {
+      "id": "ru-grammar-08-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete a pergunta “Onde fica a estação?”: ___ станция?",
+      "answers": [
+        "где"
+      ],
+      "explanation": "Где pergunta por localização.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-08-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete “Quem é?”: ___ это?",
+      "answers": [
+        "кто"
+      ],
+      "explanation": "Кто pergunta por pessoas.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-08-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "prompt": "Complete “Quando é o exame?”: ___ экзамен?",
+      "answers": [
+        "когда"
+      ],
+      "explanation": "Когда pergunta pelo momento.",
+      "wordIds": [],
+      "unitId": "ru-grammar-08"
+    },
+    {
+      "id": "ru-grammar-09-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Complete: Я читаю ___. (книга)",
+      "answers": [
+        "книгу"
+      ],
+      "explanation": "Книга muda para книгу no acusativo singular.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-09-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Complete: Я вижу ___. (машина)",
+      "answers": [
+        "машину"
+      ],
+      "explanation": "Машина passa a машину como objeto direto.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-09-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "prompt": "Na frase “Мама читает книгу”, quem é o sujeito?",
+      "answers": [
+        "мама"
+      ],
+      "explanation": "Мама está no nominativo e realiza a ação.",
+      "wordIds": [],
+      "unitId": "ru-grammar-09"
+    },
+    {
+      "id": "ru-grammar-10-q1",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: ___ книга. (um livro)",
+      "answers": [
+        "одна"
+      ],
+      "explanation": "Книга é feminino: одна.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-grammar-10-q2",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: ___ книги. (dois livros)",
+      "answers": [
+        "две"
+      ],
+      "explanation": "Com книга, usa-se две.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-grammar-10-q3",
+      "language": "ru",
+      "skill": "grammar",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "prompt": "Complete: пять ___. (стол)",
+      "answers": [
+        "столов"
+      ],
+      "explanation": "Depois de пять, neste exemplo usa-se столов.",
+      "wordIds": [],
+      "unitId": "ru-grammar-10"
+    },
+    {
+      "id": "ru-test-01",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza a palavra «хлеб».",
+      "answers": [
+        "pão"
+      ],
+      "explanation": "Bread e хлеб significam pão.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-02",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa «аптека»?",
+      "answers": [
+        "farmácia"
+      ],
+      "explanation": "É o estabelecimento onde se compram medicamentos.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-03",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Qual é o significado de «завтра»?",
+      "answers": [
+        "amanhã"
+      ],
+      "explanation": "A palavra aponta para o dia seguinte.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-04",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza «родители» para português.",
+      "answers": [
+        "pais"
+      ],
+      "explanation": "A referência é aos pais, não aos parentes em geral.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-05",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "O que significa «ключ»?",
+      "answers": [
+        "chave"
+      ],
+      "explanation": "No vocabulário cotidiano, é chave.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-06",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Vocabulário",
+      "level": "A1",
+      "prompt": "Traduza «дешёвый».",
+      "answers": [
+        "barato",
+        "barata"
+      ],
+      "explanation": "O adjetivo indica preço baixo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-07",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “obrigado” em russo.",
+      "answers": [
+        "спасибо"
+      ],
+      "explanation": "É uma forma de agradecimento.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-08",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “bom dia” em russo.",
+      "answers": [
+        "доброе утро"
+      ],
+      "explanation": "É a saudação usada pela manhã.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-09",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “estação” em russo.",
+      "answers": [
+        "станция"
+      ],
+      "explanation": "Station/станция nomeiam a estação neste contexto de transporte.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-10",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza para russo: “água fria”.",
+      "answers": [
+        "холодная вода"
+      ],
+      "explanation": "O adjetivo vem antes do nome; em russo concorda no feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-11",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Escreva “minha família” em russo.",
+      "answers": [
+        "моя семья"
+      ],
+      "explanation": "O possessivo russo concorda com семья.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-12",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Tradução",
+      "level": "A1",
+      "prompt": "Traduza “um livro novo” para russo.",
+      "answers": [
+        "новая книга"
+      ],
+      "explanation": "Inglês usa artigo indefinido; russo não tem esse artigo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-13",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Магазин закрывается в шесть. Сейчас пять». A loja já fechou?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Ainda falta uma hora para o fechamento.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-14",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Лия берёт зонт, потому что идёт дождь». Por que leva um guarda-chuva?",
+      "answers": [
+        "porque está chovendo",
+        "por causa da chuva"
+      ],
+      "explanation": "O motivo explícito é a chuva.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-15",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Автобус полный, поэтому мы идём пешком». Como seguem viagem?",
+      "answers": [
+        "a pé",
+        "caminhando"
+      ],
+      "explanation": "Como o ônibus está cheio, seguem a pé.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-16",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Я хотел чай, но был только кофе». Havia chá?",
+      "answers": [
+        "não"
+      ],
+      "explanation": "Só havia café, apesar da preferência por chá.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-17",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Билет на столе, а не в сумке». Onde está o bilhete?",
+      "answers": [
+        "na mesa",
+        "sobre a mesa"
+      ],
+      "explanation": "A frase contrasta a mesa com a bolsa.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-18",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Compreensão",
+      "level": "A1",
+      "prompt": "Leia: «Нина занимается до ужина, а потом отдыхает». O que faz depois do jantar?",
+      "answers": [
+        "descansa",
+        "ela descansa"
+      ],
+      "explanation": "O descanso vem depois do jantar.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-19",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete com “eles”: ___ учителя.",
+      "answers": [
+        "они"
+      ],
+      "explanation": "O sujeito plural pede are em inglês; они significa eles em russo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-20",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Diga o gênero de сообщение.",
+      "answers": [
+        "neutro"
+      ],
+      "explanation": "Interesting começa com som vocálico; сообщение é neutro.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-21",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: Ты ___ книгу. (читать)",
+      "answers": [
+        "читаешь"
+      ],
+      "explanation": "Tom é terceira pessoa singular; ты pede читаешь.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-22",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete “O que é isto?”: ___ это?",
+      "answers": [
+        "что"
+      ],
+      "explanation": "Inglês usa do com they; что pergunta por algo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-23",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: Я вижу ___. (сумка)",
+      "answers": [
+        "сумку"
+      ],
+      "explanation": "Duas bolsas pedem are; сумка muda para сумку como objeto.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-24",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Gramática",
+      "level": "A2",
+      "prompt": "Complete: ___ окна. (minhas janelas)",
+      "answers": [
+        "мои"
+      ],
+      "explanation": "Ação em andamento usa -ing; мои concorda com o plural.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-25",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Estou em casa.”",
+      "answers": [
+        "я дома"
+      ],
+      "explanation": "Inglês precisa de am; russo geralmente omite a cópula no presente.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-26",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Nós lemos todos os dias.”",
+      "answers": [
+        "мы читаем каждый день"
+      ],
+      "explanation": "A expressão temporal descreve uma rotina.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-27",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Ela não trabalha hoje.”",
+      "answers": [
+        "она не работает сегодня",
+        "сегодня она не работает"
+      ],
+      "explanation": "A negativa inglesa usa does not; a russa usa не antes do verbo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-28",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Onde está meu livro?”",
+      "answers": [
+        "где моя книга"
+      ],
+      "explanation": "A pergunta pede localização; книга é feminino.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-29",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Eu tenho duas cadeiras.”",
+      "answers": [
+        "у меня два стула"
+      ],
+      "explanation": "A posse russa usa у меня; dois pede стула neste exemplo.",
+      "wordIds": []
+    },
+    {
+      "id": "ru-test-30",
+      "language": "ru",
+      "skill": "test",
+      "topic": "Escrita",
+      "level": "A2",
+      "prompt": "Traduza: “Até amanhã!”",
+      "answers": [
+        "до завтра"
+      ],
+      "explanation": "É uma despedida com referência ao próximo dia.",
+      "wordIds": []
+    }
+  ],
+  "readings": [
+    {
+      "id": "ru-reading-01",
+      "language": "ru",
+      "title": "Uma manhã sem pressa",
+      "topic": "Rotina",
+      "level": "A1",
+      "text": "Лена работает в библиотеке рядом с домом. По понедельникам она начинает работать в десять, поэтому завтракает с братом. Он готовит чай, а она режет хлеб. Они выходят вместе, но он едет на автобусе, а она идёт пешком. Сегодня идёт дождь. Лена кладёт книги в сумку, чтобы они не промокли.",
+      "translation": "Lena trabalha numa biblioteca perto de casa. Às segundas começa às dez e por isso toma café da manhã com o irmão. Ele prepara chá enquanto ela corta pão. Eles saem juntos, mas ele pega o ônibus e ela vai a pé. Hoje chove. Lena põe os livros numa bolsa para não molharem.",
+      "vocabulary": [
+        "ru-word-015",
+        "ru-word-037",
+        "ru-word-040"
+      ],
+      "questionIds": [
+        "ru-reading-01-q1",
+        "ru-reading-01-q2",
+        "ru-reading-01-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-02",
+      "language": "ru",
+      "title": "A lista do mercado",
+      "topic": "Compras",
+      "level": "A1",
+      "text": "У Педро короткий список покупок: молоко, рис и яблоки. В магазине яблоки дорогие. Он покупает бананы и оставляет немного денег на автобус домой. Перед выходом он проверяет чек. Его сестра готовит обед, поэтому он звонит ей и объясняет замену. Она говорит, что бананы подойдут на десерт.",
+      "translation": "Pedro tem uma lista curta: leite, arroz e maçãs. Na loja, as maçãs estão caras. Ele compra bananas no lugar e guarda dinheiro para o ônibus de volta. Confere o recibo antes de sair. A irmã prepara o almoço, então ele liga para explicar a troca. Ela diz que bananas servem para a sobremesa.",
+      "vocabulary": [
+        "ru-word-038",
+        "ru-word-041",
+        "ru-word-055"
+      ],
+      "questionIds": [
+        "ru-reading-02-q1",
+        "ru-reading-02-q2",
+        "ru-reading-02-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-03",
+      "language": "ru",
+      "title": "Estudar em dupla",
+      "topic": "Estudos",
+      "level": "A1",
+      "text": "Мила и её друг учат английский по средам. После работы они встречаются за кухонным столом. Мила читает короткий текст вслух, а друг записывает новые слова в тетрадь. Потом они меняются ролями. Они не переводят каждое слово: сначала стараются понять главную мысль. Следующий урок будет о поездках на поезде.",
+      "translation": "Mila e seu amigo estudam inglês às quartas. Encontram-se à mesa da cozinha depois do trabalho. Mila lê um texto em voz alta e o amigo anota palavras novas num caderno. Depois trocam de função. Primeiro tentam entender a ideia principal, sem traduzir tudo. A próxima aula será sobre viagens de trem.",
+      "vocabulary": [
+        "ru-word-081",
+        "ru-word-082",
+        "ru-word-087"
+      ],
+      "questionIds": [
+        "ru-reading-03-q1",
+        "ru-reading-03-q2",
+        "ru-reading-03-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-04",
+      "language": "ru",
+      "title": "O sábado da família",
+      "topic": "Família",
+      "level": "A1",
+      "text": "В субботу к бабушке приезжают Нина, её папа и брат. Нина привозит суп. Папа чинит стул, а брат помогает в саду. Бабушка не может далеко ходить, но любит сидеть на улице. После обеда они ставят стул рядом с дверью, чтобы она могла смотреть, как играют дети.",
+      "translation": "No sábado, Nina, seu pai e seu irmão visitam a avó. Nina leva sopa, o pai conserta uma cadeira e o irmão ajuda no jardim. A avó não consegue andar longe, mas gosta de ficar ao ar livre. Depois do almoço colocam uma cadeira perto da porta para que ela veja as crianças brincando.",
+      "vocabulary": [
+        "ru-word-011",
+        "ru-word-043",
+        "ru-word-070"
+      ],
+      "questionIds": [
+        "ru-reading-04-q1",
+        "ru-reading-04-q2",
+        "ru-reading-04-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-05",
+      "language": "ru",
+      "title": "Reunião com outro horário",
+      "topic": "Trabalho",
+      "level": "A2",
+      "text": "Небольшая команда планирует встречу в пятницу в девять. Их коллега Роза работает в другом городе и не может приехать раньше десяти. Команда решает не начинать без неё и переносит встречу на половину одиннадцатого. Новый час сообщают по электронной почте и просят каждого подготовить один вопрос. Теперь Роза сможет участвовать и представить свой отчёт.",
+      "translation": "Uma equipe marca uma reunião para sexta às nove. Rosa trabalha em outra cidade e não chega antes das dez. A equipe transfere o encontro para dez e meia, avisa por e-mail e pede uma pergunta de cada pessoa. Rosa poderá participar e apresentar seu relatório.",
+      "vocabulary": [
+        "ru-word-073",
+        "ru-word-074",
+        "ru-word-083"
+      ],
+      "questionIds": [
+        "ru-reading-05-q1",
+        "ru-reading-05-q2",
+        "ru-reading-05-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-06",
+      "language": "ru",
+      "title": "Uma conexão interrompida",
+      "topic": "Tecnologia",
+      "level": "A2",
+      "text": "Илья пишет важное сообщение, когда перестаёт работать интернет. Он не закрывает компьютер. Сначала он сохраняет текст в файл. Он проверяет телефон и видит, что связи там тоже нет. Вместо того чтобы много раз отправлять одно сообщение, он ждёт. Когда связь появляется, он один раз отправляет сохранённый текст и проверяет, что сообщение дошло.",
+      "translation": "Ilya escreve uma mensagem importante quando a internet para. Primeiro salva o texto num arquivo. O telefone também está sem conexão. Ele espera, em vez de reenviar várias vezes. Quando a conexão volta, envia o texto salvo uma vez e confere a entrega.",
+      "vocabulary": [
+        "ru-word-103",
+        "ru-word-104",
+        "ru-word-107"
+      ],
+      "questionIds": [
+        "ru-reading-06-q1",
+        "ru-reading-06-q2",
+        "ru-reading-06-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-07",
+      "language": "ru",
+      "title": "A plataforma mudou",
+      "topic": "Transporte",
+      "level": "A2",
+      "text": "На станции Сара ищет поезд к морю на второй платформе. По объявлению поезд отправится с четвёртой платформы, потому что на второй ещё стоит другой поезд. У Сары пятнадцать минут. Она проверяет указатель, идёт к четвёртой платформе и по дороге не покупает еду. Сегодня успеть на поезд важнее, чем перекусить.",
+      "translation": "Na estação, Sara procura o trem para o litoral na plataforma dois. Um anúncio informa a saída na quatro porque outro trem ainda ocupa a dois. Ela tem quinze minutos, confere a placa e vai direto para a plataforma quatro, sem comprar comida. Hoje prioriza pegar o trem.",
+      "vocabulary": [
+        "ru-word-087",
+        "ru-word-090",
+        "ru-word-092"
+      ],
+      "questionIds": [
+        "ru-reading-07-q1",
+        "ru-reading-07-q2",
+        "ru-reading-07-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-08",
+      "language": "ru",
+      "title": "Uma hospedagem tranquila",
+      "topic": "Viagens",
+      "level": "A2",
+      "text": "В гостинице Павлу предлагают номер с окнами на оживлённую улицу. Утром у него ранний экзамен, и ему нужно выспаться. Он спрашивает, есть ли более тихий номер. Администратор находит номер с окнами в сад за ту же цену, но без письменного стола. Павел соглашается: он уже закончил готовиться и хочет только хорошо отдохнуть.",
+      "translation": "Oferecem a Pavel um quarto voltado para uma rua movimentada. Ele tem prova cedo e precisa dormir. A recepção encontra um quarto mais silencioso, voltado para o jardim, pelo mesmo preço, mas sem escrivaninha. Pavel aceita porque já terminou de estudar.",
+      "vocabulary": [
+        "ru-word-085",
+        "ru-word-094",
+        "ru-word-095"
+      ],
+      "questionIds": [
+        "ru-reading-08-q1",
+        "ru-reading-08-q2",
+        "ru-reading-08-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-09",
+      "language": "ru",
+      "title": "O jantar compartilhado",
+      "topic": "Alimentação",
+      "level": "A2",
+      "text": "Четверо друзей готовят ужин. Один не ест мясо, а другой не может пить молоко. Они выбирают рис, овощи и рыбу, а сыр подают отдельно. Перед готовкой они моют овощи и читают состав соуса. В нём есть молоко, поэтому они его не используют. Все могут есть общее блюдо, и отдельно готовить ничего не нужно.",
+      "translation": "Quatro amigos preparam jantar. Um não come carne e outro não pode beber leite. Escolhem arroz, legumes e peixe, com queijo separado. Lavam os legumes e leem o rótulo do molho. Como contém leite, não o usam. Todos conseguem compartilhar o prato principal.",
+      "vocabulary": [
+        "ru-word-042",
+        "ru-word-045",
+        "ru-word-047"
+      ],
+      "questionIds": [
+        "ru-reading-09-q1",
+        "ru-reading-09-q2",
+        "ru-reading-09-q3"
+      ]
+    },
+    {
+      "id": "ru-reading-10",
+      "language": "ru",
+      "title": "Uma conversa na biblioteca",
+      "topic": "Conversas",
+      "level": "A2",
+      "text": "После языкового занятия Амир замечает, что новая студентка сидит одна. Он спрашивает, хочет ли она десять минут потренироваться говорить. Она соглашается, но просит говорить медленно. Амир начинает с вопросов о книгах и делает паузу после каждого вопроса. Когда она не может вспомнить слово, он приводит пример, а не отвечает за неё. Они решают встретиться снова на следующей неделе.",
+      "translation": "Após a aula de idiomas, Amir convida uma nova aluna para dez minutos de conversação. Ela aceita e pede que ele fale devagar. Ele pergunta sobre livros, faz pausas e dá exemplos quando ela esquece uma palavra, sem responder por ela. Combinam outro encontro para a próxima semana.",
+      "vocabulary": [
+        "ru-word-080",
+        "ru-word-113",
+        "ru-word-130"
+      ],
+      "questionIds": [
+        "ru-reading-10-q1",
+        "ru-reading-10-q2",
+        "ru-reading-10-q3"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "ru-grammar-01",
+      "language": "ru",
+      "title": "Cirílico e leitura",
+      "topic": "Cirílico e leitura",
+      "level": "A1",
+      "objective": "Reconhecer letras russas e preservar ё.",
+      "explanation": "Algumas letras lembram as latinas, mas têm outro som: В corresponde aproximadamente a v, Н a n e Р a r. Ё é uma letra distinta de Е. A transliteração serve de apoio e não substitui a leitura em cirílico.",
+      "examples": [
+        {
+          "text": "мама",
+          "translation": "mamãe"
+        },
+        {
+          "text": "дом",
+          "translation": "casa"
+        }
+      ],
+      "commonErrors": "Não leia Р como p latino nem substitua ё automaticamente por е.",
+      "questionIds": [
+        "ru-grammar-01-q1",
+        "ru-grammar-01-q2",
+        "ru-grammar-01-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-02",
+      "language": "ru",
+      "title": "Pronomes pessoais russos",
+      "topic": "Pronomes pessoais russos",
+      "level": "A1",
+      "objective": "Escolher o sujeito adequado.",
+      "explanation": "Я, ты, он, она, оно, мы, вы e они indicam pessoas e grupos. Вы pode ser plural ou tratamento respeitoso. No presente, a ligação equivalente a “ser” costuma ficar implícita.",
+      "examples": [
+        {
+          "text": "Я студент.",
+          "translation": "Sou estudante."
+        },
+        {
+          "text": "Мы дома.",
+          "translation": "Estamos em casa."
+        }
+      ],
+      "commonErrors": "Não acrescente automaticamente есть a toda frase equivalente a ser/estar.",
+      "questionIds": [
+        "ru-grammar-02-q1",
+        "ru-grammar-02-q2",
+        "ru-grammar-02-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-03",
+      "language": "ru",
+      "title": "Gênero dos substantivos",
+      "topic": "Gênero dos substantivos",
+      "level": "A1",
+      "objective": "Identificar padrões e exceções de gênero.",
+      "explanation": "Muitos nomes em consoante são masculinos, em -а/-я femininos e em -о/-е neutros. Há exceções: папа é masculino, имя é neutro. Nomes em -ь precisam ser aprendidos com seu gênero: дверь é feminino.",
+      "examples": [
+        {
+          "text": "новый стол",
+          "translation": "mesa nova"
+        },
+        {
+          "text": "новая дверь",
+          "translation": "porta nova"
+        }
+      ],
+      "commonErrors": "A terminação -а não torna папа feminino; -ь sozinho não determina o gênero.",
+      "questionIds": [
+        "ru-grammar-03-q1",
+        "ru-grammar-03-q2",
+        "ru-grammar-03-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-04",
+      "language": "ru",
+      "title": "Singular e plural",
+      "topic": "Singular e plural",
+      "level": "A1",
+      "objective": "Reconhecer plurais frequentes.",
+      "explanation": "Muitos plurais terminam em -ы ou -и. Depois de г, к, х, ж, ч, ш, щ, escreve-se и em vez de ы. Existem plurais irregulares, que devem ser aprendidos em contexto.",
+      "examples": [
+        {
+          "text": "стол — столы",
+          "translation": "mesa — mesas"
+        },
+        {
+          "text": "книга — книги",
+          "translation": "livro — livros"
+        }
+      ],
+      "commonErrors": "Não forme o plural de todas as palavras acrescentando apenas ы.",
+      "questionIds": [
+        "ru-grammar-04-q1",
+        "ru-grammar-04-q2",
+        "ru-grammar-04-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-05",
+      "language": "ru",
+      "title": "Possessivos russos",
+      "topic": "Possessivos russos",
+      "level": "A2",
+      "objective": "Concordar possessivos com o objeto.",
+      "explanation": "Мой, моя, моё e мои concordam com o nome possuído: masculino, feminino, neutro e plural. O gênero da pessoa que fala não altera essas formas.",
+      "examples": [
+        {
+          "text": "моя книга",
+          "translation": "meu livro"
+        },
+        {
+          "text": "моё окно",
+          "translation": "minha janela"
+        }
+      ],
+      "commonErrors": "A concordância segue o substantivo russo, não o gênero da tradução portuguesa.",
+      "questionIds": [
+        "ru-grammar-05-q1",
+        "ru-grammar-05-q2",
+        "ru-grammar-05-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-06",
+      "language": "ru",
+      "title": "Verbos no presente",
+      "topic": "Verbos no presente",
+      "level": "A2",
+      "objective": "Escolher formas verbais frequentes.",
+      "explanation": "Verbos mudam conforme a pessoa. Em читать, temos я читаю, ты читаешь, он/она читает, мы читаем, вы читаете, они читают. Aprenda o padrão em frases, sem supor que todos os verbos seguem a mesma conjugação.",
+      "examples": [
+        {
+          "text": "Я читаю книгу.",
+          "translation": "Leio um livro."
+        },
+        {
+          "text": "Они читают дома.",
+          "translation": "Eles leem em casa."
+        }
+      ],
+      "commonErrors": "Não use o infinitivo читать depois do sujeito quando ele é o verbo principal.",
+      "questionIds": [
+        "ru-grammar-06-q1",
+        "ru-grammar-06-q2",
+        "ru-grammar-06-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-07",
+      "language": "ru",
+      "title": "Negação com не e нет",
+      "topic": "Negação com не e нет",
+      "level": "A2",
+      "objective": "Negar ações e existência.",
+      "explanation": "Не costuma vir antes do verbo ou elemento negado: я не знаю. Нет pode responder “não” ou indicar ausência. Nesta introdução, pratique frases fixas sem generalizar regras de caso ainda não estudadas.",
+      "examples": [
+        {
+          "text": "Я не понимаю.",
+          "translation": "Não entendo."
+        },
+        {
+          "text": "Нет, спасибо.",
+          "translation": "Não, obrigado."
+        }
+      ],
+      "commonErrors": "Não use нет no lugar de не imediatamente antes de um verbo nestas frases.",
+      "questionIds": [
+        "ru-grammar-07-q1",
+        "ru-grammar-07-q2",
+        "ru-grammar-07-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-08",
+      "language": "ru",
+      "title": "Perguntas em russo",
+      "topic": "Perguntas em russo",
+      "level": "A2",
+      "objective": "Reconhecer palavras interrogativas.",
+      "explanation": "Perguntas podem usar entonação ou palavras como кто (quem), что (o quê), где (onde), когда (quando) e сколько (quanto/quantos). Não é necessário um auxiliar equivalente a do.",
+      "examples": [
+        {
+          "text": "Где школа?",
+          "translation": "Onde fica a escola?"
+        },
+        {
+          "text": "Кто это?",
+          "translation": "Quem é?"
+        }
+      ],
+      "commonErrors": "Não introduza um auxiliar de inglês numa pergunta russa.",
+      "questionIds": [
+        "ru-grammar-08-q1",
+        "ru-grammar-08-q2",
+        "ru-grammar-08-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-09",
+      "language": "ru",
+      "title": "Nominativo e acusativo inicial",
+      "topic": "Nominativo e acusativo inicial",
+      "level": "A2",
+      "objective": "Distinguir sujeito e objeto direto simples.",
+      "explanation": "O nominativo nomeia o sujeito. O acusativo marca muitos objetos diretos. Em nomes femininos regulares, -а costuma mudar para -у: книга → книгу. Nomes masculinos inanimados como стол mantêm a forma. Esta lição não cobre todo o sistema de casos.",
+      "examples": [
+        {
+          "text": "Мама читает книгу.",
+          "translation": "Mamãe lê um livro."
+        },
+        {
+          "text": "Я вижу стол.",
+          "translation": "Vejo uma mesa."
+        }
+      ],
+      "commonErrors": "Não deixe книга no nominativo quando funciona como objeto de читаю.",
+      "questionIds": [
+        "ru-grammar-09-q1",
+        "ru-grammar-09-q2",
+        "ru-grammar-09-q3"
+      ]
+    },
+    {
+      "id": "ru-grammar-10",
+      "language": "ru",
+      "title": "Números e concordância básica",
+      "topic": "Números e concordância básica",
+      "level": "A2",
+      "objective": "Usar um, dois e cinco com nomes simples.",
+      "explanation": "Один concorda em gênero: один стол, одна книга, одно окно. Depois de dois, três e quatro, exemplos simples usam a forma стола; depois de cinco, столов. Aqui praticamos apenas esses grupos, sem abranger todos os números compostos e casos.",
+      "examples": [
+        {
+          "text": "две книги",
+          "translation": "dois livros"
+        },
+        {
+          "text": "пять столов",
+          "translation": "cinco mesas"
+        }
+      ],
+      "commonErrors": "Use две com nomes femininos como книга; não generalize a forma plural nominativa após todo numeral.",
+      "questionIds": [
+        "ru-grammar-10-q1",
+        "ru-grammar-10-q2",
+        "ru-grammar-10-q3"
+      ]
     }
   ]
 }

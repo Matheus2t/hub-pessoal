@@ -1,3 +1,57 @@
+# 2T Learn — checkpoint da Etapa C
+
+Etapa C concluída funcionalmente em `codex/2t-learn`, a partir de `f2ab5f8`.
+Etapa D ainda não iniciada neste checkpoint. Sem merge ou deploy de produção.
+
+## Entregas C
+
+- Por idioma: 10 leituras originais e traduzidas, cada uma com vocabulário
+  referenciado e 3 perguntas; 10 lições com objetivo, explicação em português,
+  exemplos traduzidos, erros comuns e 3 exercícios; 30 questões distintas de avaliação.
+  Total C: 20 textos, 20 lições e 180 questões nos dois idiomas.
+- Novos campos aditivos do catálogo e validação de referências; os 600 IDs de B
+  foram preservados. Fonte editorial: `scripts/learn/extended-content.py`.
+- Leitura e gramática usam o registro de tentativas existente; abrir uma unidade
+  não a conclui. A lista mostra questões efetivamente respondidas, sem declarar domínio.
+- Avaliação com navegação, rascunho recuperável nesta aba (sessionStorage), contagem,
+  finalização transacional das 30 respostas, deduplicação por IDs estáveis da sessão,
+  resultados reais por assunto e correção somente após salvar. Sair não finaliza;
+  fechar a aba pode perder o rascunho, mas não remove tentativas já registradas.
+- Caderno de erros por idioma, filtros de modalidade/assunto/histórico, registros
+  originais preservados, referência ausente explicitada e recuperação com mesmos IDs.
+- Treino direcionado usa os últimos 20 registros por tema, mínimo de 3 tentativas
+  e 2 erros. Prioriza itens não corrigidos, recorrentes e recentes; não inventa exercícios.
+- Tentativa de recuperação gera novo evento, sem editar erros anteriores.
+
+## Validação C
+
+- Typecheck/build aprovados; Pytest 101 aprovados.
+- Learn A/B/C: 50 testes distintos aprovados, incluindo os 15 novos da Etapa C.
+  A rodada inicial teve 49 aprovados e um teste legado esperando 3 áreas indisponíveis.
+  Atualizado para as 8 áreas existentes; repetição do caso aprovada. Sem falha pendente.
+- Os 2 testes de integridade foram repetidos após corrigir um caractere latino
+  indevido no exemplo de caso russo. IDs e referências aprovados.
+- Cobertura: dois idiomas, questões persistidas, abrir sem gravar, avaliações com
+  recarga/deduplicação, abandono, caderno, conteúdo removido, treino e rollback da
+  transação de avaliação; regressão A/B e IndexedDB/backups v1 preservados.
+- 100 capturas de C nas cinco larguras, ambos os idiomas/temas; overflow verificado
+  em todas. Inspecionadas amostras de leitura, gramática, avaliação e caderno em
+  1920/1366/768/390/320 px. Navegação por teclado testada.
+- Artefatos locais: `.vercel/learn-c-validation`, `learn-c-content-final`, `learn-c-retry`.
+- `git diff --check` aprovado.
+
+## Limitações C
+
+Conteúdo original com revisão assistida; sem revisão humana, certificação CEFR ou
+avaliação semântica. Variantes são explícitas; outras traduções podem ser legítimas.
+A avaliação é educacional, sem classificação certificada. Síntese de voz continua
+sujeita às vozes instaladas (limitação de B, não alterada por C).
+Rascunhos de avaliação são próprios da aba; histórico só é gravado na finalização.
+
+---
+
+## Registro da Etapa B (anterior à C)
+
 # 2T Learn — Etapa B concluída
 
 Revisão final: 01/11/2026. Branch: `codex/2t-learn`.

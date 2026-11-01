@@ -40,7 +40,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
-  location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
+  location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
   location.hash === '#/renda-fixa' ? 'fixedIncome' :
   location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
   location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
@@ -62,4 +62,4 @@ export function filterTools(category: string, query: string, items: readonly Too
     && `${tool.name} ${tool.category}`.toLocaleLowerCase("pt-BR").includes(search));
 }
 
-export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita'};
+export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado'};

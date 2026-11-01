@@ -8,7 +8,7 @@ for(const width of [1920,1366,768,390,320])test(`Learn routes and themes ${width
  await expect(page.locator('.learn-language-detail').first()).toHaveText('Sem histórico de estudo');expect(loads.filter(u=>/\/learn\//.test(u))).toHaveLength(0);
  for(const route of ['','en','ru']){
   await page.goto('/#/learn'+(route?'/'+route:''));await expect(page.locator('.learn-heading')).toBeVisible();await expect(page.locator('.learn-page [role="status"]')).toHaveCount(0);
-  if(route){await expect(page.locator('learn-area-card')).toHaveCount(3);await expect(page.locator('learn-area-card a, learn-area-card button')).toHaveCount(0);await expect(page.locator('.learn-area-link')).toHaveCount(5);await expect(page.locator('.learn-progress')).toContainText('Sem respostas');await expect(page).toHaveTitle(new RegExp(route==='en'?'Inglês':'Russo'));}
+  if(route){await expect(page.locator('learn-area-card')).toHaveCount(0);await expect(page.locator('learn-area-card a, learn-area-card button')).toHaveCount(0);await expect(page.locator('.learn-area-link')).toHaveCount(8);await expect(page.locator('.learn-progress')).toContainText('Sem respostas');await expect(page).toHaveTitle(new RegExp(route==='en'?'Inglês':'Russo'));}
   for(const theme of ['dark','light']){await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath(`${route||'select'}-${theme}.png`),fullPage:true,animations:'disabled'});}
   await page.reload();await expect(page.locator('.learn-heading h1')).toHaveText(route==='en'?'Inglês':route==='ru'?'Russo':'Idiomas');
  }
@@ -30,10 +30,10 @@ test('invalid routes do not open the database or fetch curricula',async({page})=
 });
 test('storage failure, recovery and catalogue failure stay independent',async({page})=>{
  await page.addInitScript(()=>{const original=indexedDB.open.bind(indexedDB);indexedDB.open=((...args:Parameters<IDBFactory['open']>)=>{if(sessionStorage.getItem('learn-denied')!=='no')throw Error('private technical error');return original(...args)}) as IDBFactory['open']});
- await page.goto('/#/learn/en');await expect(page.locator('.learn-message')).toContainText('Progresso local indisponível');await expect(page.locator('learn-page')).not.toContainText('private technical error');await expect(page.locator('learn-area-card')).toHaveCount(3);
+ await page.goto('/#/learn/en');await expect(page.locator('.learn-message')).toContainText('Progresso local indisponível');await expect(page.locator('learn-page')).not.toContainText('private technical error');await expect(page.locator('learn-area-card')).toHaveCount(0);await expect(page.locator('.learn-area-link')).toHaveCount(8);
  await page.evaluate(()=>sessionStorage.setItem('learn-denied','no'));await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-progress')).toBeVisible();
  await page.route('**/learn/ru.json',r=>r.fulfill({status:503,body:'Unavailable'}));await page.goto('/#/learn/ru');await expect(page.locator('.learn-message')).toContainText('Não foi possível carregar o catálogo');await expect(page.locator('.learn-progress')).toBeVisible();
- await page.unroute('**/learn/ru.json');await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-area-link')).toHaveCount(5);
+ await page.unroute('**/learn/ru.json');await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-area-link')).toHaveCount(8);
 });
 
 test('language links support keyboard navigation and visible focus',async({page})=>{

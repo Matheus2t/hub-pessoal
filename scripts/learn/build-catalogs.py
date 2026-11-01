@@ -71,3 +71,12 @@ for language in ['en','ru']:
  for e in c['exercises']:
   if e['skill']=='writing':e['answers']+=variants.get(e['answers'][0],[])
  p.write_text(json.dumps(c,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+# Additive Stage C content; existing vocabulary and exercise IDs are untouched.
+import runpy
+build_extended=runpy.run_path('scripts/learn/extended-content.py')['build_extended']
+for language in ['en','ru']:
+ p=root/f'{language}.json';c=json.loads(p.read_text(encoding='utf-8'));extra=build_extended(language)
+ c['readings']=extra['readings'];c['lessons']=extra['lessons'];c['exercises']+=extra['exercises']
+ p.write_text(json.dumps(c,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print('Stage C per language: 10 readings/30 questions, 10 lessons/30 exercises, 30 assessment questions.')

@@ -6,10 +6,12 @@ import type {Exercise} from './content';
 import {evaluateAnswer,newCard,schedule} from './engine';
 import {recordAttempt} from './storage';
 import './audio';
+import type {Curriculum} from './content';
 @customElement('learn-session')
 export class LearnSession extends LightElement {
  @property() language:Language='en';@property() mode='writing';
  @property({attribute:false}) words:Word[]=[];@property({attribute:false}) exercises:Exercise[]=[];
+ @property({attribute:false}) catalog?:Curriculum;
  @state() private index=0;@state() private answer='';@state() private revealed=false;@state() private saved=false;@state() private busy=false;@state() private error='';@state() private heard=false;
  @state() private results:boolean[]=[];
  private attemptId='';private started=0;private generation=0;private elapsed=0;private lastTick=0;
@@ -36,7 +38,9 @@ export class LearnSession extends LightElement {
  render(){const flash=this.mode==='flashcards',total=flash?this.words.length:this.exercises.length,word=this.words[this.index],exercise=this.exercises[this.index];
   if(!total)return html`<p class="learn-empty">Nenhum item disponível nesta sessão.</p>`;
   if(this.index>=total)return html`<section class="learn-message"><h2>Sessão concluída</h2><p>${this.results.length} respostas salvas · ${this.results.filter(Boolean).length} ${flash?'cartões lembrados':'acertos'}.</p><a class="button" href=${`#/learn/${this.language}`}>Voltar ao idioma</a></section>`;
-  return html`<section class="learn-session"><header><h2>${flash?'Flashcards':this.mode==='vocabulary'?'Prática de vocabulário':this.mode==='listening'?'Listening':this.mode==='dictation'?'Ditado':'Escrita'}</h2><span>${this.index+1} de ${total}</span><a href=${`#/learn/${this.language}`}>Encerrar sessão</a></header>
+  const unit=exercise?.unitId?[...(this.catalog?.readings||[]),...(this.catalog?.lessons||[])].find(u=>u.id===exercise.unitId):undefined;
+  return html`<section class="learn-session"><header><h2>${flash?'Flashcards':this.mode==='vocabulary'?'Prática de vocabulário':this.mode==='listening'?'Listening':this.mode==='dictation'?'Ditado':this.mode==='reading'?'Compreensão':this.mode==='grammar'?'Prática de gramática':this.mode==='recovery'?'Revisão de erros':'Escrita'}</h2><span>${this.index+1} de ${total}</span><a href=${`#/learn/${this.language}`}>Encerrar sessão</a></header>
+   ${unit&&'text'in unit?html`<details class="learn-prose"><summary>Consultar texto: ${unit.title}</summary><p lang=${this.language}>${unit.text}</p></details>`:nothing}
    ${flash?html`<h3 lang=${this.language} class="learn-question">${word.word}</h3>${this.revealed?html`<p>${word.translation}</p><p lang=${this.language}>${word.example}</p><p>${word.exampleTranslation}</p><learn-audio .text=${word.word} .language=${this.language}></learn-audio>`:html`<button class="button" @click=${()=>this.revealed=true}>Revelar resposta</button>`}`:html`<h3 class="learn-question">${exercise.prompt}</h3>${['listening','dictation'].includes(this.mode)?html`<learn-audio .text=${exercise.audio||''} .language=${this.language} @heard=${()=>this.heard=true}></learn-audio>`:nothing}<form @submit=${(e:Event)=>{e.preventDefault();void this.submit()}}><label>Sua resposta<textarea .value=${this.answer} maxlength="2000" ?disabled=${this.saved||this.busy} @input=${(e:Event)=>this.answer=(e.target as HTMLTextAreaElement).value}></textarea></label><button class="button primary" ?disabled=${this.saved||this.busy||(['listening','dictation'].includes(this.mode)&&!this.heard)}>Verificar resposta</button></form>`}
    ${flash&&this.revealed?html`<div class="learn-grade">${(['Esqueci','Difícil','Bom','Fácil'] as const).map((label,grade)=>html`<button class="button" ?disabled=${this.saved||this.busy} @click=${()=>this.submit(grade as Grade)}>${label}</button>`)}</div>`:nothing}
    ${this.error?html`<p role="alert">${this.error}</p>`:nothing}

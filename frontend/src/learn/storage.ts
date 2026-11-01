@@ -31,6 +31,11 @@ export async function recordAttempt(attempt:Attempt,transition?:(previous:Card|u
     await done;return inserted;
   }finally{db.close()}
 }
+/** An assessment is stored atomically, only when every answer is submitted. */
+export async function recordAssessment(attempts:Attempt[]):Promise<void> {
+ if(!attempts.length||attempts.length>100||!attempts.every(a=>validAttempt(a)&&a.skill==='test'&&a.language===attempts[0].language)||new Set(attempts.map(a=>a.id)).size!==attempts.length)throw Error('Avaliação inválida.');
+ const db=await openLearnDB();try{const tx=db.transaction('attempts','readwrite'),done=complete(tx),s=tx.objectStore('attempts');for(const a of attempts){const r=s.get(a.id);r.onsuccess=()=>{if(!r.result)s.add(a)}}await done}finally{db.close()}
+}
 export async function restoreBackup(raw:string,confirmReplacement=false):Promise<void> {
   const backup=parseBackup(raw),db=await openLearnDB();
   try{const tx=db.transaction(['attempts','cards'],'readwrite'),done=complete(tx);const a=tx.objectStore('attempts'),c=tx.objectStore('cards');
