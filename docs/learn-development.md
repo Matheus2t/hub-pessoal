@@ -1,3 +1,67 @@
+# 2T Learn — Etapa E: homologação local aprovada
+
+Estado em 01/11/2026: A–D homologadas localmente; preview, integração e produção
+pendentes neste checkpoint. Branch `codex/2t-learn`.
+Checkpoint WIP de preservação: `ca7a65d4af30d41532dc774d8373ec77939d7efa`,
+enviado e confirmado remotamente antes da continuação.
+
+## Correções de homologação
+
+- Duas abas podem enviar o mesmo item diário. O banco já deduplicava o evento,
+  mas a segunda aba mostrava o resultado recalculado localmente. Agora recupera
+  o resultado persistido e informa que a tentativa já foi registrada, preservando
+  nota, intervalo SRS, contagem e feedback verdadeiro.
+- Respostas em português de vocabulário/listening/leitura/compreensão e nomes
+  de gênero em gramática russa têm `lang=pt-BR`. Respostas no idioma estudado
+  recebem o idioma correspondente, inclusive na correção da avaliação.
+- IDs, conteúdo e esquema IndexedDB não foram alterados nesta etapa.
+
+## Evidências locais
+
+- Typecheck e build de produção aprovados. Bundle principal ~140,9 kB; módulo
+  Learn ~84,4 kB minificado. Catálogos: ~176,5 kB en e ~196,8 kB ru, sob demanda.
+- Pytest: **101 aprovados**; Playwright completo: **171 aprovados, 1 ignorado**.
+  O teste ignorado é o TradingView live optativo, não um teste do Learn.
+- Após o último ajuste de idioma, repetidos somente os quatro fluxos afetados
+  de estudo/áudio e avaliações en/ru: **4 aprovados**.
+- Novos testes E: concorrência real de duas abas, backup sem requisições de
+  escrita externas, HTML importado inerte, foco/redução de movimento/idioma e
+  histórico com 10.000 eventos isolados (5.000 por idioma), sem carregar Learn
+  na homepage geral. Renderização e navegação passaram no limite de 15 segundos.
+- `npm audit --omit=dev --audit-level=high`: zero vulnerabilidades reportadas.
+- Inspeção estática: sem unsafeHTML/innerHTML no Learn ou segredos adicionados.
+  A política CSP existente foi preservada. Backup continua processado localmente.
+- Capturas das cinco larguras/ambos os temas/idiomas produzidas pela suíte;
+  amostras de seleção, ditado, gramática, dashboard e diálogo inspecionadas em
+  1920/1366/768/390/320 px. Sem overflow nos testes. Foco e feedback semânticos
+  verificados; não houve teste humano com leitor de tela.
+- Vozes reais: navegador retornou lista vazia. Mocks validaram reprodução,
+  repetição, velocidade, parada/cancelamento e ausência de voz. Audição real e
+  revisão linguística humana continuam pendências não bloqueantes documentadas.
+- `git diff --check` aprovado. Artefatos em `.vercel/learn-e-full`,
+  `.vercel/learn-e-audit` e `.vercel/learn-e-final-language-check` (ignorados).
+
+## Publicação e rollback — referência antes da integração
+
+Projeto existente: `matheus2t`, time `matheus2ts-projects`.
+A CLI autenticada confirmou o alvo; o conector MCP não tinha acesso e não foi usado
+para alterar permissões. Nenhum projeto/domínio foi criado ou reconfigurado.
+Main anterior: `1fdf509947bfb9b20562125d90d7a5dd1c3357a1`.
+Deployment anterior: `dpl_9HN4eopFiiCxVRV13BKsRWaWSQA4`, READY, produção,
+`https://matheus2t-c74g12ifa-matheus2ts-projects.vercel.app`.
+Em caso de falha crítica de lançamento, utilizar o rollback desse deployment no
+projeto existente e conferir o domínio/health; não resetar o banco dos navegadores.
+O código anterior também permanece no SHA main registrado, sem force push.
+
+Limites aceitos: progresso local sem sincronização; não há certificação CEFR;
+rascunhos de avaliações ficam na aba e não integram backup v2, enquanto resultados
+finalizados, cartões, configurações e estado de retomada do plano integram o backup.
+As pendências editoriais/auditivas não bloqueiam o restante das modalidades.
+
+---
+
+## Registro das etapas anteriores
+
 # 2T Learn — Etapas C e D concluídas funcionalmente
 
 Branch: `codex/2t-learn`. Validação em 01/11/2026.
