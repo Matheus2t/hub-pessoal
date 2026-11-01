@@ -1,3 +1,98 @@
+# 2T Learn — Etapa E concluída e lançamento validado
+
+Publicado em **01/11/2026**, domínio oficial **https://matheus2t.com.br/#/learn**.
+Etapas A, B, C, D e E concluídas no escopo funcional homologado.
+
+## Referências do lançamento
+
+- WIP de preservação: `ca7a65d4af30d41532dc774d8373ec77939d7efa`.
+- Checkpoint local de homologação: `55b41d623f7d538d6c309468f91e1f3fce195bc7`.
+- Correção de entrega Linux e SHA final homologado:
+  `d8c244b90c2b6837957a90c63c198da372531f11`.
+- PR aprovado pelos checks e integrado sem squash/force push:
+  https://github.com/Matheus2t/hub-pessoal/pull/1
+- Merge na main: `4c8929df587e9012d12dac886a9d2d8ba870b080`.
+- Preview validado: `dpl_ANGBrsN7tT821YurgZSyqZw1CBLR`, READY, build 17 s,
+  https://matheus2t-1rp1of6sz-matheus2ts-projects.vercel.app
+- Primeiro deployment público do lançamento:
+  `dpl_FTbEMPgzmkdintPiNdFSNU2b4Sug`, READY, build 18 s,
+  https://matheus2t-kabpoql4l-matheus2ts-projects.vercel.app
+  corresponde ao merge `4c8929d` e recebeu o domínio oficial.
+- Esta atualização posterior registra o resultado em main; altera apenas documentação,
+  sem alterar os arquivos ou o backend homologados. O histórico abaixo registra os
+  checkpoints anteriores, cujos avisos de publicação pendente não são o estado atual.
+
+## Resultado real da homologação e produção
+
+- Typecheck/build aprovados. Pytest: **101 aprovados**. Playwright completo:
+  **171 aprovados, 1 TradingView live optativo ignorado**. Quatro fluxos afetados
+  pelo ajuste de idioma repetidos com aprovação. Após a correção WebP: novamente
+  101 testes Python e o caso HTTP estáticos/API aprovados. Não houve exclusão de testes.
+- Preview autenticado por OIDC temporário e restrito à própria origem, sem desativar
+  proteção. Inglês/Russo: vocabulário, flashcards, escrita, leituras, gramática,
+  avaliações de 30 questões, recarga, plano retomável, dashboard e backup testados.
+  Áudio sem voz real manteve o bloqueio correto; reprodução efetiva foi testada com
+  mocks localmente. Backup exportado/restaurado em perfil isolado: **78 tentativas,
+  2 cartões e 4 registros de planejamento**, sem tocar em dados reais de usuários.
+- O primeiro acesso sem autenticação encontrou o login Vercel e foi interrompido;
+  não conta como aprovação. O primeiro verificador remoto completou os fluxos,
+  mas esperava que um h1 oculto do componente persistente fosse visível ao mudar
+  para outras ferramentas. Corrigido somente o seletor do verificador para o
+  componente visível de cada módulo; as 39 rotas passaram na conferência seguinte.
+- Produção pública, **sem credenciais**: os mesmos fluxos completos passaram em
+  contexto descartável. As 39 rotas verificadas incluem os dois idiomas e todas
+  as modalidades, calculadoras, catálogo/alias legado, Ações, Renda Fixa e três times.
+  Homepage com card Learn, navegação direta, mobile e recarga aprovadas.
+- HTTP: `/` **200 text/html**; bundle.js e learn.js **200 JavaScript**;
+  styles.css **200 text/css**; en.json/ru.json **200 application/json**;
+  SVG **200 image/svg+xml**; WebP **200 image/webp**.
+  Hashes dos arquivos estáticos conferem com o build local, sem mistura de versões.
+- `/api/health`: **200**, status ok. `POST /api/calculations`: **200**, entrada
+  1000 + 100 mensais, 1% ao mês, 3 meses → **1333,31**, resultado esperado.
+- Verificador público: **0 pageErrors, 0 consoleErrors, 0 failedRequests,
+  0 respostas HTTP >=400 observadas**. Sem erro 500 nos testes realizados.
+- Consulta de runtime ao primeiro deployment, últimos 15 minutos até
+  13:12 UTC (10:12 de São Paulo): **0 registros level:error**.
+- `npm audit --omit=dev --audit-level=high`: zero vulnerabilidades reportadas.
+  CSP e permissões preservadas. Arquivos sensíveis permanecem fora do Git.
+
+## Conteúdo, dados e limitações públicas
+
+Por idioma: **150 palavras, 50 frases, 30 listening, 30 ditados, 40 escritas,
+10 leituras, 10 lições de gramática e 90 questões adicionais** (30 compreensão,
+30 gramática, 30 avaliação). Os 600 IDs originais permanecem intactos.
+
+IndexedDB v2: upgrade aditivo v1, idiomas isolados, tentativas idempotentes,
+SRS preservado e restauração transacional. Backup v2 inclui histórico finalizado,
+cartões, configurações e retomada do plano; importa v1 com aviso explícito de
+substituição dos planos/configurações. Rascunhos de avaliação são temporários da
+aba e ficam fora do backup. Progresso é local ao navegador/origem, sem sincronização.
+
+Limitações não bloqueantes: revisão editorial assistida, sem revisão linguística
+humana ou certificação CEFR; nenhuma validação auditiva real (lista de vozes vazia
+no ambiente). A ausência de voz é informada e não compromete as modalidades sem
+áudio. Sem teste humano de leitor de tela; semântica, foco, idiomas e teclado foram
+verificados automaticamente. Não há falha funcional bloqueante conhecida.
+
+## Rollback
+
+Referência anterior: main `1fdf509947bfb9b20562125d90d7a5dd1c3357a1`, deployment
+`dpl_9HN4eopFiiCxVRV13BKsRWaWSQA4`.
+Se ocorrer regressão crítica, executar no mesmo projeto/time:
+
+```powershell
+npx --yes vercel@65.9.0 --scope matheus2ts-projects rollback https://matheus2t-c74g12ifa-matheus2ts-projects.vercel.app
+```
+
+Conferir domínio, `/api/health` e estáticos após rollback. O rollback de tráfego
+não remove IndexedDB nem backups dos usuários. Para corrigir o histórico Git,
+reverter o merge por novo PR, sem reset/force push. O rollback Vercel pode suspender
+atribuição automática de novos deploys; retomar a promoção somente após nova validação.
+
+---
+
+## Registro anterior à publicação
+
 # 2T Learn — Etapa E: homologação local aprovada
 
 Estado em 01/11/2026: A–D homologadas localmente; preview, integração e produção
