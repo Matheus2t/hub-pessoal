@@ -12,6 +12,7 @@ export class LearnSession extends LightElement {
  @property() language:Language='en';@property() mode='writing';
  @property({attribute:false}) words:Word[]=[];@property({attribute:false}) exercises:Exercise[]=[];
  @property({attribute:false}) catalog?:Curriculum;
+ @property() attemptKey='';
  @state() private index=0;@state() private answer='';@state() private revealed=false;@state() private saved=false;@state() private busy=false;@state() private error='';@state() private heard=false;
  @state() private results:boolean[]=[];
  private attemptId='';private started=0;private generation=0;private elapsed=0;private lastTick=0;
@@ -20,7 +21,7 @@ export class LearnSession extends LightElement {
  connectedCallback(){super.connectedCallback();this.timer=setInterval(this.tick,1000)}
  disconnectedCallback(){this.generation++;clearInterval(this.timer);super.disconnectedCallback()}
  protected updated(c:PropertyValues){if(c.has('words')||c.has('exercises')||c.has('mode')||c.has('language')){this.generation++;this.index=0;this.results=[];this.reset()}}
- private reset(){this.attemptId=crypto.randomUUID();this.answer='';this.revealed=false;this.saved=false;this.busy=false;this.heard=false;this.error='';this.started=Date.now();this.elapsed=0;this.lastTick=performance.now()}
+ private reset(){this.attemptId=this.attemptKey||crypto.randomUUID();this.answer='';this.revealed=false;this.saved=false;this.busy=false;this.heard=false;this.error='';this.started=Date.now();this.elapsed=0;this.lastTick=performance.now()}
  private async submit(grade?:Grade){
   if(this.busy||this.saved)return;
   const flash=this.mode==='flashcards',word=this.words[this.index],exercise=this.exercises[this.index];

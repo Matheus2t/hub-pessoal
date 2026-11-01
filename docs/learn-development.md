@@ -1,3 +1,113 @@
+# 2T Learn — Etapas C e D concluídas funcionalmente
+
+Branch: `codex/2t-learn`. Validação em 01/11/2026.
+Checkpoint C publicado: `a7717a46c42f2b534caf9120b02caef8eae4d7a5`.
+Checkpoint D: commit que contém esta atualização, posterior ao checkpoint C.
+Sem merge na main, deploy de produção ou início da Etapa E.
+
+## Etapa D — entregas
+
+- Plano diário por idioma com meta de 1–100 respostas, tempo desejado de 1–180
+  minutos, modalidades e preferência por revisão/conteúdo novo. A meta é medida
+  por respostas efetivamente salvas, inclusive incorretas; minutos desejados não
+  são convertidos em tempo fictício nem declaram cumprimento de uma meta temporal.
+- Seleção por regras: revisões vencidas (palavras e frases), erros não corrigidos,
+  assuntos menos praticados, itens novos e preferências; desempate determinístico.
+  Repetições praticadas perdem prioridade. Não há geração de exercícios ou IA externa.
+- Plano e atividade selecionada são persistidos. Ao reabrir, retoma-se o item;
+  apenas abrir não conclui. IDs de tentativa por plano/item impedem duplicação
+  por recarga, cliques repetidos ou retomada. Alterar a meta preserva respostas já
+  registradas e recompõe a fila restante. Eventos históricos nunca são editados.
+- Dia e fuso fazem parte da chave. A mudança cria um plano distinto, preservando
+  os anteriores. O dia é calculado no fuso local capturado, não por data UTC.
+- Sem voz compatível, áudio não é marcado como concluído. O usuário pode montar
+  alternativas sem áudio; os exercícios auditivos permanecem sem resposta.
+- Dashboard com tentativas, acertos, taxa, tempo registrado, dias/sequência,
+  vocabulário estudado/dominado pelo critério SRS existente, revisões e assuntos.
+  Gráficos de barras monocromáticos: 7/30 dias, acertos/erros por modalidade,
+  desempenho por dia praticado, tempo por modalidade e revisões. Valores reais,
+  tabelas acessíveis e estado vazio; histórico filtrável por data/modalidade e paginado.
+- Visão geral de en/ru com atividades, revisões, última atividade e situação do
+  plano, além de acesso para continuar. Dados sempre separados por idioma.
+- Player reutilizável com reprodução/repetição, parar, velocidade, estado e erros;
+  cancelamento/tokens impedem que áudio interrompido libere Listening/Ditado.
+- Backup local v2 com tentativas, cartões, configurações e planos/atividade ativa
+  dos dois idiomas. Leitura e download locais, sem upload a terceiros. Prévia com
+  quantidades por idioma, confirmação explícita e substituição integral sem mescla.
+- Importação v1 preservada: prévia avisa que planos/configurações atuais serão
+  removidos porque não existem no arquivo antigo. Cancelar não escreve nada.
+
+## Persistência e limites do backup
+
+IndexedDB evolui de 1 para 2 adicionando apenas o store `planning`. Stores
+`attempts`/`cards`, índices, chaves e registros anteriores são preservados.
+`snapshot()` exporta v2; `parseBackup()` aceita v1 e v2. A restauração dos três
+stores ocorre na mesma transação. Erros de escrita abortam a substituição inteira.
+Confirmação também é obrigatória quando só existem configurações/planos locais.
+
+Validação: até 5 MB UTF-8, 10.000 tentativas, 10.000 cartões e 2.000 registros de
+planejamento; IDs/chaves duplicados, datas/valores inválidos, planos inconsistentes,
+versões/JSON incompatíveis e vínculos plano/tentativa incorretos são recusados.
+Os limites são informados na interface; não há exportação parcial silenciosa.
+
+A retomada do plano guarda o **item selecionado e as respostas já salvas**, não
+texto ainda não enviado nem a posição de reprodução de uma síntese interrompida.
+Rascunhos de avaliações da Etapa C são temporários de cada aba (sessionStorage),
+não são histórico nem integram o backup v2 do IndexedDB. Finalize a avaliação
+antes de exportar se quiser incluir seu resultado no arquivo.
+
+## Validação final C+D
+
+- Build de produção e typecheck aprovados; bundle Learn separado (~81,9 kB
+  minificado), sem novas dependências e com carregamento sob demanda preservado.
+- Pytest: **101 aprovados**, com PYTHONPATH=backend e diretório temporário
+  `.vercel/pytest-learn-cd-final-20261101`.
+- Suíte geral Playwright: **167 aprovados, 1 ignorado**, sem falha.
+  São 15 testes novos de C e 15 de D, além da regressão existente.
+- Após incluir revisões de frases na seleção diária, repetida somente a suíte D:
+  **15 aprovados**. O teste puro confirma prioridade de revisões de frases e de
+  exercícios com erros recorrentes. Build/typecheck novamente aprovados.
+- Backup reforçado com tentativas e cartões dos dois idiomas, além dos planos:
+  **2 testes repetidos aprovados**, verificando exportação/restauração exatas e
+  rollback dos três stores. Nenhum teste desativado foi contado como aprovado.
+- TradingView live continua optativo e ignorado. Áudio automatizado usa mocks;
+  não houve validação auditiva humana nem comprovação de vozes reais instaladas.
+- Upgrade real de banco v1 com tentativa/cartão e data de revisão preservados;
+  recarga/retomada, metas, isolamento, virada de dia, fuso, filtros, indisponibilidade
+  auditiva, parada, arquivo excessivo, JSON inválido, duplicatas, cancelamento e
+  falha transacional cobertos. Os testes A/B/C continuam aprovados.
+- Larguras 1920/1366/768/390/320, ambos os temas e idiomas: 100 capturas das
+  atividades C e 60 das telas D, incluindo diálogo de backup e gráficos com dados
+  de teste isolados. Overflow horizontal verificado em todas; amostras das cinco
+  larguras inspecionadas visualmente. Histórico/tabelas têm rolagem interna.
+- A primeira rodada D encontrou seletor de teste ambíguo (campo e barra com mesmo
+  nome) e overflow real do seletor de arquivo no celular. Seletor tornou-se específico
+  ao campo numérico; layout do arquivo foi corrigido, sem mascarar overflow.
+- `git diff --check` aprovado. Backend, calculadoras, Ações, Renda Fixa e Esportes
+  não foram modificados; regressões dessas áreas passaram na suíte geral.
+
+Artefatos ignorados pelo Git: `.vercel/learn-cd-final`, `.vercel/learn-d-final-verified`
+e `.vercel/learn-d-backup-final`. O servidor de teste usa VERCEL=1,
+PUBLIC_HISTORY_ENABLED=false e MARKET_DATA_PUBLIC_ENABLED=false, apenas localmente.
+
+## Conteúdo e limites editoriais
+
+Os 600 itens/IDs de B permanecem intactos (300 por idioma).
+C acrescentou **10 leituras + 10 lições + 90 questões por idioma**:
+30 de compreensão, 30 gramaticais e 30 de avaliação. Totais C: 20 leituras,
+20 lições e 180 questões nos dois idiomas. D não acrescenta conteúdo artificial.
+
+Revisão linguística assistida, sem revisão humana ou certificação CEFR. Níveis
+A1/A2 orientativos, correção objetiva por variantes cadastradas e transliteração
+russa didática, não fonética. Vozes reais dependem do navegador/sistema; indisponibilidade
+é explícita. Não há contas, sincronização em nuvem ou dependência de API paga.
+Não há bloqueio funcional conhecido nas etapas C/D. A validação de lançamento,
+revisão humana opcional e publicação continuam reservadas à Etapa E.
+
+---
+
+## Registro do checkpoint C (antes da Etapa D)
+
 # 2T Learn — checkpoint da Etapa C
 
 Etapa C concluída funcionalmente em `codex/2t-learn`, a partir de `f2ab5f8`.
