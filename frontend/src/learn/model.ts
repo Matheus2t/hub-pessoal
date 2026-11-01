@@ -4,7 +4,7 @@ export type Grade = 0 | 1 | 2 | 3;
 export interface Word {
   id: string; language: Language; word: string; translation: string; example: string;
   exampleTranslation: string; level: 'A1'|'A2'|'B1'|'B2'|'C1'|'C2'; topic: string;
-  part: string; gender?: string; transliteration?: string;
+  part: string; gender?: string; transliteration?: string; translationVariants?: string[];
 }
 export interface Attempt {
   id: string; language: Language; itemId: string; skill: Skill; topic: string;

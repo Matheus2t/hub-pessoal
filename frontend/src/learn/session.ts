@@ -29,7 +29,7 @@ export class LearnSession extends LightElement {
   const correct=flash?grade!==0:evaluateAnswer(this.answer,exercise.answers,exercise.acceptYoAsE);
   const event:Attempt={id:this.attemptId,language:this.language,itemId:flash?word.id:exercise.id,skill:flash||this.mode==='vocabulary'?'vocabulary':exercise.skill,topic:flash?word.topic:exercise.topic,answer:flash?['Esqueci','Difícil','Bom','Fácil'][grade!]:this.answer.trim(),expected,correct,at:Date.now(),seconds:Math.min(600,Math.round(this.elapsed)),...(flash?{grade}: {})};
   const token=this.generation;this.busy=true;this.error='';
-  try{await recordAttempt(event,flash?(previous:Card|undefined)=>schedule(previous||newCard(this.language,word.id),grade!):undefined);if(token!==this.generation||!this.isConnected)return;this.saved=true;this.results=[...this.results,correct];this.dispatchEvent(new CustomEvent('progress-saved',{bubbles:true}));}
+  try{await recordAttempt(event,flash?(previous:Card|undefined)=>schedule(previous||newCard(event.language,word.id),grade!):undefined);if(token!==this.generation||!this.isConnected)return;this.saved=true;this.results=[...this.results,correct];this.dispatchEvent(new CustomEvent('progress-saved',{bubbles:true}));}
   catch{if(token===this.generation&&this.isConnected)this.error='Não foi possível salvar. Sua resposta não foi concluída. Tente novamente.'}
   finally{if(token===this.generation&&this.isConnected)this.busy=false}
  }

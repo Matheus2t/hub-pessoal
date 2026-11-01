@@ -12,6 +12,9 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "oi"
+      ],
       "transliteration": "zdravstvuyte"
     },
     {
@@ -24,6 +27,10 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "até mais",
+        "tchau"
+      ],
       "transliteration": "do svidaniya"
     },
     {
@@ -48,6 +55,9 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "obrigada"
+      ],
       "transliteration": "spasibo"
     },
     {
@@ -84,6 +94,10 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "com licença",
+        "perdão"
+      ],
       "transliteration": "izvinite"
     },
     {
@@ -108,6 +122,9 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "boa noite"
+      ],
       "transliteration": "dobryy vecher"
     },
     {
@@ -120,6 +137,11 @@
       "level": "A1",
       "topic": "Cumprimentos",
       "part": "expressão",
+      "translationVariants": [
+        "bem-vinda",
+        "bem-vindos",
+        "bem-vindas"
+      ],
       "transliteration": "dobro pozhalovatʹ"
     },
     {
@@ -197,6 +219,9 @@
       "level": "A1",
       "topic": "Família e pessoas",
       "part": "substantivo",
+      "translationVariants": [
+        "amiga"
+      ],
       "gender": "masculino",
       "transliteration": "drug"
     },
@@ -262,6 +287,9 @@
       "level": "A1",
       "topic": "Números e tempo",
       "part": "numeral",
+      "translationVariants": [
+        "uma"
+      ],
       "transliteration": "odin"
     },
     {
@@ -274,6 +302,9 @@
       "level": "A1",
       "topic": "Números e tempo",
       "part": "numeral",
+      "translationVariants": [
+        "duas"
+      ],
       "transliteration": "dva"
     },
     {
@@ -812,7 +843,7 @@
       "level": "A1",
       "topic": "Casa e rotina",
       "part": "substantivo",
-      "gender": "masculino",
+      "gender": "feminino",
       "transliteration": "krovatʹ"
     },
     {
@@ -1900,7 +1931,7 @@
       "translation": "Você poderia falar mais devagar, por favor?",
       "example": "Не могли бы вы говорить медленнее?",
       "exampleTranslation": "Você poderia falar mais devagar, por favor?",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1911,7 +1942,7 @@
       "translation": "Estou estudando inglês e russo.",
       "example": "Я изучаю английский и русский языки.",
       "exampleTranslation": "Estou estudando inglês e russo.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1922,7 +1953,7 @@
       "translation": "Você poderia repetir a última palavra?",
       "example": "Повторите последнее слово, пожалуйста.",
       "exampleTranslation": "Você poderia repetir a última palavra?",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1933,7 +1964,7 @@
       "translation": "Como se escreve seu sobrenome?",
       "example": "Как пишется ваша фамилия?",
       "exampleTranslation": "Como se escreve seu sobrenome?",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1944,7 +1975,7 @@
       "translation": "Estou aqui desde segunda-feira.",
       "example": "Я здесь с понедельника.",
       "exampleTranslation": "Estou aqui desde segunda-feira.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1955,7 +1986,7 @@
       "translation": "Esta é minha primeira visita à Rússia.",
       "example": "Это мой первый визит в Россию.",
       "exampleTranslation": "Esta é minha primeira visita à Rússia.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -1966,7 +1997,7 @@
       "translation": "Estou procurando a estação mais próxima.",
       "example": "Я ищу ближайшую станцию.",
       "exampleTranslation": "Estou procurando a estação mais próxima.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2010,7 +2041,7 @@
       "translation": "Gostaria de reservar um quarto por duas noites.",
       "example": "Я хотел бы забронировать номер на две ночи.",
       "exampleTranslation": "Gostaria de reservar um quarto por duas noites.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2021,7 +2052,7 @@
       "translation": "A que horas o café da manhã é servido?",
       "example": "Во сколько подают завтрак?",
       "exampleTranslation": "A que horas o café da manhã é servido?",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2043,7 +2074,7 @@
       "translation": "Tenho alergia a castanhas.",
       "example": "У меня аллергия на орехи.",
       "exampleTranslation": "Tenho alergia a castanhas.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2087,7 +2118,7 @@
       "translation": "Você tem isto em um tamanho menor?",
       "example": "У вас есть это меньшего размера?",
       "exampleTranslation": "Você tem isto em um tamanho menor?",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2098,7 +2129,7 @@
       "translation": "Gostaria de devolver este produto.",
       "example": "Я хотел бы вернуть этот товар.",
       "exampleTranslation": "Gostaria de devolver este produto.",
-      "level": "A1",
+      "level": "A2",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2219,7 +2250,7 @@
       "translation": "Preciso carregar meu telefone.",
       "example": "Мне нужно зарядить телефон.",
       "exampleTranslation": "Preciso carregar meu telefone.",
-      "level": "A2",
+      "level": "A1",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2230,7 +2261,7 @@
       "translation": "Onde fica a farmácia mais próxima?",
       "example": "Где ближайшая аптека?",
       "exampleTranslation": "Onde fica a farmácia mais próxima?",
-      "level": "A2",
+      "level": "A1",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2241,7 +2272,7 @@
       "translation": "Estou com dor de cabeça.",
       "example": "У меня болит голова.",
       "exampleTranslation": "Estou com dor de cabeça.",
-      "level": "A2",
+      "level": "A1",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2252,7 +2283,7 @@
       "translation": "Não estou me sentindo bem hoje.",
       "example": "Я сегодня плохо себя чувствую.",
       "exampleTranslation": "Não estou me sentindo bem hoje.",
-      "level": "A2",
+      "level": "A1",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2285,7 +2316,7 @@
       "translation": "Normalmente me levanto às sete.",
       "example": "Я обычно встаю в семь.",
       "exampleTranslation": "Normalmente me levanto às sete.",
-      "level": "A2",
+      "level": "A1",
       "topic": "Expressões contextualizadas",
       "part": "frase"
     },
@@ -2453,7 +2484,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "olá"
+        "olá",
+        "oi"
       ],
       "audio": "здравствуйте",
       "explanation": "A palavra ou expressão significa «olá». Observe o exemplo: Olá, meu nome é Ana.",
@@ -2469,7 +2501,9 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "até logo"
+        "até logo",
+        "até mais",
+        "tchau"
       ],
       "audio": "до свидания",
       "explanation": "A palavra ou expressão significa «até logo». Observe o exemplo: Até logo, até amanhã.",
@@ -2501,7 +2535,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "obrigado"
+        "obrigado",
+        "obrigada"
       ],
       "audio": "спасибо",
       "explanation": "A palavra ou expressão significa «obrigado». Observe o exemplo: Obrigado pela ajuda.",
@@ -2549,7 +2584,9 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "desculpe"
+        "desculpe",
+        "com licença",
+        "perdão"
       ],
       "audio": "извините",
       "explanation": "A palavra ou expressão significa «desculpe». Observe o exemplo: Desculpe, onde fica a saída?",
@@ -2581,7 +2618,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "boa noite ao chegar"
+        "boa noite ao chegar",
+        "boa noite"
       ],
       "audio": "добрый вечер",
       "explanation": "A palavra ou expressão significa «boa noite ao chegar». Observe o exemplo: Boa noite, sejam bem-vindos.",
@@ -2597,7 +2635,10 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "bem-vindo"
+        "bem-vindo",
+        "bem-vinda",
+        "bem-vindos",
+        "bem-vindas"
       ],
       "audio": "добро пожаловать",
       "explanation": "A palavra ou expressão significa «bem-vindo». Observe o exemplo: Bem-vindo à nossa cidade.",
@@ -2693,7 +2734,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "amigo"
+        "amigo",
+        "amiga"
       ],
       "audio": "друг",
       "explanation": "A palavra ou expressão significa «amigo». Observe o exemplo: Meu amigo está esperando lá fora.",
@@ -2773,7 +2815,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "um"
+        "um",
+        "uma"
       ],
       "audio": "один",
       "explanation": "A palavra ou expressão significa «um». Observe o exemplo: Tenho um bilhete.",
@@ -2789,7 +2832,8 @@
       "level": "A1",
       "prompt": "Ouça e escreva o significado em português.",
       "answers": [
-        "dois"
+        "dois",
+        "duas"
       ],
       "audio": "два",
       "explanation": "A palavra ou expressão significa «dois». Observe o exemplo: Precisamos de duas cadeiras.",
@@ -3460,7 +3504,7 @@
       "prompt": "Traduza: Coloque as chaves na mesa.",
       "answers": [
         "Положите ключи на стол.",
-        "Пожалуйста, положите ключи на стол."
+        "Ключи положите на стол."
       ],
       "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: стол (mesa). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
       "wordIds": [
@@ -3505,7 +3549,8 @@
       "level": "A1",
       "prompt": "Traduza: Não consigo encontrar minha chave.",
       "answers": [
-        "Я не могу найти ключ."
+        "Я не могу найти ключ.",
+        "Я не могу найти свой ключ."
       ],
       "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: ключ (chave). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
       "wordIds": [
@@ -3776,7 +3821,8 @@
       "level": "A1",
       "prompt": "Traduza: Tenho uma pergunta sobre esta palavra.",
       "answers": [
-        "У меня вопрос об этом слове."
+        "У меня вопрос об этом слове.",
+        "У меня есть вопрос об этом слове."
       ],
       "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: вопрос (pergunta). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
       "wordIds": [
@@ -3807,7 +3853,8 @@
       "level": "A2",
       "prompt": "Traduza: A prova é na sexta-feira.",
       "answers": [
-        "Экзамен в пятницу."
+        "Экзамен в пятницу.",
+        "Экзамен будет в пятницу."
       ],
       "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: экзамен (prova). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
       "wordIds": [
@@ -3943,7 +3990,8 @@
       "level": "A1",
       "prompt": "Traduza: Nosso hotel fica no centro da cidade.",
       "answers": [
-        "Наша гостиница в центре города."
+        "Наша гостиница в центре города.",
+        "Наш отель в центре города."
       ],
       "explanation": "Compare sua construção com a forma cadastrada. Palavra de apoio: гостиница (hotel). Outras traduções podem ser válidas, mas esta correção compara apenas variantes cadastradas.",
       "wordIds": [
