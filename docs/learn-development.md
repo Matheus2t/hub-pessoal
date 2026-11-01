@@ -15,6 +15,9 @@ enviado e confirmado remotamente antes da continuação.
   de gênero em gramática russa têm `lang=pt-BR`. Respostas no idioma estudado
   recebem o idioma correspondente, inclusive na correção da avaliação.
 - IDs, conteúdo e esquema IndexedDB não foram alterados nesta etapa.
+- No preview Linux, WebP era entregue como text/plain; registro explícito de
+  image/webp no FastAPI corrige a entrega estática sem alterar endpoints/cálculos.
+  Após a correção, Pytest 101 e o teste HTTP de arquivos/API passaram novamente.
 
 ## Evidências locais
 
@@ -40,6 +43,10 @@ enviado e confirmado remotamente antes da continuação.
   revisão linguística humana continuam pendências não bloqueantes documentadas.
 - `git diff --check` aprovado. Artefatos em `.vercel/learn-e-full`,
   `.vercel/learn-e-audit` e `.vercel/learn-e-final-language-check` (ignorados).
+
+O primeiro acesso não autenticado ao preview foi redirecionado ao login Vercel;
+esses casos não contam como testes funcionais aprovados. A homologação remota
+usa OIDC temporário via CLI, restrito ao domínio, preservando Deployment Protection.
 
 ## Publicação e rollback — referência antes da integração
 
