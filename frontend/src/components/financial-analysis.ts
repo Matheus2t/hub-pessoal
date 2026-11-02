@@ -32,7 +32,23 @@ export class FinancialAnalysis extends LightElement {
  <div class="financial-controls"><label for="cvm-frequency">Frequência</label><select id="cvm-frequency" .value=${this.kind} @change=${(e:Event)=>{this.kind=(e.target as HTMLSelectElement).value;this.end='';this.point=-1;}}><option value="annual">Anual</option><option value="quarter">Trimestre isolado</option><option value="ytd">Acumulado no ano</option></select><label for="cvm-reference">Referência</label><select id="cvm-reference" .value=${selected?.end||''} @change=${(e:Event)=>{this.end=(e.target as HTMLSelectElement).value;}}>${periods.map(p=>html`<option value=${p.end} .selected=${p.end===selected?.end}>${p.start} a ${p.end}</option>`)}</select></div>
  <div class="financial-tabs" role="group" aria-label="Seções da análise">${[['summary','Visão financeira'],['results','Resultados'],['balance','Balanço patrimonial'],['cash','Fluxo de caixa'],['ratios','Indicadores']].map(([key,label])=>html`<button class="button secondary" aria-pressed=${this.tab===key} @click=${()=>{this.tab=key;}}>${label}</button>`)}</div>
  ${selected?html`<p class="market-note">Fonte: CVM · ${selected.document.scope==='con'?'Consolidado':'Individual'} · ${selected.start} a ${selected.end} · documento recebido em ${selected.document.received}, versão ${selected.document.version}. <a href=${selected.document.url} target="_blank" rel="noopener noreferrer">Documento oficial</a></p><dl class="financial-metrics">${groups[this.tab].map(key=>html`<div><dt>${fields[key][0]}</dt><dd>${formatFinancial(selected.values[key],fields[key][1])}</dd><details><summary>Metodologia e origem</summary><p>${fields[key][2]}</p>${selected.evidence[key]?html`<p>CVM ${selected.evidence[key].statement}, conta ${selected.evidence[key].account}, escala original ${selected.evidence[key].scale}, valor ${selected.evidence[key].raw}.</p>`:nothing}</details></div>`)}</dl>`:html`<p>Não disponível nesta frequência.</p>`}
- ${this.chart(periods)}<p class="market-note">Processamento: ${this.updatedAt}. Dados contábeis, sujeitos a reapresentação. Bancos não usam margens industriais. Não há P/L, P/VP ou dividend yield próprios.</p><details><summary>Limitações e licença</summary>${this.data.limitations.map(s=>html`<p>${s}</p>`)}<p>Fonte: <a href="https://dados.cvm.gov.br/dataset/cia_aberta-doc-dfp">CVM</a>. Base derivada sob <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0</a>. Arquivos JSON e metodologia disponíveis no repositório 2T.</p></details>`:nothing}`:nothing}</section>`;
+ ${this.renderDerived()}${this.chart(periods)}<p class="market-note">Processamento: ${this.updatedAt}. Dados contábeis, sujeitos a reapresentação. Bancos não usam margens industriais. Não há P/L, P/VP ou dividend yield próprios.</p><details><summary>Limitações e licença</summary>${this.data.limitations.map(s=>html`<p>${s}</p>`)}<p>Fonte: <a href="https://dados.cvm.gov.br/dataset/cia_aberta-doc-dfp">CVM</a>. Base derivada sob <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0</a>. Arquivos JSON e metodologia disponíveis no repositório 2T.</p></details>`:nothing}`:nothing}</section>`;
+ }
+
+ private renderDerived(){
+  const entries=(this.data?.derived_periods||[]).filter(p=>p.kind==='derived-quarter'&&Object.keys(p.evidence).length);
+  if(!entries.length)return nothing;
+  return html`<details class="financial-derived">
+   <summary>Trimestres conciliados com documentos CVM (${entries.length})</summary>
+   <p class="market-note">As diferenças entre acumulados foram conferidas contra os trimestres explicitamente apresentados pela CVM. Não são novos períodos disponíveis, não representam TTM e não provam a compatibilidade de um quarto trimestre.</p>
+   <div class="financial-table-scroll" tabindex="0"><table>
+    <thead><tr><th scope="col">Período</th><th scope="col">Lucro reconciliado</th><th scope="col">Documentos oficiais</th></tr></thead>
+    <tbody>${entries.map(p=>{const evidence=p.evidence.profit||Object.values(p.evidence)[0];const d=evidence?.validation;
+      return html`<tr><th scope="row">${p.start} a ${p.end}</th><td>${formatFinancial(p.values.profit,'BRL')}</td><td>
+       ${d?html`<a href=${d.current_document.url} target="_blank" rel="noopener noreferrer">ITR acumulado</a> · <a href=${d.previous_document.url} target="_blank" rel="noopener noreferrer">ITR anterior</a> · <a href=${d.reported_control_document.url} target="_blank" rel="noopener noreferrer">Trimestre de controle</a>`:nothing}
+      </td></tr>`})}</tbody></table></div>
+   <p class="market-note">Fonte: documentos CVM selecionados e evidências de conciliação anexadas ao snapshot público. Os históricos originais foram preservados.</p>
+  </details>`;
  }
  private chart(periods:Period[]){
  const latest=periods.at(-1)?.end;const cutoff=latest&&this.window!=='all'?Number(latest.slice(0,4))-Number(this.window)+1:0;
