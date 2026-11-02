@@ -6,12 +6,15 @@ BASE=Path(__file__).resolve().parents[2]/'frontend/public/financials/distributio
 def payload():
  m=json.loads((BASE/'manifest.json').read_text(encoding='utf8'));return json.loads((BASE/m['path']).read_text(encoding='utf8'))
 def test_actual_cvm_records_not_unit_amounts():
- d=payload();assert len(d['events'])==28;assert len({e['cnpj'] for e in d['events']})==5
- assert sum(e['kind']=='dividend' for e in d['events'])==17
+ d=payload();assert len(d['events'])==196;assert len({e['cnpj'] for e in d['events']})==47
+ original=json.loads((BASE/'snapshots/5abd15ecd30b107b.json').read_text(encoding='utf8'))
+ index={e['id']:e for e in d['events']}
+ assert all(index[e['id']]==e for e in original['events'])
+ assert sum(e['kind']=='dividend' for e in d['events'])==87
  for e in d['events']:
   assert e['amount_basis']=='class_total' and e['gross_per_share'] is None
   assert e['amount']==e['source']['raw']['Montante']
-  assert e['payment_date']==e['source']['raw']['Data_Pagamento_Dividendo']
+  assert e['payment_date']==(e['source']['raw']['Data_Pagamento_Dividendo'] or None)
   assert e['status']=='reported' and e['record_date'] is None
  # Independent literal reference from the CVM FRE 2022 PN row for PETR4.
  assert any(e['symbol']=='PETR4' and e['payment_date']=='2021-04-29' and e['amount']=='4411248773.34' for e in d['events'])

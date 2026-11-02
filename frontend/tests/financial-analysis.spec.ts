@@ -5,7 +5,7 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.route('https://s3.tradingview.com/**',route=>route.abort());
  await page.route('https://widgets.tradingview-widget.com/**',route=>route.abort());
  const manifest=await (await request.get('/financials/manifest.json')).json();
- expect(Object.keys(manifest.companies)).toHaveLength(25);
+ expect(Object.keys(manifest.companies)).toHaveLength(56);
  for(const symbol of ['ITUB4','PETR4','VALE3','WEGE3','TOTS3']){
   await page.goto(`/#/acoes/${symbol}`);
   await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();

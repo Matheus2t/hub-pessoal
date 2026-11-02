@@ -43,6 +43,37 @@
       "subsector": null
     },
     {
+      "cnpj": "30.306.294/0001-45",
+      "cvm": 22616,
+      "name": "BCO BTG PACTUAL S.A.",
+      "sector": "Bancos",
+      "status": "ATIVO",
+      "symbols": [
+        "BPAC3"
+      ],
+      "fca_document": "158545",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null,
+      "identity_reviews": {
+        "BPAC3": {
+          "cnpj": "30.306.294/0001-45",
+          "cvm": 22616,
+          "class_name": "ON",
+          "isin": "BRBPACACNOR7",
+          "fca_document": "158545",
+          "fca_reference": "2026-01-01",
+          "fca_version": 1,
+          "reviewed_at": "2026-11-02",
+          "sources": [
+            "https://sistemaswebb3-listados.b3.com.br/listedCompaniesPage/main/22616/CODBOLSA/overview?language=pt-br"
+          ],
+          "finding": "B3 identifica BPAC3 ON, CNPJ e código CVM. FCA 2024–2026 sem linha exata BPAC3.",
+          "use": "Somente fatos de identificação. Não concede licença de cotações, bases B3 ou reprodução de documentos."
+        }
+      }
+    },
+    {
       "cnpj": "90.400.888/0001-42",
       "cvm": 20532,
       "name": "BCO SANTANDER (BRASIL) S.A.",
@@ -281,6 +312,68 @@
       "subsector": null
     },
     {
+      "cnpj": "08.902.291/0001-15",
+      "cvm": 25585,
+      "name": "CSN MINERAÇÃO S.A.",
+      "sector": "Extração Mineral",
+      "status": "ATIVO",
+      "symbols": [
+        "CMIN3"
+      ],
+      "fca_document": "158711",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null,
+      "identity_reviews": {
+        "CMIN3": {
+          "cnpj": "08.902.291/0001-15",
+          "cvm": 25585,
+          "class_name": "ON",
+          "isin": "BRCMINACNOR2",
+          "fca_document": "158711",
+          "fca_reference": "2026-01-01",
+          "fca_version": 1,
+          "reviewed_at": "2026-11-02",
+          "sources": [
+            "https://sistemaswebb3-listados.b3.com.br/listedCompaniesPage/main/25585/CMIN./overview?language=pt-br"
+          ],
+          "finding": "B3 identifica CMIN3 ON, CNPJ e código CVM. FCA 2024–2026 sem linha exata CMIN3.",
+          "use": "Somente fatos de identificação. Não concede licença de cotações, bases B3 ou reprodução de documentos."
+        }
+      }
+    },
+    {
+      "cnpj": "33.042.730/0001-04",
+      "cvm": 4030,
+      "name": "CIA SIDERURGICA NACIONAL",
+      "sector": "Metalurgia e Siderurgia",
+      "status": "ATIVO",
+      "symbols": [
+        "CSNA3"
+      ],
+      "fca_document": "158706",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null,
+      "identity_reviews": {
+        "CSNA3": {
+          "cnpj": "33.042.730/0001-04",
+          "cvm": 4030,
+          "class_name": "ON",
+          "isin": null,
+          "fca_document": "158706",
+          "fca_reference": "2026-01-01",
+          "fca_version": 1,
+          "reviewed_at": "2026-11-02",
+          "sources": [
+            "https://www.rad.cvm.gov.br/ENETCONSULTA/frmDownloadDocumento.aspx?CodigoInstituicao=1&Tela=99&descTipo=IPE&numProtocolo=1564291&numSequencia=1088997&numVersao=1"
+          ],
+          "finding": "Fato relevante CVM de 02/09/2026 identifica CNPJ e B3:CSNA3. Cadastro CVM confirma código ativo. FCA 2024–2026 sem linha exata CSNA3.",
+          "use": "Somente fatos de identificação. Não concede licença de cotações, bases B3 ou reprodução de documentos."
+        }
+      }
+    },
+    {
       "cnpj": "47.960.950/0001-21",
       "cvm": 22470,
       "name": "MAGAZINE LUIZA S.A.",
@@ -335,6 +428,39 @@
       "fca_reference": "2026-01-01",
       "isin": null,
       "subsector": null
+    },
+    {
+      "cnpj": "45.242.914/0001-05",
+      "cvm": 24848,
+      "name": "C&A Modas S.A.",
+      "sector": "Têxtil e Vestuário",
+      "status": "ATIVO",
+      "symbols": [
+        "CEAB3"
+      ],
+      "fca_document": "156253",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null,
+      "identity_reviews": {
+        "CEAB3": {
+          "cnpj": "45.242.914/0001-05",
+          "cvm": 24848,
+          "class_name": "ON",
+          "isin": "BRCEABACNOR1",
+          "fca_document": "156253",
+          "fca_reference": "2026-01-01",
+          "fca_version": 1,
+          "reviewed_at": "2026-11-02",
+          "sources": [
+            "https://www.b3.com.br/data/files/6B/00/48/F7/5C4CF610761CABF6AC094EA8/Prospecto%20Definitivo.pdf",
+            "https://ri.cea.com.br/mercado-de-acoes/cotacoes/",
+            "https://sistemaswebb3-listados.b3.com.br/indexPage/day/IBHB?language=en-us"
+          ],
+          "finding": "Prospecto oficial página 5 identifica CNPJ, CVM e CEAB3 ON. RI atual e carteira B3 26/10/2026 confirmam ticker; FCA informa fim em 28/10/2019, data de IPO, preservado como conflito da fonte.",
+          "use": "Somente fatos de identificação. Não concede licença de cotações, bases B3 ou reprodução de documentos."
+        }
+      }
     },
     {
       "cnpj": "06.047.087/0001-39",
@@ -617,6 +743,38 @@
       "subsector": null
     },
     {
+      "cnpj": "89.637.490/0001-45",
+      "cvm": 12653,
+      "name": "KLABIN S.A.",
+      "sector": "Papel e Celulose",
+      "status": "ATIVO",
+      "symbols": [
+        "KLBN3"
+      ],
+      "fca_document": "155729",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null,
+      "identity_reviews": {
+        "KLBN3": {
+          "cnpj": "89.637.490/0001-45",
+          "cvm": 12653,
+          "class_name": "ON",
+          "isin": "BRKLBNACNOR2",
+          "fca_document": "155729",
+          "fca_reference": "2026-01-01",
+          "fca_version": 1,
+          "reviewed_at": "2026-11-02",
+          "sources": [
+            "https://sistemaswebb3-listados.b3.com.br/listedCompaniesPage/main/12653/CODBOLSA/overview?language=pt-br",
+            "https://ri.klabin.com.br/para-o-investidor/perguntas-frequentes/"
+          ],
+          "finding": "B3 identifica KLBN3 ON, CNPJ, CVM e ISIN. RI confirma classe ordinária. FCA lista KLBN11 Unit, não se converte Unit em ON.",
+          "use": "Somente fatos de identificação. Não concede licença de cotações, bases B3 ou reprodução de documentos."
+        }
+      }
+    },
+    {
       "cnpj": "43.776.517/0001-80",
       "cvm": 14443,
       "name": "CIA SANEAMENTO BASICO EST SAO PAULO",
@@ -657,37 +815,193 @@
       "fca_reference": "2026-01-01",
       "isin": null,
       "subsector": null
+    },
+    {
+      "cnpj": "89.086.144/0001-16",
+      "cvm": 14109,
+      "name": "RANDONCORP S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "RAPT4"
+      ],
+      "fca_document": "158094",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "88.611.835/0001-29",
+      "cvm": 8451,
+      "name": "MARCOPOLO S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "POMO4"
+      ],
+      "fca_document": "154526",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "88.610.126/0001-29",
+      "cvm": 6211,
+      "name": "FRASLE MOBILITY S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "FRAS3"
+      ],
+      "fca_document": "158178",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "60.476.884/0001-87",
+      "cvm": 8575,
+      "name": "MAHLE METAL LEVE S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "LEVE3"
+      ],
+      "fca_document": "155342",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "56.720.428/0001-63",
+      "cvm": 7510,
+      "name": "ROMI S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "ROMI3"
+      ],
+      "fca_document": "154385",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "91.983.056/0001-69",
+      "cvm": 7870,
+      "name": "KEPLER WEBER S.A.",
+      "sector": "Emp. Adm. Part. - Metalurgia e Siderurgia",
+      "status": "ATIVO",
+      "symbols": [
+        "KEPL3"
+      ],
+      "fca_document": "158248",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "50.926.955/0001-42",
+      "cvm": 11762,
+      "name": "VULCABRAS S.A.",
+      "sector": "Têxtil e Vestuário",
+      "status": "ATIVO",
+      "symbols": [
+        "VULC3"
+      ],
+      "fca_document": "155006",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "89.850.341/0001-60",
+      "cvm": 19615,
+      "name": "GRENDENE S.A.",
+      "sector": "Têxtil e Vestuário",
+      "status": "ATIVO",
+      "symbols": [
+        "GRND3"
+      ],
+      "fca_document": "157032",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "07.206.816/0001-15",
+      "cvm": 20338,
+      "name": "M.DIAS BRANCO S.A. IND COM DE ALIMENTOS",
+      "sector": "Alimentos",
+      "status": "ATIVO",
+      "symbols": [
+        "MDIA3"
+      ],
+      "fca_document": "155093",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "89.096.457/0001-55",
+      "cvm": 20745,
+      "name": "SLC AGRICOLA S.A.",
+      "sector": "Agricultura (Açúcar, Álcool e Cana)",
+      "status": "ATIVO",
+      "symbols": [
+        "SLCE3"
+      ],
+      "fca_document": "158294",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "71.476.527/0001-35",
+      "cvm": 21148,
+      "name": "CONSTRUTORA TENDA S.A.",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "TEND3"
+      ],
+      "fca_document": "156038",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "08.343.492/0001-20",
+      "cvm": 20915,
+      "name": "MRV ENGENHARIA E PARTICIPACOES S.A.",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "MRVE3"
+      ],
+      "fca_document": "156504",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "08.312.229/0001-73",
+      "cvm": 20770,
+      "name": "EZ TEC EMPREEND. E PARTICIPACOES S.A.",
+      "sector": "Emp. Adm. Part. - Const. Civil, Mat. Const. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "EZTC3"
+      ],
+      "fca_document": "158144",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
     }
   ],
-  "unresolved": [
-    {
-      "symbol": "BPAC3",
-      "reason": "No unique active identity in latest FCA document",
-      "candidates": 0
-    },
-    {
-      "symbol": "CMIN3",
-      "reason": "No unique active identity in latest FCA document",
-      "candidates": 0
-    },
-    {
-      "symbol": "CSNA3",
-      "reason": "No unique active identity in latest FCA document",
-      "candidates": 0
-    },
-    {
-      "symbol": "CEAB3",
-      "reason": "No unique active identity in latest FCA document",
-      "candidates": 0
-    },
-    {
-      "symbol": "KLBN3",
-      "reason": "No unique active identity in latest FCA document",
-      "candidates": 0
-    }
-  ],
+  "unresolved": [],
   "schema_version": 1,
-  "catalog_count": 52,
+  "catalog_count": 65,
   "license": "ODbL-1.0",
   "sources": [
     {

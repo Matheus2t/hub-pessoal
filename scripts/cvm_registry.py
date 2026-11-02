@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import zipfile
 from scripts.cvm_financials import BASE, ROOT, download, read_csv, verify_identity
+from scripts.cvm_identity_reviews import REVIEWS,reviewed_link
 
 
 def reconcile(symbols, general, securities, cad):
@@ -29,6 +30,7 @@ def reconcile(symbols, general, securities, cad):
     issuers, unresolved = {}, []
     for symbol in symbols:
         candidates = {}
+        review=None
         for security in securities:
             g = latest.get(security['CNPJ_Companhia'])
             if (g and security['Codigo_Negociacao'] == symbol
@@ -36,6 +38,11 @@ def reconcile(symbols, general, securities, cad):
                 and security['ID_Documento'] == g['ID_Documento']
                 and (g['CNPJ_Companhia'], int(g['Codigo_CVM'])) in active):
                 candidates[g['CNPJ_Companhia']] = g
+        if not candidates and symbol in REVIEWS:
+            r=REVIEWS[symbol];g=latest.get(r['cnpj'])
+            if g and (r['cnpj'],r['cvm']) in active and int(g['Codigo_CVM'])==r['cvm']:
+                review=reviewed_link(symbol,r['cnpj'],r['cvm'],g,securities)
+                if review:candidates[r['cnpj']]=g
         if len(candidates) != 1:
             unresolved.append({'symbol': symbol, 'reason': 'No unique active identity in latest FCA document', 'candidates': len(candidates)})
             continue
@@ -47,6 +54,7 @@ def reconcile(symbols, general, securities, cad):
             'isin': None, 'subsector': None,
         })
         issuer['symbols'].append(symbol)
+        if review:issuer.setdefault('identity_reviews',{})[symbol]=review
     codes = [r['cvm'] for r in issuers.values()]
     if len(codes) != len(set(codes)):
         raise ValueError('CVM code mapped to different CNPJs')

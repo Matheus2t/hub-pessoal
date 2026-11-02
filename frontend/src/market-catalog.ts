@@ -1,5 +1,5 @@
 // Local identities only; prices and histories belong to the official widgets.
-// Symbols reviewed against TradingView's Brazilian stock listings on 2026-10-30.
+// Existing symbols preserved; expansion verified with FCA/CAD and documented identity reviews (2026-11-02).
 export interface StockIdentity { symbol: string; name: string; sector: string; tradingView: string }
 export const stocks: StockIdentity[] = [
   {
@@ -313,6 +313,84 @@ export const stocks: StockIdentity[] = [
     "name": "Sanepar",
     "sector": "Saneamento",
     "tradingView": "BMFBOVESPA:SAPR3"
+  },
+  {
+    "symbol": "RAPT4",
+    "name": "Randoncorp",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:RAPT4"
+  },
+  {
+    "symbol": "POMO4",
+    "name": "Marcopolo",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:POMO4"
+  },
+  {
+    "symbol": "FRAS3",
+    "name": "Frasle Mobility",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:FRAS3"
+  },
+  {
+    "symbol": "LEVE3",
+    "name": "Mahle Metal Leve",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:LEVE3"
+  },
+  {
+    "symbol": "ROMI3",
+    "name": "Romi",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:ROMI3"
+  },
+  {
+    "symbol": "KEPL3",
+    "name": "Kepler Weber",
+    "sector": "Indústria",
+    "tradingView": "BMFBOVESPA:KEPL3"
+  },
+  {
+    "symbol": "VULC3",
+    "name": "Vulcabras",
+    "sector": "Varejo e consumo",
+    "tradingView": "BMFBOVESPA:VULC3"
+  },
+  {
+    "symbol": "GRND3",
+    "name": "Grendene",
+    "sector": "Varejo e consumo",
+    "tradingView": "BMFBOVESPA:GRND3"
+  },
+  {
+    "symbol": "MDIA3",
+    "name": "M. Dias Branco",
+    "sector": "Agro e alimentos",
+    "tradingView": "BMFBOVESPA:MDIA3"
+  },
+  {
+    "symbol": "SLCE3",
+    "name": "SLC Agrícola",
+    "sector": "Agro e alimentos",
+    "tradingView": "BMFBOVESPA:SLCE3"
+  },
+  {
+    "symbol": "TEND3",
+    "name": "Tenda",
+    "sector": "Construção civil",
+    "tradingView": "BMFBOVESPA:TEND3"
+  },
+  {
+    "symbol": "MRVE3",
+    "name": "MRV",
+    "sector": "Construção civil",
+    "tradingView": "BMFBOVESPA:MRVE3"
+  },
+  {
+    "symbol": "EZTC3",
+    "name": "EZTEC",
+    "sector": "Construção civil",
+    "tradingView": "BMFBOVESPA:EZTC3"
   }
 ];
 export const featuredStocks = ['ITUB4', 'PETR4', 'VALE3', 'MGLU3'].map(symbol => stocks.find(stock => stock.symbol === symbol)!);

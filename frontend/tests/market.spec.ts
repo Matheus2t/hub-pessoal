@@ -9,7 +9,7 @@ test('local catalog resolves known companies and rejects unknown codes', () => {
   expect(stocks.length).toBeGreaterThanOrEqual(50);
   expect(stocks.length).toBeLessThanOrEqual(80);
   expect(new Set(stocks.map(stock => stock.symbol)).size).toBe(stocks.length);
-  expect(sectors).toHaveLength(13);
+  expect(sectors).toHaveLength(14);
   for (const stock of stocks) {
     expect(stock.symbol).toMatch(/^[A-Z0-9]{4}[34]$/);
     expect(stock.tradingView).toBe(`BMFBOVESPA:${stock.symbol}`);

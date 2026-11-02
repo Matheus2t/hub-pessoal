@@ -37,3 +37,29 @@ carregou porque seu arquivo foi editado durante a execução. Repetição a part
 arquivo fixo de 2c2316a: dois aprovados. Demais casos da suíte de produção aprovados.
 Não foi ocultado o erro de carregamento como teste aprovado na execução original.
 PR #10: integração TTM. Próximo: merge após checks e testes TTM reais em produção.
+
+
+TTM publicado: PR #10, main 609033f4d530d00c50deec592eba441d2a1a9dbb,
+deployment matheus2t-bx5a2a34m-matheus2ts-projects.vercel.app. Cinco testes
+TTM no domínio oficial aprovados. Branch atual codex/2t-stocks-v3-issuer-expansion.
+
+Novo lote: 56 CNPJs distintos, 280 anuais (2021–2025), 282 trimestres explícitos.
+Três TTM PETR4 e quatro conciliações preservados. 65 identidades no catálogo;
+cinco vínculos excepcionais documentados em scripts/data/issuer-link-reviews.json,
+CAD ativo + último FCA geral obrigatório, revisão expira ao mudar o documento.
+TIMS3 usa escopo individual em todos os exercícios, com controle explícito da
+DFP 2025: consolidado zero, receita individual 26.624.721 MIL/lucro 4.311.984 MIL.
+Banco BTG usa conta bancária 3.09 e não margens industriais. Total histórico FRE
+ampliado para 196 registros/47 emissores (87 dividendos, 109 JCP); 28 anteriores
+integralmente preservados. Classes com letra não conciliada (ex.: RAPT4/PNA)
+não entram por inferência de sufixo. Setores do catálogo são editoriais.
+
+219 Python, build/typecheck e 20 Playwright dirigidos aprovados; regressão completa
+em execução (.vercel/expanded-full-regression.log). Publicação aguarda resultado.
+
+Após esse marco, ampliar avisos unitários: 20 PDFs públicos baixados em
+.vercel/unit-pdfs, metadados em .vercel/unit-expansion-candidates.json. Nenhum
+novo fato desses PDFs foi publicado ainda; exigem revisão de valor bruto, classe,
+datas e eventuais retificações. Downloads paralelos sofreram truncamento;
+requisições públicas normais sequenciais retornaram PDFs completos HTTP 200.
+Não republicar PDFs nem converter programação em confirmação de liquidação.
