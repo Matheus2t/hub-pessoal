@@ -6,3 +6,17 @@ export function manualYield(proceeds:number,price:number){if(!Number.isFinite(pr
 export function selectDistributions(events:Distribution[],symbol='',kind='',year='',status='',dateKey:'payment_date'|'record_date'|'ex_date'='payment_date',from='',to=''){
  return events.filter(e=>(!symbol||e.symbol===symbol)&&(!kind||e.kind===kind)&&(!status||e.status===status)&&(!year||e[dateKey]?.startsWith(year))&&(!from||!!e[dateKey]&&e[dateKey]!>=from)&&(!to||!!e[dateKey]&&e[dateKey]!<=to));
 }
+const UNIT_SCALE=1000000000000n;
+function fixedUnit(value:string){if(!/^\d+(\.\d{1,12})?$/.test(value))throw Error('Valor unitário inválido.');const [i,f='']=value.split('.');return BigInt(i)*UNIT_SCALE+BigInt(f.padEnd(12,'0'))}
+const fromFixed=(n:bigint)=>`${n/UNIT_SCALE}.${String(n%UNIT_SCALE).padStart(12,'0')}`;
+export function simulateAnnouncements(events:Distribution[],symbol:string,quantity:number,start:string,end:string,includeDividends=true,includeJCP=true){
+ const validDate=(s:string)=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s+'T00:00:00Z'))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
+ if(!Number.isSafeInteger(quantity)||quantity<=0||quantity>1000000000||!validDate(start)||!validDate(end)||start>end)throw Error('Confira quantidade inteira positiva (até 1 bilhão) e intervalo.');
+ const eligible=events.filter(e=>e.symbol===symbol&&e.amount_basis==='per_share'&&e.status==='scheduled'&&e.payment_date&&e.payment_date>=start&&e.payment_date<=end&&((includeDividends&&e.kind==='dividend')||(includeJCP&&e.kind==='jcp')));
+ if(eligible.some(e=>e.gross_per_share==null||!e.record_date))throw Error('Faltam valor unitário ou data-com verificáveis.');
+ if(new Set(eligible.map(e=>e.class_name+':'+e.record_date)).size>1)throw Error('Há mais de uma base de elegibilidade; ajustes societários precisam de revisão antes de simular este intervalo.');
+ const rows=eligible.map(e=>({event:e,gross:fromFixed(fixedUnit(e.gross_per_share!)*BigInt(quantity))}));
+ const sum=(kind?:string)=>fromFixed(rows.filter(r=>!kind||r.event.kind===kind).reduce((s,r)=>s+fixedUnit(r.gross),0n));
+ return {rows,total:sum(),dividends:sum('dividend'),jcp:sum('jcp')};
+}
+export const formatUnit=(n:string)=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:12});

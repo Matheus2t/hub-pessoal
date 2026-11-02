@@ -65,7 +65,7 @@ def publish(records,output,coverage,approved_revisions=None):
             if replacement['source']['document']==old_event['source']['document']:raise ValueError('Correction requires a new official document')
             replacement['corrections']=[*old_event.get('corrections',[]),{'previous':old_event,'review':review}]
         records=sorted(index.values(),key=lambda e:(e.get('payment_date') or '9999',e['symbol'],e['id']))
-    payload={'schema_version':1,'license':'ODbL-1.0','attribution':'CVM — Formulário de Referência','coverage':coverage,'events':records}
+    payload={'schema_version':1,'license':'ODbL-1.0','attribution':coverage.get('attribution','CVM — Formulário de Referência'),'coverage':coverage,'events':records}
     blob=json_bytes(payload);digest=hashlib.sha256(blob).hexdigest()[:16]
     target=output/'snapshots'/f'{digest}.json';target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(blob)
     manifest={'schema_version':1,'snapshot':digest,'path':f'snapshots/{digest}.json','license':'ODbL-1.0','events':len(records),'companies':sorted({e['symbol'] for e in records}),'counts':dict(Counter(e['kind'] for e in records)),'coverage':coverage}

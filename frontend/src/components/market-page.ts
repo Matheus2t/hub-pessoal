@@ -45,6 +45,7 @@ export class MarketPage extends LightElement {
     location.hash = `#/acoes/${selected.symbol}`;
   }
   render() {
+    if (this.symbol === 'SIMULADOR-DIVIDENDOS') return html`<distributions-host mode="simulator"></distributions-host>`;
     if (this.symbol === 'PROVENTOS') return html`<distributions-host mode="history"></distributions-host>`;
     if (this.symbol === 'DY') return html`<distributions-host mode="dy"></distributions-host>`;
     if (this.symbol === 'RANKINGS') return html`<market-rankings></market-rankings>`;
