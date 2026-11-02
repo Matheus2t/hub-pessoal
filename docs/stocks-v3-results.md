@@ -242,3 +242,6 @@ existentes permanecem separados. Classe obtida do FCA, não do sufixo do ticker;
 preferenciais com letra e classes ambíguas excluídas. Importador conserva os 28
 registros originais e não considera datas ausentes iguais a pagamentos zero.
 219 Python e 20 Playwright dirigidos aprovados; suíte integral em andamento.
+
+Homologação final do lote: 219 Python, 220 Playwright (um live opcional ignorado),
+typecheck/build e diff --check aprovados. Navegação adaptada ao catálogo de 65.

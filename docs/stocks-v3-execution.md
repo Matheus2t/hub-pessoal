@@ -63,3 +63,16 @@ novo fato desses PDFs foi publicado ainda; exigem revisão de valor bruto, class
 datas e eventuais retificações. Downloads paralelos sofreram truncamento;
 requisições públicas normais sequenciais retornaram PDFs completos HTTP 200.
 Não republicar PDFs nem converter programação em confirmação de liquidação.
+
+Homologação do lote de emissores: 219 Python e 220 Playwright aprovados, um live
+opcional ignorado, typecheck/build e diff --check aprovados. A primeira suíte
+foi interrompida ao encontrar expectativa antiga de 52 ativos na navegação.
+Teste atualizado para conferir o catálogo atual e regressão integral repetida
+limpa (4 min). PR #11 aguarda merge/checks e validação de produção.
+
+Próximo lote já curado em arquivo privado .vercel/ipe-expanded-reviewed.json:
+25 registros unitários de 21 emissores. Dezesseis novos PDFs conferidos
+visualmente; quatro exclusões motivadas. Não copiar PDFs para diretórios públicos.
+Integrar com prazos-limite separados de datas exatas, preservar inícios de
+pagamento e excluir datas imprecisas da simulação de janela exata. Adicionar
+resumo visual dos avisos e ordenação pela natureza de data selecionada.
