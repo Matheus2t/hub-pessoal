@@ -1,0 +1,703 @@
+{
+  "issuers": [
+    {
+      "cnpj": "60.872.504/0001-23",
+      "cvm": 19348,
+      "name": "ITAU UNIBANCO HOLDING S.A.",
+      "sector": "Bancos",
+      "status": "ATIVO",
+      "symbols": [
+        "ITUB4"
+      ],
+      "fca_document": "156921",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "00.000.000/0001-91",
+      "cvm": 1023,
+      "name": "BCO BRASIL S.A.",
+      "sector": "Bancos",
+      "status": "ATIVO",
+      "symbols": [
+        "BBAS3"
+      ],
+      "fca_document": "160576",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "60.746.948/0001-12",
+      "cvm": 906,
+      "name": "BCO BRADESCO S.A.",
+      "sector": "Bancos",
+      "status": "ATIVO",
+      "symbols": [
+        "BBDC3"
+      ],
+      "fca_document": "158989",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "90.400.888/0001-42",
+      "cvm": 20532,
+      "name": "BCO SANTANDER (BRASIL) S.A.",
+      "sector": "Bancos",
+      "status": "ATIVO",
+      "symbols": [
+        "SANB3"
+      ],
+      "fca_document": "156191",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "09.346.601/0001-25",
+      "cvm": 21610,
+      "name": "B3 S.A. - BRASIL, BOLSA, BALCÃO",
+      "sector": "Bolsas de Valores/Mercadorias e Futuros",
+      "status": "ATIVO",
+      "symbols": [
+        "B3SA3"
+      ],
+      "fca_document": "158175",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "17.344.597/0001-94",
+      "cvm": 23159,
+      "name": "BB SEGURIDADE PARTICIPAÇÕES S.A.",
+      "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+      "status": "ATIVO",
+      "symbols": [
+        "BBSE3"
+      ],
+      "fca_document": "158326",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "22.543.331/0001-00",
+      "cvm": 23795,
+      "name": "CAIXA SEGURIDADE PARTICIPAÇÕES S.A.",
+      "sector": "Emp. Adm. Part. - Seguradoras e Corretoras",
+      "status": "ATIVO",
+      "symbols": [
+        "CXSE3"
+      ],
+      "fca_document": "161183",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "00.001.180/0001-26",
+      "cvm": 2437,
+      "name": "AXIA Energia S.A.",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "AXIA3"
+      ],
+      "fca_document": "159987",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.429.144/0001-93",
+      "cvm": 18660,
+      "name": "CPFL ENERGIA S.A.",
+      "sector": "Emp. Adm. Part. - Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "CPFE3"
+      ],
+      "fca_document": "157771",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "76.483.817/0001-20",
+      "cvm": 14311,
+      "name": "CIA PARANAENSE DE ENERGIA - COPEL",
+      "sector": "Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "CPLE3"
+      ],
+      "fca_document": "157848",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "03.220.438/0001-73",
+      "cvm": 20010,
+      "name": "EQUATORIAL S.A.",
+      "sector": "Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "EQTL3"
+      ],
+      "fca_document": "157743",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.474.103/0001-19",
+      "cvm": 17329,
+      "name": "ENGIE BRASIL ENERGIA S.A.",
+      "sector": "Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "EGIE3"
+      ],
+      "fca_document": "155081",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "17.155.730/0001-64",
+      "cvm": 2453,
+      "name": "CIA ENERGETICA DE MINAS GERAIS - CEMIG",
+      "sector": "Energia Elétrica",
+      "status": "ATIVO",
+      "symbols": [
+        "CMIG3"
+      ],
+      "fca_document": "159067",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "33.000.167/0001-01",
+      "cvm": 9512,
+      "name": "PETROLEO BRASILEIRO S.A. PETROBRAS",
+      "sector": "Petróleo e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "PETR4"
+      ],
+      "fca_document": "156276",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "10.629.105/0001-68",
+      "cvm": 22187,
+      "name": "PRIO S.A.",
+      "sector": "Petróleo e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "PRIO3"
+      ],
+      "fca_document": "158353",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "12.091.809/0001-55",
+      "cvm": 25291,
+      "name": "Brava Energia S.A.",
+      "sector": "Petróleo e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "BRAV3"
+      ],
+      "fca_document": "161113",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "34.274.233/0001-02",
+      "cvm": 24295,
+      "name": "VIBRA ENERGIA S/A",
+      "sector": "Comércio (Atacado e Varejo)",
+      "status": "ATIVO",
+      "symbols": [
+        "VBBR3"
+      ],
+      "fca_document": "161787",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "33.256.439/0001-39",
+      "cvm": 18465,
+      "name": "ULTRAPAR PARTICIPACOES S.A.",
+      "sector": "Emp. Adm. Part. - Petróleo e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "UGPA3"
+      ],
+      "fca_document": "157754",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "33.592.510/0001-54",
+      "cvm": 4170,
+      "name": "VALE S.A.",
+      "sector": "Extração Mineral",
+      "status": "ATIVO",
+      "symbols": [
+        "VALE3"
+      ],
+      "fca_document": "156281",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "33.611.500/0001-19",
+      "cvm": 3980,
+      "name": "GERDAU S.A.",
+      "sector": "Metalurgia e Siderurgia",
+      "status": "ATIVO",
+      "symbols": [
+        "GGBR3"
+      ],
+      "fca_document": "159016",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "47.960.950/0001-21",
+      "cvm": 22470,
+      "name": "MAGAZINE LUIZA S.A.",
+      "sector": "Comércio (Atacado e Varejo)",
+      "status": "ATIVO",
+      "symbols": [
+        "MGLU3"
+      ],
+      "fca_document": "158557",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "07.526.557/0001-00",
+      "cvm": 23264,
+      "name": "AMBEV S.A.",
+      "sector": "Bebidas e Fumo",
+      "status": "ATIVO",
+      "symbols": [
+        "ABEV3"
+      ],
+      "fca_document": "158398",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "92.754.738/0001-62",
+      "cvm": 8133,
+      "name": "LOJAS RENNER S.A.",
+      "sector": "Comércio (Atacado e Varejo)",
+      "status": "ATIVO",
+      "symbols": [
+        "LREN3"
+      ],
+      "fca_document": "156945",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "06.057.223/0001-71",
+      "cvm": 25372,
+      "name": "SENDAS DISTRIBUIDORA S.A.",
+      "sector": "Comércio (Atacado e Varejo)",
+      "status": "ATIVO",
+      "symbols": [
+        "ASAI3"
+      ],
+      "fca_document": "160933",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "06.047.087/0001-39",
+      "cvm": 24821,
+      "name": "Rede D'Or São Luiz S.A.",
+      "sector": "Serviços médicos",
+      "status": "ATIVO",
+      "symbols": [
+        "RDOR3"
+      ],
+      "fca_document": "158834",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "60.840.055/0001-31",
+      "cvm": 21881,
+      "name": "FLEURY S.A.",
+      "sector": "Serviços médicos",
+      "status": "ATIVO",
+      "symbols": [
+        "FLRY3"
+      ],
+      "fca_document": "154175",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.932.074/0001-91",
+      "cvm": 21431,
+      "name": "HYPERA S.A.",
+      "sector": "Farmacêutico e Higiene",
+      "status": "ATIVO",
+      "symbols": [
+        "HYPE3"
+      ],
+      "fca_document": "160980",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "61.486.650/0001-83",
+      "cvm": 19623,
+      "name": "DIAGNOSTICOS DA AMERICA S.A.",
+      "sector": "Serviços médicos",
+      "status": "ATIVO",
+      "symbols": [
+        "DASA3"
+      ],
+      "fca_document": "160621",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "84.429.695/0001-11",
+      "cvm": 5410,
+      "name": "WEG S.A.",
+      "sector": "Emp. Adm. Part. - Máqs., Equip., Veíc. e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "WEGE3"
+      ],
+      "fca_document": "158276",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "07.689.002/0001-89",
+      "cvm": 20087,
+      "name": "EMBRAER S.A.",
+      "sector": "Máquinas, Equipamentos, Veículos e Peças",
+      "status": "ATIVO",
+      "symbols": [
+        "EMBJ3"
+      ],
+      "fca_document": "156228",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "97.837.181/0001-47",
+      "cvm": 21091,
+      "name": "DEXCO S.A.",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "DXCO3"
+      ],
+      "fca_document": "156619",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "53.113.791/0001-22",
+      "cvm": 19992,
+      "name": "TOTVS S.A.",
+      "sector": "Comunicação e Informática",
+      "status": "ATIVO",
+      "symbols": [
+        "TOTS3"
+      ],
+      "fca_document": "161277",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "09.042.817/0001-05",
+      "cvm": 25500,
+      "name": "BEMOBI MOBILE TECH S.A.",
+      "sector": "Comunicação e Informática",
+      "status": "ATIVO",
+      "symbols": [
+        "BMOB3"
+      ],
+      "fca_document": "156275",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "20.247.322/0001-47",
+      "cvm": 25330,
+      "name": "ALLIED TECNOLOGIA S.A.",
+      "sector": "Comércio (Atacado e Varejo)",
+      "status": "ATIVO",
+      "symbols": [
+        "ALLD3"
+      ],
+      "fca_document": "158629",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.558.157/0001-62",
+      "cvm": 17671,
+      "name": "TELEFÔNICA BRASIL S.A",
+      "sector": "Telecomunicações",
+      "status": "ATIVO",
+      "symbols": [
+        "VIVT3"
+      ],
+      "fca_document": "156170",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.421.421/0001-11",
+      "cvm": 24929,
+      "name": "TIM S.A.",
+      "sector": "Telecomunicações",
+      "status": "ATIVO",
+      "symbols": [
+        "TIMS3"
+      ],
+      "fca_document": "158518",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "04.601.397/0001-28",
+      "cvm": 27693,
+      "name": "BRISANET SERVIÇOS DE TELECOMUNICAÇÕES S.A.",
+      "sector": "Telecomunicações",
+      "status": "ATIVO",
+      "symbols": [
+        "BRST3"
+      ],
+      "fca_document": "158004",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "08.797.760/0001-83",
+      "cvm": 25100,
+      "name": "Cury Construtora e Incorporadora S.A.",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "CURY3"
+      ],
+      "fca_document": "154685",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "73.178.600/0001-18",
+      "cvm": 14460,
+      "name": "CYRELA BRAZIL REALTY S.A.EMPREEND E PART",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "CYRE3"
+      ],
+      "fca_document": "154270",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "16.614.075/0001-00",
+      "cvm": 21350,
+      "name": "DIRECIONAL ENGENHARIA S.A.",
+      "sector": "Construção Civil, Mat. Constr. e Decoração",
+      "status": "ATIVO",
+      "symbols": [
+        "DIRR3"
+      ],
+      "fca_document": "158806",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.387.241/0001-60",
+      "cvm": 17450,
+      "name": "RUMO S.A.",
+      "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+      "status": "ATIVO",
+      "symbols": [
+        "RAIL3"
+      ],
+      "fca_document": "157181",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "02.846.056/0001-97",
+      "cvm": 18821,
+      "name": "MOTIVA INFRAESTRUTURA DE MOBILIDADE S.A.",
+      "sector": "Emp. Adm. Part. - Serviços Transporte e Logística",
+      "status": "ATIVO",
+      "symbols": [
+        "MOTV3"
+      ],
+      "fca_document": "159767",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "16.670.085/0001-55",
+      "cvm": 19739,
+      "name": "Localiza Rent a Car S.A.",
+      "sector": "Serviços Transporte e Logística",
+      "status": "ATIVO",
+      "symbols": [
+        "RENT3"
+      ],
+      "fca_document": "154190",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "16.404.287/0001-55",
+      "cvm": 13986,
+      "name": "SUZANO S.A.",
+      "sector": "Papel e Celulose",
+      "status": "ATIVO",
+      "symbols": [
+        "SUZB3"
+      ],
+      "fca_document": "158196",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "43.776.517/0001-80",
+      "cvm": 14443,
+      "name": "CIA SANEAMENTO BASICO EST SAO PAULO",
+      "sector": "Saneamento, Serv. Água e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "SBSP3"
+      ],
+      "fca_document": "157967",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "17.281.106/0001-03",
+      "cvm": 19445,
+      "name": "CIA SANEAMENTO DE MINAS GERAIS-COPASA MG",
+      "sector": "Saneamento, Serv. Água e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "CSMG3"
+      ],
+      "fca_document": "156513",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    },
+    {
+      "cnpj": "76.484.013/0001-45",
+      "cvm": 18627,
+      "name": "CIA SANEAMENTO DO PARANA - SANEPAR",
+      "sector": "Saneamento, Serv. Água e Gás",
+      "status": "ATIVO",
+      "symbols": [
+        "SAPR3"
+      ],
+      "fca_document": "159163",
+      "fca_reference": "2026-01-01",
+      "isin": null,
+      "subsector": null
+    }
+  ],
+  "unresolved": [
+    {
+      "symbol": "BPAC3",
+      "reason": "No unique active identity in latest FCA document",
+      "candidates": 0
+    },
+    {
+      "symbol": "CMIN3",
+      "reason": "No unique active identity in latest FCA document",
+      "candidates": 0
+    },
+    {
+      "symbol": "CSNA3",
+      "reason": "No unique active identity in latest FCA document",
+      "candidates": 0
+    },
+    {
+      "symbol": "CEAB3",
+      "reason": "No unique active identity in latest FCA document",
+      "candidates": 0
+    },
+    {
+      "symbol": "KLBN3",
+      "reason": "No unique active identity in latest FCA document",
+      "candidates": 0
+    }
+  ],
+  "schema_version": 1,
+  "catalog_count": 52,
+  "license": "ODbL-1.0",
+  "sources": [
+    {
+      "url": "https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/FCA/DADOS/fca_cia_aberta_2026.zip",
+      "sha256": "0e45ff882ee116ddad82a50dec0af19825864f2aa786e0451656f0a837d0ae71"
+    },
+    {
+      "url": "https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv",
+      "sha256": "bbb05c733e88631ac58a327531da5544a7c112c0819197bbfe5f44e46138611c"
+    }
+  ],
+  "limitation": "Identity reconciliation is not financial or corporate-action coverage."
+}
