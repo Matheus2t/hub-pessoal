@@ -77,16 +77,34 @@ def publish(records,output,coverage,approved_revisions=None):
     return manifest
 
 
+def target_class(identity,securities):
+    """Only unambiguous ON or unlettered PN; never infer from ticker suffix."""
+    review=identity.get('identity_review')
+    if review and review['class_name']=='ON':return 'Ordinária'
+    rows=[r for r in securities if r['CNPJ_Companhia']==identity['cnpj'] and r['ID_Documento']==identity['fca_document'] and r['Codigo_Negociacao']==identity['symbol'] and not r['Data_Fim_Negociacao']]
+    classes=set()
+    for r in rows:
+        if r['Valor_Mobiliario']=='Ações Ordinárias':classes.add('Ordinária')
+        elif r['Valor_Mobiliario']=='Ações Preferenciais' and r['Sigla_Classe_Acao_Preferencial'] in ('','PN'):classes.add('Preferencial')
+        else:return None
+    return next(iter(classes)) if len(classes)==1 else None
+
+
 def build(cache,output,refresh=False,approved_revisions=None):
     url=BASE+'DOC/FRE/DADOS/fre_cia_aberta_2022.zip';blob=download(url,cache,refresh);digest=hashlib.sha256(blob).hexdigest();archive=zipfile.ZipFile(io.BytesIO(blob))
     metadata=list(read_csv(archive.read('fre_cia_aberta_2022.csv')))
     fca=zipfile.ZipFile(io.BytesIO(download(BASE+'DOC/FCA/DADOS/fca_cia_aberta_2026.zip',cache,refresh)))
     cad=download(BASE+'CAD/DADOS/cad_cia_aberta.csv',cache,refresh)
     rows=list(read_csv(archive.read('fre_cia_aberta_distribuicao_dividendos_classe_acao_2022.csv')))
-    identities={s:verify_identity(fca,cad,s,ISSUERS[s]) for s in TARGETS}
+    identities={s:verify_identity(fca,cad,s,i) for s,i in ISSUERS.items()}
+    securities=list(read_csv(fca.read('fca_cia_aberta_valor_mobiliario_2026.csv')))
     records=[];excluded=[]
-    for symbol,species in TARGETS.items():
-        identity=identities[symbol];cnpj=identity['cnpj'];m=max((r for r in metadata if r['CNPJ_CIA']==cnpj),key=lambda r:(r['DT_REFER'],int(r['VERSAO'])))
+    for symbol,identity in identities.items():
+        species=target_class(identity,securities);cnpj=identity['cnpj']
+        available=[r for r in metadata if r['CNPJ_CIA']==cnpj]
+        if not species or not available:
+            excluded.append({'symbol':symbol,'reason':'Espécie/classe atual não conciliada ou FRE 2022 ausente'});continue
+        m=max(available,key=lambda r:(r['DT_REFER'],int(r['VERSAO'])))
         for r in rows:
             if r['CNPJ_Companhia']!=cnpj or r['ID_Documento']!=m['ID_DOC'] or r['Especie_Acao']!=species or r['Classe_Acao']:continue
             if r['Dividendo_Distribuido'] not in TYPE:

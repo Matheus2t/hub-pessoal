@@ -39,6 +39,37 @@ ISSUERS = {
     'HYPE3': ('02.932.074/0001-91', 21431, False),
     'DXCO3': ('97.837.181/0001-47', 21091, False),
     'CYRE3': ('73.178.600/0001-18', 14460, False),
+    'TIMS3': ('02.421.421/0001-11', 24929, False),
+    'RDOR3': ('06.047.087/0001-39', 24821, False),
+    'DASA3': ('61.486.650/0001-83', 19623, False),
+    'EMBJ3': ('07.689.002/0001-89', 20087, False),
+    'BMOB3': ('09.042.817/0001-05', 25500, False),
+    'ALLD3': ('20.247.322/0001-47', 25330, False),
+    'CURY3': ('08.797.760/0001-83', 25100, False),
+    'DIRR3': ('16.614.075/0001-00', 21350, False),
+    'RAIL3': ('02.387.241/0001-60', 17450, False),
+    'MOTV3': ('02.846.056/0001-97', 18821, False),
+    'SBSP3': ('43.776.517/0001-80', 14443, False),
+    'CSMG3': ('17.281.106/0001-03', 19445, False),
+    'SAPR3': ('76.484.013/0001-45', 18627, False),
+    'RAPT4': ('89.086.144/0001-16', 14109, False),
+    'POMO4': ('88.611.835/0001-29', 8451, False),
+    'FRAS3': ('88.610.126/0001-29', 6211, False),
+    'LEVE3': ('60.476.884/0001-87', 8575, False),
+    'ROMI3': ('56.720.428/0001-63', 7510, False),
+    'KEPL3': ('91.983.056/0001-69', 7870, False),
+    'VULC3': ('50.926.955/0001-42', 11762, False),
+    'GRND3': ('89.850.341/0001-60', 19615, False),
+    'MDIA3': ('07.206.816/0001-15', 20338, False),
+    'SLCE3': ('89.096.457/0001-55', 20745, False),
+    'TEND3': ('71.476.527/0001-35', 21148, False),
+    'MRVE3': ('08.343.492/0001-20', 20915, False),
+    'EZTC3': ('08.312.229/0001-73', 20770, False),
+    'BPAC3': ('30.306.294/0001-45', 22616, True),
+    'CMIN3': ('08.902.291/0001-15', 25585, False),
+    'CSNA3': ('33.042.730/0001-04', 4030, False),
+    'CEAB3': ('45.242.914/0001-05', 24848, False),
+    'KLBN3': ('89.637.490/0001-45', 12653, False),
 }
 ACCOUNTS = {
     'revenue': ('DRE', '3.01'), 'costs': ('DRE', '3.02'), 'gross_profit': ('DRE', '3.03'),
@@ -89,15 +120,24 @@ def verify_identity(fca, cad, symbol, identity):
     if not general: raise ValueError(f'{symbol}: missing FCA')
     latest = max(general, key=lambda r: (r['Data_Referencia'], int(r['Versao'])))
     if int(latest['Codigo_CVM']) != code: raise ValueError('CVM mismatch')
-    securities = [r for r in read_csv(fca.read(securities_file)) if r['CNPJ_Companhia'] == cnpj and r['ID_Documento'] == latest['ID_Documento'] and r['Codigo_Negociacao'] == symbol and not r['Data_Fim_Negociacao']]
-    if not securities: raise ValueError(f'{symbol}: ticker not linked by FCA')
-    return {'symbol': symbol, 'cnpj': cnpj, 'cvm': code, 'bank': bank, 'name': latest['Nome_Empresarial'], 'fca_document': latest['ID_Documento'], 'fca_reference': latest['Data_Referencia']}
+    all_securities=list(read_csv(fca.read(securities_file)))
+    securities = [r for r in all_securities if r['CNPJ_Companhia'] == cnpj and r['ID_Documento'] == latest['ID_Documento'] and r['Codigo_Negociacao'] == symbol and not r['Data_Fim_Negociacao']]
+    review=None
+    if not securities:
+        try:from scripts.cvm_identity_reviews import reviewed_link
+        except ModuleNotFoundError:from cvm_identity_reviews import reviewed_link
+        review=reviewed_link(symbol,cnpj,code,latest,all_securities)
+        if not review:raise ValueError(f'{symbol}: ticker not linked by FCA or reviewed primary sources')
+    result={'symbol': symbol, 'cnpj': cnpj, 'cvm': code, 'bank': bank, 'name': latest['Nome_Empresarial'], 'fca_document': latest['ID_Documento'], 'fca_reference': latest['Data_Referencia']}
+    if review:result['identity_review']=review
+    return result
 
-def select_rows(rows):
+def select_rows(rows,preferred_scope=None):
     """Latest complete document version, never mixing statements/versions or scopes."""
     version = max(int(r['VERSAO']) for r in rows)
     rows = [r for r in rows if int(r['VERSAO']) == version]
-    scope = 'con' if any(r['_scope'] == 'con' for r in rows) else 'ind'
+    scope = preferred_scope or ('con' if any(r['_scope'] == 'con' for r in rows) else 'ind')
+    if scope not in ('con','ind') or not any(r['_scope']==scope for r in rows):raise ValueError('Reviewed scope unavailable in latest document')
     rows = [r for r in rows if r['_scope'] == scope]
     unique = {}
     for r in rows:
@@ -157,8 +197,9 @@ def build(cache, output, refresh=False):
     fca_url = BASE+f'DOC/FCA/DADOS/fca_cia_aberta_{year_now}.zip'
     fca = zipfile.ZipFile(io.BytesIO(download(fca_url, cache, refresh)))
     identities = {s: verify_identity(fca, cad, s, i) for s, i in ISSUERS.items()}
+    identities['TIMS3']['scope_review']={'scope':'ind','reason':'DFP 2025 v1 possui DRE consolidada zerada; individual informa receita 26624721 MIL e lucro 4311984 MIL. Seleção individual explícita em todas as demonstrações e exercícios; não mistura saldos consolidados.','reference':'2025-12-31','version':1}
     periods = {s: [] for s in ISSUERS}; sources = []; petr_comparatives=[]
-    for typ, years in [('dfp', range(year_now-5,year_now)), ('itr', [year_now-1,year_now])]:
+    for typ, years in [('dfp', range(2021,year_now)), ('itr', range(2025,year_now+1))]:
         for year in years:
             url = BASE+f'DOC/{typ.upper()}/DADOS/{typ}_cia_aberta_{year}.zip'
             blob = download(url, cache, refresh); archive = zipfile.ZipFile(io.BytesIO(blob))
@@ -175,7 +216,12 @@ def build(cache, output, refresh=False):
                         r['_scope'] = scope; r['_statement'] = statement
                         docs.setdefault((symbol, r['DT_REFER']), []).append(r)
             for (symbol,end), rows in docs.items():
-                selected, version, scope = select_rows(rows)
+                selected, version, scope = select_rows(rows,preferred_scope='ind' if symbol=='TIMS3' else None)
+                if symbol=='TIMS3' and typ=='dfp' and year==2025:
+                    con=[r for r in rows if r['_scope']=='con' and int(r['VERSAO'])==version]
+                    controls=[get_account(con,'DRE',code,end,'2025-01-01') for code in ('3.01','3.11')]
+                    individual=[get_account(selected,'DRE',code,end,'2025-01-01') for code in ('3.01','3.11')]
+                    if version!=1 or any(e is None or e['value']!=0 for e in controls) or any(e is None or e['value']!=expected for e,expected in zip(individual,[26624721000,4311984000])):raise ValueError('TIMS3: scope review requires refresh after changed 2025 document')
                 meta = [r for r in metadata if r['CNPJ_CIA'] == ISSUERS[symbol][0] and r['DT_REFER'] == end and int(r['VERSAO']) == version]
                 if not meta: raise ValueError('Missing document metadata')
                 if len({r['ID_DOC'] for r in meta}) != 1: raise ValueError('Conflicting document identifiers')
@@ -199,7 +245,8 @@ def build(cache, output, refresh=False):
                                 if item:petr_comparatives.append({**item,'currency':r['MOEDA'],'document':record['document']})
     documents={}
     for symbol, data in periods.items():
-        if not data or not any(p['kind']=='annual' and p['values']['assets'] is not None and p['values']['profit'] is not None for p in data): raise ValueError(f'{symbol}: empty or invalid publication')
+        annual=[p for p in data if p['kind']=='annual']
+        if len(annual)<5 or any(p['values']['assets'] is None or p['values']['assets']<=0 or p['values']['profit'] is None for p in annual):raise ValueError(f'{symbol}: fewer than five usable annual periods; publication rejected')
         documents[symbol]={'issuer': identities[symbol], 'periods': sorted(data,key=lambda p:(p['end'],p['start'])), 'sources': sources, 'license':'ODbL-1.0', 'limitations':['Q4 não derivado: compatibilidade contábil entre documentos não comprovada.', 'Fluxos trimestrais só publicados quando explicitamente informados no documento.', 'Dívida líquida e múltiplos de mercado indisponíveis.']}
     if 'PETR4' in documents:
         try:

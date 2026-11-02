@@ -222,3 +222,26 @@ integral em andamento, publicação ainda não declarada neste registro.
 
 Homologação final TTM: 180 Python, 213 Playwright (um live opcional ignorado),
 build/typecheck e diff --check aprovados. PR #10 preparado.
+
+
+## Expansão CVM em homologação — 2026-11-02
+
+56 emissores distintos, 280 anuais e 282 trimestres informados. Originais dos
+25 emissores comparados sem mudanças. Catálogo: 65 ativos/identidades, sem
+duplicação artificial de classe para atingir a meta. Cinco vínculos (BPAC3,
+CMIN3, CSNA3, CEAB3, KLBN3) resolvidos com documentos primários individualizados;
+identificação não autoriza reprodução de cotações ou de tabelas B3.
+CEAB3 preserva a inconsistência de fim de negociação em 2019 no FCA; prospecto,
+RI atual e carteira B3 documentam a revisão, condicionada ao mesmo FCA/CAD.
+Klabin: ON KLBN3 não confundida com Unit KLBN11. TIMS3 escopo individual explícito,
+sem mistura com consolidado. Controle DFP 2025 v1 fixa receita/lucro; revisão
+requer atualização se esse documento mudar.
+
+FRE 2022: 196 registros/47 emissores, totais por classe; sete avisos unitários
+existentes permanecem separados. Classe obtida do FCA, não do sufixo do ticker;
+preferenciais com letra e classes ambíguas excluídas. Importador conserva os 28
+registros originais e não considera datas ausentes iguais a pagamentos zero.
+219 Python e 20 Playwright dirigidos aprovados; suíte integral em andamento.
+
+Homologação final do lote: 219 Python, 220 Playwright (um live opcional ignorado),
+typecheck/build e diff --check aprovados. Navegação adaptada ao catálogo de 65.
