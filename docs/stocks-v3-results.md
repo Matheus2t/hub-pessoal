@@ -219,3 +219,6 @@ operandos, fontes, versões e JSON completo. Manifest distingue cobertura TTM.
 17 testes adicionais com dados reais e incompatibilidades; suíte Python 180
 aprovados. Typecheck/build e cinco Playwright dirigidos aprovados. Regressão
 integral em andamento, publicação ainda não declarada neste registro.
+
+Homologação final TTM: 180 Python, 213 Playwright (um live opcional ignorado),
+build/typecheck e diff --check aprovados. PR #10 preparado.

@@ -29,3 +29,11 @@ e --basetemp dentro de .vercel. Não executar duas publicações simultâneas.
 
 Próximo: concluir a regressão TTM, publicar PR, validar domínio oficial e continuar
 expansão de emissores/TIMS3/vínculos e ampliação de avisos. Não refazer PRs #8/#9.
+
+Homologação TTM concluída: regressão integral local 213 aprovados, um live opcional
+ignorado (3,5 min), 180 Python e build/typecheck aprovados. Nenhuma falha funcional.
+Regressão integral PR #9 no domínio oficial executou todos os casos; um caso não
+carregou porque seu arquivo foi editado durante a execução. Repetição a partir do
+arquivo fixo de 2c2316a: dois aprovados. Demais casos da suíte de produção aprovados.
+Não foi ocultado o erro de carregamento como teste aprovado na execução original.
+PR #10: integração TTM. Próximo: merge após checks e testes TTM reais em produção.
