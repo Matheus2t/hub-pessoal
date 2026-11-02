@@ -125,3 +125,75 @@ comparativas do mesmo ITR, evidencia dos operandos e testes de revisao/escala/
 escopo; habilitar TTM somente para janelas completas comprovadas. Depois iniciar
 importador documental de dividendos/JCP e incorporar eventos reais verificaveis.
 Esta entrega nao conclui integralmente a V3.
+
+## Finalizacao — WIP preservado
+
+Branch codex/2t-stocks-v3-final, base main f6c62215fa09fd59e351e8308002f17150365771.
+Criados scripts/cvm_periods.py e backend/tests/test_cvm_periods.py. Onze testes
+aprovados para diferencas Q2/Q3/Q4, negativos, base/escopo/escala incompatíveis,
+estoques rejeitados, TTM de quatro trimestres cruzando exercicio e lacunas.
+O nucleo exige identificador explicito de revisao da base contabil; esse campo
+NAO comprova compatibilidade por si so. O publisher ainda precisa obter e
+validar essa evidencia documental antes de construir operandos reais.
+
+NAO integrado ao pipeline/manifest/UI. Nenhum trimestre derivado/TTM novo
+publicado. Nenhum evento de provento incorporado. Sem merge ou deploy desta
+etapa. Build e Playwright nao executados neste WIP sem alteracoes de runtime.
+Proxima tarefa exata: implementar a conciliacao das bases comparativas e das
+reapresentacoes dos documentos CVM, registrar evidencias/operandos serializaveis,
+integrar apenas derivacoes comprovadas ao snapshot e a interface, executar os
+testes financeiros e a regressao integral verde antes de publicar. Importador
+documental de proventos, eventos reais, calendario e simulador seguem pendentes.
+A V3 continua parcial; este WIP nao representa entrega funcional de TTM.
+
+## Integracao real PETR4 — sem publicacao
+
+Integrado scripts/cvm_reconciliation.py ao publicador. Snapshot
+eda390d81a67434b inclui derived_periods separado dos periodos historicos.
+Tres trimestres PETR4 corroborados por trimestre explicito independente:
+2025-04-01 a 2025-06-30 (lucro R$ 26.774.000.000),
+2025-07-01 a 2025-09-30 (R$ 32.847.000.000),
+2026-04-01 a 2026-06-30 (R$ 52.495.000.000).
+Nao representam novos periodos cronologicos: sao derivacoes auditaveis de
+periodos que tambem possuem valor explicitamente informado.
+
+Politica conservadora: usa apenas documentos previamente selecionados na maior
+versao pelo pipeline; exige igualdade de conta, descricao, escopo, escala,
+exercicio, limites dos periodos e ordem ULTIMO. O trimestre de controle deve
+pertencer ao MESMO documento/versao do acumulado atual. A diferenca dos
+acumulados deve coincidir exatamente, em Decimal, com o trimestre de controle.
+Numero de versao igual entre documentos diferentes nao prova compatibilidade.
+Nao se extrapola continuidade contabil para contas sem esse controle.
+O token basis_review e hash da evidencia serializavel APOS essas verificacoes,
+nao uma aprovacao textual arbitraria. Evidencia preserva metadados dos dois
+documentos e do controle, linhas/escala/valores originais, operandos normalizados
+e operacao do nucleo derive_quarter. Manifest registra derived_coverage.
+
+37 testes relevantes aprovados (periodos, conciliacao com dados reais e CVM).
+Correcao de teste: leitura UTF-8 explicita necessaria no Windows; periodos
+originais PETR4 permanecem integralmente identicos. Fontes sao os JSON oficiais
+derivados do snapshot anterior com links/documentos/hashes CVM rastreaveis.
+Nenhum TTM gerado: nao existem quatro trimestres consecutivos comprovados por
+esta politica, em particular Q4 nao tem controle trimestral independente no
+DFP anual. Nao foi invocado trailing_twelve_months com janela incompleta.
+Sem alteracao de frontend, sem merge/deploy. Proxima etapa: reconciliar Q4 e
+criterios entre DFP anual/ITR Q3 com evidencia contabil adicional, depois compor
+janelas completas e integrar TTM a interface. Nao inventar TTM para esta meta.
+
+## Homologacao da interface dos trimestres conciliados — PR #7
+
+Revisados reconciliador, tipos e interface ja existentes na branch
+codex/2t-stocks-v3-audited-quarter-ui-20261102. Typecheck/build aprovados,
+152 testes Python aprovados e regressao Playwright integral verde:
+195 aprovados, um live opcional ignorado. Capturas em cinco larguras e ambos
+temas; secao PETR4 mostra tres periodos e nove links oficiais, com aviso
+explicito de que nao representam TTM. Os periodos originais dos 25 emissores
+foram comparados integralmente com o snapshot anterior e permanecem identicos.
+TTM continua parcial, sem janela aprovada. Consultados os comparativos DRE
+consolidados PETR4 ITR 2026: lucro YTD anterior 2025-06-30 = 62105000 MIL,
+YTD atual 2026-06-30 = 85256000 MIL; igualdade numerica dos comparativos nao
+foi tratada como prova suficiente da compatibilidade do Q4/criterios contabeis.
+Nao incorporado TTM indicativo do PR #6. Proventos/calendario/simulador/DY e
+vinculos restantes nao implementados nesta homologacao; nao alegado bloqueio
+externo geral de fontes. Confirmacao de merge/deployment/testes de producao
+registrada no PR e no relatorio da entrega. Checkpoint original preservado.
