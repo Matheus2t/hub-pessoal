@@ -76,3 +76,37 @@ visualmente; quatro exclusões motivadas. Não copiar PDFs para diretórios púb
 Integrar com prazos-limite separados de datas exatas, preservar inícios de
 pagamento e excluir datas imprecisas da simulação de janela exata. Adicionar
 resumo visual dos avisos e ordenação pela natureza de data selecionada.
+
+
+PR #11 publicado: main e09a8570f32c20be821610d617510f98f61eb3aa.
+Sete testes no domínio oficial aprovados, incluindo todas as novas páginas.
+Branch atual codex/2t-stocks-v3-proceeds-final.
+
+Lote unitário integrado: 26 registros/22 emissores, preservando os sete originais.
+Cada novo PDF publicado como fatos foi conferido visualmente; hashes/metadados
+em scripts/data/ipe-reviewed-distributions.json. Nenhum PDF republicado.
+CPFL inclui total unitário da AGO de abril, não uma divisão da parcela de outubro.
+B3 usa somente valores ajustados da coluna Para; Grendene separa JCP/dividendo,
+sem somar novamente o total. Gerdau usa linha Gerdau ON B3, não GOAU nem ADR.
+Fleury conserva a antecipação da data; Vibra conserva valor unitário ajustado.
+TIM/Embraer com valor provisório e Allied com condições/identidade de estabelecimento
+não conciliadas ficaram excluídos dos novos avisos; suas demonstrações financeiras
+continuam disponíveis. Avisos anteriores examinados de TIM/Embraer ainda contêm
+cláusula de possível alteração; não foram tratados como liquidação/finalização.
+
+Prazos-limite separados de datas, início de pagamento explicitamente qualificado.
+Calendário e simulador de janela exata não convertem prazo/início em dia exato.
+Simulador aceita todos os tickers do conjunto, deduplica IDs e oferece totais anuais
+brutos; conserva limite de uma base de elegibilidade por simulação. Gráfico usa
+bases separadas por data-com (unitário) ou anos de totais de classe (FRE), sempre
+parcial; não mistura unidades. Filtros ordenam pela natureza da data selecionada.
+
+225 Python aprovados; typecheck/build aprovados. Dirigidos iniciais aprovados,
+refinamento de legibilidade do gráfico e totais anuais em nova validação visual.
+Erro de localizador de teste resolvido usando o papel acessível do seletor; não
+foi necessário alterar funcionamento do controle. Depois executar suíte integral
+limpa, commit/PR, merge e produção.
+
+Cache: regras Vercel limitadas aos snapshots com hash (um ano/immutable);
+manifestos continuam revalidados. Backend/API e bundles sem nome versionado
+não recebem cache imutável. Conferir os cabeçalhos reais após o deploy.
