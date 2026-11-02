@@ -1,43 +1,39 @@
 # Ações V3 — execução
 
-Base: main b924b1c. Branch codex/2t-stocks-v3-operation. Checkpoint original preservado.
+Base preservada: main 2c2316ae28dc (PRs #8 e #9). Checkpoint original remoto
+checkpoint/2t-before-stocks-v3 = 8d458a346be7fa274a5b6765d87316e16d3aa7ee.
 
-| Frente | Estado atual |
+| Frente | Estado verificável |
 |---|---|
-| Proventos | 28 registros reais FRE 2022, cinco emissores; 17 dividendos, 11 JCP. Total por classe, não por ação. Interface e importador implementados; homologação em andamento. |
-| Calendário | Lista/mês, filtros, datas desconhecidas e fontes conectados aos 28 registros. |
-| Simulador histórico | Bloqueado para esta fonte: FRE não informa valor unitário, data-com/ex ou confirmação independente de liquidação. Não se divide montante por número de ações presumido. |
-| TTM | Ainda sem janela aprovada; investigação deve continuar sem publicar aproximação. |
-| DY | Simulação manual implementada separadamente, com preço/período/data informados pelo usuário; não é DY de mercado. |
-| Vínculos/TIMS3 | TIMS3 tem DFP 2025 consolidada zerada, mas individual com receita 26624721 MIL e lucro 4311984 MIL. Revisar escopo explicitamente. |
-| 50 emissores | Ainda 25; expansão em lote deve aguardar o primeiro marco de proventos. |
-| Visual/performance | Novo módulo JS separado e carregado sob demanda; capturas geradas nos dois temas e cinco larguras. |
+| Proventos | PR #8: 28 totais por classe FRE, cinco emissores. PR #9: sete parcelas unitárias IPE, cinco emissores. Bases separadas, nenhuma confirmação de liquidação presumida. |
+| Calendário | Publicado: lista/mês, filtros e datas com/ex/pagamento disponíveis nos documentos. Série parcial. |
+| Simulador | Publicado: programação bruta de avisos com uma base de elegibilidade por emissor. Não é histórico de liquidação ou retorno total. |
+| TTM | Branch codex/2t-stocks-v3-ttm-verified: Q4 PETR4 de R$ 15.653.000.000 e três janelas completas de lucro; controles DFP/ITR/IPE e comparativos preservados. Em homologação. |
+| DY | Manual publicado; automático/histórico sem preços licenciados, não implementado. |
+| Vínculos/TIMS3 | Investigação continua. TIM consolidado zerado, individual possui dados: exige política explícita de escopo. |
+| 50 emissores | Ainda 25 publicados; candidatos identificados em FCA/CAD para próximo marco. |
+| Visual/performance | Módulo de proventos lazy; Geist local remove dependência externa de DNS. TTM revisado em 320/1366 px, capturas nos dois temas e cinco larguras. |
 
-Fontes verificadas: CVM FRE com ODbL declarada (https://dados.cvm.gov.br/dataset/cia_aberta-doc-fre).
-FRE 2026 não traz os arquivos de distribuição antigos. FRE 2022 contém montante
-por espécie/classe e pagamento, não valor unitário. WEG RI possui tabela unitária,
-mas https://ri.weg.net/termos-de-uso/ reserva os direitos e não fornece licença aberta;
-não copiada. Um registro PETR4 de tipo Outros foi excluído com a linha original
-preservada na cobertura. Nunca afirmar que os 28 registros completam os anos.
+PR #8 merge 89910277ff236e5e22e08798970d2861917e9d42: 202 Playwright,
+162 Python; sete testes de produção aprovados.
+PR #9 merge 2c2316ae28dc6c54881a46ed365c7402180e9276: 208 Playwright,
+163 Python aprovados antes do merge; um live opcional ignorado. Nova regressão
+integral contra o domínio oficial em execução, log .vercel/pr9-production-verified.log.
 
-Comandos: python scripts/cvm_distributions.py; npm run build;
-python -m pytest backend/tests -q --basetemp=.vercel/pytest-operation;
-npx playwright test --output=.vercel/operation-regression.
+TTM: 180 Python aprovados e cinco Playwright dirigidos aprovados. Typecheck/build
+aprovados. Suíte Playwright integral em execução (.vercel/ttm-full-regression.log).
+Os testes inicialmente impedidos por sandbox (browser/IPC) e servidor local
+encerrado foram repetidos após restaurar o servidor e executar fora do sandbox.
+Não foram tratados como falhas de dados. Pytest requer PYTHONPATH=backend;.
+e --basetemp dentro de .vercel. Não executar duas publicações simultâneas.
 
-Testes direcionados iniciais: nove Python e sete Playwright aprovados. Nova
-validação integral obrigatória antes de merge. Nenhuma nova funcionalidade ainda
-publicada nesta branch. Próximo comando: build, suíte integral e revisão visual.
+Próximo: concluir a regressão TTM, publicar PR, validar domínio oficial e continuar
+expansão de emissores/TIMS3/vínculos e ampliação de avisos. Não refazer PRs #8/#9.
 
-Marco seguinte em desenvolvimento: sete parcelas unitárias de cinco emissores,
-provenientes de cinco avisos IPE conferidos visualmente. Curação factual com
-identidade, versão, datas e SHA dos PDFs, sem republicar seu texto/arte.
-Simulador calcula somente programação declarada e uma base de elegibilidade
-por emissor. Não comprova liquidação. Tests dirigidos: 11 Python de dados e 13
-Playwright aprovados. Fonte/decisão de uso e exclusão do dividendo Vale ainda
-provisório documentadas em stocks-v3-sources.md. Próximo comando: regressão
-integral da branch codex/2t-stocks-v3-unit-events antes de publicar o marco.
-
-Marco anterior publicado: PR #8, main 89910277ff236e5e22e08798970d2861917e9d42,
-deployment matheus2t-1nlhkrg16-matheus2ts-projects.vercel.app. Sete testes dirigidos
-executados no domínio oficial e aprovados. A suíte integral local após hospedar
-Geist localmente teve 202 aprovados e um opcional ignorado; Python 162 aprovados.
+Homologação TTM concluída: regressão integral local 213 aprovados, um live opcional
+ignorado (3,5 min), 180 Python e build/typecheck aprovados. Nenhuma falha funcional.
+Regressão integral PR #9 no domínio oficial executou todos os casos; um caso não
+carregou porque seu arquivo foi editado durante a execução. Repetição a partir do
+arquivo fixo de 2c2316a: dois aprovados. Demais casos da suíte de produção aprovados.
+Não foi ocultado o erro de carregamento como teste aprovado na execução original.
+PR #10: integração TTM. Próximo: merge após checks e testes TTM reais em produção.

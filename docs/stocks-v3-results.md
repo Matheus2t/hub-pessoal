@@ -197,3 +197,28 @@ Nao incorporado TTM indicativo do PR #6. Proventos/calendario/simulador/DY e
 vinculos restantes nao implementados nesta homologacao; nao alegado bloqueio
 externo geral de fontes. Confirmacao de merge/deployment/testes de producao
 registrada no PR e no relatorio da entrega. Checkpoint original preservado.
+
+
+## Integração real TTM — 2026-11-02 (homologação)
+
+Release Petrobras “Desempenho 4T25”, protocolo 009512IPE311220250157338344-95,
+página 7, tabela 2: lucro consolidado total de 15.653 milhões no 4T25,
+32.847 milhões no 3T25, 110.605 milhões em 2025. Não confundir com o lucro
+atribuível aos acionistas da controladora (15.563 milhões no 4T25).
+SHA e metadados em scripts/data/petr4-quarter-control.json. Revisão visual do
+PDF oficial realizada; PDF/texto integral não republicados.
+
+DFP anual menos ITR nove meses coincide exatamente com o controle Q4.
+Q1+Q2+Q3 coincide com nove meses; ITRs 2026 conciliam os comparativos de 2025.
+TTM lucro PETR4: jan/dez25 110.605.000.000; abr25/mar26 108.035.000.000;
+jul25/jun26 133.756.000.000 reais. Cada janela tem quatro trimestres consecutivos.
+Demais contas TTM permanecem nulas. Evidências/operandos/hash em ttm_periods;
+periods original preservado. A interface permite consultar período, quatro
+operandos, fontes, versões e JSON completo. Manifest distingue cobertura TTM.
+
+17 testes adicionais com dados reais e incompatibilidades; suíte Python 180
+aprovados. Typecheck/build e cinco Playwright dirigidos aprovados. Regressão
+integral em andamento, publicação ainda não declarada neste registro.
+
+Homologação final TTM: 180 Python, 213 Playwright (um live opcional ignorado),
+build/typecheck e diff --check aprovados. PR #10 preparado.

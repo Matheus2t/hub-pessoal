@@ -153,3 +153,5 @@ market-rankings .financial-table-scroll { margin-block:20px; }
 @media(max-width:600px) { .distributions table { min-width: 760px; } .distribution-month-controls { flex-wrap: wrap; } .distribution-month { gap: 4px; } }
 
 .distribution-basis { max-width: 420px; margin-block: 16px; }
+
+.financial-ttm { margin-block: 1.25rem; overflow-wrap: anywhere; }

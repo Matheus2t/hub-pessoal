@@ -157,7 +157,7 @@ def build(cache, output, refresh=False):
     fca_url = BASE+f'DOC/FCA/DADOS/fca_cia_aberta_{year_now}.zip'
     fca = zipfile.ZipFile(io.BytesIO(download(fca_url, cache, refresh)))
     identities = {s: verify_identity(fca, cad, s, i) for s, i in ISSUERS.items()}
-    periods = {s: [] for s in ISSUERS}; sources = []
+    periods = {s: [] for s in ISSUERS}; sources = []; petr_comparatives=[]
     for typ, years in [('dfp', range(year_now-5,year_now)), ('itr', [year_now-1,year_now])]:
         for year in years:
             url = BASE+f'DOC/{typ.upper()}/DADOS/{typ}_cia_aberta_{year}.zip'
@@ -192,16 +192,27 @@ def build(cache, output, refresh=False):
                     record=prepare(selected, ISSUERS[symbol][2], end, start, kind)
                     record.update(document={'version': version, 'received': document['DT_RECEB'], 'id': document['ID_DOC'], 'url': document['LINK_DOC'], 'dataset': url, 'scope': scope, 'reference': end})
                     periods[symbol].append(record)
+                    if symbol=='PETR4' and typ=='itr' and kind=='quarter' and end.startswith('2026'):
+                        for r in selected:
+                            if r['_statement']=='DRE' and r['CD_CONTA']=='3.11' and r['ORDEM_EXERC']=='PENÚLTIMO':
+                                item=get_account(selected,'DRE','3.11',r['DT_FIM_EXERC'],r['DT_INI_EXERC'],'PENÚLTIMO')
+                                if item:petr_comparatives.append({**item,'currency':r['MOEDA'],'document':record['document']})
     documents={}
     for symbol, data in periods.items():
         if not data or not any(p['kind']=='annual' and p['values']['assets'] is not None and p['values']['profit'] is not None for p in data): raise ValueError(f'{symbol}: empty or invalid publication')
         documents[symbol]={'issuer': identities[symbol], 'periods': sorted(data,key=lambda p:(p['end'],p['start'])), 'sources': sources, 'license':'ODbL-1.0', 'limitations':['Q4 não derivado: compatibilidade contábil entre documentos não comprovada.', 'Fluxos trimestrais só publicados quando explicitamente informados no documento.', 'Dívida líquida e múltiplos de mercado indisponíveis.']}
     if 'PETR4' in documents:
         try:
-            from scripts.cvm_reconciliation import integrate_reported_quarters
+            from scripts.cvm_reconciliation import integrate_reported_quarters,integrate_verified_ttm
         except ModuleNotFoundError:
-            from cvm_reconciliation import integrate_reported_quarters
+            from cvm_reconciliation import integrate_reported_quarters,integrate_verified_ttm
         documents['PETR4']['derived_periods']=integrate_reported_quarters(identities['PETR4']['cnpj'], periods['PETR4'])
+        control=json.loads((ROOT/'scripts/data/petr4-quarter-control.json').read_text(encoding='utf8'))
+        q4,ttm=integrate_verified_ttm(identities['PETR4'],periods['PETR4'],petr_comparatives,control)
+        documents['PETR4']['derived_periods'].extend(q4)
+        documents['PETR4']['ttm_periods']=ttm
+        documents['PETR4']['comparative_evidence']=petr_comparatives
+        if ttm:documents['PETR4']['limitations']=['TTM parcial: somente lucro consolidado total de PETR4, com Q4 controlado pelo release IPE e comparativos reconciliados.', 'Outras contas e emissores sem continuidade documental comprovada não recebem TTM.', 'Dados contábeis sujeitos a reapresentações; múltiplos dependentes de preços indisponíveis.']
     digest=hashlib.sha256(json_bytes(documents)).hexdigest()[:16]
     # A failed/partial refresh must not destroy a previously validated coverage set.
     if (output/'manifest.json').exists():
@@ -215,7 +226,7 @@ def build(cache, output, refresh=False):
                     raise ValueError(f'{symbol}: refresh would remove valid coverage; manual review required')
     snapshot=output/'snapshots'/digest; snapshot.mkdir(parents=True,exist_ok=True)
     for symbol, document in documents.items(): (snapshot/f'{symbol}.json').write_bytes(json_bytes(document))
-    manifest={'snapshot':digest,'processed_at':datetime.now(timezone.utc).isoformat(), 'license':'ODbL-1.0', 'source': 'CVM — DFP, ITR e FCA', 'companies':{s:{'path':f'snapshots/{digest}/{s}.json','cnpj':i['cnpj'],'cvm':i['cvm'],'name':i['name']} for s,i in identities.items()},'coverage':{s:{'periods':len(d['periods']), 'references':[{'kind':p['kind'],'start':p['start'],'end':p['end'],'version':p['document']['version'],'available':[k for k,v in p['values'].items() if v is not None],'unavailable':[k for k,v in p['values'].items() if v is None]} for p in d['periods']]} for s,d in documents.items()}, 'derived_coverage':{s:len(d.get('derived_periods',[])) for s,d in documents.items()}, 'mapping_errors':[], 'unmapped':'Demais ações do catálogo sem cobertura própria nesta versão.'}
+    manifest={'snapshot':digest,'processed_at':datetime.now(timezone.utc).isoformat(), 'license':'ODbL-1.0', 'source': 'CVM — DFP, ITR e FCA', 'companies':{s:{'path':f'snapshots/{digest}/{s}.json','cnpj':i['cnpj'],'cvm':i['cvm'],'name':i['name']} for s,i in identities.items()},'coverage':{s:{'periods':len(d['periods']), 'references':[{'kind':p['kind'],'start':p['start'],'end':p['end'],'version':p['document']['version'],'available':[k for k,v in p['values'].items() if v is not None],'unavailable':[k for k,v in p['values'].items() if v is None]} for p in d['periods']]} for s,d in documents.items()}, 'derived_coverage':{s:len(d.get('derived_periods',[])) for s,d in documents.items()}, 'ttm_coverage':{s:len(d.get('ttm_periods',[])) for s,d in documents.items()}, 'mapping_errors':[], 'unmapped':'Demais ações do catálogo sem cobertura própria nesta versão.'}
     if (output/'manifest.json').exists() and previous['snapshot']==digest and previous['coverage']==manifest['coverage']: return previous
     temp=output/'manifest.tmp'; temp.write_bytes(json_bytes(manifest)); os.replace(temp,output/'manifest.json')
     return manifest
