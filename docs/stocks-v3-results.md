@@ -179,3 +179,21 @@ DFP anual. Nao foi invocado trailing_twelve_months com janela incompleta.
 Sem alteracao de frontend, sem merge/deploy. Proxima etapa: reconciliar Q4 e
 criterios entre DFP anual/ITR Q3 com evidencia contabil adicional, depois compor
 janelas completas e integrar TTM a interface. Nao inventar TTM para esta meta.
+
+## Homologacao da interface dos trimestres conciliados — PR #7
+
+Revisados reconciliador, tipos e interface ja existentes na branch
+codex/2t-stocks-v3-audited-quarter-ui-20261102. Typecheck/build aprovados,
+152 testes Python aprovados e regressao Playwright integral verde:
+195 aprovados, um live opcional ignorado. Capturas em cinco larguras e ambos
+temas; secao PETR4 mostra tres periodos e nove links oficiais, com aviso
+explicito de que nao representam TTM. Os periodos originais dos 25 emissores
+foram comparados integralmente com o snapshot anterior e permanecem identicos.
+TTM continua parcial, sem janela aprovada. Consultados os comparativos DRE
+consolidados PETR4 ITR 2026: lucro YTD anterior 2025-06-30 = 62105000 MIL,
+YTD atual 2026-06-30 = 85256000 MIL; igualdade numerica dos comparativos nao
+foi tratada como prova suficiente da compatibilidade do Q4/criterios contabeis.
+Nao incorporado TTM indicativo do PR #6. Proventos/calendario/simulador/DY e
+vinculos restantes nao implementados nesta homologacao; nao alegado bloqueio
+externo geral de fontes. Confirmacao de merge/deployment/testes de producao
+registrada no PR e no relatorio da entrega. Checkpoint original preservado.
