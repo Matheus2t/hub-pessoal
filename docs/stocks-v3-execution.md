@@ -1,3 +1,13 @@
+## Fechamento V3 — PR #12 (2026-11-02)
+
+O escopo principal da Ações V3 foi entregue em PRs #7–#12. A branch do PR #12 incorpora 26 eventos unitários IPE de 22 emissores, separados dos 196 registros FRE por classe (47 emissores). Calendário e simulador mantêm datas exatas distintas de prazos e inícios, usam valores brutos anunciados sem presumir liquidação e não contam IDs duplicados. Simulador possui totalizações por ano; os gráficos separam a base por data-com ou classe. O TTM continua limitado a três janelas de lucro de PETR4, e DY automático, tributação/reinvestimento e histórico integral continuam fora do escopo validado, por ausência de dados suficientes/licenciados.
+
+Fundamentos: 56 emissores distintos, 280 demonstrativos anuais, 282 trimestres explícitos, 65 ativos no catálogo; cinco vínculos revisados e TIMS3 com escopo individual. Em cache, somente snapshots identificados por hash recebem immutable; manifestos revalidam. O Codex registrou testes finais: 225 Python, 227 Playwright aprovados, um teste live opcional ignorado, typecheck/build e git diff --check aprovados. Capturas nas cinco larguras e nos temas claro/escuro. A confirmação do merge e a verificação dos headers/domínio oficial são passos posteriores ao registro destes resultados.
+
+Estas entregas não implicam cobertura total, DY automático ou prova de proventos liquidados. Melhorias adicionais ficam reservadas à V4. O histórico abaixo descreve etapas anteriores à conclusão; seus estados intermediários não prevalecem sobre este resumo.
+
+---
+
 # Ações V3 — execução
 
 Base preservada: main 2c2316ae28dc (PRs #8 e #9). Checkpoint original remoto
