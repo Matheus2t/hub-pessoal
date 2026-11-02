@@ -35,8 +35,12 @@ financial-analysis select, financial-comparison select { max-width: 100%; backgr
 .financial-metrics dd { margin: 8px 0; font-size: 22px; font-variant-numeric: tabular-nums; }
 .financial-metrics details, .financial-analysis details { font-size: 13px; line-height: 1.6; }
 .financial-chart { margin-block: 24px; }
+.financial-history > label:first-of-type { max-width: 360px; margin-block: 16px; }
+.financial-chart .financial-normalize { display: flex; align-items: center; gap: 8px; }
+.financial-normalize input { width: 18px; height: 18px; margin: 0; }
+.financial-history caption { text-align: left; padding-block: 12px; }
 .financial-chart svg { width: 100%; max-height: 300px; }
-.financial-chart input { width: 100%; }
+.financial-chart input[type=range] { width: 100%; }
 .financial-table-scroll { overflow-x: auto; }
 financial-analysis table, financial-comparison table { width: 100%; border-collapse: collapse; font-size: 14px; }
 financial-analysis th, financial-analysis td, financial-comparison th, financial-comparison td { padding: 14px; text-align: left; border-bottom: 1px solid var(--line-soft); }

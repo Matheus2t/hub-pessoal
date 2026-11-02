@@ -42,7 +42,7 @@ for (const theme of ['dark', 'light']) {
         await check();
         await page.screenshot({ path: `test-results/catalog-${theme}.png` });
       } else if (route === 'acoes/comparar') {
-        await expect(page.locator('financial-comparison table')).toBeVisible();
+        await expect(page.locator('financial-comparison table').first()).toBeVisible();
         await check();
       } else if (!route) {
         const card = page.locator('home-page').getByRole('link', { name: /Calculadoras/ });

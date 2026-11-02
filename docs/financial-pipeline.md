@@ -2,7 +2,7 @@
 
 ## Arquitetura e atualização
 
-`python scripts/cvm_financials.py --refresh` baixa DFP dos três exercícios completos anteriores e ITR do ano anterior/atual, além de cadastro ativo e FCA do ano atual. Python padrão, sem dependências novas, banco, preços ou credenciais. ZIPs ficam em `.vercel/cvm-cache-v2` ignorado pelo Git; não são enviados ao visitante. Sem refresh o cache local permite reproduzir os mesmos arquivos. A janela atual é 2023–2025 DFP e 2025–2026 ITR. Falta de arquivo de um novo exercício é erro explícito, preservando o snapshot publicado.
+`python scripts/cvm_financials.py --refresh` baixa DFP dos cinco exercícios completos anteriores e ITR do ano anterior/atual, além de cadastro ativo e FCA do ano atual. Python padrão, sem dependências novas, banco, preços ou credenciais. ZIPs ficam em `.vercel/cvm-cache-v2` ignorado pelo Git; não são enviados ao visitante. Sem refresh o cache local permite reproduzir os mesmos arquivos. A janela atual é 2021–2025 DFP e 2025–2026 ITR. Falta de arquivo de um novo exercício é erro explícito, preservando o snapshot publicado.
 
 O pipeline verifica ZIP, CRC, limite de download/descompressão, moeda, escala e números finitos. Só acessa URLs fixas oficiais. Identidade é verificada por ticker no FCA valor_mobiliario, CNPJ e código CVM no FCA geral e cadastro ATIVO. Mapeamentos iniciais: ITUB4/19348/60.872.504/0001-23; PETR4/9512/33.000.167/0001-01; VALE3/4170/33.592.510/0001-54; WEGE3/5410/84.429.695/0001-11; TOTS3/19992/53.113.791/0001-22. Não se inferem emissores pelo nome. Novas classes devem apontar ao mesmo CNPJ e ser deduplicadas na comparação.
 
@@ -38,7 +38,7 @@ Amostra independente transcrita dos CSV oficiais DFP consolidados 2025, ÚLTIMO,
 
 Todos multiplicados por mil na base JSON, confrontados por testes de regressão. Receita PETR4 de 497.549.000 MIL e resultado operacional de 145.628.000 MIL foram conferidos no mesmo DRE. As contas bancárias foram verificadas separadamente. Testes cobrem negativos, escala, nulos, base zero/negativa, versões/escopos, duplicatas conflitantes, trimestre explícito vs YTD, PL médio e identidade FCA inconsistente. Conferência é contra CSV oficial estruturado, não uma auditoria independente dos demonstrativos em PDF.
 
-Relatório de cobertura: `financials/manifest.json`, com todos os períodos, campos presentes/ausentes, mapeamentos e data de processamento. Cobertura ampliada para 15 emissores na Fase 1 de Acoes V3; os demais ativos continuam sem cobertura propria. Interfaces e gráficos devem ser inspecionados com os JSON reais, nos dois temas e em celular, além dos testes automatizados.
+Relatório de cobertura: `financials/manifest.json`, com todos os períodos, campos presentes/ausentes, mapeamentos e data de processamento. Cobertura ampliada para 25 emissores na continuacao de Acoes V3; os demais ativos continuam sem cobertura propria. Interfaces e gráficos devem ser inspecionados com os JSON reais, nos dois temas e em celular, além dos testes automatizados.
 
 ## Fontes, dicionários e licença
 
