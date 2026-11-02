@@ -155,3 +155,15 @@ market-rankings .financial-table-scroll { margin-block:20px; }
 .distribution-basis { max-width: 420px; margin-block: 16px; }
 
 .financial-ttm { margin-block: 1.25rem; overflow-wrap: anywhere; }
+
+.distribution-chart { margin-block: 22px; }
+.distribution-chart svg { display: block; width: 100%; max-width: 760px; max-height: 220px; }
+.distribution-chart h2 { font-size: 20px; }
+.distribution-chart-periods { display: none; }
+.distribution-chart dd { margin: 4px 0 12px; }
+.distribution-annual { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.distribution-annual dd { margin: 0; }
+@media (max-width: 600px) {
+ .distribution-chart svg text { display: none; }
+ .distribution-chart-periods { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
+}

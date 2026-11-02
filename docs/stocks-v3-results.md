@@ -245,3 +245,38 @@ registros originais e não considera datas ausentes iguais a pagamentos zero.
 
 Homologação final do lote: 219 Python, 220 Playwright (um live opcional ignorado),
 typecheck/build e diff --check aprovados. Navegação adaptada ao catálogo de 65.
+
+
+## Proventos finais em homologação — 2026-11-02
+
+Avisos IPE: 26 registros/22 emissores, valores brutos por ação. FRE: 196 registros
+históricos/47 emissores, totais de classe. As bases nunca são somadas entre si.
+Tabelas, calendário, fontes e simulador conectados. Valores da coluna anterior de
+B3/Vibra não são adicionados ao valor ajustado; total Grendene não é acrescentado
+novamente aos componentes. CPFL usa total unitário aprovado em AGO, não divide
+parcela agregada por número de ações presumido. Quatro documentos recentes
+excluídos têm motivos/metadados preservados; avisos anteriores de TIM/Embraer
+examinados também não eliminam a cláusula de valor provisório.
+
+Calendário só posiciona dias exatos; prazos-limite e inícios permanecem qualificados.
+O simulador limita-se a anúncios com data exata de pagamento, valor unitário e
+uma base de elegibilidade. Não modela carteira/reinvestimento/tributação ou prova
+liquidação. Mantém totais por tipo e ano e deduplicação por ID. Gráficos mostram
+bases de elegibilidade distintas, sem misturar unidades nem ajustes não revisados.
+Filtros ordenam pela natureza da data selecionada, incluindo campos desconhecidos.
+
+225 Python e typecheck/build aprovados. Validação dirigida final: sete testes
+adicionais aprovados nos cinco tamanhos/ambos os temas, além dos anteriores.
+Regressão integral final em execução. Bundles produzidos: inicial 170.455 bytes,
+proventos lazy 39.397 bytes, Learn lazy 94.927 bytes. Os dados financeiros só são
+buscados nas páginas acionadas; homepage não baixa 56 emissores. Cache Vercel
+preparado somente para caminhos imutáveis com hash; confirmar headers no deploy.
+
+
+## Encerramento da implementação principal V3 — PR #12
+
+O último lote amplia a base de avisos IPE para 26 registros com valores unitários de 22 emissores, sem somar os 196 registros históricos de montantes por classe do FRE. Datas exatas, inícios e prazos-limite permanecem distintos, assim como anúncios e liquidação; simulador passa a oferecer totais anuais, deduplicação por ID e gráfico com bases de elegibilidade separadas. Cache imutável restrito aos snapshots com hash; manifestos devem revalidar.
+
+Homologação final relatada pelo Codex: 225 testes Python e 227 Playwright aprovados, um live opcional ignorado, typecheck, build, git diff --check e inspeção em cinco larguras/ambos temas. O merge e a validação posterior em produção são verificados separadamente.
+
+Ações V3 encerra seu escopo principal com 56 emissores, 280 anuais e 282 trimestres explícitos, três janelas TTM de lucro PETR4, calendário, proventos e simulador parciais, DY manual, cinco vínculos revisados e TIMS3 individual. A expansão automática/histórica de DY, comprovação de liquidação, ajustes de carteira/reinvestimento e expansão adicional do TTM permanecem como possíveis tarefas da V4, e não são declaradas concluídas.

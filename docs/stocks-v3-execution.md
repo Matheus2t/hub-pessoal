@@ -1,3 +1,13 @@
+## Fechamento V3 — PR #12 (2026-11-02)
+
+O escopo principal da Ações V3 foi entregue em PRs #7–#12. A branch do PR #12 incorpora 26 eventos unitários IPE de 22 emissores, separados dos 196 registros FRE por classe (47 emissores). Calendário e simulador mantêm datas exatas distintas de prazos e inícios, usam valores brutos anunciados sem presumir liquidação e não contam IDs duplicados. Simulador possui totalizações por ano; os gráficos separam a base por data-com ou classe. O TTM continua limitado a três janelas de lucro de PETR4, e DY automático, tributação/reinvestimento e histórico integral continuam fora do escopo validado, por ausência de dados suficientes/licenciados.
+
+Fundamentos: 56 emissores distintos, 280 demonstrativos anuais, 282 trimestres explícitos, 65 ativos no catálogo; cinco vínculos revisados e TIMS3 com escopo individual. Em cache, somente snapshots identificados por hash recebem immutable; manifestos revalidam. O Codex registrou testes finais: 225 Python, 227 Playwright aprovados, um teste live opcional ignorado, typecheck/build e git diff --check aprovados. Capturas nas cinco larguras e nos temas claro/escuro. A confirmação do merge e a verificação dos headers/domínio oficial são passos posteriores ao registro destes resultados.
+
+Estas entregas não implicam cobertura total, DY automático ou prova de proventos liquidados. Melhorias adicionais ficam reservadas à V4. O histórico abaixo descreve etapas anteriores à conclusão; seus estados intermediários não prevalecem sobre este resumo.
+
+---
+
 # Ações V3 — execução
 
 Base preservada: main 2c2316ae28dc (PRs #8 e #9). Checkpoint original remoto
@@ -76,3 +86,37 @@ visualmente; quatro exclusões motivadas. Não copiar PDFs para diretórios púb
 Integrar com prazos-limite separados de datas exatas, preservar inícios de
 pagamento e excluir datas imprecisas da simulação de janela exata. Adicionar
 resumo visual dos avisos e ordenação pela natureza de data selecionada.
+
+
+PR #11 publicado: main e09a8570f32c20be821610d617510f98f61eb3aa.
+Sete testes no domínio oficial aprovados, incluindo todas as novas páginas.
+Branch atual codex/2t-stocks-v3-proceeds-final.
+
+Lote unitário integrado: 26 registros/22 emissores, preservando os sete originais.
+Cada novo PDF publicado como fatos foi conferido visualmente; hashes/metadados
+em scripts/data/ipe-reviewed-distributions.json. Nenhum PDF republicado.
+CPFL inclui total unitário da AGO de abril, não uma divisão da parcela de outubro.
+B3 usa somente valores ajustados da coluna Para; Grendene separa JCP/dividendo,
+sem somar novamente o total. Gerdau usa linha Gerdau ON B3, não GOAU nem ADR.
+Fleury conserva a antecipação da data; Vibra conserva valor unitário ajustado.
+TIM/Embraer com valor provisório e Allied com condições/identidade de estabelecimento
+não conciliadas ficaram excluídos dos novos avisos; suas demonstrações financeiras
+continuam disponíveis. Avisos anteriores examinados de TIM/Embraer ainda contêm
+cláusula de possível alteração; não foram tratados como liquidação/finalização.
+
+Prazos-limite separados de datas, início de pagamento explicitamente qualificado.
+Calendário e simulador de janela exata não convertem prazo/início em dia exato.
+Simulador aceita todos os tickers do conjunto, deduplica IDs e oferece totais anuais
+brutos; conserva limite de uma base de elegibilidade por simulação. Gráfico usa
+bases separadas por data-com (unitário) ou anos de totais de classe (FRE), sempre
+parcial; não mistura unidades. Filtros ordenam pela natureza da data selecionada.
+
+225 Python aprovados; typecheck/build aprovados. Dirigidos iniciais aprovados,
+refinamento de legibilidade do gráfico e totais anuais em nova validação visual.
+Erro de localizador de teste resolvido usando o papel acessível do seletor; não
+foi necessário alterar funcionamento do controle. Depois executar suíte integral
+limpa, commit/PR, merge e produção.
+
+Cache: regras Vercel limitadas aos snapshots com hash (um ano/immutable);
+manifestos continuam revalidados. Backend/API e bundles sem nome versionado
+não recebem cache imutável. Conferir os cabeçalhos reais após o deploy.

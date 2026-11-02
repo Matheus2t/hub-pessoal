@@ -50,3 +50,21 @@ dezembro, sem somar novamente o total de R$1,34814262. WEG inclui data de pagame
 prevista em 10/03/2027, com aprovação ad referendum. Nenhuma passagem de tempo
 transforma os avisos programados em pagamentos liquidados. Valores líquidos
 citados pelos avisos não são aplicados universalmente pelo sistema.
+
+
+## Ampliação IPE — 2026-11-02
+
+26 registros unitários, 22 emissores. Curação em
+`scripts/data/ipe-reviewed-distributions.json`: URL/protocolo/versão CVM, página,
+SHA-256 do PDF e fatos extraídos. Abrange os avisos anteriores e novos de TOTVS,
+B3, Renner, Suzano, Engie, Telefônica, Vibra, Copel, Cemig, Gerdau, Magazine Luiza,
+Fleury, Hypera, Rede D’Or, CSN Mineração, Grendene e CPFL. Fatos numéricos/datas,
+sem republicação de texto, arranjo, logotipos ou PDFs. ODbL refere-se à base de
+metadados CVM e à base derivada, não concede licença aos documentos integrais.
+
+Qualificadores não removidos: prazos máximos/inícios não são dias exatos;
+retificações de valores B3/Vibra e antecipação Fleury preservadas nos fatos brutos.
+Quatro documentos recentes excluídos têm metadados e razões na curação; CPFL
+foi incluída por aviso anterior com valor unitário, sem transformar parcela total
+em valor por ação. Proventos programados não são liquidações comprovadas.
+Nenhuma fonte de preço/licença privada foi habilitada. DY permanece manual.

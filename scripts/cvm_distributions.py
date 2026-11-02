@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import zipfile
+from urllib.parse import urlparse
 try:
     from scripts.cvm_financials import BASE,ROOT,ISSUERS,download,read_csv,json_bytes,verify_identity
 except ModuleNotFoundError:
@@ -33,6 +34,16 @@ def validate_records(records):
         if not amount.is_finite() or amount<=0:raise ValueError('Invalid distribution amount')
         for key in ('payment_date','record_date','ex_date','declared_date'):
             if e.get(key):date.fromisoformat(e[key])
+        precision=e.get('payment_date_precision','exact' if e.get('payment_date') else 'unknown')
+        if precision not in ('exact','from','unknown') or (precision=='unknown' and e.get('payment_date')) or (precision!='unknown' and not e.get('payment_date')):raise ValueError('Inconsistent payment date precision')
+        if e.get('payment_deadline'):
+            date.fromisoformat(e['payment_deadline'])
+            if e.get('payment_date'):raise ValueError('Deadline is not an exact payment date')
+        for part in e.get('payment_schedule',[]):
+            date.fromisoformat(part['deadline'])
+            if part['fraction']!='1/2':raise ValueError('Unreviewed installment fraction')
+        host=urlparse(e['source']['url']).hostname or ''
+        if not(host=='cvm.gov.br' or host.endswith('.cvm.gov.br')):raise ValueError('Nonofficial document source')
         if e.get('record_date') and e.get('ex_date') and e['record_date']>=e['ex_date']:raise ValueError('Inconsistent entitlement dates')
         if not e['source']['url'].startswith(('https://dados.cvm.gov.br/','http://www.rad.cvm.gov.br/','https://www.rad.cvm.gov.br/')):raise ValueError('Unapproved source')
         if not e['source'].get('sha256') or not e['source'].get('raw') or not e.get('class_name'):raise ValueError('Missing provenance')
