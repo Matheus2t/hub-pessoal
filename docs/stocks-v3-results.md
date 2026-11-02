@@ -145,3 +145,24 @@ integrar apenas derivacoes comprovadas ao snapshot e a interface, executar os
 testes financeiros e a regressao integral verde antes de publicar. Importador
 documental de proventos, eventos reais, calendario e simulador seguem pendentes.
 A V3 continua parcial; este WIP nao representa entrega funcional de TTM.
+
+
+## Protótipo TTM indicativo em PR rascunho — NÃO publicado
+
+Branch `codex/2t-stocks-v3-ttm-indicativo-20261102`, derivada do WIP `de389af`.
+Implementada função TypeScript que calcula TTM por métrica de fluxo conforme
+DFP anual anterior + ITR acumulado atual - ITR equivalente do ano anterior.
+Confere período civil, escopo, demonstração, código da conta, escala original,
+valores das evidências e links dos três documentos; falhas permanecem null.
+Exemplo documentado de PETR4 em 2026-06-30: lucro TTM indicativo de R$
+133.756.000.000 (110.605.000.000 + 85.256.000.000 - 62.105.000.000).
+Não mistura saldos patrimoniais ou ROE/ROA com valores de fluxo.
+
+A interface exibe explicitamente "TTM indicativo" e os três documentos;
+não afirma revisão independente de reapresentações entre fontes. Os
+cálculos são feitos sob demanda a partir do snapshot já publicado, sem
+modificação dos arquivos financeiros. Dois testes Playwright foram escritos
+mas ainda NÃO executados nesta sessão. A checagem Vercel Preview indicou
+success para o build (que inclui TypeScript typecheck); isso não substitui
+regressão Playwright. PR #6 permanece em rascunho, sem merge e sem deploy
+em produção. A V3 auditável, proventos e demais pendências seguem abertos.
