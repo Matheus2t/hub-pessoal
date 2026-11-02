@@ -137,7 +137,7 @@ market-rankings .financial-table-scroll { margin-block:20px; }
 .distributions .rf-fields { margin-block: 20px; }
 .distributions table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .distributions th, .distributions td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); }
-.distributions td:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.distributions td:nth-child(6) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .distributions caption { padding-block: 12px; text-align: left; color: var(--secondary); }
 .distributions a:not(.button) { text-decoration: underline; text-underline-offset: 3px; }
 .distributions .financial-table-scroll { max-width: 100%; }
@@ -151,3 +151,5 @@ market-rankings .financial-table-scroll { margin-block:20px; }
 .distribution-yield { font-size: 20px; margin-block: 24px; }
 .market-distributions { margin-block: 24px; }
 @media(max-width:600px) { .distributions table { min-width: 760px; } .distribution-month-controls { flex-wrap: wrap; } .distribution-month { gap: 4px; } }
+
+.distribution-basis { max-width: 420px; margin-block: 16px; }
