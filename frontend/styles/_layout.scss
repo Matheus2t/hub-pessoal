@@ -66,3 +66,5 @@
  .masthead app-sidebar nav { justify-content:space-between; flex-wrap:wrap; gap:0 14px; }
  .teams-menu team-shortcuts { left:50%; right:auto; transform:translateX(-50%); }
 }
+
+@media(max-width:600px) { .masthead { position:relative; } .teams-menu { position:static; } .teams-menu team-shortcuts { left:16px; right:16px; top:100%; min-width:0; transform:none; } }

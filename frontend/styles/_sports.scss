@@ -226,3 +226,16 @@ team-shortcuts { display: block; }
   .sports-result { min-width: 54px; }
   .sports-score { font-size: 21px; }
 }
+
+sports-calendar { display:block; }
+.sports-agenda h1 { margin-bottom:16px; }
+.sports-month { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; margin-bottom:24px; }
+.sports-month > span { text-align:center; font-size:12px; }
+.sports-month button { display:flex; flex-direction:column; padding:8px 2px; min-width:0; }
+.sports-month small { font-size:10px; }
+.sports-agenda-list { list-style:none; margin:24px 0; padding:0; }
+.sports-agenda-list li { display:grid; grid-template-columns:180px minmax(0,1fr) auto; gap:20px; padding:20px 0; border-bottom:1px solid var(--line-soft); }
+.sports-agenda-list strong { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.sports-agenda-list p,.sports-agenda-list time { font-size:13px; color:var(--secondary); }
+.sports-agenda-list a { font-size:13px; text-decoration:underline; }
+@media(max-width:600px) { .sports-agenda-list li { grid-template-columns:minmax(0,1fr); gap:10px; } }

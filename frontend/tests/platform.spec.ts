@@ -94,7 +94,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
     await page.keyboard.press("End");
     await expect(page.locator(".chart-readout")).toContainText("Mês 3");
     await expect(page.locator(".chart-readout")).toContainText("Juros:");
-    await page.locator("summary").click();
+    await page.locator("compound-calculator summary").click();
     await expect(page.locator("tbody tr")).toHaveCount(3);
     await expect(page.locator("tbody tr").last()).toContainText("1.333,31");
     expect(
@@ -154,7 +154,7 @@ test("validation, loading, API error and 600-month pagination", async ({
   await page.getByRole("button", { name: "Simular investimento" }).click();
   await expect(page.locator("metric-card")).toHaveCount(3);
   await expect(page.locator(".chart-panel")).toContainText("600 meses");
-  await page.locator("summary").click();
+  await page.locator("compound-calculator summary").click();
   await expect(page.locator("tbody tr")).toHaveCount(12);
   await page.getByRole("button", { name: "Próxima" }).click();
   await expect(page.locator("tbody tr").first()).toContainText("13");

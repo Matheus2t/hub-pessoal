@@ -20,10 +20,12 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/#/');
   const nav = page.getByRole('navigation', { name: 'Times', exact: true });
-  await expect(nav.getByRole('link')).toHaveCount(3);
+  await page.locator('.teams-menu summary').click();
+  await expect(nav.getByRole('link')).toHaveCount(4);
   await expect(nav.locator('img')).toHaveCount(3);
   await expect.poll(() => nav.locator('img').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
   for (const [name, route] of [['Philadelphia 76ers', '76ers'], ['São Paulo Futebol Clube', 'spfc'], ['FC Barcelona', 'barcelona']]) {
+    if(!await page.locator('.teams-menu').evaluate(e=>(e as HTMLDetailsElement).open))await page.locator('.teams-menu summary').click();
     await nav.getByRole('link', { name, exact: true }).focus(); await page.keyboard.press('Enter');
     await expect(page).toHaveURL(new RegExp(`#/${route}$`));
     await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
@@ -43,6 +45,7 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
     for (const theme of ['dark', 'light']) {
       await page.evaluate(theme => { document.documentElement.dataset.theme = theme; }, theme);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await page.locator('.teams-menu summary').click();
       const badge = await nav.locator('[data-team="76ers"]').evaluate(element => ({
         background: getComputedStyle(element).backgroundColor,
         radius: getComputedStyle(element).borderRadius,
@@ -53,6 +56,7 @@ for (const width of [1920, 1366, 768, 390, 320]) test(`team pages responsive ${w
       expect(badge.imageWidth).toBe(30);
       await expect(nav.locator('[data-team="76ers"] img')).toHaveAttribute('src', '/teams/76ers-contrast.svg');
       expect(await nav.locator('[data-team="76ers"]').evaluate(element => getComputedStyle(element).backgroundImage)).toContain('gradient');
+      await page.locator('.teams-menu summary').click();
       await page.screenshot({ path: info.outputPath(`${route}-${theme}.png`), fullPage: true, animations: 'disabled' });
     }
   }
