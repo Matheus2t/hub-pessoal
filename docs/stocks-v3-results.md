@@ -145,3 +145,37 @@ integrar apenas derivacoes comprovadas ao snapshot e a interface, executar os
 testes financeiros e a regressao integral verde antes de publicar. Importador
 documental de proventos, eventos reais, calendario e simulador seguem pendentes.
 A V3 continua parcial; este WIP nao representa entrega funcional de TTM.
+
+## Integracao real PETR4 — sem publicacao
+
+Integrado scripts/cvm_reconciliation.py ao publicador. Snapshot
+eda390d81a67434b inclui derived_periods separado dos periodos historicos.
+Tres trimestres PETR4 corroborados por trimestre explicito independente:
+2025-04-01 a 2025-06-30 (lucro R$ 26.774.000.000),
+2025-07-01 a 2025-09-30 (R$ 32.847.000.000),
+2026-04-01 a 2026-06-30 (R$ 52.495.000.000).
+Nao representam novos periodos cronologicos: sao derivacoes auditaveis de
+periodos que tambem possuem valor explicitamente informado.
+
+Politica conservadora: usa apenas documentos previamente selecionados na maior
+versao pelo pipeline; exige igualdade de conta, descricao, escopo, escala,
+exercicio, limites dos periodos e ordem ULTIMO. O trimestre de controle deve
+pertencer ao MESMO documento/versao do acumulado atual. A diferenca dos
+acumulados deve coincidir exatamente, em Decimal, com o trimestre de controle.
+Numero de versao igual entre documentos diferentes nao prova compatibilidade.
+Nao se extrapola continuidade contabil para contas sem esse controle.
+O token basis_review e hash da evidencia serializavel APOS essas verificacoes,
+nao uma aprovacao textual arbitraria. Evidencia preserva metadados dos dois
+documentos e do controle, linhas/escala/valores originais, operandos normalizados
+e operacao do nucleo derive_quarter. Manifest registra derived_coverage.
+
+37 testes relevantes aprovados (periodos, conciliacao com dados reais e CVM).
+Correcao de teste: leitura UTF-8 explicita necessaria no Windows; periodos
+originais PETR4 permanecem integralmente identicos. Fontes sao os JSON oficiais
+derivados do snapshot anterior com links/documentos/hashes CVM rastreaveis.
+Nenhum TTM gerado: nao existem quatro trimestres consecutivos comprovados por
+esta politica, em particular Q4 nao tem controle trimestral independente no
+DFP anual. Nao foi invocado trailing_twelve_months com janela incompleta.
+Sem alteracao de frontend, sem merge/deploy. Proxima etapa: reconciliar Q4 e
+criterios entre DFP anual/ITR Q3 com evidencia contabil adicional, depois compor
+janelas completas e integrar TTM a interface. Nao inventar TTM para esta meta.

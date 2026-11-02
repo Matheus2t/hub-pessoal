@@ -196,6 +196,12 @@ def build(cache, output, refresh=False):
     for symbol, data in periods.items():
         if not data or not any(p['kind']=='annual' and p['values']['assets'] is not None and p['values']['profit'] is not None for p in data): raise ValueError(f'{symbol}: empty or invalid publication')
         documents[symbol]={'issuer': identities[symbol], 'periods': sorted(data,key=lambda p:(p['end'],p['start'])), 'sources': sources, 'license':'ODbL-1.0', 'limitations':['Q4 não derivado: compatibilidade contábil entre documentos não comprovada.', 'Fluxos trimestrais só publicados quando explicitamente informados no documento.', 'Dívida líquida e múltiplos de mercado indisponíveis.']}
+    if 'PETR4' in documents:
+        try:
+            from scripts.cvm_reconciliation import integrate_reported_quarters
+        except ModuleNotFoundError:
+            from cvm_reconciliation import integrate_reported_quarters
+        documents['PETR4']['derived_periods']=integrate_reported_quarters(identities['PETR4']['cnpj'], periods['PETR4'])
     digest=hashlib.sha256(json_bytes(documents)).hexdigest()[:16]
     # A failed/partial refresh must not destroy a previously validated coverage set.
     if (output/'manifest.json').exists():
@@ -209,7 +215,7 @@ def build(cache, output, refresh=False):
                     raise ValueError(f'{symbol}: refresh would remove valid coverage; manual review required')
     snapshot=output/'snapshots'/digest; snapshot.mkdir(parents=True,exist_ok=True)
     for symbol, document in documents.items(): (snapshot/f'{symbol}.json').write_bytes(json_bytes(document))
-    manifest={'snapshot':digest,'processed_at':datetime.now(timezone.utc).isoformat(), 'license':'ODbL-1.0', 'source': 'CVM — DFP, ITR e FCA', 'companies':{s:{'path':f'snapshots/{digest}/{s}.json','cnpj':i['cnpj'],'cvm':i['cvm'],'name':i['name']} for s,i in identities.items()},'coverage':{s:{'periods':len(d['periods']), 'references':[{'kind':p['kind'],'start':p['start'],'end':p['end'],'version':p['document']['version'],'available':[k for k,v in p['values'].items() if v is not None],'unavailable':[k for k,v in p['values'].items() if v is None]} for p in d['periods']]} for s,d in documents.items()}, 'mapping_errors':[], 'unmapped':'Demais ações do catálogo sem cobertura própria nesta versão.'}
+    manifest={'snapshot':digest,'processed_at':datetime.now(timezone.utc).isoformat(), 'license':'ODbL-1.0', 'source': 'CVM — DFP, ITR e FCA', 'companies':{s:{'path':f'snapshots/{digest}/{s}.json','cnpj':i['cnpj'],'cvm':i['cvm'],'name':i['name']} for s,i in identities.items()},'coverage':{s:{'periods':len(d['periods']), 'references':[{'kind':p['kind'],'start':p['start'],'end':p['end'],'version':p['document']['version'],'available':[k for k,v in p['values'].items() if v is not None],'unavailable':[k for k,v in p['values'].items() if v is None]} for p in d['periods']]} for s,d in documents.items()}, 'derived_coverage':{s:len(d.get('derived_periods',[])) for s,d in documents.items()}, 'mapping_errors':[], 'unmapped':'Demais ações do catálogo sem cobertura própria nesta versão.'}
     if (output/'manifest.json').exists() and previous['snapshot']==digest and previous['coverage']==manifest['coverage']: return previous
     temp=output/'manifest.tmp'; temp.write_bytes(json_bytes(manifest)); os.replace(temp,output/'manifest.json')
     return manifest
