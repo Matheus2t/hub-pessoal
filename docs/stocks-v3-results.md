@@ -271,3 +271,12 @@ Regressão integral final em execução. Bundles produzidos: inicial 170.455 byt
 proventos lazy 39.397 bytes, Learn lazy 94.927 bytes. Os dados financeiros só são
 buscados nas páginas acionadas; homepage não baixa 56 emissores. Cache Vercel
 preparado somente para caminhos imutáveis com hash; confirmar headers no deploy.
+
+
+## Encerramento da implementação principal V3 — PR #12
+
+O último lote amplia a base de avisos IPE para 26 registros com valores unitários de 22 emissores, sem somar os 196 registros históricos de montantes por classe do FRE. Datas exatas, inícios e prazos-limite permanecem distintos, assim como anúncios e liquidação; simulador passa a oferecer totais anuais, deduplicação por ID e gráfico com bases de elegibilidade separadas. Cache imutável restrito aos snapshots com hash; manifestos devem revalidar.
+
+Homologação final relatada pelo Codex: 225 testes Python e 227 Playwright aprovados, um live opcional ignorado, typecheck, build, git diff --check e inspeção em cinco larguras/ambos temas. O merge e a validação posterior em produção são verificados separadamente.
+
+Ações V3 encerra seu escopo principal com 56 emissores, 280 anuais e 282 trimestres explícitos, três janelas TTM de lucro PETR4, calendário, proventos e simulador parciais, DY manual, cinco vínculos revisados e TIMS3 individual. A expansão automática/histórica de DY, comprovação de liquidação, ajustes de carteira/reinvestimento e expansão adicional do TTM permanecem como possíveis tarefas da V4, e não são declaradas concluídas.
