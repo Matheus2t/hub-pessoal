@@ -65,7 +65,8 @@ novos bancos; apenas Itau mantem tratamento bancario previamente validado.
 novos Playwright cobrem os dez emissores novos, comparador e rankings em
 1920/1366/768/390/320, ambos temas, sem overflow. Capturas reais inspecionadas
 em desktop/celular. Tres testes existentes de analise CVM tambem aprovados.
-Regressao Playwright completa e publicacao: resultados registrados na entrega.
+Regressao Playwright completa: 188 aprovados, um teste live opcional ignorado.
+Os cinco testes novos foram executados separadamente e aprovados.
 Bundle principal permanece 160114 bytes; Learn 94927. Nenhuma biblioteca nova.
 Os snapshots rejeitados de desenvolvimento nao sao publicados.
 
