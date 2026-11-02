@@ -8,6 +8,7 @@ import './company-sections';
 import './financial-comparison';
 import './financial-analysis';
 import './market-tools';
+import './distributions-host';
 
 @customElement('market-page')
 export class MarketPage extends LightElement {
@@ -20,6 +21,7 @@ export class MarketPage extends LightElement {
   @state() private expanded = false;
   @state() private advanced = false;
   @state() private panorama = false;
+  @state() private distributions = false;
   private get filteredStocks() { return searchStocks(this.query, this.sector, this.order); }
   private keydown(event: KeyboardEvent) {
     const suggestions = this.filteredStocks.slice(0, 8);
@@ -43,6 +45,8 @@ export class MarketPage extends LightElement {
     location.hash = `#/acoes/${selected.symbol}`;
   }
   render() {
+    if (this.symbol === 'PROVENTOS') return html`<distributions-host mode="history"></distributions-host>`;
+    if (this.symbol === 'DY') return html`<distributions-host mode="dy"></distributions-host>`;
     if (this.symbol === 'RANKINGS') return html`<market-rankings></market-rankings>`;
     if (this.symbol === 'APORTES') return html`<market-contributions></market-contributions>`;
     if (this.symbol === 'COMPARAR') return html`<financial-comparison></financial-comparison>`;
@@ -53,7 +57,7 @@ export class MarketPage extends LightElement {
     return html`<div class="page-heading"><h1>${stock ? stock.symbol : 'Mercado de Ações'}</h1></div>
       ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div><p class="market-note">Setor na 2T: ${stock.sector} · classificação editorial</p>` : html`
         <p class="market-intro">Consulte ações da B3, acompanhe cotações e analise a evolução dos preços.</p>
-        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a><a class="market-back" href="#/acoes/rankings">Rankings por setor</a><a class="market-back" href="#/acoes/aportes">Simulador de aportes</a>
+        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a><a class="market-back" href="#/acoes/rankings">Rankings por setor</a><a class="market-back" href="#/acoes/aportes">Simulador de aportes</a><a class="market-back" href="#/acoes/proventos">Proventos · arquivo CVM</a><a class="market-back" href="#/acoes/dy">DY manual</a>
         <details class="market-panorama" @toggle=${(event: Event) => { this.panorama = (event.target as HTMLDetailsElement).open; }}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama ? html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>` : nothing}</details>
         <form class="market-search" @submit=${this.search}>
           <label for="stock-search">Buscar ação</label>
@@ -69,6 +73,7 @@ export class MarketPage extends LightElement {
         <ul id="stock-suggestions" class="stock-suggestions" role="listbox" aria-label="Sugestões de ações" ?hidden=${!this.query || !this.expanded || !suggestions.length}>${suggestions.map((item, index) => html`<li role="presentation"><a id=${`stock-option-${index}`} role="option" aria-selected=${this.active === index} href=${`#/acoes/${item.symbol}`}>${item.symbol} · ${item.name}</a></li>`)}</ul>
         <h2 class="market-section-title">Cotações</h2>`}
       ${stock ? html`<financial-analysis .symbol=${stock.symbol}></financial-analysis><div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${() => { this.advanced = false; }}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${() => { this.advanced = true; }}>Avançado</button></div>` : nothing}
+      ${stock?html`<section class="market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?"Fechar proventos":"Dividendos e JCP"}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:nothing}
       ${stock && this.advanced ? html`<market-embed kind="advanced-chart" .symbol=${stock.symbol}></market-embed>` : html`<tradingview-widget .kind=${stock ? 'overview' : 'tickers'} .symbol=${stock?.symbol || 'ITUB4'}></tradingview-widget>`}
       <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p>
       ${stock ? html`<company-sections .symbol=${stock.symbol}></company-sections>` : nothing}
