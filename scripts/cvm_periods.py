@@ -1,7 +1,7 @@
 """Auditable flow arithmetic. Compatibility must be explicitly reviewed upstream.
 
-Never accepts balance stocks, unreviewed bases or missing operands. This module
-is not yet connected to the CVM publisher: no derived data are public yet.
+Never accepts balance stocks, unreviewed bases or missing operands. The publisher reconciles official documents before assigning a review hash;
+this arithmetic core does not independently establish accounting compatibility.
 """
 from dataclasses import dataclass
 from datetime import date, timedelta
