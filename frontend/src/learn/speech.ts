@@ -10,5 +10,7 @@ export class LearnSpeech {
     if(!text.trim()||text.length>3000||rate<.5||rate>1.5||!Number.isFinite(rate))return Promise.reject(Error('Áudio ou velocidade inválidos.'));
     this.stop();return new Promise((resolve,reject)=>{const utterance=new SpeechSynthesisUtterance(text);utterance.voice=voice;utterance.lang=voice.lang;utterance.rate=rate;utterance.onend=()=>resolve();utterance.onerror=()=>reject(Error('Reprodução interrompida ou não disponível.'));this.synth!.speak(utterance)});
   }
+  pause(){this.synth?.pause()}
+  resume(){this.synth?.resume()}
   stop(){this.synth?.cancel()}
 }

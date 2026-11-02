@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
+export type Page = "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -23,6 +23,7 @@ export const tools: Tool[] = [
   { id: 'sac', name: 'Financiamento SAC', category: 'Calculadoras', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  sports: {title:'Times',section:'Times'},
   learn: {title:'2T Learn',section:'Idiomas'},
   learnEn: {title:'Inglês',section:'2T Learn'},
   learnRu: {title:'Russo',section:'2T Learn'},
@@ -40,7 +41,8 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
-  location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
+  location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
+  location.hash === '#/times' ? 'sports' :
   location.hash === '#/renda-fixa' ? 'fixedIncome' :
   location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
   location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
@@ -62,4 +64,4 @@ export function filterTools(category: string, query: string, items: readonly Too
     && `${tool.name} ${tool.category}`.toLocaleLowerCase("pt-BR").includes(search));
 }
 
-export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado',daily:'Plano diário',dashboard:'Acompanhamento',backup:'Backup'};
+export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado',daily:'Plano diário',dashboard:'Acompanhamento',backup:'Backup',path:'Trilha de aprendizado'};

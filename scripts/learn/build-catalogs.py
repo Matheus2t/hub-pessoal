@@ -80,3 +80,6 @@ for language in ['en','ru']:
  c['readings']=extra['readings'];c['lessons']=extra['lessons'];c['exercises']+=extra['exercises']
  p.write_text(json.dumps(c,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print('Stage C per language: 10 readings/30 questions, 10 lessons/30 exercises, 30 assessment questions.')
+
+# Additive authored B1 pilot; independent validation is in platform-v2-content.spec.ts.
+runpy.run_path('scripts/learn/v2-content.py')['apply']()
