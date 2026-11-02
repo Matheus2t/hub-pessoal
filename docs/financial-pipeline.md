@@ -22,7 +22,7 @@ ITR: períodos explicitamente informados na DRE com início/fim exatos de trimes
 
 Margens = lucro/receita ou operacional/receita × 100; exigem receita positiva. ROE/ROA anuais = lucro consolidado / média do saldo inicial/final, usando comparativo PENÚLTIMO no mesmo documento; média deve ser positiva. Não se anualiza trimestre nem se publica ROE trimestral estimado. Crescimento anual = (atual/comparativo - 1) × 100, com base positiva; lucro negativo atual pode gerar queda maior que 100%, base negativa/anterior zero gera null. Empréstimos/PL não é passivo total/PL. Crescimento e saldos comparativos são do mesmo documento para reduzir mistura de versões. Ainda pode haver mudanças de perímetro, aquisições e critérios; não representam necessariamente crescimento orgânico.
 
-Comparação usa dois/três emissores únicos e exercício anual comum. Mostra escopo, datas e versões. Receita/margens bancárias são indisponíveis, sem equivalência artificial com indústrias; setores distintos recebem aviso. Valores absolutos não são recomendações de investimento.
+Comparação usa dois a quatro emissores únicos e exercício anual comum. Mostra escopo, datas e versões. Receita/margens bancárias são indisponíveis, sem equivalência artificial com indústrias; setores distintos recebem aviso. Valores absolutos não são recomendações de investimento.
 
 ## Conferência e testes
 
@@ -38,7 +38,7 @@ Amostra independente transcrita dos CSV oficiais DFP consolidados 2025, ÚLTIMO,
 
 Todos multiplicados por mil na base JSON, confrontados por testes de regressão. Receita PETR4 de 497.549.000 MIL e resultado operacional de 145.628.000 MIL foram conferidos no mesmo DRE. As contas bancárias foram verificadas separadamente. Testes cobrem negativos, escala, nulos, base zero/negativa, versões/escopos, duplicatas conflitantes, trimestre explícito vs YTD, PL médio e identidade FCA inconsistente. Conferência é contra CSV oficial estruturado, não uma auditoria independente dos demonstrativos em PDF.
 
-Relatório de cobertura: `financials/manifest.json`, com todos os períodos, campos presentes/ausentes, mapeamentos e data de processamento. Cobertura inicial somente cinco empresas; as demais 47 exibem indisponibilidade. Interfaces e gráficos devem ser inspecionados com os JSON reais, nos dois temas e em celular, além dos testes automatizados.
+Relatório de cobertura: `financials/manifest.json`, com todos os períodos, campos presentes/ausentes, mapeamentos e data de processamento. Cobertura ampliada para 15 emissores na Fase 1 de Acoes V3; os demais ativos continuam sem cobertura propria. Interfaces e gráficos devem ser inspecionados com os JSON reais, nos dois temas e em celular, além dos testes automatizados.
 
 ## Fontes, dicionários e licença
 

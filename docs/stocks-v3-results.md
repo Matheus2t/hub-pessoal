@@ -43,3 +43,36 @@ historica, rankings ampliados, pipeline expandido e validacao de interface.
 Nao foi demonstrado bloqueio externo definitivo: essas tarefas permanecem
 trabalho de implementacao/auditoria, nao dependencias automaticamente exigidas
 do usuario. Nenhum servico pago, credencial ou banco novo foi criado.
+
+
+## Fase 1 — expansao funcional (2026-11-02)
+
+Snapshot 11a5a375004fb041: 15 emissores, 45 demonstracoes anuais de
+2023–2025, mais periodos ITR 2025–2026. Dez novos emissores: ABEV3, B3SA3,
+RENT3, LREN3, SUZB3, EGIE3, CPFE3, VIVT3, VBBR3 e PRIO3. Disponiveis nas
+paginas individuais, comparador de quatro empresas e rankings existentes.
+Nao foram adicionadas formulas: ampliada a cobertura das metodologias ja
+validadas. Manifest e arquivos por emissor mantem fontes, versoes, escalas,
+contas originais e evidencias. Acesso aos dados continua sob demanda.
+
+TIMS3 foi excluido desta expansao: lucro/PL zerados no documento consolidado
+selecionado exigem investigacao; nao contabilizado como cobertura util. Cinco
+vinculos FCA anteriormente pendentes continuam pendentes. Nao foram criadas
+classes alternativas por inferencia. Contas industriais nao foram aplicadas a
+novos bancos; apenas Itau mantem tratamento bancario previamente validado.
+
+123 testes Python completos aprovados. Typecheck/build aprovados. Cinco testes
+novos Playwright cobrem os dez emissores novos, comparador e rankings em
+1920/1366/768/390/320, ambos temas, sem overflow. Capturas reais inspecionadas
+em desktop/celular. Tres testes existentes de analise CVM tambem aprovados.
+Regressao Playwright completa e publicacao: resultados registrados na entrega.
+Bundle principal permanece 160114 bytes; Learn 94927. Nenhuma biblioteca nova.
+Os snapshots rejeitados de desenvolvimento nao sao publicados.
+
+Esta e a primeira entrega funcional da V3, nao sua conclusao integral.
+Cinco/dez exercicios, novos bancos, trimestre derivado/TTM, novos indicadores,
+comparador historico avancado e proventos permanecem por implementar.
+Zero proventos incorporados; DY e tributacao liquida nao foram inferidos.
+Proxima fase: ampliar janela DFP de tres para cinco exercicios, validar contas
+por emissor/ano e introduzir comparacao historica com periodos comuns. So
+entao avancar no importador documental de proventos e sua proveniencia.

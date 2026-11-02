@@ -5,7 +5,7 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.route('https://s3.tradingview.com/**',route=>route.abort());
  await page.route('https://widgets.tradingview-widget.com/**',route=>route.abort());
  const manifest=await (await request.get('/financials/manifest.json')).json();
- expect(Object.keys(manifest.companies)).toHaveLength(5);
+ expect(Object.keys(manifest.companies)).toHaveLength(15);
  for(const symbol of ['ITUB4','PETR4','VALE3','WEGE3','TOTS3']){
   await page.goto(`/#/acoes/${symbol}`);
   await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
@@ -29,7 +29,7 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.screenshot({path:info.outputPath(`cvm-${width}-dark.png`)});
  await page.getByRole('button',{name:'Ativar tema claro'}).click();
  await page.screenshot({path:info.outputPath(`cvm-${width}-light.png`)});
- await page.goto('/#/acoes/ABEV3');await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
+ await page.goto('/#/acoes/BBAS3');await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
  await expect(page.locator('financial-analysis')).toContainText('Não disponível para esta empresa');
  await page.goto('/#/acoes/comparar');
  await expect(page.locator('financial-comparison table')).toBeVisible();
