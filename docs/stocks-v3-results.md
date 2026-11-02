@@ -77,3 +77,51 @@ Zero proventos incorporados; DY e tributacao liquida nao foram inferidos.
 Proxima fase: ampliar janela DFP de tres para cinco exercicios, validar contas
 por emissor/ano e introduzir comparacao historica com periodos comuns. So
 entao avancar no importador documental de proventos e sua proveniencia.
+
+
+## Continuacao — cinco anos e 25 emissores (2026-11-02)
+
+Branch codex/2t-stocks-v3-history a partir da main 71204fe; checkpoint original
+preservado. Commit funcional inicial 162fe82. PR #5.
+Snapshot dce27807f46d3059: 25 emissores; 125 registros anuais utilizaveis
+2021–2025, 126 trimestres explicitamente informados e 76 acumulados ITR.
+Novos emissores: CPLE3, EQTL3, CMIG3, GGBR3, MGLU3, ASAI3, FLRY3, HYPE3,
+DXCO3 e CYRE3. Identidades verificadas novamente por FCA/CAD no pipeline.
+DFP 2021/2022 obtidos diretamente dos ZIP oficiais CVM, com hashes nas fontes.
+As demonstracoes anteriores permanecem disponiveis nos snapshots preservados.
+
+Interface: filtros de 3/5 anos/historico disponivel; series adicionais de ROA,
+caixa e fluxo operacional; comparador historico de ate quatro emissores com
+tabela, linhas monocromaticas distintas e indice base 100 opcional. Somente
+periodos anuais com inicio/fim e escopo compativeis entram na comparacao.
+Lacunas quebram as linhas; normalizacao exige primeira base positiva comum;
+indice contabil nao e retorno da acao. Nao calculado CAGR sobre bases negativas.
+Rankings agora oferecem seis indicadores: ROE, ROA, margem liquida, margem
+operacional e crescimento anual de receita/lucro. Mantida separacao por setor,
+exercicio/escopo, denominador positivo e amostra parcial declarada.
+
+133 testes Python aprovados antes da revisao visual. Build/typecheck/diff-check
+aprovados. Capturas do comparador em 1920/1366/768/390/320 e ambos temas;
+inspecao corrigiu selecao inicial, checkbox e contraste de datas do grafico.
+Regressao completa: 191 aprovados, duas falhas por seletor ambiguo de tabela
+no teste de paleta, um live opcional ignorado. Apos escopar o seletor, seis
+testes de analise/paleta aprovados. Cinco testes de historico/normalizacao e
+novos emissores aprovados separadamente apos revisao visual.
+Dados separados por emissor, total do snapshot 1435995 bytes, sem descarga de
+fundamentos na homepage. Bundle inicial era 160114 bytes; novo tamanho registrado
+na entrega: 163628 bytes (+2,2%). Nenhuma dependencia adicionada; nao alegada melhoria de performance.
+
+Pendencias reais: nao ha trimestres derivados entre documentos nem TTM novo.
+A compatibilidade de criterios/reapresentacoes entre DFP e ITR ainda precisa de
+politica implementada e testes; nao foi presumida apenas por igualdade do codigo
+CVM. Os 126 trimestres sao periodos explicitos, nao somas de acumulados.
+Cinco vinculos FCA continuam sem conciliacao; TIMS3 ainda nao validado.
+Nenhum provento incorporado nesta continuacao: importador documental, captura
+de eventos oficiais com direitos verificados e historico ainda NAO implementados.
+Calendario, DY, simulador historico e tributacao liquida continuam pendentes.
+Isso e trabalho restante, nao prova de indisponibilidade geral de fontes gratuitas.
+Proxima tarefa exata: implementar derivacao auditavel com reconciliacao das bases
+comparativas do mesmo ITR, evidencia dos operandos e testes de revisao/escala/
+escopo; habilitar TTM somente para janelas completas comprovadas. Depois iniciar
+importador documental de dividendos/JCP e incorporar eventos reais verificaveis.
+Esta entrega nao conclui integralmente a V3.

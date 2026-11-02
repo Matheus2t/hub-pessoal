@@ -13,7 +13,8 @@ def test_snapshot_accounting_evidence_and_ratios(symbol):
     doc=json.loads((BASE/MANIFEST['companies'][symbol]['path']).read_text(encoding='utf8'))
     assert doc['issuer']['cvm']>0
     annual=[p for p in doc['periods'] if p['kind']=='annual']
-    assert len(annual)>=3
+    assert len(annual)>=5
+    assert all(p["values"]["assets"] is not None and p["values"]["assets"]>0 for p in annual)
     for p in doc['periods']:
         assert p['document']['scope'] in ('con','ind')
         assert p['document']['dataset'].startswith('https://dados.cvm.gov.br/')

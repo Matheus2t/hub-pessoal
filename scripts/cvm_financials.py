@@ -29,6 +29,16 @@ ISSUERS = {
     'VIVT3': ('02.558.157/0001-62', 17671, False),
     'VBBR3': ('34.274.233/0001-02', 24295, False),
     'PRIO3': ('10.629.105/0001-68', 22187, False),
+    'CPLE3': ('76.483.817/0001-20', 14311, False),
+    'EQTL3': ('03.220.438/0001-73', 20010, False),
+    'CMIG3': ('17.155.730/0001-64', 2453, False),
+    'GGBR3': ('33.611.500/0001-19', 3980, False),
+    'MGLU3': ('47.960.950/0001-21', 22470, False),
+    'ASAI3': ('06.057.223/0001-71', 25372, False),
+    'FLRY3': ('60.840.055/0001-31', 21881, False),
+    'HYPE3': ('02.932.074/0001-91', 21431, False),
+    'DXCO3': ('97.837.181/0001-47', 21091, False),
+    'CYRE3': ('73.178.600/0001-18', 14460, False),
 }
 ACCOUNTS = {
     'revenue': ('DRE', '3.01'), 'costs': ('DRE', '3.02'), 'gross_profit': ('DRE', '3.03'),
@@ -148,7 +158,7 @@ def build(cache, output, refresh=False):
     fca = zipfile.ZipFile(io.BytesIO(download(fca_url, cache, refresh)))
     identities = {s: verify_identity(fca, cad, s, i) for s, i in ISSUERS.items()}
     periods = {s: [] for s in ISSUERS}; sources = []
-    for typ, years in [('dfp', range(year_now-3,year_now)), ('itr', [year_now-1,year_now])]:
+    for typ, years in [('dfp', range(year_now-5,year_now)), ('itr', [year_now-1,year_now])]:
         for year in years:
             url = BASE+f'DOC/{typ.upper()}/DADOS/{typ}_cia_aberta_{year}.zip'
             blob = download(url, cache, refresh); archive = zipfile.ZipFile(io.BytesIO(blob))
