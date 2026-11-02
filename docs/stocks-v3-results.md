@@ -125,3 +125,23 @@ comparativas do mesmo ITR, evidencia dos operandos e testes de revisao/escala/
 escopo; habilitar TTM somente para janelas completas comprovadas. Depois iniciar
 importador documental de dividendos/JCP e incorporar eventos reais verificaveis.
 Esta entrega nao conclui integralmente a V3.
+
+## Finalizacao — WIP preservado
+
+Branch codex/2t-stocks-v3-final, base main f6c62215fa09fd59e351e8308002f17150365771.
+Criados scripts/cvm_periods.py e backend/tests/test_cvm_periods.py. Onze testes
+aprovados para diferencas Q2/Q3/Q4, negativos, base/escopo/escala incompatíveis,
+estoques rejeitados, TTM de quatro trimestres cruzando exercicio e lacunas.
+O nucleo exige identificador explicito de revisao da base contabil; esse campo
+NAO comprova compatibilidade por si so. O publisher ainda precisa obter e
+validar essa evidencia documental antes de construir operandos reais.
+
+NAO integrado ao pipeline/manifest/UI. Nenhum trimestre derivado/TTM novo
+publicado. Nenhum evento de provento incorporado. Sem merge ou deploy desta
+etapa. Build e Playwright nao executados neste WIP sem alteracoes de runtime.
+Proxima tarefa exata: implementar a conciliacao das bases comparativas e das
+reapresentacoes dos documentos CVM, registrar evidencias/operandos serializaveis,
+integrar apenas derivacoes comprovadas ao snapshot e a interface, executar os
+testes financeiros e a regressao integral verde antes de publicar. Importador
+documental de proventos, eventos reais, calendario e simulador seguem pendentes.
+A V3 continua parcial; este WIP nao representa entrega funcional de TTM.
