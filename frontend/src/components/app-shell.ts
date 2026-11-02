@@ -34,6 +34,7 @@ export class AppShell extends LightElement {
       history.replaceState(null, "", "#/calculadoras");
   }
   private navigate = () => {
+    this.querySelectorAll<HTMLDetailsElement>(".teams-menu").forEach(menu=>menu.open=false);
     this.closeCalendar();
     this.normalizeRoute();
     this.page = currentPage();
@@ -59,7 +60,6 @@ export class AppShell extends LightElement {
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
-          <team-shortcuts .page=${this.page}></team-shortcuts>
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">

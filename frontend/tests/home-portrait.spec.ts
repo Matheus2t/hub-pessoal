@@ -6,7 +6,7 @@ for(const width of [1920,1366,768,390,320])test(`portrait home ${width}`,async({
  const boxes=await page.locator('home-page .area-card').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height}}));
  expect(boxes).toHaveLength(4);for(const b of boxes)expect(b.h/b.w).toBeGreaterThan(1.2);
  expect(Math.abs(boxes[0].h-boxes[2].h)).toBeLessThan(2);
- if(width>1000)expect(Math.abs(boxes[0].y-boxes[2].y)).toBeLessThan(2);
+ if(width>=1200){expect(Math.abs(boxes[0].y-boxes[3].y)).toBeLessThan(2);expect(boxes[0].x).toBeLessThan(boxes[1].x);expect(boxes[2].x).toBeLessThan(boxes[3].x);}
  if(width===768){expect(boxes[0].y).toBe(boxes[1].y);expect(boxes[2].y).toBeGreaterThan(boxes[0].y);}
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:info.outputPath(`${width}-${theme}.png`),fullPage:true,animations:'disabled'});

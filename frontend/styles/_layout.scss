@@ -49,3 +49,20 @@
   .page-heading h1 { font-size: 28px; }
 }
 @media (max-width: 360px) { .masthead { padding-inline: 16px; } .main-content { padding-inline: 16px; } }
+
+/* Main navigation: native team disclosure and compact responsive layout. */
+.teams-menu { position:relative; }
+.teams-menu summary { cursor:pointer; list-style:none; }
+.teams-menu summary::after { content:'⌄'; margin-left:6px; }
+.teams-menu summary::-webkit-details-marker { display:none; }
+.teams-menu team-shortcuts { position:absolute; z-index:20; right:0; top:100%; min-width:260px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px; }
+.teams-menu .team-shortcuts { display:grid; border:0; padding:0; gap:4px; }
+.teams-menu .team-shortcuts a { display:flex; width:auto; gap:12px; padding:8px; font-size:13px; }
+.teams-menu summary:focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+@media(max-width:1000px) {
+ .masthead { flex-wrap:wrap; padding-block:10px; gap:8px 16px; }
+ .masthead app-topbar { margin-left:auto; }
+ .masthead app-sidebar { order:3; width:100%; margin:0; }
+ .masthead app-sidebar nav { justify-content:space-between; flex-wrap:wrap; gap:0 14px; }
+ .teams-menu team-shortcuts { left:50%; right:auto; transform:translateX(-50%); }
+}

@@ -13,10 +13,12 @@ test('rapid club navigation reuses one aggregate request per team', async ({ pag
   });
   await page.goto('/#/76ers');
   for (const team of ['spfc','barcelona','76ers','spfc','barcelona','76ers']) {
+    await page.locator('.teams-menu summary').click();
     await page.locator(`team-shortcuts a[href="#/${team}"]`).click();
   }
   await expect(page.locator('.sports-panel[aria-busy="true"]')).toHaveCount(0);
   await expect(page.locator('.sports-standings, .sports-statistics')).toHaveCount(0);
+  await page.locator('.teams-menu summary').click();
   await page.locator('team-shortcuts a[href="#/barcelona"]').click();
   await expect(page.locator('.sports-statistics')).toContainText('Limite de consultas');
   await expect(page.locator('.sports-roster, .sports-lineup')).toHaveCount(0);
