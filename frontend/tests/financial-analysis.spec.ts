@@ -5,7 +5,7 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.route('https://s3.tradingview.com/**',route=>route.abort());
  await page.route('https://widgets.tradingview-widget.com/**',route=>route.abort());
  const manifest=await (await request.get('/financials/manifest.json')).json();
- expect(Object.keys(manifest.companies)).toHaveLength(15);
+ expect(Object.keys(manifest.companies)).toHaveLength(25);
  for(const symbol of ['ITUB4','PETR4','VALE3','WEGE3','TOTS3']){
   await page.goto(`/#/acoes/${symbol}`);
   await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
@@ -20,7 +20,7 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
   await page.getByLabel('Evolução',{exact:true}).selectOption('equity');
   await expect(page.locator('.financial-chart svg')).toBeVisible();
   await page.locator('.financial-chart circle').first().focus();
-  await expect(page.locator('.financial-chart [role="status"]')).toContainText('2023-12-31');
+  await expect(page.locator('.financial-chart [role="status"]')).toContainText('2021-12-31');
   await page.getByLabel('Frequência',{exact:true}).selectOption('quarter');
   await expect(page.locator('.financial-metrics')).toContainText('Não disponível');
  }
@@ -32,14 +32,14 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.goto('/#/acoes/BBAS3');await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
  await expect(page.locator('financial-analysis')).toContainText('Não disponível para esta empresa');
  await page.goto('/#/acoes/comparar');
- await expect(page.locator('financial-comparison table')).toBeVisible();
+ await expect(page.locator('financial-comparison table').first()).toBeVisible();
  await expect(page.getByLabel('Empresa 1',{exact:true})).toHaveValue('PETR4');
  await expect(page.getByLabel('Exercício comum',{exact:true})).toHaveValue('2025-12-31');
  await page.getByLabel('Empresa 3',{exact:true}).selectOption('PETR4');
- await expect(page.locator('financial-comparison thead th')).toHaveCount(3);
+ await expect(page.locator('financial-comparison table').first().locator('thead th')).toHaveCount(3);
  await page.getByLabel('Empresa 3',{exact:true}).selectOption('ITUB4');
- await expect(page.locator('financial-comparison thead th')).toHaveCount(4);
- await expect(page.locator('financial-comparison table')).toContainText('Não disponível');
+ await expect(page.locator('financial-comparison table').first().locator('thead th')).toHaveCount(4);
+ await expect(page.locator('financial-comparison table').first()).toContainText('Não disponível');
  await page.screenshot({path:info.outputPath(`comparison-${width}.png`)});
 });
 
