@@ -13,6 +13,7 @@ import "./finance-calculator";
 import "./market-page";
 import "./team-shortcuts";
 import "./team-page";
+import "./sports-calendar";
 import "./fixed-income-page";
 import "../learn/host";
 
@@ -34,6 +35,7 @@ export class AppShell extends LightElement {
       history.replaceState(null, "", "#/calculadoras");
   }
   private navigate = () => {
+    this.querySelectorAll<HTMLDetailsElement>(".teams-menu").forEach(menu=>menu.open=false);
     this.closeCalendar();
     this.normalizeRoute();
     this.page = currentPage();
@@ -59,13 +61,13 @@ export class AppShell extends LightElement {
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
-          <team-shortcuts .page=${this.page}></team-shortcuts>
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
+          ${this.page === 'sports' ? html`<sports-calendar></sports-calendar>` : ''}
           ${this.page === 'fixedIncome' ? html`<fixed-income-page></fixed-income-page>` : ''}
           ${['76ers', 'spfc', 'barcelona'].includes(this.page) ? keyed(this.page, html`<team-page .team=${this.page}></team-page>`) : ''}
           ${this.page === 'catalog' ? html`<calculator-catalog title="Calculadoras"></calculator-catalog>` : ''}

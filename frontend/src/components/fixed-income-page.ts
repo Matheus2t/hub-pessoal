@@ -7,6 +7,8 @@ import './fixed-income-fields';
 import './fixed-income-chart';
 import './fixed-income-evolution';
 import './fixed-income-comparison';
+import './fixed-income-tools';
+import type {Investment} from '../fixed-income';
 
 export const fixedPercent=(n:number|null)=>n===null?'Não definida':`${decimal(n*100)}%`;
 export const fixedDate=(s:string)=>s.split('-').reverse().join('/');
@@ -37,7 +39,7 @@ export class FixedIncomePage extends LightElement {
         <p class="rf-note">Saldos líquidos intermediários usam impostos hipotéticos daquela data. Valores durante a carência não são resgatáveis. Tesouro IPCA+: projeção pela curva, sem preço de venda.</p>
         <fixed-income-evolution .projection=${r}></fixed-income-evolution>
       </section>`:!error?html`<p class="rf-empty">Informe o valor, as taxas e o prazo para simular.</p>`:nothing}
-      <details class="rf-comparison-section"><summary>Comparar investimentos</summary><fixed-income-comparison></fixed-income-comparison></details>
+      <fixed-income-tools .draft=${this.draft} @open-scenario=${(e:CustomEvent<Investment>)=>{const input=e.detail;this.draft=Object.fromEntries(Object.entries(input).map(([key,value])=>[key,typeof value==='number'?String(value).replace('.',','):value])) as unknown as InvestmentDraft;this.redemption='';this.touched=true}}></fixed-income-tools><details class="rf-comparison-section"><summary>Comparar investimentos</summary><fixed-income-comparison></fixed-income-comparison></details>
       <aside class="rf-assumptions" aria-label="Premissas da simulação"><h2>O que considerar</h2><p>${this.draft.product==='ipca'?'Tesouro IPCA+ sem juros semestrais: projeção de carregamento até o vencimento. A venda antecipada depende do preço de mercado e não é calculada nesta V1.':this.draft.product==='selic'?'Tesouro Selic: projeção simplificada pela composição dos fatores Selic e adicional, não pelo preço de negociação da LFT. Venda antecipada pode divergir da curva.':'CDI: taxa diária equivalente em base 252, com dias úteis aproximados por dias corridos × 252/365. Sem calendário de feriados. LCI e LCA: apenas CDI ou prefixadas, sem indexação a preços.'}</p>
         <p>${['selic','ipca'].includes(this.draft.product)?'Tesouro Direto não tem cobertura do FGC. Custódia e taxa da instituição são estimadas dia a dia em base 365 sobre o saldo bruto projetado; não reduzem a base do IR. Sem preços de mercado ou calendário de liquidação. No Selic, a isenção de R$ 10 mil considera o estoque informado do CPF.':'CDB, LCI e LCA podem ter cobertura do FGC: até R$ 250 mil por CPF e instituição ou conglomerado, com teto global de R$ 1 milhão em quatro anos, conforme as regras aplicáveis ao emissor. Não é cobertura ilimitada.'}</p>
         <p>Projeções, sem garantia de retorno ou recomendação. Regras verificadas em 31/10/2026, mantidas constantes; mudanças legais futuras não são antecipadas.</p>

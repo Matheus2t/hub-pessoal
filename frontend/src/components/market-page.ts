@@ -7,6 +7,7 @@ import './market-embed';
 import './company-sections';
 import './financial-comparison';
 import './financial-analysis';
+import './market-tools';
 
 @customElement('market-page')
 export class MarketPage extends LightElement {
@@ -42,6 +43,8 @@ export class MarketPage extends LightElement {
     location.hash = `#/acoes/${selected.symbol}`;
   }
   render() {
+    if (this.symbol === 'RANKINGS') return html`<market-rankings></market-rankings>`;
+    if (this.symbol === 'APORTES') return html`<market-contributions></market-contributions>`;
     if (this.symbol === 'COMPARAR') return html`<financial-comparison></financial-comparison>`;
     const stock = findStock(this.symbol);
     if (this.symbol && !stock) return html`<div class="page-heading"><h1>Ação não encontrada</h1></div><p class="market-note" role="alert">Este código não está disponível no catálogo da 2T.</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`;
@@ -50,7 +53,7 @@ export class MarketPage extends LightElement {
     return html`<div class="page-heading"><h1>${stock ? stock.symbol : 'Mercado de Ações'}</h1></div>
       ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div><p class="market-note">Setor na 2T: ${stock.sector} · classificação editorial</p>` : html`
         <p class="market-intro">Consulte ações da B3, acompanhe cotações e analise a evolução dos preços.</p>
-        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a>
+        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a><a class="market-back" href="#/acoes/rankings">Rankings por setor</a><a class="market-back" href="#/acoes/aportes">Simulador de aportes</a>
         <details class="market-panorama" @toggle=${(event: Event) => { this.panorama = (event.target as HTMLDetailsElement).open; }}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama ? html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>` : nothing}</details>
         <form class="market-search" @submit=${this.search}>
           <label for="stock-search">Buscar ação</label>

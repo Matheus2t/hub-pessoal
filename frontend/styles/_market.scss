@@ -117,3 +117,15 @@ stock-chart { position: relative; }
 .stock-slider input { width: 100%; }
 @media (max-width: 700px) { .stock-list { grid-template-columns: minmax(0, 1fr); } .stock-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 18px; gap: 20px; } .stock-history { padding: 18px; } .market-entry { flex-direction: column; padding: 22px; } }
 @media (max-width: 600px) { .masthead { gap: 10px; } .brand strong { display: none; } app-sidebar nav { gap: 14px; } .nav-item { font-size: 13px; } .market-search > div { flex-direction: column; } .stock-facts .market-cap { grid-column: 1 / -1; } }
+
+market-contributions,market-rankings { display:block; min-width:0; }
+:is(market-contributions,market-rankings,sports-calendar,fixed-income-tools) .button { min-height:44px; padding:10px 14px; background:var(--raised); color:var(--text); border:1px solid var(--line); border-radius:6px; font:500 14px var(--font-body); cursor:pointer; }
+:is(market-contributions,market-rankings,sports-calendar,fixed-income-tools) .button:hover { background:var(--hover); }
+:is(market-contributions,market-rankings,sports-calendar,fixed-income-tools) .button:disabled { opacity:.5; cursor:default; }
+:is(market-contributions,market-rankings,sports-calendar,fixed-income-tools) :is(button,input,select,summary,a):focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+market-contributions .rf-metrics { margin-block:24px; gap:24px; }
+market-contributions .rf-metrics h2 { font-size:22px; margin-bottom:12px; }
+market-contributions .rf-metrics p { font-size:14px; line-height:1.7; }
+market-rankings .financial-table-scroll { margin-block:20px; }
+
+:is(market-contributions,market-rankings,sports-calendar,fixed-income-tools) .button.primary { background:var(--accent-strong); color:var(--on-accent); }

@@ -7,7 +7,7 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  await expect(page.locator('.platform-name, .area-index, .area-tag')).toHaveCount(0);
  await expect(page.locator('tool-card, .category-filters, .catalog-search, tradingview-widget')).toHaveCount(0);
  const navigation=page.getByRole('navigation',{name:'Navegação principal'});
- await expect(navigation.getByRole('link')).toHaveText(['Início','Calculadoras','Ações']);
+ await expect(navigation.getByRole('link')).toHaveText(['Início','Calculadoras','Ações','Renda Fixa','Learn']);
  expect(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1 || document.querySelector('.page-footer')!.getBoundingClientRect().bottom>=innerHeight-50)).toBe(true);
  await page.screenshot({path:info.outputPath('home-dark.png'),fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:'Ativar tema claro'}).click();

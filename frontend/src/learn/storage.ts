@@ -48,3 +48,8 @@ export async function savePlanning(record:PlanningRecord):Promise<void>{
  if(!validPlanning(record))throw Error('Configuração do plano inválida.');const db=await openLearnDB();try{const tx=db.transaction('planning','readwrite'),done=complete(tx);const s=tx.objectStore('planning');if(record.kind==='settings')s.put(record);else{const r=s.get(record.key);r.onsuccess=()=>{if(!r.result)s.add(record);else if(r.result.plan.id===record.plan.id)s.put(record)}}await done}finally{db.close()}
 }
 export async function languageProgress(language:Language){const data=await snapshot();return {attempts:data.attempts.filter(a=>a.language===language),cards:data.cards.filter(c=>c.language===language)}}
+/** Saving a reading word creates a due card, without an attempt or mastery credit. */
+export async function addReadingCard(card:Card):Promise<void>{
+ if(!validCard(card))throw Error('Cartão inválido.');
+ const db=await openLearnDB();try{const tx=db.transaction('cards','readwrite'),done=complete(tx),store=tx.objectStore('cards');const found=store.get([card.language,card.itemId]);found.onsuccess=()=>{if(!found.result)store.add(card)};await done}finally{db.close()}
+}

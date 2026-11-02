@@ -1,7 +1,7 @@
 // Learn-only presentation. Shared 2T palette, typography and spacing remain authoritative.
 learn-host, learn-page, learn-progress, learn-area-card, learn-activity,
 learn-session, learn-advanced, learn-units, learn-errors, learn-assessment,
-learn-daily, learn-dashboard, learn-backup { display: block; min-width: 0; }
+learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-width: 0; }
 
 .learn-page {
   --learn-radius: 12px;
@@ -277,3 +277,18 @@ learn-daily, learn-dashboard, learn-backup { display: block; min-width: 0; }
   @media(prefers-reduced-motion:reduce) { .learn-language { transition: none; } }
 }
 learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto; padding: 24px; border: 1px solid var(--line); border-radius: 10px; }
+
+.learn-page learn-path .learn-areas { grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); }
+.learn-page learn-path .learn-word { min-width:0; }
+.learn-page learn-path .button { white-space:normal; }
+
+.learn-page .learn-inline-word { display:inline; padding:0; border:0; border-bottom:1px dotted var(--secondary); border-radius:0; background:transparent; color:inherit; font:inherit; text-align:inherit; cursor:pointer; }
+
+.learn-page .learn-path-levels { display:grid; gap:16px; margin-top:20px; }
+.learn-page .learn-path-level { padding:18px; border:1px solid var(--line-soft); border-radius:var(--learn-radius); }
+.learn-page .learn-path-level > summary { font-size:18px; }
+.learn-page .learn-path-units { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px; margin-top:20px; }
+.learn-page .learn-path-units .learn-word { margin:0; padding:22px; }
+.learn-page .learn-path-units h3 { font-size:20px; line-height:1.4; }
+.learn-page .learn-path-steps { width:100%; }
+.learn-page .learn-path-steps .button { margin:8px 6px 0 0; }

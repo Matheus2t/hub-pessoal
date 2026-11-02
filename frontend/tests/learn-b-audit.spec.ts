@@ -12,9 +12,9 @@ async function store(page:Page){
 }
 test('catalog review: stable references, Russian gender, ё and accepted variants',()=>{
  for(const l of ['en','ru']){
-  const c=catalogs[l];expect(c.words.map(w=>w.id)).toEqual(Array.from({length:150},(_,i)=>`${l}-word-${String(i+1).padStart(3,'0')}`));
-  expect(c.phrases!.map(w=>w.id)).toEqual(Array.from({length:50},(_,i)=>`${l}-phrase-${String(i+1).padStart(3,'0')}`));
-  for(const [skill,ids] of [['listening',Array.from({length:30},(_,i)=>i+1)],['dictation',[17,...Array.from({length:29},(_,i)=>i+32)]],['writing',Array.from({length:40},(_,i)=>i+61)]] as const)expect(c.exercises.filter(e=>e.skill===skill).map(e=>e.id)).toEqual(ids.map(id=>`${l}-${skill}-${String(id).padStart(3,'0')}`));
+  const c=catalogs[l];expect(c.words.filter(w=>!w.id.includes('-v2-')).map(w=>w.id)).toEqual(Array.from({length:150},(_,i)=>`${l}-word-${String(i+1).padStart(3,'0')}`));
+  expect(c.phrases!.filter(w=>!w.id.includes('-v2-')).map(w=>w.id)).toEqual(Array.from({length:50},(_,i)=>`${l}-phrase-${String(i+1).padStart(3,'0')}`));
+  for(const [skill,ids] of [['listening',Array.from({length:30},(_,i)=>i+1)],['dictation',[17,...Array.from({length:29},(_,i)=>i+32)]],['writing',Array.from({length:40},(_,i)=>i+61)]] as const)expect(c.exercises.filter(e=>e.skill===skill&&!e.id.includes('-v2-')).map(e=>e.id)).toEqual(ids.map(id=>`${l}-${skill}-${String(id).padStart(3,'0')}`));
   for(const e of c.exercises.filter(e=>['listening','dictation','writing'].includes(e.skill))){const word=c.words.find(w=>w.id===e.wordIds[0])!;expect(word).toBeTruthy();expect(e.level).toBe(word.level);expect(e.topic).toBe(word.topic);if(e.skill==='dictation'){expect(e.answers).toEqual([word.example]);expect(e.audio).toBe(word.example);}for(const a of e.answers)expect(evaluateAnswer(a,e.answers,e.acceptYoAsE)).toBe(true);}
   expect(c.exercises.find(e=>e.id===`${l}-listening-009`)!.answers).toContain('boa noite');
  }
@@ -43,16 +43,17 @@ test('large v1 backup preserves due dates, language isolation and review filters
  const restored=await page.evaluate(async()=> (window as any).LearnAudit.snapshot()) as Backup;
  expect(restored.attempts).toEqual([...backup.attempts].sort((a,b)=>a.id.localeCompare(b.id)));expect(restored.cards).toEqual(backup.cards);
  for(const l of ['en','ru']){
-  await page.goto(`/#/learn/${l}/flashcards`);await expect(page.locator('learn-activity')).toContainText('50 itens disponíveis');
-  for(const [filter,count] of [['due',50],['future',50],['learning',0],['all',150],['phrases',50]] as const){await page.getByLabel('Tipo de sessão').selectOption(filter);await expect(page.locator('learn-activity')).toContainText(`${count} itens disponíveis`);}
+  await page.goto(`/#/learn/${l}/flashcards`);await expect(page.locator('learn-activity')).toContainText('62 itens disponíveis');
+  for(const [filter,count] of [['due',50],['future',50],['learning',0],['all',162],['phrases',62]] as const){await page.getByLabel('Tipo de sessão').selectOption(filter);await expect(page.locator('learn-activity')).toContainText(`${count} itens disponíveis`);}
  }
 });
 for(const l of ['en','ru'] as Language[])test(`all four flash grades persist exactly once ${l}`,async({page})=>{
  await page.goto(`/#/learn/${l}/flashcards`);await page.getByRole('button',{name:'Iniciar prática'}).click();await store(page);
  for(const [grade,label] of ['Esqueci','Difícil','Bom','Fácil'].entries()){
+  const word=await page.locator('.learn-question').innerText();const item=catalogs[l].words.find(w=>w.word===word)!;expect(item).toBeTruthy();
   await page.getByRole('button',{name:'Revelar resposta'}).click();await page.getByRole('button',{name:label,exact:true}).dblclick();await expect(page.locator('.learn-feedback')).toBeVisible();
   const data=await page.evaluate(async()=> (window as any).LearnAudit.snapshot()) as Backup;
-  expect(data.attempts).toHaveLength(grade+1);const card=data.cards.find(c=>c.itemId===catalogs[l].words[grade].id)!;expect(card.lastGrade).toBe(grade);
+  expect(data.attempts).toHaveLength(grade+1);const card=data.cards.find(c=>c.itemId===item.id)!;expect(card.lastGrade).toBe(grade);
   expect(card.due-card.updated).toBe(Math.round(schedule(newCard(l,card.itemId),grade as Grade).interval*DAY));
   await page.getByRole('button',{name:'Continuar',exact:true}).click();
  }

@@ -8,8 +8,8 @@ async function storage(page:Page){const code=buildSync({entryPoints:['frontend/s
 for(const l of ['en','ru'] as Language[])test(`C content and all B identifiers preserved ${l}`,()=>{
  const c=catalogs[l],base=JSON.parse(execFileSync('git',['show',`f2ab5f8:frontend/public/learn/${l}.json`],{encoding:'utf8'}));validateCurriculum(c);
  for(const key of ['words','phrases','exercises'] as const)for(const row of base[key])expect(c[key]!.some(e=>e.id===row.id)).toBe(true);
- expect(c.readings).toHaveLength(10);expect(c.lessons).toHaveLength(10);for(const skill of ['reading','grammar','test'])expect(c.exercises.filter(e=>e.skill===skill)).toHaveLength(30);
- expect(new Set(c.readings!.map(r=>r.text)).size).toBe(10);expect(new Set(c.lessons!.map(r=>r.explanation)).size).toBe(10);
+ expect(c.readings).toHaveLength(15);expect(c.lessons).toHaveLength(15);for(const skill of ['reading','grammar','test'])expect(c.exercises.filter(e=>e.skill===skill)).toHaveLength(skill==='test'?35:45);
+ expect(new Set(c.readings!.map(r=>r.text)).size).toBe(15);expect(new Set(c.lessons!.map(r=>r.explanation)).size).toBe(15);
  for(const u of [...c.readings!,...c.lessons!])expect(u.questionIds).toHaveLength(3);
  expect(()=>validateCurriculum({...c,readings:[{...c.readings![0],questionIds:['missing']}]})).toThrow();
 });
@@ -22,7 +22,7 @@ for(const l of ['en','ru'] as Language[])for(const mode of ['reading','grammar']
  await expect(page.getByRole('heading',{name:'Sessão concluída'})).toBeVisible();await page.reload();await expect(page.getByRole('button',{name:new RegExp(unit.title)})).toContainText('3/3 questões respondidas');
 });
 for(const l of ['en','ru'] as Language[])test(`assessment draft reload, atomic completion, dedup and new attempt ${l}`,async({page})=>{
- const qs=catalogs[l].exercises.filter(e=>e.skill==='test');await page.goto(`/#/learn/${l}/test`);await page.getByRole('button',{name:'Iniciar avaliação'}).click();await storage(page);
+ const qs=catalogs[l].exercises.filter(e=>e.skill==='test').slice(0,30);await page.goto(`/#/learn/${l}/test`);await page.getByRole('button',{name:'Iniciar avaliação'}).click();await storage(page);
  await page.getByRole('button',{name:'Finalizar avaliação'}).click();await expect(page.getByRole('alert')).toContainText('Responda todas');
  for(let i=0;i<qs.length;i++){await page.getByLabel('Sua resposta').fill(qs[i].answers[0]);if(i===1){await page.reload();await expect(page.getByLabel('Sua resposta')).toHaveValue(qs[i].answers[0]);await storage(page);expect((await page.evaluate(async()=> (window as any).LearnC.snapshot())).attempts).toHaveLength(0);}
  if(i<qs.length-1)await page.getByRole('button',{name:'Próxima questão',exact:true}).click();}

@@ -91,3 +91,10 @@ fixed-income-page, fixed-income-fields, fixed-income-chart, fixed-income-compari
 .rf-comparison-table thead th { font-size: 12px; font-weight: 500; }
 @media(max-width:900px) { .rf-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .rf-primary { grid-column: 1 / -1; } .rf-metrics > div:not(.rf-primary) { padding-block: 8px; } }
+
+fixed-income-tools { display:grid; gap:20px; margin-block:24px; }
+fixed-income-tools label { display:grid; gap:8px; font-size:14px; }
+fixed-income-tools input:not([type=checkbox]),fixed-income-tools select { max-width:100%; min-height:44px; padding:10px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--text); font:inherit; }
+fixed-income-tools .rf-panel { margin:0; min-width:0; }
+fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
+.rf-saved-result { white-space:pre-wrap; font:14px/1.8 var(--font-body); margin-top:16px; }
