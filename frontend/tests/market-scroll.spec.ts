@@ -7,7 +7,7 @@ async function isolatedProvider(page:import('@playwright/test').Page){
  await page.route('https://widgets.tradingview-widget.com/w/br/*.js',r=>{
   const tag=r.request().url().split('/').pop()!.replace('.js','');
   // A test-only iframe consumes the wheel just as the real chart does.
-  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=\`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>\`;}});`;
+  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>`;}});`;
   return r.fulfill({contentType:'text/javascript',body});
  });
  await page.route('https://s3.tradingview.com/**',r=>r.abort());
@@ -146,7 +146,7 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
 
 // Browser zoom 90% increases the CSS viewport and makes DPR fractional.
 // Mirror both conditions rather than just applying CSS zoom to the document.
-for (const zoom of [1,0.9]) test(\`zoom \${Math.round(zoom*100)} percent ticker scrolling remains monotonic\`, async({browser},info)=>{
+for (const zoom of [1,0.9]) test(`zoom ${Math.round(zoom*100)} percent ticker scrolling remains monotonic`, async({browser},info)=>{
  test.setTimeout(120000);
  const ctx=await browser.newContext({viewport:{width:Math.round(1366/zoom),height:Math.round(900/zoom)},deviceScaleFactor:zoom});
  const page=await ctx.newPage();
@@ -179,10 +179,10 @@ for (const zoom of [1,0.9]) test(\`zoom \${Math.round(zoom*100)} percent ticker 
   await page.waitForTimeout(400);
   const result=await page.evaluate(()=>{const o=(window as any).__zoomScroll;cancelAnimationFrame(o.frame);return o.samples;});
   const original=await page.locator('[slot=quotes]').evaluate(e=>getComputedStyle(e).overflowY);
-  await info.attach(\`zoom-\${Math.round(zoom*100)}-\${process.env.MARKET_SCROLL_LIVE?'live':'isolated'}.json\`,{body:JSON.stringify({samples:samples,scrollTicks:ticks,frames:result.slice(-180),overflowY:original}),contentType:'application/json'});
+  await info.attach(`zoom-${Math.round(zoom*100)}-${process.env.MARKET_SCROLL_LIVE?'live':'isolated'}.json`,{body:JSON.stringify({samples:samples,scrollTicks:ticks,frames:result.slice(-180),overflowY:original}),contentType:'application/json'});
   // Zoom should not change page direction or resize panels while scrolling.
-  for(let i=1;i<ticks.length;i++)expect(ticks[i],\`wheel step \${i}\`).toBeGreaterThanOrEqual(ticks[i-1]-2);
-  for(const key of ['quotes','quotesH','dir','dirH']){const vals=result.map((a:any)=>a[key]);expect(Math.max(...vals)-Math.min(...vals),\`frame geometry \${key}\`).toBeLessThan(2);}
+  for(let i=1;i<ticks.length;i++)expect(ticks[i],`wheel step ${i}`).toBeGreaterThanOrEqual(ticks[i-1]-2);
+  for(const key of ['quotes','quotesH','dir','dirH']){const vals=result.map((a:any)=>a[key]);expect(Math.max(...vals)-Math.min(...vals),`frame geometry ${key}`).toBeLessThan(2);}
   expect(ticks.at(-1)!).toBeGreaterThan(ticks[0]+300);
  } finally {await ctx.close();}
 });
