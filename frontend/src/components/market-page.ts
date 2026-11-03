@@ -29,8 +29,17 @@ export class MarketPage extends LightElement {
   @state() private hasFinancial=false;
   @state() private hasDistributions=false;
   private coverageController?:AbortController;
-  connectedCallback(){super.connectedCallback();this.classList.add('workspace-v2','market-terminal')}
-  disconnectedCallback(){this.coverageController?.abort();super.disconnectedCallback()}
+  private scrollIdle?:number;
+  // Keep an ongoing page gesture from being captured when it crosses an iframe.
+  // This is deliberately non-reactive: scrolling never re-renders the catalog.
+  private pageScroll=()=>{
+    if(this.symbol)return;
+    if(!this.classList.contains('is-page-scrolling'))this.classList.add('is-page-scrolling');
+    clearTimeout(this.scrollIdle);
+    this.scrollIdle=window.setTimeout(()=>this.classList.remove('is-page-scrolling'),180);
+  };
+  connectedCallback(){super.connectedCallback();this.classList.add('workspace-v2','market-terminal');window.addEventListener('scroll',this.pageScroll,{passive:true})}
+  disconnectedCallback(){window.removeEventListener('scroll',this.pageScroll);clearTimeout(this.scrollIdle);this.classList.remove('is-page-scrolling');this.coverageController?.abort();super.disconnectedCallback()}
   protected updated(changes:Map<PropertyKey,unknown>){if(changes.has('symbol')&&findStock(this.symbol))void this.inspectCoverage()}
   private async inspectCoverage(){
     this.coverageController?.abort();const c=this.coverageController=new AbortController();this.coverage='pending';
