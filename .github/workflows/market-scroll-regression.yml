@@ -31,6 +31,13 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/market-scroll.spec.ts
+      - name: Test market adapter and responsive panels
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: |
+          npx playwright test frontend/tests/market.spec.ts --grep 'TradingView adapter'
+          npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market terminal'
       - name: Test real TradingView ticker layout
         env:
           PW_CHANNEL: chromium
