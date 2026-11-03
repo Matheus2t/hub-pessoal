@@ -9,6 +9,9 @@ import './financial-comparison';
 import './financial-analysis';
 import './market-tools';
 import './distributions-host';
+import './panel-workspace';
+import type {PanelDefinition} from '../panel-preferences';
+import {manifest} from '../financial-data';
 
 @customElement('market-page')
 export class MarketPage extends LightElement {
@@ -22,6 +25,20 @@ export class MarketPage extends LightElement {
   @state() private advanced = false;
   @state() private panorama = false;
   @state() private distributions = false;
+  @state() private coverage:'pending'|'known'|'failed'='pending';
+  @state() private hasFinancial=false;
+  @state() private hasDistributions=false;
+  private coverageController?:AbortController;
+  connectedCallback(){super.connectedCallback();this.classList.add('workspace-v2','market-terminal')}
+  disconnectedCallback(){this.coverageController?.abort();super.disconnectedCallback()}
+  protected updated(changes:Map<PropertyKey,unknown>){if(changes.has('symbol')&&findStock(this.symbol))void this.inspectCoverage()}
+  private async inspectCoverage(){
+    this.coverageController?.abort();const c=this.coverageController=new AbortController();this.coverage='pending';
+    try{
+      const [m,...d]=await Promise.all([manifest(c.signal),...['distributions','distributions-unit'].map(async dir=>{const r=await fetch(`/financials/${dir}/manifest.json`,{signal:c.signal});if(!r.ok)throw Error();const data=await r.json();if(!Array.isArray(data.companies))throw Error();return data})]);
+      if(c.signal.aborted)return;this.hasFinancial=!!m.companies[this.symbol];this.hasDistributions=d.some(x=>x.companies.includes(this.symbol));this.coverage='known';
+    }catch{if(!c.signal.aborted)this.coverage='failed'}
+  }
   private get filteredStocks() { return searchStocks(this.query, this.sector, this.order); }
   private keydown(event: KeyboardEvent) {
     const suggestions = this.filteredStocks.slice(0, 8);
@@ -55,33 +72,36 @@ export class MarketPage extends LightElement {
     if (this.symbol && !stock) return html`<div class="page-heading"><h1>Ação não encontrada</h1></div><p class="market-note" role="alert">Este código não está disponível no catálogo da 2T.</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`;
     const matches = this.filteredStocks;
     const suggestions = matches.slice(0, 8);
-    return html`<div class="page-heading"><h1>${stock ? stock.symbol : 'Mercado de Ações'}</h1></div>
-      ${stock ? html`<div class="market-identity"><h2>${stock.name}</h2><a class="market-back" href="#/acoes">← Voltar à lista de ações</a></div><p class="market-note">Setor na 2T: ${stock.sector} · classificação editorial</p>` : html`
-        <p class="market-intro">Consulte ações da B3, acompanhe cotações e analise a evolução dos preços.</p>
-        <a class="market-back" href="#/acoes/comparar">Comparar empresas · dados CVM</a><a class="market-back" href="#/acoes/rankings">Rankings por setor</a><a class="market-back" href="#/acoes/aportes">Simulador de aportes</a><a class="market-back" href="#/acoes/proventos">Proventos · arquivo CVM</a><a class="market-back" href="#/acoes/dy">DY manual</a>
-        <details class="market-panorama" @toggle=${(event: Event) => { this.panorama = (event.target as HTMLDetailsElement).open; }}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama ? html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>` : nothing}</details>
-        <form class="market-search" @submit=${this.search}>
-          <label for="stock-search">Buscar ação</label>
-          <div><input id="stock-search" type="search" role="combobox" aria-autocomplete="list" aria-controls="stock-suggestions" aria-expanded=${Boolean(this.query && this.expanded && suggestions.length)} aria-activedescendant=${this.expanded && this.active >= 0 ? `stock-option-${this.active}` : nothing} @keydown=${this.keydown} @focus=${() => { this.expanded = true; }} placeholder="Buscar por código ou empresa" .value=${this.query} @input=${(event: Event) => { this.query = (event.target as HTMLInputElement).value.toLocaleUpperCase('pt-BR'); this.error = ''; this.active = -1; this.expanded = true; }} autocomplete="off" aria-describedby=${this.error ? 'market-search-error' : nothing}>
-          <button class="button secondary" type="button" @click=${() => { this.query = ''; this.error = ''; this.active = -1; this.expanded = false; this.querySelector<HTMLInputElement>('#stock-search')?.focus(); }}>Limpar</button>
-          <button class="button primary">Buscar</button></div>
-        </form>
-        <div class="market-filters">
-          <div><label for="stock-sector">Setor</label><select id="stock-sector" .value=${this.sector} @change=${(event: Event) => { this.sector = (event.target as HTMLSelectElement).value; this.active = -1; this.error = ''; }}><option value="">Todos os setores</option>${sectors.map(sector => html`<option value=${sector}>${sector}</option>`)}</select></div>
-          <div><label for="stock-order">Ordenar por</label><select id="stock-order" .value=${this.order} @change=${(event: Event) => { this.order = (event.target as HTMLSelectElement).value as 'symbol' | 'name'; this.active = -1; }}><option value="symbol">Ticker</option><option value="name">Empresa (A–Z)</option></select></div>
-        </div>
-        ${this.error ? html`<p id="market-search-error" class="market-note" role="alert">${this.error}</p>` : nothing}
-        <ul id="stock-suggestions" class="stock-suggestions" role="listbox" aria-label="Sugestões de ações" ?hidden=${!this.query || !this.expanded || !suggestions.length}>${suggestions.map((item, index) => html`<li role="presentation"><a id=${`stock-option-${index}`} role="option" aria-selected=${this.active === index} href=${`#/acoes/${item.symbol}`}>${item.symbol} · ${item.name}</a></li>`)}</ul>
-        <h2 class="market-section-title">Cotações</h2>`}
-      ${stock ? html`<financial-analysis .symbol=${stock.symbol}></financial-analysis><div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${() => { this.advanced = false; }}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${() => { this.advanced = true; }}>Avançado</button></div>` : nothing}
-      ${stock?html`<section class="market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?"Fechar proventos":"Dividendos e JCP"}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:nothing}
-      ${stock && this.advanced ? html`<market-embed kind="advanced-chart" .symbol=${stock.symbol}></market-embed>` : html`<tradingview-widget .kind=${stock ? 'overview' : 'tickers'} .symbol=${stock?.symbol || 'ITUB4'}></tradingview-widget>`}
-      <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p>
-      ${stock ? html`<company-sections .symbol=${stock.symbol}></company-sections>` : nothing}
-      <p class="market-note tv-availability">Se o widget informar que o ativo não está disponível, consulte a <a href=${stock ? `https://www.tradingview.com/symbols/BMFBOVESPA-${stock.symbol}/` : 'https://www.tradingview.com/markets/stocks-brazil/market-movers-all-stocks/'} target="_blank" rel="noopener noreferrer">página do TradingView</a>. A cobertura é definida pelo provedor.</p>
-      ${!stock ? html`<h2 class="market-section-title">Empresas</h2><p class="market-result-count" role="status">${matches.length} ${matches.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}</p>
-        ${!matches.length ? html`<p class="market-note">Nenhuma ação encontrada. Ajuste a busca ou o setor.</p>` : nothing}
-        <div class="stock-directory"><div class="stock-directory-heading" aria-hidden="true"><span>Ticker</span><span>Empresa</span><span>Setor</span></div>${matches.map(item => html`<a class="stock-item" href=${`#/acoes/${item.symbol}`}><strong>${item.symbol}</strong><span>${item.name}</span><span class="stock-sector">${item.sector}</span></a>`)}</div>` : nothing}
-    `;
+    const panels:PanelDefinition[]=stock?[
+      {id:'chart',title:'Gráfico principal',role:'chart',required:true,essential:true,size:'medium'},
+      {id:'financial',title:'Indicadores e estatísticas CVM',size:'small',available:this.coverage==='known'?this.hasFinancial:this.coverage==='failed',hint:this.coverage==='pending'?'Verificando cobertura':'Sem cobertura CVM nesta versão'},
+      {id:'company',title:'Informações da empresa',size:'small'},
+      {id:'distributions',title:'Dividendos e JCP',size:'large',available:this.coverage==='known'?this.hasDistributions:this.coverage==='failed',hint:this.coverage==='pending'?'Verificando cobertura':'Sem registros verificados nesta versão'},
+    ]:[
+      {id:'chart',title:'Gráfico do Ibovespa',role:'chart',required:true,essential:true,size:'medium'},
+      {id:'quotes',title:'Ações acompanhadas',size:'small'},
+      {id:'panorama',title:'Panorama do mercado',size:'small'},
+      {id:'directory',title:'Catálogo de ações',size:'large'},
+    ];
+    return html`<header class="ws-page-heading"><div><p class="ws-context">${stock?'Ações / '+stock.sector:'Mercado brasileiro'}</p><h1>${stock?stock.symbol:'Mercado de Ações'}</h1>${stock?html`<h2 class="ws-company-name">${stock.name}</h2><p>Classificação setorial editorial</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`:nothing}</div></header>
+      <nav class="ws-analysis-links" aria-label="Ferramentas de análise"><a href="#/acoes/comparar">Comparar empresas · dados CVM</a><a href="#/acoes/rankings">Rankings por setor</a><a href="#/acoes/aportes">Simulador de aportes</a><a href="#/acoes/proventos">Proventos · arquivo CVM</a><a href="#/acoes/dy">DY manual</a></nav>
+      ${!stock?html`<form class="market-search" @submit=${this.search}>
+       <label for="stock-search">Buscar ação</label><div><input id="stock-search" type="search" role="combobox" aria-autocomplete="list" aria-controls="stock-suggestions" aria-expanded=${Boolean(this.query&&this.expanded&&suggestions.length)} aria-activedescendant=${this.expanded&&this.active>=0?`stock-option-${this.active}`:nothing} @keydown=${this.keydown} @focus=${()=>{this.expanded=true}} placeholder="Buscar por código ou empresa" .value=${this.query} @input=${(event:Event)=>{this.query=(event.target as HTMLInputElement).value.toLocaleUpperCase('pt-BR');this.error='';this.active=-1;this.expanded=true}} autocomplete="off" aria-describedby=${this.error?'market-search-error':nothing}>
+        <button class="button secondary" type="button" @click=${()=>{this.query='';this.error='';this.active=-1;this.expanded=false;this.querySelector<HTMLInputElement>('#stock-search')?.focus()}}>Limpar</button><button class="button primary">Buscar</button></div></form>
+       <div class="market-filters"><div><label for="stock-sector">Setor</label><select id="stock-sector" .value=${this.sector} @change=${(e:Event)=>{this.sector=(e.target as HTMLSelectElement).value;this.active=-1;this.error=''}}><option value="">Todos os setores</option>${sectors.map(sector=>html`<option>${sector}</option>`)}</select></div><div><label for="stock-order">Ordenar por</label><select id="stock-order" .value=${this.order} @change=${(e:Event)=>{this.order=(e.target as HTMLSelectElement).value as 'symbol'|'name';this.active=-1}}><option value="symbol">Ticker</option><option value="name">Empresa (A–Z)</option></select></div></div>
+       ${this.error?html`<p id="market-search-error" class="market-note" role="alert">${this.error}</p>`:nothing}
+       <ul id="stock-suggestions" class="stock-suggestions" role="listbox" aria-label="Sugestões de ações" ?hidden=${!this.query||!this.expanded||!suggestions.length}>${suggestions.map((item,index)=>html`<li role="presentation"><a id=${`stock-option-${index}`} role="option" aria-selected=${this.active===index} href=${`#/acoes/${item.symbol}`}>${item.symbol} · ${item.name}</a></li>`)}</ul>`:nothing}
+      <panel-workspace area=${stock?'actions-company':'actions-overview'} .panels=${panels}>
+       <section slot="chart" class="workspace-panel ws-main-chart"><header class="ws-panel-heading"><h2>${stock?'Gráfico · '+stock.symbol:'Ibovespa'}</h2>${stock?html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${()=>{this.advanced=false}}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${()=>{this.advanced=true}}>Avançado</button></div>`:nothing}</header>
+        ${!stock||this.advanced?html`<market-embed kind="advanced-chart" .symbol=${stock?.symbol||'IBOV'}></market-embed>`:html`<tradingview-widget kind="overview" .symbol=${stock.symbol}></tradingview-widget>`}
+        <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p><p class="market-note tv-availability">Se o ativo não estiver disponível no widget, consulte a <a href=${stock?`https://www.tradingview.com/symbols/BMFBOVESPA-${stock.symbol}/`:'https://www.tradingview.com/symbols/BMFBOVESPA-IBOV/'} target="_blank" rel="noopener noreferrer">página do TradingView</a>.</p>
+       </section>
+       ${stock?html`<section slot="financial" class="workspace-panel"><financial-analysis .symbol=${stock.symbol}></financial-analysis></section>
+        <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
+        <section slot="distributions" class="workspace-panel market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?'Fechar proventos':'Dividendos e JCP'}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:html`
+        <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2><tradingview-widget kind="tickers" symbol="ITUB4"></tradingview-widget></section>
+        <section slot="panorama" class="workspace-panel"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
+        <section slot="directory" class="workspace-panel"><h2 class="market-section-title">Empresas</h2><p class="market-result-count" role="status">${matches.length} ${matches.length===1?'resultado encontrado':'resultados encontrados'}</p>${!matches.length?html`<p class="market-note">Nenhuma ação encontrada. Ajuste a busca ou o setor.</p>`:nothing}<div class="stock-directory"><div class="stock-directory-heading" aria-hidden="true"><span>Ticker</span><span>Empresa</span><span>Setor</span></div>${matches.map(item=>html`<a class="stock-item" href=${`#/acoes/${item.symbol}`}><strong>${item.symbol}</strong><span>${item.name}</span><span class="stock-sector">${item.sector}</span></a>`)}</div></section>`}
+      </panel-workspace>`;
   }
 }

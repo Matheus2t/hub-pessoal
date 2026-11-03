@@ -31,3 +31,36 @@ panel-workspace { display: block; min-width: 0; }
 }
 @media(max-width:900px) { .workspace-v2 .ws-cell { grid-column: 1/-1 !important; grid-row: auto !important; } }
 @media(max-width:600px) { .workspace-v2 { .ws-toolbar { flex-wrap: wrap; } .ws-options li { align-items: start; } .ws-module-actions { width: 100%; margin-left: 0; } .ws-config { padding: 16px; } .workspace-panel { padding: 16px; } } }
+
+/* The route flag excludes Home, Learn and all three team pages. */
+.finance-workspace > .masthead,.finance-workspace > .main-content { max-width: 1760px; }
+.finance-workspace > .main-content { padding-top: 24px; }
+.workspace-v2[hidden] { display: none !important; }
+market-page.workspace-v2 { display: block; }
+.workspace-v2 {
+ .ws-page-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+ .ws-page-heading h1 { font-size: 28px; line-height: 1.2; margin: 4px 0; letter-spacing: -.035em; }
+ .ws-page-heading p { color: var(--secondary); font-size: 13px; margin: 4px 0; }
+ .ws-context { font-size: 12px; } .ws-analysis-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 18px; font-size: 13px; color: var(--secondary); }
+ .ws-analysis-links a:hover { color: var(--text); }
+ .ws-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+ .ws-panel-heading h2 { font-size: 16px; margin: 0; font-weight: 600; }
+ .ws-panel-heading .market-chart-modes { margin: 0; }
+ .ws-main-chart { padding: 16px; } .ws-main-chart .tv-panel { border: 0; border-radius: 0; background: transparent; margin: 0; }
+ .ws-main-chart .market-embed.advanced-chart { min-height: 500px; }
+ .ws-main-chart .market-embed.advanced-chart .market-embed-mount { min-height: 500px; }
+ .market-search { margin-block: 12px; } .market-filters { margin-bottom: 18px; }
+ .workspace-panel .financial-analysis { margin: 0; padding: 0; }
+ .workspace-panel .company-sections { margin: 0; }
+ .workspace-panel .market-panorama { margin: 0; }
+ .workspace-panel .stock-directory { margin-bottom: 0; }
+ .workspace-panel .market-section-title { margin-top: 0; }
+ .workspace-panel .financial-metrics { grid-template-columns: repeat(auto-fit,minmax(min(180px,100%),1fr)); }
+ .workspace-panel .financial-controls { grid-template-columns: 1fr; }
+ .workspace-panel .tv-tickers { min-width: 0; }
+}
+@media(max-width:600px) { .workspace-v2 { .ws-page-heading h1 { font-size: 24px; } .ws-panel-heading { flex-wrap: wrap; } .ws-main-chart .market-embed.advanced-chart,.ws-main-chart .market-embed.advanced-chart .market-embed-mount { min-height: 400px; } } }
+
+.workspace-v2 .ws-company-name { font-size: 17px; font-weight: 500; color: var(--secondary); margin: 4px 0; }
+
+.workspace-v2 .workspace-panel .market-chart-modes { flex-wrap: wrap; }

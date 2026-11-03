@@ -33,3 +33,23 @@ de ordem são botões; tamanhos salvos voltam a valer no desktop. Sem dependênc
 novas, autenticação ou banco para preferências.
 
 Registro em andamento. Não publicar etapas incompletas em produção.
+
+
+Etapa A: typecheck/build e 11 testes dirigidos aprovados. Referências dos Times
+mantidas com zero pixels diferentes além de tolerância cromática mínima (0,01).
+Diferenças encontradas na rasterização de escudos foram de um nível RGB;
+nenhuma mudança de geometria, texto, cor CSS ou espaçamento foi aceita.
+PR #12 já estava integrado em c97cb7c; 12 testes dirigidos de produção da Ações
+V3 foram aprovados antes de alterar a interface. Não refazer suas entregas.
+
+Etapa B em homologação: gráfico IBOV principal e modos/painéis de Ações; layouts
+independentes para panorama e empresa. Fontes/dados/TTM existentes preservados.
+Modos essenciais usam toda a largura quando sobra apenas o gráfico; slots
+mantêm os widgets e a seleção de períodos vivos ao reorganizar.
+
+Etapa B concluída: typecheck/build, 16 testes de terminal/Times e 15 testes
+de cobertura CVM/proventos/layout aprovados. Inspeção das capturas desktop/mobile
+feita nos dois temas. Módulos sem cobertura ficam indisponíveis, sem números
+substitutos. Widgets externos continuam sob controle do TradingView; homologação
+real do provedor fica registrada na etapa F.
+

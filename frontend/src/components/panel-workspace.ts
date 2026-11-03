@@ -18,11 +18,11 @@ export class PanelWorkspace extends LitElement {
  private mode(mode:PanelMode){this.updatePrefs({...this.prefs,mode})}
  private async move(id:string,direction:number){this.updatePrefs(movePanel(this.prefs,this.panels,id,direction));await this.updateComplete;this.renderRoot.querySelector<HTMLButtonElement>(`[data-move="${id}:${direction}"]`)?.focus()}
  private open(){this.renderRoot.querySelector<HTMLDialogElement>('dialog')?.showModal()}
- render(){const rows=resolvePanels(this.panels,this.prefs),movable=rows.filter(d=>!d.required);
+ render(){const rows=resolvePanels(this.panels,this.prefs),movable=rows.filter(d=>!d.required),single=rows.filter(d=>d.visible).length===1;
   return html`<link rel="stylesheet" href="/styles.css"><div class="workspace-v2">
    <div class="ws-toolbar"><div class="ws-modes" role="group" aria-label="Modo de visualização">${([['essential','Essencial'],['complete','Completo'],['custom','Personalizado']] as const).map(([id,label])=>html`<button type="button" aria-pressed=${this.prefs.mode===id} @click=${()=>this.mode(id)}>${label}</button>`)}</div><button type="button" class="ws-customize" @click=${this.open}>Personalizar painel</button></div>
    ${this.notice?html`<p class="ws-notice" role="status">${this.notice}</p>`:nothing}
-   <div class="ws-grid">${repeat(rows,d=>d.id,d=>html`<div class="ws-cell ${d.role||''}" data-panel=${d.id} ?hidden=${!d.visible} style=${styleMap({gridColumn:`span ${{small:4,medium:8,large:12}[d.size]}`,gridRow:d.role==='form'?'span 2':undefined})}><slot name=${d.id}></slot></div>`)}</div>
+   <div class="ws-grid">${repeat(rows,d=>d.id,d=>html`<div class="ws-cell ${d.role||''}" data-panel=${d.id} ?hidden=${!d.visible} style=${styleMap({gridColumn:single?'1 / -1':`span ${{small:4,medium:8,large:12}[d.size]}`,gridRow:(d.role==='form'||d.role==='chart')&&d.size!=='large'&&!single?'span 2':undefined})}><slot name=${d.id}></slot></div>`)}</div>
    <dialog class="ws-config" aria-label="Personalizar painel" @click=${(e:MouseEvent)=>{if(e.target===e.currentTarget)this.close()}}>
     <header><h2>Personalizar painel</h2><button type="button" aria-label="Fechar personalização" @click=${this.close}>Fechar</button></header><p>As alterações são salvas por área neste navegador.</p>
     <ul class="ws-options">${repeat(rows,d=>d.id,d=>html`<li data-module=${d.id}><label><input type="checkbox" .checked=${d.intentVisible} ?disabled=${d.required||d.available===false} @change=${(e:Event)=>this.updatePrefs(editPanel(this.prefs,this.panels,d.id,{visible:(e.target as HTMLInputElement).checked}))}>${d.title}</label>${d.required?html`<small>Fixo</small>`:d.available===false?html`<small>${d.hint||'Disponível após simular'}</small>`:nothing}

@@ -58,7 +58,7 @@ export class AppShell extends LightElement {
   }
   render() {
     return html`<a class="skip-link" href="#content" @click=${(event: Event) => { event.preventDefault(); this.querySelector<HTMLElement>("#content")?.focus(); }}>Pular para o conteúdo</a>
-      <div class="app-layout">
+      <div class=${`app-layout ${['market','calculator','simple','price','sac','fixedIncome','catalog'].includes(this.page)?'finance-workspace':''}`}>
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
