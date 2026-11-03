@@ -188,3 +188,18 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
  await expect.poll(()=>page.evaluate(()=>scrollY)).toBeGreaterThan(before+80);
  await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveCount(1);
 });
+
+test('Ações omits avisos textuais sem remover os gráficos',async({page})=>{
+ await isolatedProvider(page);
+ await page.goto('/#/acoes');
+ await expect(page.locator('market-page [slot=chart] tv-advanced-chart')).toBeVisible();
+ await expect(page.locator('market-page iframe.market-quotes-frame')).toBeVisible();
+ await expect(page.locator('market-page .tv-availability')).toHaveCount(0);
+ await expect(page.locator('market-page')).not.toContainText('Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.');
+ await expect(page.locator('market-page')).not.toContainText('Se o ativo não estiver disponível no widget');
+ await page.goto('/#/acoes/PETR4');
+ await expect(page.locator('market-page [slot=chart]')).toBeVisible();
+ await expect(page.locator('market-page .tv-availability')).toHaveCount(0);
+ await expect(page.locator('market-page')).not.toContainText('Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.');
+ await expect(page.locator('market-page')).not.toContainText('Se o ativo não estiver disponível no widget');
+});
