@@ -180,3 +180,18 @@ market-rankings .financial-table-scroll { margin-block:20px; }
  .distribution-chart svg text { display: none; }
  .distribution-chart-periods { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
 }
+
+
+/* Ações: isolated TradingView ticker remains fixed at 90% browser zoom.
+   Mask only its 1px rasterized iframe edge; do not cover live quotes. */
+market-page.market-terminal .market-quotes-frame {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 430px;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: var(--panel);
+  clip-path: inset(1px);
+}
