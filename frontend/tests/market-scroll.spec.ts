@@ -177,11 +177,12 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  await frame.scrollIntoViewIfNeeded();
- await page.evaluate(()=>scrollTo(0,550));
  await page.waitForTimeout(350);
  const rect=await frame.boundingBox();
  expect(rect).toBeTruthy();
- await page.mouse.move(rect!.x+rect!.width/2,Math.max(25,Math.min(rect!.y+60,850)));
+ const px=rect!.x+rect!.width/2, py=rect!.y+Math.min(60,rect!.height/2);
+ expect(await page.evaluate(({x,y})=>document.elementFromPoint(x,y)?.tagName,{x:px,y:py})).toBe('IFRAME');
+ await page.mouse.move(px,py);
  const before=await page.evaluate(()=>scrollY);
  await page.mouse.wheel(0,180);
  await expect.poll(()=>page.evaluate(()=>scrollY)).toBeGreaterThan(before+80);
