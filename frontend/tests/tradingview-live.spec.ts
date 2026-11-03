@@ -22,7 +22,7 @@ test('official TradingView widgets render all four B3 symbols (live)', async ({ 
   await page.setViewportSize({ width: 1366, height: 1000 });
   await page.goto('/#/acoes');
   await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).not.toHaveAttribute('content', /snowplow-pixel/);
-  await expect(page.locator('tv-tickers')).toBeVisible({ timeout: 30000 });
+  await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toBeVisible({ timeout: 30000 });
   await expect(page.locator('tradingview-widget [role="status"]')).toHaveCount(0, { timeout: 30000 });
   await page.waitForTimeout(4000); // Allow the provider's private datafeed to paint; no values are read.
   await page.screenshot({ path: info.outputPath('tickers-real-desktop.png') });
@@ -54,9 +54,9 @@ test('official TradingView widgets render all four B3 symbols (live)', async ({ 
   await page.screenshot({ path: info.outputPath('PETR4-real-mobile-light.png') });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto('/#/acoes');
-  await expect(page.locator('tv-tickers')).toHaveAttribute('direction', 'vertical', { timeout: 30000 });
+  await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('direction', 'vertical', { timeout: 30000 });
   await page.waitForTimeout(4000);
-  await page.locator('.tv-tickers').screenshot({ path: info.outputPath('tickers-real-mobile-light.png') });
+  await page.locator('iframe.market-quotes-frame').screenshot({ path: info.outputPath('tickers-real-mobile-light.png') });
   expect(brapiRequests).toBe(0);
   expect(errors).toEqual([]);
 });

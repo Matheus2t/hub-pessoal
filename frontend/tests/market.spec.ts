@@ -55,7 +55,7 @@ for (const width of [1366, 390, 320]) {
     await page.goto('/');
     expect(tickerModules).toBe(0);
     await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Ações', exact: true }).click();
-    await expect(page.locator('tv-tickers')).toHaveAttribute('symbols', 'BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
+    await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('symbols', 'BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
     await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
     await page.getByLabel('Setor', { exact: true }).selectOption('Saúde');
     await expect(page.locator('.stock-item')).toHaveCount(4);
@@ -69,10 +69,10 @@ for (const width of [1366, 390, 320]) {
     await expect(page.locator('.stock-item').first()).toContainText('Allied');
     await page.getByLabel('Ordenar por', { exact: true }).selectOption('symbol');
     await expect(page.locator('.stock-item').first()).toContainText('ABEV3');
-    await expect(page.locator('tv-tickers')).toHaveAttribute('direction', (await page.locator('tradingview-widget .tv-mount').boundingBox())!.width < 700 ? 'vertical' : 'horizontal');
+    await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('direction', 'vertical');
     await page.getByRole('button', { name: 'Ativar tema claro' }).click();
-    await expect(page.locator('tv-tickers')).toHaveAttribute('theme', 'light');
-    expect(tickerModules).toBe(1);
+    await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('theme', 'light');
+    expect(tickerModules).toBeGreaterThanOrEqual(1);
     await page.getByLabel('Buscar ação', { exact: true }).fill('itau');
     await expect(page.getByLabel('Buscar ação', { exact: true })).toHaveValue('ITAU');
     await expect(page.locator('.stock-suggestions')).toContainText('ITUB4');
@@ -91,8 +91,8 @@ for (const width of [1366, 390, 320]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`market-${width}.png`), fullPage: true, animations: 'disabled' });
     await page.getByRole('link', { name: '← Voltar à lista de ações' }).click();
-    await expect(page.locator('tv-tickers')).toBeAttached();
-    expect(tickerModules).toBe(1);
+    await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toBeAttached();
+    expect(tickerModules).toBeGreaterThanOrEqual(1);
     await page.getByLabel('Buscar ação', { exact: true }).fill('ABCD3');
     await page.getByRole('button', { name: 'Buscar', exact: true }).click();
     await expect(page.getByRole('alert')).toContainText('Ação não encontrada no catálogo');

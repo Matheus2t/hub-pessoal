@@ -9,7 +9,7 @@ for(const width of [1920,1366,768,390,320])test(`market terminal and saved layou
  await w.getByRole('button',{name:'Essencial',exact:true}).click();await expect(w.locator('[data-panel=chart]')).toHaveAttribute('style',/1 \/ -1/);await expect(page.locator('.stock-directory')).not.toBeVisible();
  await w.getByRole('button',{name:'Completo',exact:true}).click();await expect(page.locator('.stock-item')).toHaveCount(65);
  await w.getByRole('button',{name:'Personalizar painel',exact:true}).click();await w.getByRole('checkbox',{name:'Ações acompanhadas',exact:true}).uncheck();await w.getByRole('button',{name:'Concluir',exact:true}).click();
- await page.reload();await expect(page.locator('tradingview-widget[kind=tickers]')).not.toBeVisible();
+ await page.reload();await expect(page.locator('iframe.market-quotes-frame')).not.toBeVisible();
  for(const theme of ['dark','light']){await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath(`terminal-${theme}.png`),fullPage:true,animations:'disabled'});}
  await page.goto('/#/acoes/PETR4');await expect(page.getByRole('button',{name:'Consultar dados CVM',exact:true})).toBeVisible();
  await expect(page.locator('market-page panel-workspace').getByRole('button',{name:'Completo',exact:true})).toHaveAttribute('aria-pressed','true');
