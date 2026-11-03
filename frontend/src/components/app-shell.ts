@@ -22,6 +22,7 @@ import "../learn/host";
 export class AppShell extends LightElement {
   @state() private page = currentPage();
   @state() private route = location.hash;
+  protected updated(changes:Map<PropertyKey,unknown>){if(changes.has('page')&&this.page==='call')void import('../call/page');}
   private pageTitle(){const mode=['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]:undefined;return mode?`${mode} · ${pages[this.page].title}`:pages[this.page].title}
   private openCalendar = () => {
     const dialog = this.querySelector<HTMLDialogElement>(".calendar-dialog");
@@ -68,6 +69,7 @@ export class AppShell extends LightElement {
           ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
+          ${this.page === 'call' ? html`<call-page></call-page>` : ''}
           ${this.page === 'sports' ? html`<sports-calendar></sports-calendar>` : ''}
           ${this.page === 'fixedIncome' ? html`<fixed-income-page></fixed-income-page>` : ''}
           ${['76ers', 'spfc', 'barcelona'].includes(this.page) ? keyed(this.page, html`<team-page .team=${this.page}></team-page>`) : ''}
