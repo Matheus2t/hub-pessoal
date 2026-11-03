@@ -1,0 +1,39 @@
+name: Market scroll regression
+on:
+  pull_request:
+    paths:
+      - 'frontend/styles/_market.scss'
+      - 'frontend/src/components/market-page.ts'
+      - 'frontend/src/components/tradingview-widget.ts'
+      - 'frontend/tests/market-scroll.spec.ts'
+      - '.github/workflows/market-scroll-regression.yml'
+  push:
+    branches:
+      - 'fix/acoes-scroll-anchoring-stability'
+permissions:
+  contents: read
+jobs:
+  scroll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Validate TypeScript and build
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Serve built site
+        run: python3 -m http.server 8123 --directory dist >/tmp/2t-site.log 2>&1 &
+      - name: Test widget layout and page scrolling
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/market-scroll.spec.ts
+      - name: Test real TradingView ticker layout
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+          MARKET_SCROLL_LIVE: '1'
+        run: npx playwright test frontend/tests/market-scroll.spec.ts --grep 'ticker widget intrinsic height'
