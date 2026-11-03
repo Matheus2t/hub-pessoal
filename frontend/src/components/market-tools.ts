@@ -87,7 +87,7 @@ export class MarketRankings extends LightElement {
      </div>
      <div class="rk-field"><label for="rk-date">Exercício</label>
       <select id="rk-date" .value=${date||''} @change=${(e:Event)=>this.date=(e.target as HTMLSelectElement).value}>
-       ${dates.map(d=>html`<option>${d}</option>`)}
+       ${dates.map(d=>html`<option value=${d} .selected=${d===date}>${d}</option>`)}
       </select>
      </div>
     </div>
