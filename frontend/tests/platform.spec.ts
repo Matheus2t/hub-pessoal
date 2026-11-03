@@ -216,7 +216,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
   await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
   await page.getByRole("link", { name: "Abrir calculadora" }).click();
   expect(
-    await page.locator(".page-heading h1").evaluate((element) =>
+    await page.getByRole('heading', {name:'Calculadora de juros compostos',exact:true}).evaluate((element) =>
       Number(getComputedStyle(element).fontWeight),
     ),
   ).toBeGreaterThanOrEqual(600);

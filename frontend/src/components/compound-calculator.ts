@@ -62,6 +62,7 @@ export class CompoundCalculator extends LightElement {
   @state() private error = "";
   @state() private stale = false;
   private controller?: AbortController;
+  connectedCallback() { super.connectedCallback(); this.classList.add("workspace-v2", "calculator-workspace"); }
   disconnectedCallback() {
     super.disconnectedCallback();
     this.controller?.abort();
@@ -161,14 +162,17 @@ export class CompoundCalculator extends LightElement {
     this.stale = false;
   }
   render() {
-    return html`<div class="page-heading">
-        <div>
-          <h1>Calculadora de <em>juros compostos</em></h1>
-          <p class="calculator-lead">Projete seus aportes, juros e patrimônio ao longo do tempo.</p>
-        </div>
-      </div>
+    return html`<div class="ws-page-heading"><div><h1>Calculadora de juros compostos</h1></div></div>
+      <panel-workspace area="calculator-compound" .panels=${[
+        {id:'form',title:'Simulação',required:true,essential:true,size:'small',resizable:false,role:'form'},
+        {id:'empty',title:'Resultados',required:true,available:!this.result,size:'medium',resizable:false},
+        {id:'summary',title:'Resumo financeiro',essential:true,available:!!this.result,size:'medium'},
+        {id:'chart',title:'Gráfico de evolução',essential:true,available:!!this.result,size:'medium'},
+        {id:'table',title:'Tabela mensal',available:!!this.result,size:'large'},
+        {id:'history',title:'Histórico de simulações',available:!!this.history.length,size:'large',hint:'Disponível apenas com histórico local habilitado'}
+      ]}>
       <section
-        class="panel simulation-panel"
+        slot="form" class="workspace-panel simulation-panel"
         aria-labelledby="simulation-title"
       >
         <div class="panel-heading">
@@ -229,14 +233,9 @@ export class CompoundCalculator extends LightElement {
             : nothing}
         </form>
       </section>
-      <div class="result-region" aria-busy=${this.loading} aria-live="polite">
-        ${this.loading
-          ? html`<div class="loading-state" role="status">
-              <span class="spinner"></span> Preparando sua simulação…
-            </div>`
-          : nothing}
-        ${this.result
-          ? html`<div class="section-heading result-heading">
+      <section slot="empty" class="workspace-panel calculator-empty" aria-live="polite"><div><h2>Resultados</h2><p>${this.loading?'Preparando sua simulação…':'Preencha os campos e simule.'}</p></div></section>
+      <section slot="summary" class="workspace-panel" aria-live="polite" aria-busy=${this.loading}>
+        ${this.result ? html`<div class="section-heading result-heading">
                 <div>
                   <p class="eyebrow">SEU CENÁRIO</p>
                   <h2>Resultados</h2>
@@ -269,31 +268,11 @@ export class CompoundCalculator extends LightElement {
                   glyph="layers"
                 ></metric-card>
               </div>
-              <evolution-chart .rows=${this.result.evolution}></evolution-chart
-              ><results-table .rows=${this.result.evolution}></results-table>
-              <p class="disclaimer">
-                Esta simulação é uma estimativa matemática e não considera
-                impostos, taxas ou inflação. Os resultados não representam
-                garantia de rentabilidade.
-              </p>`
-          : html`<section class="panel calculator-empty">
-              <span class="empty-symbol">${icon("chart")}</span>
-              <div>
-                <h2>Resultados</h2>
-                <p>Preencha os campos e simule.</p>
-              </div>
-              <div class="empty-legend">
-                <span
-                  ><i class="legend-dot balance"></i>Patrimônio acumulado</span
-                ><span><i class="legend-dot invested"></i>Total investido</span>
-              </div>
-            </section>`}
-      </div>
-      <p class="privacy-note">
-        ${icon("info")} Os valores são enviados ao serviço de cálculo. O
-        histórico público de simulações está desativado.
-      </p>
-      ${this.history.length
+` : nothing}
+      </section>
+      <section slot="chart" class="workspace-panel">${this.result?html`<evolution-chart .rows=${this.result.evolution}></evolution-chart>`:nothing}</section>
+      <section slot="table" class="workspace-panel">${this.result?html`<results-table .rows=${this.result.evolution}></results-table>`:nothing}</section>
+      <div slot="history">      ${this.history.length
         ? html`<section class="panel history-panel">
             <div class="panel-heading"><h2>Histórico de simulações</h2></div>
             <div class="history-list">
@@ -310,6 +289,9 @@ export class CompoundCalculator extends LightElement {
               )}
             </div>
           </section>`
-        : nothing}`;
+        : nothing}</div>
+      </panel-workspace>
+      <p class="disclaimer">Esta simulação é uma estimativa matemática e não considera impostos, taxas ou inflação. Os resultados não representam garantia de rentabilidade.</p>
+      <p class="privacy-note">${icon("info")} Os valores são enviados ao serviço de cálculo. O histórico público de simulações está desativado.</p>`;
   }
 }

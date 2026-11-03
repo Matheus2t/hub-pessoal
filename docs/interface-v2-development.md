@@ -53,3 +53,9 @@ feita nos dois temas. Módulos sem cobertura ficam indisponíveis, sem números
 substitutos. Widgets externos continuam sob controle do TradingView; homologação
 real do provedor fica registrada na etapa F.
 
+Etapa C concluída: quatro simuladores em painéis com formulário fixo à esquerda,
+resumo/gráfico à direita e tabela inferior. Preferências independentes por
+calculadora. Nenhuma mudança nos métodos de cálculo, validação ou chamadas API.
+13 testes finais de cálculo/layout, 28 de 29 testes iniciais e a correção do
+seletor de tipografia aprovada separadamente. Cinco larguras e dois temas
+inspecionados, com campos e indicadores legíveis.
