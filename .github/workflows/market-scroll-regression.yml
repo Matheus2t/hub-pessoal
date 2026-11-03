@@ -31,3 +31,9 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/market-scroll.spec.ts
+      - name: Test real TradingView ticker layout
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+          MARKET_SCROLL_LIVE: '1'
+        run: npx playwright test frontend/tests/market-scroll.spec.ts --grep 'ticker widget intrinsic height'

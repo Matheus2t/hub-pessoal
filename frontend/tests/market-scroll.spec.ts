@@ -91,12 +91,17 @@ test('downward page gesture reaches the catalog across loaded widgets',async({pa
 // Stress regression: TradingView is permitted to alter its own internal height.
 // This must never move the catalogue below or reverse the user's document scroll.
 test('ticker widget intrinsic height changes cannot jolt the stock directory',async({page})=>{
- await isolatedProvider(page);
+ if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  await page.setViewportSize({width:1366,height:900});
  await page.goto('/#/acoes');
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
  const ticker=page.locator('market-page [slot=quotes] tv-tickers');
- await expect(ticker).toBeVisible();
+ await expect(ticker).toBeVisible({timeout:30000});
+ if(process.env.MARKET_SCROLL_LIVE==='1'){
+  await expect(page.locator('tradingview-widget[kind=tickers] [role=status]')).toHaveCount(0,{timeout:30000});
+  await page.waitForTimeout(3500);
+ }
+ await expect(page.locator('market-page')).toHaveCSS('overflow-anchor','none');
  const directory=page.locator('market-page [slot=directory]');
  await page.evaluate(()=>{const d=document.querySelector('market-page [slot=directory]')!;scrollTo(0,d.getBoundingClientRect().top+scrollY+250)});
  await page.waitForTimeout(150);
