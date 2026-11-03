@@ -9,6 +9,8 @@ on:
       - 'frontend/tests/market-nav.spec.ts'
       - 'frontend/src/components/financial-comparison.ts'
       - 'frontend/tests/comparison-layout.spec.ts'
+      - 'frontend/src/components/market-tools.ts'
+      - 'frontend/tests/rankings-layout.spec.ts'
       - '.github/workflows/market-scroll-regression.yml'
   push:
     branches:
@@ -51,6 +53,11 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/comparison-layout.spec.ts
+      - name: Test rankings CVM redesign
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/rankings-layout.spec.ts
       - name: Test real TradingView ticker layout
         env:
           PW_CHANNEL: chromium

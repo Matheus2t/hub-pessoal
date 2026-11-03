@@ -335,3 +335,83 @@ financial-comparison .cvm-documents a { color: var(--text); text-decoration: und
  financial-comparison .cvm-documents a { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { financial-comparison * { scroll-behavior: auto; } }
+
+
+/* Rankings CVM — page-local visual treatment. Keep the data, scope and sorting untouched. */
+market-rankings .rk-page { display:grid; gap:20px; min-width:0; padding-bottom:28px; }
+market-rankings .rk-hero { display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px 28px; padding:8px 0 12px; }
+market-rankings .rk-eyebrow, market-rankings .rk-kicker { color:var(--muted); font-size:11px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; margin:0; }
+market-rankings .rk-hero h1 { font-size:clamp(26px,2.6vw,34px); font-weight:650; letter-spacing:-.035em; line-height:1.15; margin:6px 0 12px; }
+market-rankings .rk-lead { color:var(--secondary); font-size:14px; line-height:1.65; margin:0; max-width:700px; }
+market-rankings .rk-back { display:inline-flex; align-items:center; min-height:38px; padding:8px 12px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--text); text-decoration:none; font-size:13px; white-space:nowrap; }
+market-rankings .rk-back:hover { background:var(--raised); border-color:var(--secondary); }
+market-rankings .rk-panel, market-rankings .rk-group { min-width:0; background:var(--panel); border:1px solid var(--line-soft); border-radius:10px; }
+market-rankings .rk-panel { padding:24px; }
+market-rankings .rk-section-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px 20px; margin-bottom:18px; }
+market-rankings .rk-section-heading h2 { font-size:19px; line-height:1.3; letter-spacing:-.02em; font-weight:620; margin:6px 0 0; }
+market-rankings .rk-source-tag, market-rankings .rk-results-meta { font-size:12px; color:var(--secondary); }
+market-rankings .rk-source-tag { border:1px solid var(--line); padding:7px 11px; border-radius:5px; }
+market-rankings .rk-filter-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+market-rankings .rk-field { display:grid; align-content:start; gap:9px; min-width:0; color:var(--secondary); font-size:12px; font-weight:600; }
+market-rankings .rk-field select { width:100%; min-height:46px; padding:10px 12px; color:var(--text); background:var(--bg); border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; cursor:pointer; }
+market-rankings .rk-field select:hover { border-color:var(--secondary); }
+market-rankings :is(select,a,summary):focus-visible,market-rankings .rk-table-wrap:focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+market-rankings .rk-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+market-rankings .rk-summary > div { display:flex; flex-direction:column; gap:12px; min-width:0; padding:18px 20px; border:1px solid var(--line-soft); border-radius:8px; background:var(--panel); }
+market-rankings .rk-summary span { color:var(--secondary); font-size:12px; }
+market-rankings .rk-summary strong { font-size:clamp(23px,2.1vw,31px); line-height:1; font-weight:650; letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+market-rankings .rk-summary strong small { font-size:14px; color:var(--secondary); font-weight:400; letter-spacing:0; }
+market-rankings .rk-summary .rk-summary-date { font-size:clamp(19px,2vw,26px); }
+market-rankings .rk-method { padding:0 2px 4px; border-bottom:1px solid var(--line-soft); }
+market-rankings .rk-method summary { cursor:pointer; padding:10px 0 14px; color:var(--secondary); font-size:13px; }
+market-rankings .rk-method summary:hover { color:var(--text); }
+market-rankings .rk-method > div { display:grid; gap:8px; padding-bottom:16px; }
+market-rankings .rk-method p { max-width:980px; font-size:12px; color:var(--secondary); line-height:1.7; margin:0; overflow-wrap:anywhere; }
+market-rankings .rk-results { display:grid; gap:14px; min-width:0; }
+market-rankings .rk-results-heading { margin:2px 0 4px; }
+market-rankings .rk-group { overflow:hidden; }
+market-rankings .rk-group-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px 20px; padding:17px 20px; background:var(--raised); border-bottom:1px solid var(--line-soft); }
+market-rankings .rk-group-index { font-size:10px; color:var(--muted); font-weight:650; letter-spacing:.09em; }
+market-rankings .rk-group-header h3 { font-size:16px; font-weight:630; letter-spacing:-.015em; margin:5px 0 0; }
+market-rankings .rk-group-meta { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--secondary); font-size:12px; }
+market-rankings .rk-scope { border:1px solid var(--line); border-radius:5px; padding:6px 9px; color:var(--text); }
+market-rankings .rk-table-wrap { margin:0; width:100%; border:0; }
+market-rankings .rk-table { width:100%; border-collapse:collapse; min-width:600px; font-size:13px; }
+market-rankings .rk-table th,market-rankings .rk-table td { padding:14px 20px; border-bottom:1px solid var(--line-soft); }
+market-rankings .rk-table thead { background:var(--panel); }
+market-rankings .rk-table thead th { color:var(--muted); font-size:11px; letter-spacing:.045em; font-weight:650; text-transform:uppercase; text-align:left; }
+market-rankings .rk-table thead th:nth-child(1) { width:90px; }
+market-rankings .rk-table thead th:nth-child(3),market-rankings .rk-table .rk-value { text-align:right; }
+market-rankings .rk-table thead th:nth-child(4),market-rankings .rk-table .rk-source { text-align:right; }
+market-rankings .rk-table tbody tr:last-child td,market-rankings .rk-table tbody tr:last-child th { border-bottom:0; }
+market-rankings .rk-table tbody tr:hover { background:var(--hover); }
+market-rankings .rk-rank { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+market-rankings .rk-company { font-weight:650; text-align:left; font-size:14px; }
+market-rankings .rk-company a { color:var(--text); text-decoration:none; border-bottom:1px solid transparent; }
+market-rankings .rk-company a:hover { border-color:var(--text); }
+market-rankings .rk-value { font-size:15px; font-weight:650; color:var(--text); font-variant-numeric:tabular-nums; white-space:nowrap; }
+market-rankings .rk-source a { color:var(--secondary); font-size:12px; text-decoration:none; white-space:nowrap; }
+market-rankings .rk-source a:hover { color:var(--text); text-decoration:underline; text-underline-offset:3px; }
+market-rankings .rk-status { border:1px dashed var(--line); border-radius:8px; padding:18px; background:var(--panel); color:var(--secondary); font-size:13px; line-height:1.6; margin:0; }
+@media(max-width:900px) { market-rankings .rk-filter-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:650px) {
+ market-rankings .rk-page { gap:14px; }
+ market-rankings .rk-hero { align-items:start; gap:12px; }
+ market-rankings .rk-back { width:100%; justify-content:center; }
+ market-rankings .rk-panel { padding:16px; border-radius:8px; }
+ market-rankings .rk-filter-grid { grid-template-columns:1fr; gap:14px; }
+ market-rankings .rk-summary { gap:8px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+ market-rankings .rk-summary > div { padding:14px; }
+ market-rankings .rk-summary > div:last-child { grid-column:1/-1; }
+ market-rankings .rk-group-header { padding:16px; }
+ market-rankings .rk-table { min-width:0; }
+ market-rankings .rk-table thead { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+ market-rankings .rk-table tbody { display:block; }
+ market-rankings .rk-table tbody tr { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:8px 10px; align-items:center; padding:15px 16px; border-bottom:1px solid var(--line-soft); }
+ market-rankings .rk-table tbody tr:last-child { border-bottom:0; }
+ market-rankings .rk-table th,market-rankings .rk-table td { padding:0; border:0; }
+ market-rankings .rk-table .rk-rank { grid-column:1; grid-row:1; }
+ market-rankings .rk-table .rk-company { grid-column:2; grid-row:1; }
+ market-rankings .rk-table .rk-value { grid-column:3; grid-row:1; font-size:15px; }
+ market-rankings .rk-table .rk-source { grid-column:2/-1; grid-row:2; text-align:left; }
+}
