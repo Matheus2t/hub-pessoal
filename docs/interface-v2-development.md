@@ -78,3 +78,40 @@ As 30 capturas dos três Times coincidem com as referências anteriores dentro
 da tolerância de rasterização documentada. Não houve alterações nos componentes
 ou estilos dos Times, na homepage nem no Learn/IndexedDB/backups.
 As preferências financeiras não habilitam painéis nas outras áreas.
+
+## Homologação F
+
+Revisão visual: Ações, calculadoras e Renda Fixa em 1920, 1366, 768, 390 e
+320px, nos dois temas. Modo compacto foi revisado também em monitor largo:
+container queries mantêm valores e impostos legíveis ao reduzir módulos,
+sem diminuir a fonte ou alterar a simulação. Painéis respondem à própria largura.
+
+Na primeira regressão integral houve 253 aprovações, uma exclusão opt-in e uma
+falha de clique CVM em 768px. Reproduzido o problema real: falha do iframe
+encolhia o gráfico e deslocava o botão em 368px. A altura agora é reservada;
+flow-root evita ainda dez pixels de colapso de margem no fallback. O teste novo
+falhou antes da correção e passou depois; a consulta CVM continua independente.
+O teste de cobertura CVM isola os scripts externos (dados CVM reais, sem mocks).
+TradingView possui testes próprios de adaptação, falha/retry e inspeção real.
+
+A inspeção real do IBOV carregou gráfico com cotações, sem fallback. Não se
+alteraram iframes nem foram criados dados para substituir o provedor.
+Fontes matemáticas, backend, dados financeiros, conteúdo Learn e Times têm
+diff vazio em relação ao checkpoint. Nenhuma dependência nova ou segredo.
+Resultado final local (03/11/2026):
+- Typecheck e build de produção aprovados (.vercel/v2-final-build.log).
+- 225 testes Python aprovados (.vercel/v2-pytest-final.log).
+- 257 testes Playwright aprovados em regressão integral; um opt-in excluído
+  nessa execução e executado separadamente com sucesso (TV_LIVE=1).
+- Inspeção real TradingView: ITUB4, PETR4, VALE3, MGLU3, intervalos e celular
+  no tema claro, além do IBOV. Capturas reais revisadas, sem dados substitutos.
+- Os 30 comparativos visuais dos Times continuam aprovados.
+- git diff --check aprovado; nenhuma mudança de backend ou fórmulas.
+
+Commits intermediários: A 33292b4, B cf17a36, C f65d010, D 73138e1,
+E d8108ea. Checkpoint remoto codex/checkpoint-v2-c97cb7c preservado.
+A integração e a publicação ficam rastreadas pelo PR desta branch para main;
+a homologação de produção e o SHA de merge constam no relatório desse PR.
+Preferências são locais por navegador e não sincronizam dispositivos. Widgets
+continuam sujeitos à disponibilidade e às permissões do TradingView; os dados
+CVM permanecem consultáveis quando o provedor externo falha.

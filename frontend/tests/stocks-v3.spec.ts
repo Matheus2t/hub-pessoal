@@ -1,10 +1,14 @@
 import {test,expect} from '@playwright/test';
 for(const width of [1920,1366,768,390,320]) test(`expanded CVM coverage ${width}`,async({page,request},info)=>{
  await page.setViewportSize({width,height:1000});
+ // This suite verifies our CVM snapshots, not third-party iframe timing.
+ // TradingView has dedicated adapter tests and an opt-in real-provider check.
+ await page.route('https://s3.tradingview.com/**',r=>r.abort());
+ await page.route('https://widgets.tradingview-widget.com/**',r=>r.abort());
  const m=await(await request.get('/financials/manifest.json')).json();
  expect(Object.keys(m.companies)).toHaveLength(56);
  for(const symbol of ['ABEV3','B3SA3','RENT3','LREN3','SUZB3','EGIE3','CPFE3','VIVT3','VBBR3','PRIO3','CPLE3','EQTL3','CMIG3','GGBR3','MGLU3','ASAI3','FLRY3','HYPE3','DXCO3','CYRE3']){
-  await page.goto('/#/acoes/'+symbol);await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
+  await page.goto('/#/acoes/'+symbol);await expect(page.getByRole('heading',{name:symbol,exact:true})).toBeVisible();await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
   await expect(page.locator('.financial-metrics')).toBeVisible();
   await expect(page.locator('financial-analysis')).toContainText(m.companies[symbol].cnpj);
   await expect(page.locator('#cvm-reference option')).toHaveCount(5);

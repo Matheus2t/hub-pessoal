@@ -16,3 +16,14 @@ for(const width of [1920,1366,768,390,320])test(`market terminal and saved layou
  await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();await expect(page.locator('.financial-metrics')).toBeVisible();await page.getByLabel('Frequência',{exact:true}).selectOption('ttm');await expect(page.locator('.financial-metrics')).toContainText('133,76');
  const asset=page.locator('market-page panel-workspace');await asset.getByRole('button',{name:'Personalizar painel',exact:true}).click();await asset.getByRole('button',{name:'Mover Indicadores e estatísticas CVM para baixo'}).click();await asset.getByRole('button',{name:'Concluir',exact:true}).click();await expect(page.getByLabel('Frequência',{exact:true})).toHaveValue('ttm');
 });
+
+test('external chart failure keeps the CVM action in place',async({page})=>{
+ let release!:()=>void;const gate=new Promise<void>(resolve=>release=resolve);
+ await page.route('https://s3.tradingview.com/**',async r=>{await gate;await r.abort()});
+ await page.setViewportSize({width:768,height:1080});await page.goto('/#/acoes/PETR4',{waitUntil:'domcontentloaded'});
+ const action=page.getByRole('button',{name:'Consultar dados CVM',exact:true});await expect(action).toBeVisible();await page.evaluate(()=>document.fonts.ready);
+ const before=await action.evaluate(e=>e.getBoundingClientRect().y+scrollY);release();
+ await expect(page.getByRole('alert')).toContainText('Não foi possível carregar o TradingView');
+ expect(Math.abs((await action.evaluate(e=>e.getBoundingClientRect().y+scrollY))-before)).toBeLessThan(2);
+ await action.click();await expect(page.locator('.financial-metrics')).toBeVisible();
+});

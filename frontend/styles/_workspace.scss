@@ -47,6 +47,7 @@ market-page.workspace-v2 { display: block; }
  .ws-panel-heading h2 { font-size: 16px; margin: 0; font-weight: 600; }
  .ws-panel-heading .market-chart-modes { margin: 0; }
  .ws-main-chart { padding: 16px; } .ws-main-chart .tv-panel { border: 0; border-radius: 0; background: transparent; margin: 0; }
+ .ws-main-chart .tv-overview { min-height: 572px; display: flow-root; }
  .ws-main-chart .market-embed.advanced-chart { min-height: 500px; }
  .ws-main-chart .market-embed.advanced-chart .market-embed-mount { min-height: 500px; }
  .market-search { margin-block: 12px; } .market-filters { margin-bottom: 18px; }
@@ -64,6 +65,7 @@ market-page.workspace-v2 { display: block; }
 .workspace-v2 .ws-company-name { font-size: 17px; font-weight: 500; color: var(--secondary); margin: 4px 0; }
 
 .workspace-v2 .workspace-panel .market-chart-modes { flex-wrap: wrap; }
+@media(max-width:700px) { .workspace-v2 .ws-main-chart .tv-overview { min-height: 512px; } }
 
 /* Simulator surfaces stay local to financial tools. */
 .calculator-workspace {
@@ -125,3 +127,15 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  .comparison-workspace .rf-scenario { padding: 12px; }
  fixed-income-tools { grid-template-columns: 1fr; }
 } }
+
+/* A resized module responds to its own width, including on a wide monitor. */
+.calculator-workspace .workspace-panel,.fixed-workspace .workspace-panel { container-type: inline-size; }
+@container (max-width:600px) {
+ .calculator-workspace .metrics-grid,.fixed-workspace .rf-metrics { grid-template-columns: 1fr; }
+ .calculator-workspace .chart-toolbar,.calculator-workspace .chart-readout { flex-wrap: wrap; }
+ .calculator-workspace .chart-legend { flex-wrap: wrap; }
+ .calculator-workspace .unit-control { flex-direction: column; align-items: stretch; gap: 6px; }
+ .calculator-workspace metric-card:not(:last-child) { border-bottom: 1px solid var(--ws-border); padding-bottom: 14px; }
+ .fixed-workspace .rf-breakdown dl,.fixed-workspace fixed-income-tools { grid-template-columns: 1fr; }
+ .fixed-workspace .rf-breakdown dl div { flex-wrap: wrap; }
+}
