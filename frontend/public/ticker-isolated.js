@@ -13,3 +13,15 @@ widget.addEventListener('tv-link-open',event=>{
  event.preventDefault();
  try{parent.location.hash='#/acoes/'+symbol}catch{location.hash='#/acoes/'+symbol}
 });
+
+// Wheel gestures inside the same-origin iframe must scroll the enclosing
+// document, not become trapped in a separate browsing context. Keep clicks,
+// hover popovers and Ctrl+wheel browser zoom unchanged.
+if (parent !== window) {
+  window.addEventListener('wheel', event => {
+    if (event.ctrlKey) return;
+    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+    event.preventDefault();
+    parent.scrollBy(event.deltaX * unit, event.deltaY * unit);
+  }, { capture: true, passive: false });
+}

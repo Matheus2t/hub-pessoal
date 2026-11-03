@@ -7,7 +7,7 @@ async function isolatedProvider(page:import('@playwright/test').Page){
  await page.route('https://widgets.tradingview-widget.com/w/br/*.js',r=>{
   const tag=r.request().url().split('/').pop()!.replace('.js','');
   // A test-only iframe consumes the wheel just as the real chart does.
-  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=\`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>\`;}});`;
+  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';if('${tag}'==='tv-tickers'){this.textContent='Isolated ticker';}else{this.attachShadow({mode:'open'}).innerHTML=\`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>\`;}}});`;
   return r.fulfill({contentType:'text/javascript',body});
  });
  await page.route('https://s3.tradingview.com/**',r=>r.abort());
@@ -167,4 +167,23 @@ test('Ações default uses isolated live ticker with stable geometry and links',
  await expect(ticker).toHaveAttribute('theme','light');
  await ticker.evaluate(el=>el.dispatchEvent(new CustomEvent('tv-link-open',{cancelable:true,detail:{context:{symbol:'BMFBOVESPA:PETR4'}}})));
  await expect(page).toHaveURL(/#\/acoes\/PETR4$/);
+});
+
+
+test('wheel inside quotes iframe scrolls the parent page without losing clicks',async({page})=>{
+ await isolatedProvider(page);
+ await page.setViewportSize({width:390,height:900});
+ await page.goto('/#/acoes');
+ const frame=page.locator('iframe.market-quotes-frame');
+ await expect(frame).toBeVisible();
+ await frame.scrollIntoViewIfNeeded();
+ await page.evaluate(()=>scrollTo(0,550));
+ await page.waitForTimeout(350);
+ const rect=await frame.boundingBox();
+ expect(rect).toBeTruthy();
+ await page.mouse.move(rect!.x+rect!.width/2,Math.max(25,Math.min(rect!.y+60,850)));
+ const before=await page.evaluate(()=>scrollY);
+ await page.mouse.wheel(0,180);
+ await expect.poll(()=>page.evaluate(()=>scrollY)).toBeGreaterThan(before+80);
+ await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveCount(1);
 });
