@@ -72,3 +72,9 @@ Capturas novas voltam ao topo antes de registrar; o componente não foi alterado
 Python completo: 225 aprovados, com temporários em .vercel/v2-pytest-final.
 
 Acabamento D validado novamente: 13/13 testes de simulador/layout aprovados.
+
+Etapa E concluída: 6/6 testes de isolamento e congelamento visual aprovados.
+As 30 capturas dos três Times coincidem com as referências anteriores dentro
+da tolerância de rasterização documentada. Não houve alterações nos componentes
+ou estilos dos Times, na homepage nem no Learn/IndexedDB/backups.
+As preferências financeiras não habilitam painéis nas outras áreas.
