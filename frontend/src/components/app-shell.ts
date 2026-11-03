@@ -15,6 +15,7 @@ import "./team-shortcuts";
 import "./team-page";
 import "./sports-calendar";
 import "./fixed-income-page";
+import "./panel-workspace";
 import "../learn/host";
 
 @customElement("app-shell")

@@ -1,0 +1,33 @@
+/* Opt-in financial surfaces only. Never change :root, Home, Learn or Times. */
+panel-workspace { display: block; min-width: 0; }
+.workspace-v2 {
+ --ws-surface: var(--panel); --ws-raised: var(--raised); --ws-border: var(--line-soft);
+ --ws-text: var(--text); --ws-secondary: var(--secondary); --ws-gap: 14px; --ws-radius: 8px;
+ color: var(--ws-text); min-width: 0; font-family: var(--font-body);
+ .ws-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+ .ws-modes { display: flex; flex-wrap: wrap; gap: 3px; padding: 3px; border: 1px solid var(--ws-border); border-radius: var(--ws-radius); background: var(--ws-surface); }
+ .ws-toolbar button,.ws-config button,.ws-config select { color: var(--ws-text); background: var(--ws-surface); border: 1px solid var(--line); border-radius: 5px; padding: 9px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+ .ws-modes button { border-color: transparent; background: transparent; }
+ .ws-modes button[aria-pressed=true] { background: var(--ws-raised); border-color: var(--line); }
+ button:disabled { cursor: default; opacity: .5; }
+ .ws-toolbar button:hover:not(:disabled),.ws-config button:hover:not(:disabled) { background: var(--hover); }
+ .ws-toolbar button:focus-visible,.ws-config :is(button,input,select):focus-visible { outline: 2px solid var(--ws-text); outline-offset: 3px; }
+ .ws-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--ws-gap); align-items: start; }
+ .ws-cell { min-width: 0; } .ws-cell[hidden] { display: none !important; }
+ .ws-notice { color: var(--ws-secondary); font-size: 12px; margin: -6px 0 12px; }
+ .ws-config { width: min(680px,calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow: auto; margin: auto; background: var(--ws-surface); color: var(--ws-text); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
+ .ws-config::backdrop { background: var(--overlay); }
+ .ws-config header,.ws-config footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+ .ws-config h2 { font-size: 20px; margin: 0; } .ws-config > p { color: var(--ws-secondary); font-size: 13px; margin-block: 14px; }
+ .ws-options { padding: 0; margin: 0 0 20px; list-style: none; }
+ .ws-options li { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--ws-border); padding: 14px 0; }
+ .ws-options label { display: flex; align-items: center; gap: 9px; font-size: 14px; } .ws-options small { color: var(--ws-secondary); font-size: 12px; }
+ .ws-module-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+ .ws-module-actions button { min-width: 36px; } .ws-config footer { flex-wrap: wrap; }
+ .workspace-panel { min-width: 0; height: 100%; border: 1px solid var(--ws-border); border-radius: var(--ws-radius); background: var(--ws-surface); padding: 20px; }
+ .workspace-panel > h2 { font-size: 16px; font-weight: 600; margin: 0 0 16px; }
+ .workspace-panel .panel { border: 0; background: transparent; padding: 0; }
+ .workspace-panel .metrics-grid { margin: 0; }
+}
+@media(max-width:900px) { .workspace-v2 .ws-cell { grid-column: 1/-1 !important; grid-row: auto !important; } }
+@media(max-width:600px) { .workspace-v2 { .ws-toolbar { flex-wrap: wrap; } .ws-options li { align-items: start; } .ws-module-actions { width: 100%; margin-left: 0; } .ws-config { padding: 16px; } .workspace-panel { padding: 16px; } } }
