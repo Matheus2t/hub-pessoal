@@ -144,3 +144,45 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
 });
 
+// Browser zoom 90% increases the CSS viewport and makes DPR fractional.
+// Mirror both conditions rather than just applying CSS zoom to the document.
+for (const zoom of [1,0.9]) test(\`zoom \${Math.round(zoom*100)} percent ticker scrolling remains monotonic\`, async({browser},info)=>{
+ test.setTimeout(120000);
+ const ctx=await browser.newContext({viewport:{width:Math.round(1366/zoom),height:Math.round(900/zoom)},deviceScaleFactor:zoom});
+ const page=await ctx.newPage();
+ if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
+ try{
+  await page.goto('/#/acoes');await expect(page.locator('.stock-item')).toHaveCount(65);
+  const quotes=page.locator('market-page [slot=quotes]');
+  await expect(quotes).toBeVisible();
+  if(process.env.MARKET_SCROLL_LIVE==='1'){await page.waitForTimeout(7000);}
+  await quotes.scrollIntoViewIfNeeded();await page.waitForTimeout(400);
+  const box=await quotes.boundingBox();expect(box).toBeTruthy();
+  const x=box!.x+10,y=Math.min(box!.y+100,850);
+  await page.mouse.move(x,y);
+  let prev=await page.evaluate(()=>scrollY);
+  const ticks:number[]=[prev];
+  const samples=await page.evaluate(()=>{
+    const q=document.querySelector('market-page [slot=quotes]')!,dir=document.querySelector('market-page [slot=directory]')!;
+    const a:any[]=[];
+    const obj={samples:a,frame:0};
+    (window as any).__zoomScroll=obj;
+    obj.frame=requestAnimationFrame(function sample(t){const qrect=q.getBoundingClientRect(),drect=dir.getBoundingClientRect();
+     a.push({t,scroll:scrollY,quotes:qrect.top+scrollY,quotesH:qrect.height,dir:drect.top+scrollY,dirH:drect.height,dpr:devicePixelRatio});
+     obj.frame=requestAnimationFrame(sample)});
+    return {dpr:devicePixelRatio,zoom:getComputedStyle(document.documentElement).zoom};
+  });
+  for(let i=0;i<15;i++){
+    await page.mouse.wheel(0,105);await page.waitForTimeout(55);
+    const now=await page.evaluate(()=>scrollY);ticks.push(now);prev=now;
+  }
+  await page.waitForTimeout(400);
+  const result=await page.evaluate(()=>{const o=(window as any).__zoomScroll;cancelAnimationFrame(o.frame);return o.samples;});
+  const original=await page.locator('[slot=quotes]').evaluate(e=>getComputedStyle(e).overflowY);
+  await info.attach(\`zoom-\${Math.round(zoom*100)}-\${process.env.MARKET_SCROLL_LIVE?'live':'isolated'}.json\`,{body:JSON.stringify({samples:samples,scrollTicks:ticks,frames:result.slice(-180),overflowY:original}),contentType:'application/json'});
+  // Zoom should not change page direction or resize panels while scrolling.
+  for(let i=1;i<ticks.length;i++)expect(ticks[i],\`wheel step \${i}\`).toBeGreaterThanOrEqual(ticks[i-1]-2);
+  for(const key of ['quotes','quotesH','dir','dirH']){const vals=result.map((a:any)=>a[key]);expect(Math.max(...vals)-Math.min(...vals),\`frame geometry \${key}\`).toBeLessThan(2);}
+  expect(ticks.at(-1)!).toBeGreaterThan(ticks[0]+300);
+ } finally {await ctx.close();}
+});

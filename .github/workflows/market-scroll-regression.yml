@@ -37,3 +37,9 @@ jobs:
           BASE_URL: http://127.0.0.1:8123
           MARKET_SCROLL_LIVE: '1'
         run: npx playwright test frontend/tests/market-scroll.spec.ts --grep 'ticker widget intrinsic height'
+      - name: Test browser zoom 90% with TradingView live
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+          MARKET_SCROLL_LIVE: '1'
+        run: npx playwright test frontend/tests/market-scroll.spec.ts --grep 'zoom 90 percent'
