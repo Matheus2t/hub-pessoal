@@ -7,7 +7,7 @@ async function isolatedProvider(page:import('@playwright/test').Page){
  await page.route('https://widgets.tradingview-widget.com/w/br/*.js',r=>{
   const tag=r.request().url().split('/').pop()!.replace('.js','');
   // A test-only iframe consumes the wheel just as the real chart does.
-  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>`;}});`;
+  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=\`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>\`;}});`;
   return r.fulfill({contentType:'text/javascript',body});
  });
  await page.route('https://s3.tradingview.com/**',r=>r.abort());
