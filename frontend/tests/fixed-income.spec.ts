@@ -1,6 +1,6 @@
 import {test,expect,type Page} from '@playwright/test';
 async function fillCdb(page:Page){
- const f=page.locator('fixed-income-page > article > .rf-panel fixed-income-fields');
+ const f=page.locator('fixed-income-page [slot=form] fixed-income-fields');
  await f.getByLabel('Valor aplicado').fill('10.000,00');await f.getByLabel('CDI anual').fill('12');await f.getByLabel('Percentual do CDI').fill('100');
  await f.getByLabel('Data da aplicação').fill('2027-01-01');await f.getByLabel('Vencimento',{exact:true}).fill('2028-01-01');return f;
 }
@@ -43,7 +43,7 @@ test('comparison uses common dates, handles early maturity and locked IPCA hones
 });
 test('600-month table is collapsed and paginated, locked funds are not available',async({page})=>{
  await page.goto('/#/renda-fixa');const f=await fillCdb(page);await f.getByLabel('Vencimento',{exact:true}).fill('2077-01-01');await f.getByLabel('Carência contratual').fill('400');
- await page.locator('fixed-income-page > article > .rf-panel > details > summary').click();await page.getByLabel('Data pretendida de resgate').fill('2027-07-01');await expect(page.getByTestId('rf-redemption')).toContainText('Indisponível para resgate');
+ await page.locator('fixed-income-page [slot=form] > details > summary').click();await page.getByLabel('Data pretendida de resgate').fill('2027-07-01');await expect(page.getByTestId('rf-redemption')).toContainText('Indisponível para resgate');
  await page.getByLabel('Data pretendida de resgate').fill('');const table=page.locator('.rf-results fixed-income-evolution');await expect(table.locator('table')).not.toBeVisible();await table.locator('summary').click();await expect(table.locator('tbody tr')).toHaveCount(24);await expect(table.locator('.rf-pagination')).toContainText('Página 1 de 26');await table.getByRole('button',{name:'Próxima',exact:true}).click();await expect(table.locator('.rf-pagination')).toContainText('Página 2 de 26');
 });
 

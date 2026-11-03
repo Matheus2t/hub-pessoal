@@ -69,7 +69,7 @@ for (const width of [1366, 390, 320]) {
     await expect(page.locator('.stock-item').first()).toContainText('Allied');
     await page.getByLabel('Ordenar por', { exact: true }).selectOption('symbol');
     await expect(page.locator('.stock-item').first()).toContainText('ABEV3');
-    await expect(page.locator('tv-tickers')).toHaveAttribute('direction', width < 700 ? 'vertical' : 'horizontal');
+    await expect(page.locator('tv-tickers')).toHaveAttribute('direction', (await page.locator('tradingview-widget .tv-mount').boundingBox())!.width < 700 ? 'vertical' : 'horizontal');
     await page.getByRole('button', { name: 'Ativar tema claro' }).click();
     await expect(page.locator('tv-tickers')).toHaveAttribute('theme', 'light');
     expect(tickerModules).toBe(1);

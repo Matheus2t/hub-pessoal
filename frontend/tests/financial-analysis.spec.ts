@@ -29,8 +29,8 @@ for(const width of [1366,390]) test(`CVM analysis and comparison work without Tr
  await page.screenshot({path:info.outputPath(`cvm-${width}-dark.png`)});
  await page.getByRole('button',{name:'Ativar tema claro'}).click();
  await page.screenshot({path:info.outputPath(`cvm-${width}-light.png`)});
- await page.goto('/#/acoes/BBAS3');await page.getByRole('button',{name:'Consultar dados CVM',exact:true}).click();
- await expect(page.locator('financial-analysis')).toContainText('Não disponível para esta empresa');
+ await page.goto('/#/acoes/BBAS3');await expect(page.locator('market-page panel-workspace [data-panel=financial]')).toBeHidden();
+ await expect(page.getByRole('button',{name:'Consultar dados CVM',exact:true})).toHaveCount(0);
  await page.goto('/#/acoes/comparar');
  await expect(page.locator('financial-comparison table').first()).toBeVisible();
  await expect(page.getByLabel('Empresa 1',{exact:true})).toHaveValue('PETR4');
