@@ -182,13 +182,16 @@ market-rankings .financial-table-scroll { margin-block:20px; }
 }
 
 
-/* Diagnóstico de zoom 90%: lista nativa sem widget externo, ativada apenas
-   pelo parâmetro ?debug-static-quotes=1. Não altera outros módulos nem rotas. */
-market-page.market-terminal .market-static-quotes { display: grid; gap: 0; min-width: 0; }
-market-page.market-terminal .market-static-quotes a { display: grid; grid-template-columns: 78px minmax(0,1fr) auto; gap: 12px; align-items: center; min-height: 68px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
-market-page.market-terminal .market-static-quotes a:last-child { border-bottom: 0; }
-market-page.market-terminal .market-static-quotes a:hover { background: var(--raised); }
-market-page.market-terminal .market-static-quotes a span:nth-child(2) { color: var(--secondary); overflow-wrap: anywhere; }
-
-/* Debug-only: live TradingView ticker in a fixed independent document. */
-market-page.market-terminal .market-quotes-frame { display:block; width:100%; height:430px; border:0; max-width:100%; background:transparent; overflow:hidden; }
+/* Ações: isolated TradingView ticker remains fixed at 90% browser zoom.
+   Mask only its 1px rasterized iframe edge; do not cover live quotes. */
+market-page.market-terminal .market-quotes-frame {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 430px;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: var(--panel);
+  clip-path: inset(1px);
+}

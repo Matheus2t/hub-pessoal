@@ -1,6 +1,26 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://widgets.tradingview-widget.com https://www.tradingview-widget.com; style-src 'self' 'unsafe-inline' https://widgets.tradingview-widget.com https://www.tradingview-widget.com; font-src 'self' https://widgets.tradingview-widget.com https://www.tradingview-widget.com; img-src 'self' data: https://s3.tradingview.com https://s3-symbol-logo.tradingview.com https://widgets.tradingview-widget.com https://www.tradingview-widget.com; connect-src 'self' https://widgets.tradingview-widget.com https://www.tradingview-widget.com; frame-src https://www.tradingview-widget.com https://widgets.tradingview-widget.com; object-src 'none'; base-uri 'self'; form-action 'none'">
-<style>*,*::before,*::after{box-sizing:border-box} html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:transparent}tv-tickers{display:block;width:100%;max-width:100%;min-width:0;--tv-widget-font-family:Geist,Arial,sans-serif}</style>
+<style>
+:root {
+  color-scheme: dark;
+  --tv-widget-background-color: transparent;
+  --tv-widget-accent-color: #efefef;
+  --tv-widget-text-color: #efefef;
+  --tv-widget-price-text-color: #efefef;
+  --tv-widget-font-family: Geist, Arial, sans-serif;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --tv-widget-accent-color: #191919;
+  --tv-widget-text-color: #191919;
+  --tv-widget-price-text-color: #191919;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#111111; scrollbar-width:none; }
+:root[data-theme="light"], :root[data-theme="light"] body { background:#f2f2f2; }
+::-webkit-scrollbar { display:none; }
+tv-tickers { display:block; width:100%; max-width:100%; min-width:0; border:0; outline:0; box-shadow:none; background:transparent; }
+</style>
 <script type="module" src="https://widgets.tradingview-widget.com/w/br/tv-tickers.js"></script><script type="module" src="/ticker-isolated.js"></script></head><body>
 <tv-tickers symbols="BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3" direction="vertical" item-size="normal" hide-chart></tv-tickers>
 </body></html>

@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { LightElement } from '../ui';
-import { findStock, featuredStocks, normalizeSearch, searchStocks, sectors } from '../market-catalog';
+import { findStock, normalizeSearch, searchStocks, sectors } from '../market-catalog';
 import './tradingview-widget';
 import './market-embed';
 import './company-sections';
@@ -79,9 +79,6 @@ export class MarketPage extends LightElement {
     if (this.symbol === 'COMPARAR') return html`<financial-comparison></financial-comparison>`;
     const stock = findStock(this.symbol);
     if (this.symbol && !stock) return html`<div class="page-heading"><h1>Ação não encontrada</h1></div><p class="market-note" role="alert">Este código não está disponível no catálogo da 2T.</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`;
-    const diagnostics = new URLSearchParams(location.search);
-    const staticQuotesPreview = !stock && diagnostics.get('debug-static-quotes') === '1';
-    const isolatedQuotesPreview = !stock && diagnostics.get('debug-isolated-quotes') === '1';
     const matches = this.filteredStocks;
     const suggestions = matches.slice(0, 8);
     const panels:PanelDefinition[]=stock?[
@@ -111,7 +108,7 @@ export class MarketPage extends LightElement {
        ${stock?html`<section slot="financial" class="workspace-panel"><financial-analysis .symbol=${stock.symbol}></financial-analysis></section>
         <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
         <section slot="distributions" class="workspace-panel market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?'Fechar proventos':'Dividendos e JCP'}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:html`
-        <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2>${staticQuotesPreview?html`<div class="market-static-quotes" aria-label="Ações acompanhadas — modo estável para diagnóstico">${featuredStocks.map(item=>html`<a href=${`#/acoes/${item.symbol}`}><strong>${item.symbol}</strong><span>${item.name}</span><span aria-hidden="true">↗</span></a>`)}</div><p class="market-note">Modo de diagnóstico: sem cotações em tempo real. Gráfico do Ibovespa e catálogo preservados.</p>`:html`${isolatedQuotesPreview?html`<iframe class="market-quotes-frame" title="TradingView — cotações isoladas" src="/ticker-isolated.html" loading="eager"></iframe><p class="market-note">TradingView isolado para diagnóstico; cotações reais preservadas.</p>`:html`<tradingview-widget kind="tickers" symbol="ITUB4"></tradingview-widget>`}`}</section>
+        <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe></section>
         <section slot="panorama" class="workspace-panel"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
         <section slot="directory" class="workspace-panel"><h2 class="market-section-title">Empresas</h2><p class="market-result-count" role="status">${matches.length} ${matches.length===1?'resultado encontrado':'resultados encontrados'}</p>${!matches.length?html`<p class="market-note">Nenhuma ação encontrada. Ajuste a busca ou o setor.</p>`:nothing}<div class="stock-directory"><div class="stock-directory-heading" aria-hidden="true"><span>Ticker</span><span>Empresa</span><span>Setor</span></div>${matches.map(item=>html`<a class="stock-item" href=${`#/acoes/${item.symbol}`}><strong>${item.symbol}</strong><span>${item.name}</span><span class="stock-sector">${item.sector}</span></a>`)}</div></section>`}
       </panel-workspace>`;
