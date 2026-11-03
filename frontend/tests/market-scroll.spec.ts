@@ -148,7 +148,7 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
 // Mirror both conditions rather than just applying CSS zoom to the document.
 for (const zoom of [1,0.9]) test(`zoom ${Math.round(zoom*100)} percent ticker scrolling remains monotonic`, async({browser},info)=>{
  test.setTimeout(120000);
- const ctx=await browser.newContext({viewport:{width:Math.round(1366/zoom),height:Math.round(900/zoom)},deviceScaleFactor:zoom});
+ const ctx=await browser.newContext({viewport:{width:Math.round(1366/zoom),height:Math.round(900/zoom)},deviceScaleFactor:zoom,baseURL:process.env.BASE_URL||'http://127.0.0.1:8123'});
  const page=await ctx.newPage();
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  try{
