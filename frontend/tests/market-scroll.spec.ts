@@ -1,0 +1,89 @@
+import {test,expect} from '@playwright/test';
+
+test.use({launchOptions:{executablePath:process.env.MARKET_SCROLL_BROWSER_PATH}});
+
+async function isolatedProvider(page:import('@playwright/test').Page){
+ await page.route('https://www.tradingview-widget.com/embed-widget/scroll-fixture/**',r=>r.fulfill({contentType:'text/html',body:`<!doctype html><button>Chart control</button><script>addEventListener('wheel',e=>e.preventDefault(),{passive:false});document.querySelector('button').onclick=()=>document.body.dataset.clicked='true';</script>`}));
+ await page.route('https://widgets.tradingview-widget.com/w/br/*.js',r=>{
+  const tag=r.request().url().split('/').pop()!.replace('.js','');
+  // A test-only iframe consumes the wheel just as the real chart does.
+  const body=`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${tag==='tv-tickers'?'440px':'100%'}';this.attachShadow({mode:'open'}).innerHTML=\`<iframe title="Isolated provider" style="width:100%;height:100%;border:0" src="https://www.tradingview-widget.com/embed-widget/scroll-fixture/${tag}"></iframe>\`;}});`;
+  return r.fulfill({contentType:'text/javascript',body});
+ });
+ await page.route('https://s3.tradingview.com/**',r=>r.abort());
+}
+
+for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart without involuntary movement ${width}`,async({page},info)=>{
+ test.setTimeout(60000);
+ await page.setViewportSize({width,height:1080});
+ if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
+ await page.goto('/#/acoes');await expect(page.locator('.stock-item')).toHaveCount(65);
+ await expect(page.locator('tv-advanced-chart')).toBeVisible();await page.evaluate(()=>document.fonts.ready);
+ if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
+ for(const theme of ['dark','light']){
+  await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+  if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(3500);
+  else await page.frameLocator('tv-advanced-chart iframe').getByRole('button',{name:'Chart control'}).waitFor();
+  await page.evaluate(()=>{
+   const chart=document.querySelector('market-page [slot=chart]')!,directory=document.querySelector('market-page [slot=directory]')!;
+   const initial={chart:chart.getBoundingClientRect().y+scrollY,directory:directory.getBoundingClientRect().y+scrollY,ch:chart.getBoundingClientRect().height,dh:directory.getBoundingClientRect().height};
+   const samples:any[]=[];(window as any).scrollCheck={initial,samples};
+   (window as any).scrollCheck.frame=requestAnimationFrame(function tick(t){const c=chart.getBoundingClientRect(),d=directory.getBoundingClientRect();samples.push({t,y:scrollY,c:c.y+scrollY,d:d.y+scrollY,ch:c.height,dh:d.height});(window as any).scrollCheck.frame=requestAnimationFrame(tick)});
+   scrollTo(0,directory.getBoundingClientRect().y+scrollY+500);
+  });
+  await page.waitForTimeout(350);
+  const start=await page.evaluate(()=>scrollY);await page.mouse.move(Math.min(width*.36,500),480);
+  let previous=start;
+  for(let i=0;i<Math.ceil(start/100)+4;i++){
+   await page.mouse.wheel(0,-100);await page.waitForTimeout(45);
+   const current=await page.evaluate(()=>scrollY);
+   expect(current).toBeLessThanOrEqual(previous+1);
+   expect(previous-current).toBeLessThanOrEqual(102);
+   previous=current;
+  }
+  await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(0);
+  await page.waitForTimeout(350);
+  await expect(page.locator('market-page')).not.toHaveClass(/is-page-scrolling/);
+  expect(await page.locator('market-page market-embed').first().evaluate(e=>getComputedStyle(e).pointerEvents)).toBe('auto');
+  if(process.env.MARKET_SCROLL_LIVE!=='1'){
+   const control=page.frameLocator('tv-advanced-chart iframe').getByRole('button',{name:'Chart control'});await control.click();
+   await expect(page.frameLocator('tv-advanced-chart iframe').locator('body')).toHaveAttribute('data-clicked','true');
+  }
+  const stopped=await page.evaluate(()=>scrollY);await page.waitForTimeout(250);expect(await page.evaluate(()=>scrollY)).toBe(stopped);
+  const measurement=await page.evaluate(()=>{const p=(window as any).scrollCheck;cancelAnimationFrame(p.frame);return p});
+  for(const key of ['c','d','ch','dh']){const values=measurement.samples.map((s:any)=>s[key]);expect(Math.max(...values)-Math.min(...values),key).toBeLessThan(2)}
+  await info.attach(`scroll-${theme}.json`,{body:JSON.stringify(measurement),contentType:'application/json'});
+  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:info.outputPath(`market-${theme}.png`),fullPage:true,animations:'disabled'});
+ }
+});
+
+test('scroll protection is released on route change and preserves panel preferences',async({page})=>{
+ await isolatedProvider(page);await page.goto('/#/acoes');
+ const w=page.locator('market-page panel-workspace');await w.getByRole('button',{name:'Personalizar painel',exact:true}).click();
+ await w.getByRole('checkbox',{name:'Panorama do mercado',exact:true}).uncheck();await w.getByRole('button',{name:'Concluir',exact:true}).click();
+ await page.evaluate(()=>scrollTo(0,1500));await expect(page.locator('market-page')).toHaveClass(/is-page-scrolling/);
+ await page.evaluate(()=>location.hash='#/');await expect(page.locator('market-page')).toHaveCount(0);
+ await page.evaluate(()=>scrollTo(0,0));expect(await page.locator('.is-page-scrolling').count()).toBe(0);
+ await page.goto('/#/acoes');await expect(page.locator('market-page [slot=panorama]')).toBeHidden();await expect(page.locator('.stock-item')).toHaveCount(65);
+});
+
+test('downward page gesture reaches the catalog across loaded widgets',async({page})=>{
+ test.setTimeout(90000);
+ if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
+ for(const width of [1366,390]){
+  await page.setViewportSize({width,height:1080});await page.goto('/#/acoes');
+  await expect(page.locator('.stock-item')).toHaveCount(65);await page.evaluate(()=>document.fonts.ready);
+  if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
+  await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(350);
+  const before=await page.locator('[slot=directory]').evaluate(e=>e.getBoundingClientRect().y+scrollY);
+  await page.mouse.move(width*.36,180);
+  let previous=0;
+  for(let i=0;i<25;i++){
+   await page.mouse.wheel(0,120);await page.waitForTimeout(50);
+   const current=await page.evaluate(()=>scrollY);expect(current).toBeGreaterThanOrEqual(previous-1);expect(current-previous).toBeLessThanOrEqual(122);previous=current;
+  }
+  await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(3000);
+  const after=await page.locator('[slot=directory]').evaluate(e=>e.getBoundingClientRect().y+scrollY);expect(Math.abs(after-before)).toBeLessThan(2);
+  await page.waitForTimeout(350);await expect(page.locator('market-page')).not.toHaveClass(/is-page-scrolling/);
+ }
+});
