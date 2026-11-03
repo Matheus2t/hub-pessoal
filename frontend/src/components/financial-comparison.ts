@@ -36,12 +36,12 @@ export class FinancialComparison extends LightElement {
    </div>
    <p class="cvm-support">Dados contábeis anuais da CVM. Cada emissor aparece uma vez, independentemente da classe da ação.</p>
    <div class="financial-controls cvm-company-grid">
-    ${this.selected.map((s,i)=>html`<label for=${`cvm-company-${i}`}>Empresa ${i+1}
+    ${this.selected.map((s,i)=>html`<div class="cvm-company-field"><label for=${`cvm-company-${i}`}>Empresa ${i+1}</label>
      <select id=${`cvm-company-${i}`} .value=${s} @change=${(e:Event)=>{this.selected=this.selected.map((v,j)=>i===j?(e.target as HTMLSelectElement).value:v);void this.load();}}>
       <option value="" .selected=${!s}>${i>=2?'Opcional':'Selecione'}</option>
       ${stocks.map(stock=>html`<option value=${stock.symbol} .selected=${s===stock.symbol}>${stock.symbol} · ${stock.name}</option>`)}
      </select>
-    </label>`)}
+    </div>`)}
    </div>
   </section>
   ${this.loading?html`<p class="cvm-status" role="status">Carregando comparação…</p>`:nothing}
@@ -50,11 +50,11 @@ export class FinancialComparison extends LightElement {
    <section class="cvm-panel cvm-indicators" aria-labelledby="cvm-indicators-title">
     <div class="cvm-panel-heading cvm-panel-heading-responsive">
      <div><p class="cvm-kicker">02 / INDICADORES</p><h2 id="cvm-indicators-title">Resultados financeiros</h2></div>
-     <label class="cvm-period" for="cvm-common-period">Exercício comum
+     <div class="cvm-period"><label for="cvm-common-period">Exercício comum</label>
       <select id="cvm-common-period" .value=${date||''} @change=${(e:Event)=>{this.period=(e.target as HTMLSelectElement).value;}}>
        ${common.map(d=>html`<option value=${d} .selected=${d===date}>${d}</option>`)}
       </select>
-     </label>
+     </div>
     </div>
     <p class="market-note cvm-context">Setores e estruturas contábeis podem ser diferentes. Receita e margens industriais ficam indisponíveis para bancos. ROE usa PL médio e inclui não controladores.</p>
     <div class="financial-table-scroll cvm-table-scroll" tabindex="0" role="region" aria-label="Tabela comparativa de indicadores financeiros">
