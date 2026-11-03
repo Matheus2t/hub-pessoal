@@ -160,3 +160,25 @@ test('diagnostic static quotes keep chart and 65 stock links',async({page})=>{
  await page.reload();
  await expect(section.locator('.market-static-quotes a')).toHaveCount(4);
 });
+
+test('isolated TradingView ticker retains live component and same-site links',async({page})=>{
+ await page.route('https://widgets.tradingview-widget.com/w/br/tv-tickers.js',r=>r.fulfill({
+  contentType:'text/javascript',
+  body:"if(!customElements.get('tv-tickers'))customElements.define('tv-tickers',class extends HTMLElement{connectedCallback(){this.style.display='block';this.textContent='Ticker test'}})"
+ }));
+ await page.route('https://widgets.tradingview-widget.com/w/br/tv-advanced-chart.js',r=>r.fulfill({
+  contentType:'text/javascript',
+  body:"if(!customElements.get('tv-advanced-chart'))customElements.define('tv-advanced-chart',class extends HTMLElement{connectedCallback(){this.style.display='block';this.style.height='500px'}})"
+ }));
+ await page.goto('/?debug-isolated-quotes=1#/acoes');
+ await expect(page.locator('iframe.market-quotes-frame')).toBeVisible();
+ const ticker=page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers');
+ await expect(ticker).toHaveAttribute('direction','vertical');
+ await expect(ticker).toHaveAttribute('symbols','BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
+ await expect(page.locator('market-page [slot=chart] tv-advanced-chart')).toBeVisible();
+ await expect(page.locator('market-page [slot=directory] .stock-item')).toHaveCount(65);
+ await page.evaluate(()=>document.documentElement.dataset.theme='light');
+ await expect(ticker).toHaveAttribute('theme','light');
+ await ticker.evaluate(el=>el.dispatchEvent(new CustomEvent('tv-link-open',{cancelable:true,detail:{context:{symbol:'BMFBOVESPA:PETR4'}}})));
+ await expect(page).toHaveURL(/#\/acoes\/PETR4$/);
+});
