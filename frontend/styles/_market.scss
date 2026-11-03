@@ -2,14 +2,14 @@
 .market-up { color: var(--market-up); }
 .market-down { color: var(--market-down); }
 market-page, stock-chart { display: block; min-width: 0; }
-/* Ações-only: the external ticker widget can update its intrinsic row height.
-   Keep the quote column fixed to prevent shifting the 65-item directory below.
-   Its own content remains scrollable and keyboard accessible when necessary. */
+/* Ações-only: reserve ticker height without a second scroll container.
+   A nested scrollbar here consumed wheel events before the page could move,
+   causing a stuttering gesture over "Ações acompanhadas".
+   The four featured symbols remain linked in the full directory below. */
 market-page.market-terminal:has(panel-workspace[area="actions-overview"]) { overflow-anchor: none; }
 market-page.market-terminal panel-workspace[area="actions-overview"] [slot="quotes"] {
   height: 520px;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
+  overflow: clip;
 }
 
 tradingview-widget { display: block; min-width: 0; }
