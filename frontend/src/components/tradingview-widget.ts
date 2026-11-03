@@ -83,8 +83,21 @@ export class TradingViewWidget extends LightElement {
         };
         widget.addEventListener('tv-link-open', navigate);
         this.cleanups.push(() => widget.removeEventListener('tv-link-open', navigate));
-        this.sizeObserver = new ResizeObserver(entries => widget.setAttribute('direction', entries[0].contentRect.width < 700 ? 'vertical' : 'horizontal'));
-        widget.setAttribute('direction', target.clientWidth < 700 ? 'vertical' : 'horizontal');
+        // Avoid redundant custom-element updates and feedback near the 700px
+        // breakpoint, especially with fractional CSS pixels at 90% browser zoom.
+        // A small hysteresis band prevents alternating directions on subpixel
+        // or scrollbar-width layout changes without disabling responsive modes.
+        const setDirection = (width: number) => {
+          const current = widget.getAttribute('direction');
+          const next = current === 'vertical'
+            ? (width > 725 ? 'horizontal' : 'vertical')
+            : current === 'horizontal'
+              ? (width < 675 ? 'vertical' : 'horizontal')
+              : (width < 700 ? 'vertical' : 'horizontal');
+          if (current !== next) widget.setAttribute('direction', next);
+        };
+        this.sizeObserver = new ResizeObserver(entries => setDirection(entries[0].contentRect.width));
+        setDirection(target.clientWidth);
         target.appendChild(widget); this.sizeObserver.observe(target);
         // Registration/embedding is structural readiness, not a claim of data availability.
         embedded();

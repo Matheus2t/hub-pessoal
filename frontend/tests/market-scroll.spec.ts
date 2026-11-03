@@ -186,3 +186,25 @@ for (const zoom of [1,0.9]) test(`zoom ${Math.round(zoom*100)} percent ticker sc
   expect(ticks.at(-1)!).toBeGreaterThan(ticks[0]+300);
  } finally {await ctx.close();}
 });
+
+// The TradingView ticker custom element can rebuild its layout on each
+// direction attribute update. Guard against feedback around the CSS breakpoint.
+test('fractional zoom ticker orientation does not oscillate near breakpoint', async ({browser}) => {
+ const ctx=await browser.newContext({viewport:{width:1518,height:1000},deviceScaleFactor:0.9,baseURL:process.env.BASE_URL||'http://127.0.0.1:8123'});
+ const page=await ctx.newPage();
+ await isolatedProvider(page);
+ try {
+  await page.goto('/#/acoes');
+  const ticker=page.locator('tradingview-widget[kind=tickers] tv-tickers');
+  const mount=page.locator('tradingview-widget[kind=tickers] .tv-mount');
+  await expect(ticker).toBeVisible();
+  await expect(ticker).toHaveAttribute('direction','vertical');
+  const directions:string[]=[];
+  for(const width of [695,705,698,702,696,704,740,690,660]){
+   await mount.evaluate((el,w)=>(el as HTMLElement).style.width=`${w}px`,width);
+   await page.waitForTimeout(110);
+   directions.push((await ticker.getAttribute('direction'))||'');
+  }
+  expect(directions).toEqual(['vertical','vertical','vertical','vertical','vertical','vertical','horizontal','horizontal','vertical']);
+ } finally {await ctx.close();}
+});
