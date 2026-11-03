@@ -19,7 +19,7 @@ for (const width of [1366,390,320]) {
   for(const [label,href] of entries){
    const link=nav.getByRole('link',{name:label,exact:true});
    await expect(link).toHaveAttribute('href',href);
-   await expect(link).toHaveCSS('display','inline-flex');
+   await expect(link).toHaveCSS('display','flex');
    await expect(link).toHaveCSS('border-top-style','solid');
    await expect(link).toHaveCSS('text-decoration-line','none');
   }
