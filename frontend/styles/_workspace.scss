@@ -97,3 +97,31 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  .simulation-panel { padding: 16px; }
  .unit-controls { flex-wrap: wrap; }
 } }
+
+.fixed-workspace {
+ .rf-results { margin-top: 0; }
+ .rf-simulation .rf-fields { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+ .rf-section-header { margin-bottom: 16px; }
+ .rf-section-header h2,.workspace-panel > h2 { font-size: 17px; }
+ .rf-metrics { gap: 16px; margin: 18px 0; grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .rf-primary,.rf-metrics > div:not(.rf-primary) { padding: 0; background: transparent; }
+ .rf-primary dd { font-size: clamp(26px,2.4vw,34px); }
+ .rf-rescue { font-size: 13px; }
+ .rf-chart { margin: 0; padding: 0; border: 0; }
+ .rf-breakdown,.rf-evolution,.rf-comparison-section { margin-top: 0; border: 0; padding-top: 0; }
+ fixed-income-tools { margin: 0; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+ fixed-income-tools > .rf-panel { padding: 0; border: 0; background: transparent; }
+ .rf-breakdown dl { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .rf-assumptions { max-width: none; }
+ .comparison-workspace .workspace-panel { padding: 18px; }
+ .comparison-workspace .rf-common { padding-top: 0; margin-top: 0; }
+ .comparison-workspace .rf-scenario { border: 1px solid var(--ws-border); padding: 18px; }
+ .comparison-workspace .rf-scenarios { gap: 14px; }
+}
+@media(max-width:600px) { .fixed-workspace {
+ .rf-simulation .rf-fields,.rf-breakdown dl { grid-template-columns: 1fr; }
+ .rf-primary { grid-column: 1/-1; }
+ .comparison-workspace .workspace-panel { padding: 12px; }
+ .comparison-workspace .rf-scenario { padding: 12px; }
+ fixed-income-tools { grid-template-columns: 1fr; }
+} }

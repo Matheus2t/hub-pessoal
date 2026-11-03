@@ -11,7 +11,7 @@ for(const width of [1920,1366,768,390,320])test(`financial simulator workspace $
   await expect(tool.locator('metric-card').first()).toContainText(total);
   const form=await w.locator('[data-panel=form]').boundingBox(),summary=await w.locator('[data-panel=summary]').boundingBox();
   if(width>900){expect(form!.x).toBeLessThan(summary!.x);expect(Math.abs(form!.y-summary!.y)).toBeLessThan(2);}
-  for(const theme of ['dark','light']) {await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath(`${route}-${theme}.png`),fullPage:true,animations:'disabled'});}
+  for(const theme of ['dark','light']) {await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:info.outputPath(`${route}-${theme}.png`),fullPage:true,animations:'disabled'});}
   await w.getByRole('button',{name:'Essencial',exact:true}).click();await expect(w.locator('[data-panel=table]')).toBeHidden();await expect(tool.locator('form')).toBeVisible();
   await w.getByRole('button',{name:'Completo',exact:true}).click();await expect(w.locator('[data-panel=table]')).toBeVisible();
   if(width===1366){

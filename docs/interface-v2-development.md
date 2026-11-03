@@ -59,3 +59,16 @@ calculadora. Nenhuma mudança nos métodos de cálculo, validação ou chamadas 
 13 testes finais de cálculo/layout, 28 de 29 testes iniciais e a correção do
 seletor de tipografia aprovada separadamente. Cinco larguras e dois temas
 inspecionados, com campos e indicadores legíveis.
+
+Etapa D: simulador e comparador com preferências separadas. Campos e avisos
+permanentes; resumo, gráfico, impostos, evolução, cenários e comparador opcionais.
+Mantidos métodos de projeção, tributação, liquidez, cenários e fontes técnicas.
+35 testes de produtos/tributos/interface aprovados, mais 9 testes de ferramentas
+e 5 testes de personalização nas cinco larguras. Seletores novos corrigidos para
+considerar unidades nos labels e o comparador aninhado, sem falha de aplicação.
+Capturas reais revisadas; o link de salto visto em capturas longas com a página
+rolada era artefato do screenshot Chromium: sem foco seu top computado é -80px.
+Capturas novas voltam ao topo antes de registrar; o componente não foi alterado.
+Python completo: 225 aprovados, com temporários em .vercel/v2-pytest-final.
+
+Acabamento D validado novamente: 13/13 testes de simulador/layout aprovados.
