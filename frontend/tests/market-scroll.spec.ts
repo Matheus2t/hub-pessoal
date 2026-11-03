@@ -144,3 +144,19 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
 });
 
+
+
+// A/B preview to isolate the third-party ticker without changing the IBOV widget.
+test('diagnostic static quotes keep chart and 65 stock links',async({page})=>{
+ await isolatedProvider(page);
+ await page.goto('/?debug-static-quotes=1#/acoes');
+ const section=page.locator('market-page [slot=quotes]');
+ await expect(section.locator('.market-static-quotes a')).toHaveCount(4);
+ await expect(section.locator('tv-tickers')).toHaveCount(0);
+ await expect(page.locator('market-page [slot=chart] tv-advanced-chart')).toBeVisible();
+ await expect(page.locator('market-page [slot=directory] .stock-item')).toHaveCount(65);
+ await section.scrollIntoViewIfNeeded();
+ expect(await section.evaluate(e=>getComputedStyle(e).overflowY)).toBe('clip');
+ await page.reload();
+ await expect(section.locator('.market-static-quotes a')).toHaveCount(4);
+});

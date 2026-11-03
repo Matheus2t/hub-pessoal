@@ -180,3 +180,12 @@ market-rankings .financial-table-scroll { margin-block:20px; }
  .distribution-chart svg text { display: none; }
  .distribution-chart-periods { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
 }
+
+
+/* Diagnóstico de zoom 90%: lista nativa sem widget externo, ativada apenas
+   pelo parâmetro ?debug-static-quotes=1. Não altera outros módulos nem rotas. */
+market-page.market-terminal .market-static-quotes { display: grid; gap: 0; min-width: 0; }
+market-page.market-terminal .market-static-quotes a { display: grid; grid-template-columns: 78px minmax(0,1fr) auto; gap: 12px; align-items: center; min-height: 68px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+market-page.market-terminal .market-static-quotes a:last-child { border-bottom: 0; }
+market-page.market-terminal .market-static-quotes a:hover { background: var(--raised); }
+market-page.market-terminal .market-static-quotes a span:nth-child(2) { color: var(--secondary); overflow-wrap: anywhere; }
