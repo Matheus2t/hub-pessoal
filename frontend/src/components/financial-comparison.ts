@@ -60,7 +60,7 @@ export class FinancialComparison extends LightElement {
     <div class="financial-table-scroll cvm-table-scroll" tabindex="0" role="region" aria-label="Tabela comparativa de indicadores financeiros">
      <table class="cvm-table">
       <thead><tr><th scope="col">Indicador</th>
-       ${this.data.map((d,i)=>html`<th scope="col"><span class="cvm-ticker">${d.issuer.symbol}</span><span class="cvm-period-caption">${periods[i]?.start} a ${periods[i]?.end}</span><span class="cvm-period-caption">${periods[i]?.document.scope==='con'?'Consolidado':'Individual'} · v${periods[i]?.document.version}</span></th>`)}
+       ${this.data.map((d,i)=>html`<th scope="col"><span class="cvm-ticker">${d.issuer.symbol}</span><span class="cvm-period-caption">${periods[i]?.end?.split("-").reverse().join("/") || "Não disponível"}</span></th>`)}
       </tr></thead>
       <tbody>${['revenue','profit','equity','roe','net_margin','revenue_growth','profit_growth','loans_equity'].map(k=>html`<tr><th scope="row"><span title=${fields[k][2]}>${fields[k][0]}</span></th>${periods.map(p=>html`<td>${formatFinancial(p?.values[k],fields[k][1])}</td>`)}</tr>`)}</tbody>
      </table>

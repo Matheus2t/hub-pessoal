@@ -35,3 +35,22 @@ for (const width of [1366,768,390,320]){
   expect(await l.evaluate(el=>el.scrollLeft)).toBeGreaterThanOrEqual(0);
  });
 }
+
+test('comparador mostra somente data final sob cada ticker no cabeçalho',async({page})=>{
+ await page.goto('/#/acoes/comparar');
+ const comparator=page.locator('financial-comparison');
+ await comparator.getByLabel('Empresa 1',{exact:true}).selectOption('ITUB4');
+ await comparator.getByLabel('Empresa 2',{exact:true}).selectOption('B3SA3');
+ const headers=comparator.locator('.cvm-indicators .cvm-table thead th');
+ await expect(headers).toHaveCount(3);
+ await expect(headers.nth(1)).toHaveText('ITUB431/12/2025');
+ await expect(headers.nth(2)).toHaveText('B3SA331/12/2025');
+ for(const header of [headers.nth(1),headers.nth(2)]){
+   await expect(header.locator('.cvm-period-caption')).toHaveCount(1);
+   await expect(header).not.toContainText('Consolidado');
+   await expect(header).not.toContainText('Individual');
+   await expect(header).not.toContainText('2025-01-01');
+ }
+ await expect(comparator.locator('.cvm-indicators table tbody tr')).toHaveCount(8);
+ await expect(comparator.getByRole('heading',{name:'Evolução financeira comparada'})).toBeVisible();
+});
