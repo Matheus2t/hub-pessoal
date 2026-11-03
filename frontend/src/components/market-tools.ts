@@ -69,14 +69,14 @@ export class MarketRankings extends LightElement {
      <span class="rk-source-tag">Fonte: CVM</span>
     </div>
     <div class="rk-filter-grid">
-     <label class="rk-field">Setor
-      <select .value=${this.sector} @change=${(e:Event)=>this.sector=(e.target as HTMLSelectElement).value}>
+     <div class="rk-field"><label for="rk-sector">Setor</label>
+      <select id="rk-sector" .value=${this.sector} @change=${(e:Event)=>this.sector=(e.target as HTMLSelectElement).value}>
        <option value="">Todos (agrupados)</option>
        ${sectors.map(s=>html`<option>${s}</option>`)}
       </select>
-     </label>
-     <label class="rk-field">Indicador
-      <select .value=${this.metric} @change=${(e:Event)=>this.metric=(e.target as HTMLSelectElement).value}>
+     </div>
+     <div class="rk-field"><label for="rk-metric">Indicador</label>
+      <select id="rk-metric" .value=${this.metric} @change=${(e:Event)=>this.metric=(e.target as HTMLSelectElement).value}>
        <option value="roe">Maior ROE</option>
        <option value="net_margin">Maior margem líquida</option>
        <option value="roa">Maior ROA</option>
@@ -84,12 +84,12 @@ export class MarketRankings extends LightElement {
        <option value="revenue_growth">Maior crescimento de receita</option>
        <option value="profit_growth">Maior crescimento de lucro</option>
       </select>
-     </label>
-     <label class="rk-field">Exercício
-      <select .value=${date||''} @change=${(e:Event)=>this.date=(e.target as HTMLSelectElement).value}>
+     </div>
+     <div class="rk-field"><label for="rk-date">Exercício</label>
+      <select id="rk-date" .value=${date||''} @change=${(e:Event)=>this.date=(e.target as HTMLSelectElement).value}>
        ${dates.map(d=>html`<option>${d}</option>`)}
       </select>
-     </label>
+     </div>
     </div>
    </section>
    ${this.loading?html`<p class="rk-status" role="status">Carregando amostra…</p>`:nothing}
