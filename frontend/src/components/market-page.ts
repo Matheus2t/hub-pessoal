@@ -103,7 +103,6 @@ export class MarketPage extends LightElement {
       <panel-workspace area=${stock?'actions-company':'actions-overview'} .panels=${panels}>
        <section slot="chart" class="workspace-panel ws-main-chart"><header class="ws-panel-heading"><h2>${stock?'Gráfico · '+stock.symbol:'Ibovespa'}</h2>${stock?html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${()=>{this.advanced=false}}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${()=>{this.advanced=true}}>Avançado</button></div>`:nothing}</header>
         ${!stock||this.advanced?html`<market-embed kind="advanced-chart" .symbol=${stock?.symbol||'IBOV'}></market-embed>`:html`<tradingview-widget kind="overview" .symbol=${stock.symbol}></tradingview-widget>`}
-        <p class="market-note">Dados fornecidos pelo TradingView. Cotações da B3 com atraso de 15 minutos.</p><p class="market-note tv-availability">Se o ativo não estiver disponível no widget, consulte a <a href=${stock?`https://www.tradingview.com/symbols/BMFBOVESPA-${stock.symbol}/`:'https://www.tradingview.com/symbols/BMFBOVESPA-IBOV/'} target="_blank" rel="noopener noreferrer">página do TradingView</a>.</p>
        </section>
        ${stock?html`<section slot="financial" class="workspace-panel"><financial-analysis .symbol=${stock.symbol}></financial-analysis></section>
         <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
