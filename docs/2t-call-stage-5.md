@@ -1,10 +1,43 @@
-# 2T Call — Etapa 5: preparação externa e homologação pendente
+# 2T Call — Etapa 5: integração Render e prévia privada
 
 Data da revisão: 04/11/2026. Branch `codex/2t-call-stage-0`, base `c4c897f` preservada.
-**Não pronto para publicação definitiva.** Não houve criação de conta, contratação,
-cadastro de cartão, deploy externo, merge na main ou alteração de DNS nesta etapa.
-O proprietário informou não possuir contas Render/Koyeb/Oracle/Cloudflare.
+**Prévia publicada e testada; publicação definitiva pendente.** O proprietário
+implantou o sinalizador no Render. Nesta retomada o agente criou somente uma prévia
+no projeto Vercel existente, sem contratação, cartão, merge na main ou alteração de DNS.
 O bloqueio de deploy automático da branch em `vercel.json` permanece ativo.
+
+## Integração real validada em 04/11/2026
+
+- Render: https://twot-call.onrender.com; health `/call/health`.
+- WSS: `wss://twot-call.onrender.com/call/ws`.
+- Prévia: https://matheus2t-h36wjiv6h-matheus2ts-projects.vercel.app/#/call.
+- Deployment: `dpl_6NVguYN7JyG6NWreebpyqpP5L4Yp`, ambiente **Preview**, READY.
+- Fonte enviada: `b6765a06f4774e921521a4a1e8b8c82a1b91512a`, branch do Call.
+- Vercel: projeto `matheus2t`, `prj_nNppFpQ5k2AUn0qNH7Hmrylw5FQ3`, equipe
+  `matheus2ts-projects` / `team_dSOvL9KTwoa3AOEZ2YMhQKQa`.
+- `CALL_SIGNAL_URL` salvo como **Config**, somente Preview, branch
+  `codex/2t-call-stage-0`. Mesmo valor fornecido ao build desta prévia.
+- O proprietário confirmou esta lista exata no Render, sem alterar CALL_ADMIN_KEY:
+
+```text
+CALL_ALLOWED_ORIGINS=https://matheus2t.com.br,https://matheus2t-h36wjiv6h-matheus2ts-projects.vercel.app
+```
+
+| Fronteira testada | Evidência |
+| --- | --- |
+| Health Render | HTTP 200, status ok, modo single-process, media false |
+| WSS com Origin de produção e da prévia | 101; origem indevida recusada com 403 |
+| Rotas internas Render | `/.env`, `/docs`, `/api/health`: 404 |
+| Criar sala sem autorização | Recusado com unauthorized; nenhuma sala criada |
+| Acesso anônimo à prévia | 302 para autenticação Vercel, sem remoção da proteção |
+| Prévia autenticada | HTML, call-config.js, bundle.js, styles.css, SVG e API health: 200 |
+| Navegador → Render → interface | WSS real, erro de credencial sintética inválida exibido, formulário limpo |
+| Criação/aprovação real autenticada | Pendente: proprietário não pôde executar o teste manual nesta sessão |
+
+O teste de prévia usa OIDC temporário somente nos pedidos à sua origem Vercel;
+nenhum header de autenticação/cookie foi enviado ao Render. Traces de rede ficam
+desligados. O arquivo temporário de OIDC foi removido; nenhum segredo foi versionado.
+Não se usou nem se consultou a chave privada do proprietário em automação.
 
 ## Arquitetura e implementação
 
@@ -29,7 +62,7 @@ O bloqueio de deploy automático da branch em `vercel.json` permanece ativo.
   não teve dependências alteradas. Cleanup WSS protegido da propagação de cancelamento
   AnyIO, liberando tarefas, leases e contadores também no encerramento do ASGI.
 
-## Infraestrutura comparada — não contratada
+## Infraestrutura avaliada na preparação
 
 | Critério | Render Free / Hobby | Koyeb Free / Eco | Oracle Always Free |
 | --- | --- | --- | --- |
@@ -55,8 +88,9 @@ Fontes oficiais: [Render Free](https://render.com/docs/free),
 [Oracle cotas/recolhimento](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm),
 [Oracle conta gratuita](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier.htm).
 
-**Escolha preparada, não ativada:** Render Free em workspace Hobby sem cartão para
-homologação pessoal. Precisa aceitar espera inicial e possibilidade de suspensão;
+**Escolha ativa para homologação:** Render Free, implantado pelo proprietário.
+O agente não cadastrou cartão nem consultou dados de cobrança da conta Render.
+Precisa aceitar espera inicial e possibilidade de suspensão;
 isso não aprova disponibilidade continuamente pronta. Se o cadastro exigir cartão,
 não adicioná-lo nem prosseguir sem confirmar contenção real de todos os excedentes.
 Nenhuma opção pesquisada comprovou conjuntamente disponibilidade continuamente
@@ -100,16 +134,17 @@ Fontes: [preços/TTL/contabilização](https://developers.cloudflare.com/realtim
   de 10% resulta em ~R$155 para esse excedente. Não serve para autorizar contratação.
 - Sinalização sem cartão/Free: alvo de R$0, com suspensão ao exceder cotas. Mídia
   não passa no sinalizador; build/minutos e tráfego de controle ainda contam.
-- Sem serviços provisionados nesta execução, gasto novo efetivamente contratado:
+- Sem contratação ou upgrade pago pelo agente, gasto novo efetivamente contratado:
   **R$0**. O teto do proprietário é R$20 para tudo; ele não foi convertido em cobrança
   automática. Câmbio/tributos reais devem ser confirmados antes de qualquer plano pago.
 
-## Configuração e segurança do candidato
+## Configuração e segurança
 
 Arquivos: `render.call.yaml`, `deploy/call/Dockerfile`, `deploy/call/requirements.txt`,
 `scripts/start_2t_call.py`; código de configuração só dentro dos módulos Call.
 O blueprint fixa Free, uma sala, origem `https://matheus2t.com.br`, sem banco,
-sem autodeploy e sem TURN. O URL será o real atribuído pelo provedor, nunca inventado.
+sem autodeploy e sem TURN. A origem adicional da prévia foi configurada pelo
+proprietário no ambiente, sem alterar o blueprint padrão de produção.
 
 - `CALL_PROXY_MODE=render` só inicia no runtime Render com URL gerenciada compatível.
   Host e HTTPS de borda são validados; sem confiança em X-Forwarded-For arbitrário.
@@ -117,39 +152,41 @@ sem autodeploy e sem TURN. O URL será o real atribuído pelo provedor, nunca in
   IPs falsos não reinicia as cotas. Health nativo pode usar HTTP interno, sem segredos.
 - CORS de GET health somente para origens configuradas; WSS tem validação própria
   de Origin. Não há CORS curinga, cookie, token na URL ou credencial de API no bundle.
-- Hosted exige nova credencial de proprietário de pelo menos 48 caracteres, e
+- Hosted exige uma credencial de proprietário de pelo menos 48 caracteres, e
   recusa o identificador sintético conhecido dos testes. Usar 64 caracteres aleatórios
   e exclusivos no Secret/Environment do provedor, nunca valores desta conversa/testes.
 - Criação autenticada, convite 256 bits/TTL, aprovação, isolamento, epochs, uma tela,
   limites de tamanho/frequência, filas e cleanup das etapas anteriores preservados.
 - Diagnostics/logs não incluem nomes, áudio/vídeo, SDP, ICE bruto ou segredos.
-- Nenhum segredo foi configurado em provedor. Não reutilizar o segredo antigo da
-  homologação temporária; o usuário deve inserir o novo diretamente no painel seguro.
+- A credencial existente no Render foi preservada: não foi recuperada, exibida,
+  alterada ou usada em testes automatizados. Não trocar a chave por uma sintética
+  para facilitar testes. O proprietário deve digitá-la somente na interface/painel.
 
 ## Execução e monitoramento
 
-1. Criar conta Render e workspace Hobby **sem cartão**, fora do chat. Se indisponível,
-   parar. Depois vincular este repositório/branch e usar o arquivo `render.call.yaml`.
-   Nenhum desses recursos foi criado nesta execução.
-2. No gerenciador de segredos Render, inserir a nova `CALL_ADMIN_KEY` de 64 caracteres.
-   Não colar a chave no chat, arquivo, CLI, URL ou Git. O runtime fornece a URL externa.
-3. Antes de configurar o site, comprovar o serviço pelo URL real usando:
+Render e prévia já estão ativos. Para uma verificação pontual sem credenciais:
 
 ```powershell
-python scripts/check_2t_call.py wss://HOST_REAL/call/ws --origin https://matheus2t.com.br
+python scripts/check_2t_call.py wss://twot-call.onrender.com/call/ws --origin https://matheus2t-h36wjiv6h-matheus2ts-projects.vercel.app
 ```
 
-HOST_REAL é marcador explícito, não endereço existente. A sonda é de execução única,
+A sonda é de execução única,
 sem credencial, sala ou mídia: health/CORS, WSS 101, Origin errado 403 e rotas privadas
 404. Não agendá-la para manter um plano gratuito acordado. Health expõe somente
 status/modo/boot/uptime e ausência de mídia, sem atividade das salas.
 
-4. Para homologação física anterior à produção, preparar uma prévia HTTPS privada
-   autorizada do frontend com `CALL_SIGNAL_URL` real. Adicionar sua origem exata
-   em `CALL_ALLOWED_ORIGINS`, sem curinga. Não remover o bloqueio de autodeploy da
-   branch. Essa prévia ainda não foi criada; não usar a produção como se já tivesse Call.
-   Configurar o site de produção somente depois dos critérios de liberação.
-5. Usar health check nativo Render para reinícios e notificações gratuitas de falha,
+Para reconstruir uma prévia, verificar primeiro o projeto/branch e executar:
+
+```powershell
+npx --yes vercel@65.11.0 deploy . --environment preview --project prj_nNppFpQ5k2AUn0qNH7Hmrylw5FQ3 --scope matheus2ts-projects --build-env CALL_SIGNAL_URL=wss://twot-call.onrender.com/call/ws --yes
+```
+
+Isso gera outra URL: adicionar sua origem exata ao Render antes do teste. A proteção
+Vercel e o bloqueio de autodeploy devem permanecer. Não usar --prod/promote nesta etapa.
+A proteção da prévia é independente do convite Call: cada dispositivo de homologação
+também precisa de acesso autorizado à prévia. Não compartilhar senha da conta Vercel.
+
+Usar health check nativo Render para reinícios e notificações gratuitas de falha,
    e consultar cotas/build/banda no painel. Alertas não substituem limites de cobrança.
    Nenhum dashboard, plataforma de observabilidade ou ping externo foi contratado.
 
@@ -205,7 +242,75 @@ health antes do Playwright e encerrar esses dois processos próprios no final.
 São fixtures locais; não são comandos de hospedagem pública. O ambiente isolado
 é descartável/ignorado e precisa ser criado a partir de `deploy/call/requirements.txt`.
 
-## Resultados automatizados e limitações
+## Resultados desta retomada — pré-publicação
+
+| Verificação | Resultado atual |
+| --- | --- |
+| Typecheck + build com CALL_SIGNAL_URL real | Aprovados; configuração/CSP conferidas |
+| Python Call no runtime isolado | 96 aprovados, 6,72 s; um aviso TestClient/httpx |
+| Playwright de mídia | 3 aprovados, 21,2 s |
+| Playwright de voz | 5 aprovados, 20 s |
+| Playwright de salas | 3 aprovados, 26,4 s |
+| Playwright externo/interface em loopback | 5 aprovados, 28 s, incluindo restart real do processo |
+| Regressão direcionada das demais áreas | 39 aprovados, 48,8 s |
+| Playwright da prévia contra Render real | 1 aprovado, 9,1 s |
+| Auditoria seca do upload | 519 entradas, 17.445.118 bytes; nenhum caminho privado selecionado |
+
+São **56 verificações Playwright aprovadas nesta retomada**, em execuções direcionadas.
+Não somar os 96 Python aos 326 históricos como casos diferentes. Nenhuma suíte completa
+foi repetida sem necessidade. Não houve falhas nessas execuções atuais.
+
+`call-render-preview.spec.ts` verifica build/configuração, CSP, WSS nativo real,
+recusa da credencial sintética inválida, ausência de mixed content e de autenticação
+Vercel em pedidos Render, limpeza do formulário e navegação. Larguras 1366/768/390/320
+nos dois temas passaram; capturas da prévia em desktop escuro/celular claro foram
+inspecionadas. Receber unauthorized não comprova criação/admissão autenticada de sala.
+
+As mídias foram testadas com WebRTC/RTP nativos entre contextos locais, com áudio
+decodificado, frames, cinco participantes, uma tela, qualidade e cleanup. Entradas
+são sintéticas: **não são testes de câmera/microfone físicos ou de duas redes**.
+
+Após o proprietário salvar a origem da prévia, o Render respondeu com uptime 51 s,
+health 200 e WSS 101. Não houve ensaio de chamada ativa atravessando esse restart.
+Não se mediu wake-up após suspensão real de 15 min; apenas os cenários controlados
+de indisponibilidade/cancelamento/limite de espera da interface.
+
+O proprietário informou que não pode realizar agora o teste manual de criar sala,
+abrir o convite noutra aba e aprovar o segundo participante. Ficou pendente, sem
+trocar a credencial do serviço ou usá-la na automação. TURN/relay real, cinco pessoas
+em redes externas e sessão física de 30 minutos também permanecem pendentes.
+
+CLI 65.11.0 usado após autorização do proprietário. O plugin Vercel enxergava somente
+outro projeto; o CLI confirmou o projeto correto. `env run` falhou neste ambiente;
+usou-se OIDC temporário obtido pelo fluxo oficial Development, cuja listagem não
+continha variáveis privadas. O arquivo ignorado foi removido após os testes.
+Servidores próprios em loopback foram encerrados com identidade verificada.
+
+### Fechamento após a interrupção por limite de uso
+
+- HEAD local/remoto conferidos: `b6765a06f4774e921521a4a1e8b8c82a1b91512a`.
+  O teste da prévia e a sonda já estavam publicados; somente este documento faltava
+  versionar. Nenhuma funcionalidade foi recriada ou modificada nesta retomada.
+- A revisão automática anterior não concluiu por limite de uso; não foi um parecer
+  de insegurança. Usaram-se comandos separados, com a revisão normal quando exigida,
+  sem mudança de políticas ou contorno de aprovação.
+- O deployment existente continuou Preview/Ready. O único teste Playwright
+  reexecutado passou novamente (caso: 30,4 s; execução: 32,3 s). É repetição de um
+  dos 56 casos acima, não um caso adicional. As suítes aprovadas foram preservadas.
+- Sonda externa atual: HTTPS 200, modo single-process, WSS 101, Origin indevida 403,
+  rotas internas bloqueadas. Uptime observado: 28 s. O tempo maior é compatível com
+  inicialização recente; sem logs administrativos não se atribui a causa a uma
+  suspensão específica nem se promete disponibilidade continuamente pronta.
+- `git fsck --no-dangling` e `git diff --check` aprovados. Nenhum padrão de chave
+  privada/token encontrado no documento pendente. Artefatos estão ignorados;
+  não há `.env`, `.pem` ou `.key` versionados. Arquivo temporário OIDC removido.
+- Sem testes ou servidores locais remanescentes. Não houve novo deployment,
+  alteração de Origin, mudança de credencial, merge ou publicação definitiva.
+
+## Histórico da preparação anterior — base e0de535
+
+Os resultados abaixo pertencem à execução anterior e não substituem os testes
+atuais acima. São preservados para rastreabilidade, inclusive falhas e bloqueios.
 
 - Typecheck e build: aprovados, repetidos no fechamento. `git diff --check` aprovado.
   Blueprint YAML válido: plano Free, autodeploy desligado, segredo sem valor e TURN none.
@@ -263,48 +368,48 @@ São fixtures locais; não são comandos de hospedagem pública. O ambiente isol
 - Docker CLI existe, mas daemon não estava disponível e Docker Desktop não foi
   encontrado no caminho padrão. Na retomada, `docker version` confirmou ausência
   do pipe `dockerDesktopLinuxEngine`. **Build da imagem bloqueado**, não aprovado.
-- Produção/Render real, suspensão real, relay real, 30 min e dispositivos físicos:
-  **não executados**. Não extrapolar loopback ou contratos HTTP para esses resultados.
+- Na preparação anterior, Render real, suspensão real, relay real, 30 min e
+  dispositivos físicos não tinham sido testados. A integração externa atual está
+  registrada acima; as demais homologações não devem ser inferidas dela.
 
 ## Roteiro físico indispensável e liberação
 
-Depois de prover a infraestrutura e provar contenção de custos do relay:
+Com a infraestrutura e as origens atuais, iniciar a homologação com STUN ativo e
+TURN desligado. Se NAT/firewall impedir mídia, registrar a rede e o diagnóstico; não
+contratar relay nesta etapa para contornar o problema.
 
 1. PC no Wi-Fi e celular no 4G/5G, fones para evitar feedback; acessar o site autorizado.
-2. Criar sala com a credencial nova, copiar convite privado e aprovar a segunda pessoa.
+2. Criar sala com a credencial existente do proprietário, digitada somente no
+   formulário; copiar convite privado e aprovar a segunda pessoa.
 3. Confirmar voz nas duas direções, mute/unmute, câmera opcional e início/fim da tela.
    Selecionar aba com áudio quando suportado; confirmar recepção, não somente a prévia.
 4. Entrar com mais três amigos (cinco pessoas), rejeitar uma sexta tentativa, testar
    entrada tardia, saída durante tela, perda/retorno de rede e encerramento pelo navegador.
 5. Manter uso por 30 min; copiar apenas diagnóstico sanitizado com RTT/jitter/perda,
    frames/FPS/upload. Confirmar dispositivos liberados no fim.
-6. Testar relay de verdade, incluindo redes restritivas quando previsto. Credenciais
-   configuradas não bastam: diagnóstico deve comprovar candidate-pair relay e mídia.
+6. Se TURN vier a ser habilitado numa entrega autorizada, testar relay de verdade.
+   Credenciais configuradas não bastam: comprovar candidate-pair relay e mídia,
+   incluindo redes restritivas, depois de confirmar contenção financeira.
 
-**Bloqueios obrigatórios:** conta/serviço externo inexistente; aceitação de cold start
-ou outra escolha compatível; imagem não construída; custo TURN sem hard cap comprovado;
-TURN real não validado; Firefox não executado; mídia Safari/WebKit não homologada;
-testes físicos/30 min ausentes; regressão de release ainda necessária diante da
-intermitência registrada. Não remover proteção de preview,
-criar PR de integração, fazer merge ou deploy definitivo com esses itens pendentes.
+**Bloqueios para produção:** criação/admissão real com proprietário ainda não
+homologadas; dispositivos/redes reais e 30 min ausentes; limitações de
+STUN/Render/custo ainda sem aceite final; compatibilidade Firefox e
+mídia Safari/WebKit pendentes conforme o histórico. Não fazer merge/deploy definitivo
+ou retirar a proteção de preview com esses critérios pendentes.
 
 Próximas ações, nesta ordem:
 
-1. Habilitar um Docker Engine local autorizado (não foi instalado nesta execução)
-   e validar `docker build -f deploy/call/Dockerfile -t 2t-call:stage5 .` em Python 3.12.
-2. Criar a conta Render sem cartão e confirmar cotas do workspace; aceitar seu cold
-   start apenas para homologação. Se exigir cartão ou não assegurar bloqueio de
-   excedente, parar e escolher outra opção antes de provisionar.
-3. Inserir segredo novo diretamente no painel, subir o sinalizador isolado e medir
-   HTTPS/WSS, reinícios e wake-up no endereço real. Autorizar/configurar a prévia
-   privada do frontend e a origem correspondente; nada disso já está publicado.
-4. Definir relay com contenção financeira comprovada dentro de R$20 totais e testar
-   tráfego relay real. Sem solução comprovada, TURN continua desligado e não se
-   promete conexão em qualquer rede. Revalidar Firefox num ambiente autorizado e
-   mídia Safari/WebKit num sistema com as APIs necessárias, sem desativar proteções.
-5. Executar o roteiro físico acima, repetir a regressão de release e só então
-   liberar integração à main/Vercel,
-   registrando os deployments de retorno. Segredos nunca passam pelo chat/Git.
+1. Na prévia, o proprietário cria a sala digitando a credencial diretamente no
+   formulário, copia o convite noutra aba/dispositivo e aprova a entrada. Confirmar
+   Conectado, 2/5 e encerramento. Não mandar chave ou convite para o chat.
+2. Executar o roteiro físico acima, incluindo duas redes, mídias, cinco pessoas,
+   30 min, reconexão e wake-up real após inatividade. Sem pings para evitar suspensão.
+3. Manter TURN desligado enquanto não houver orçamento rigidamente controlado;
+   documentar o aceite das redes que falham sem relay. Não contratar para contornar
+   falhas. Revalidar os navegadores bloqueados num ambiente compatível/autorizado.
+4. Confirmar versão/logs do serviço na conta Render, testar rollback e regressão
+   final; só então integrar à main e liberar produção, se os critérios forem atendidos.
+   O agente não teve acesso administrativo aos logs/variáveis internas Render.
 
 ## Rollback e manutenção
 
@@ -313,9 +418,9 @@ Checkpoint da implementação anterior Call: `c4c897f339a2271d5f650a9f3ce3b01e8b
 Commits intermediários preservados no GitHub: `c1190b9` (preparação da infraestrutura)
 e `e8cc878` (runtime isolado e cleanup WSS). Testes e este relatório seguem na mesma
 branch; a main não foi integrada.
-O ID real do deployment Vercel anterior ainda precisa ser registrado com acesso à
-conta; não foi inventado. A consulta do conector Vercel esteve sem permissão na
-preparação anterior. Não houve release nesta etapa para reverter.
+Produção confirmada antes e depois da prévia: `dpl_B2V7ZPKjJdPXGsBJgnFYFxyYe3vE`,
+URL `https://matheus2t-91rfb87sq-matheus2ts-projects.vercel.app`, SHA main acima.
+O domínio `https://matheus2t.com.br/` continuou HTTP 200. Não houve release de produção.
 
 Antes de publicar: registrar ID da produção ativa e SHA, comparar a main atual,
 resolver conflitos preservando ambos os históricos e confirmar artefato anterior
@@ -325,5 +430,10 @@ No Render, reimplantar o último commit validado (Free mantém rollback limitado
 dois deploys anteriores) ou usar Manual Deploy do SHA conhecido. Isso perde salas,
 mas não dados financeiros. Ensaiar retorno em homologação antes de liberar produção.
 
-Não há PR, merge, deploy ou URL pública nova. O endereço objetivo continua
-`https://matheus2t.com.br/#/call`, **não validado como Call funcional em produção**.
+Para retirar apenas esta homologação, excluir somente o deployment Preview
+`dpl_6NVguYN7JyG6NWreebpyqpP5L4Yp` pelo painel, retirar sua origem do Render e,
+se desejado, remover só a Config CALL_SIGNAL_URL desta branch/Preview. Preservar
+as outras origens, o projeto, a chave e as variáveis Production. Nada disso foi apagado.
+
+Não há PR de integração, merge ou deploy definitivo. O Call está disponível apenas
+na prévia protegida; `https://matheus2t.com.br/#/call` não foi publicado nesta etapa.
