@@ -8,7 +8,7 @@ test.skip(!target,'Provide the exact authorized HTTPS preview or public deployme
 test.setTimeout(120000); // Includes the existing 90-second, user-initiated cold-start wait.
 test.use({trace:'off',video:'off',screenshot:'off'});
 
-test('HTTPS deployment loads Render configuration and refuses unauthenticated room access',async({page})=>{
+test('HTTPS deployment loads Render configuration and refuses unauthenticated room access',async({page,browser})=>{
  const origin=new URL(target!).origin;
  expect(origin.startsWith('https://')).toBe(true);
  expect(publicUrl?origin==='https://matheus2t.com.br':new URL(origin).hostname.endsWith('.vercel.app')).toBe(true);
@@ -52,10 +52,16 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  await expect(page.locator('call-page')).toHaveCount(0);
  if(publicUrl){
   // Public, deliberately invalid invitation: no owner's credential or real room.
-  const response=await page.goto(origin+'/#/call/'+'0'.repeat(32)+'?invite='+'0'.repeat(43));
-  expect(response?.status()).toBe(200);expect(new URL(page.url()).origin).toBe(origin);
-  await page.getByLabel('Seu nome',{exact:true}).fill('Guest smoke');
-  await page.getByRole('button',{name:'Entrar por convite',exact:true}).click();
-  await expect(page.getByRole('alert')).toContainText('Convite inválido ou expirado.',{timeout:95000});
+  // A new context models a guest without cookies and forces a real document load;
+  // hash-only navigation in the existing page correctly has no HTTP response.
+  const guestContext=await browser.newContext();
+  try{
+   const guest=await guestContext.newPage();
+   const response=await guest.goto(origin+'/#/call/'+'0'.repeat(32)+'?invite='+'0'.repeat(43));
+   expect(response?.status()).toBe(200);expect(new URL(guest.url()).origin).toBe(origin);
+   await guest.getByLabel('Seu nome',{exact:true}).fill('Guest smoke');
+   await guest.getByRole('button',{name:'Entrar por convite',exact:true}).click();
+   await expect(guest.getByRole('alert')).toContainText('Convite inválido ou expirado.',{timeout:95000});
+  }finally{await guestContext.close()}
  }
 });

@@ -1,15 +1,20 @@
-# 2T Call — Etapa 5: integração Render e prévia privada
+# 2T Call — publicação inicial em produção e homologação pendente
 
 Data da revisão: 04/11/2026. Branch `codex/2t-call-stage-0`, base `c4c897f` preservada.
-**Publicação inicial em produção expressamente autorizada em 04/11/2026.**
+**Publicação inicial realizada e testada em 04/11/2026.**
 O proprietário autorizou integrar à main e publicar no domínio existente sem aguardar
 testes físicos, cinco pessoas ou 30 minutos. Falhas críticas de segurança, build ou
 funcionamento básico continuam bloqueando a publicação. Não declarar homologação completa.
 O bloqueio de deploy automático da branch em `vercel.json` permanece ativo.
 
-## Publicação inicial autorizada — preparação
+## Publicação inicial verificada — produção
 
-- Destino público: https://matheus2t.com.br/#/call, sem login Vercel.
+- URL pública: https://matheus2t.com.br/#/call, sem login Vercel, confirmada por
+  navegador anônimo e por convidado em um contexto novo sem cookies.
+- Integração: [PR #25](https://github.com/Matheus2t/hub-pessoal/pull/25), merge
+  `5c9aa4fc7fe636d0029b66637163e86cb90204bb`, preservando os dois históricos.
+- Deployment inicial validado: `dpl_GU1xJqq8AFZzuUPsWUw7TnvYgwKM`, Production/READY,
+  `https://matheus2t-70ms6fsu2-matheus2ts-projects.vercel.app`, associado ao domínio público.
 - Production recebeu `CALL_SIGNAL_URL=wss://twot-call.onrender.com/call/ws` como
   Config pública. A Config Preview anterior foi preservada.
 - Proteção Vercel mantida em `all_except_custom_domains`; não foi desativada globalmente.
@@ -24,7 +29,30 @@ O bloqueio de deploy automático da branch em `vercel.json` permanece ativo.
   Nenhuma falha nessas execuções. As mídias sintéticas não equivalem a dispositivos físicos.
 - Render real confirmou health 200, WSS 101 com Origin de produção, recusa 403 de
   origem indevida e recusa de criação sem credencial/entrada com convite inexistente.
-- Os resultados e identificadores do deploy serão registrados após a validação pública.
+- Pós-deploy: teste Call público aprovado (6 s), incluindo configuração, CSP, WSS
+  real, recusa da credencial sintética inválida, formulário limpo e convite inexistente
+  aberto sem login. Responsividade: 1366/768/390/320, temas claro e escuro; capturas
+  reais de desktop e celular inspecionadas. Nenhuma credencial real foi usada.
+- Smoke HTTP em produção aprovado: HTML, JavaScript, CSS, SVG e `/api/health` 200;
+  cálculo financeiro sintético de referência retornou 1.333,31 como esperado.
+- Início, Calculadoras, Ações, Renda Fixa, Learn e os três Times abriram em navegador
+  mobile anônimo, HTTP 200, módulos visíveis e sem overflow horizontal. Isso não
+  substitui homologação de todas as fontes externas/TradingView ao vivo.
+- Falha encontrada no primeiro teste público: navegação apenas de hash devolve
+  response nula no Playwright. Corrigido o teste para abrir o convite em contexto
+  novo, modelando um convidado sem cookies e preservando a exigência de HTTP 200.
+  O reteste passou; não foi necessário mudar o funcionamento da aplicação.
+- O sinalizador não foi reimplantado: os módulos Call não mudaram em relação à
+  prévia homologada. HTTP/WSS e controles de acesso reais foram confirmados.
+- Logs consultados do deployment inicial: zero registros error/fatal na janela de
+  20 minutos; 126 linhas de build analisadas sem padrões de chave/token ou erro fatal.
+  Essa consulta limitada não é uma garantia de ausência de falhas fora da janela.
+- Salas, convites, aprovação, voz, tela, áudio separado, câmera e cinco participantes
+  estão implementados e cobertos pelos testes locais. Criação com a chave real e
+  mídia entre computador/celular em duas redes permanecem para o proprietário.
+- Ajustes posteriores exclusivamente de testes/documentação podem gerar outro
+  deployment da mesma aplicação. Esta seção registra o primeiro artefato público
+  efetivamente validado, não um identificador autorreferente do commit deste relatório.
 
 ## Integração real validada em 04/11/2026
 
@@ -438,11 +466,11 @@ Checkpoint da implementação anterior Call: `c4c897f339a2271d5f650a9f3ce3b01e8b
 Commits intermediários preservados no GitHub: `c1190b9` (preparação da infraestrutura)
 e `e8cc878` (runtime isolado e cleanup WSS). Testes e este relatório seguem na mesma
 branch; a main não foi integrada.
-Produção confirmada antes e depois da prévia: `dpl_B2V7ZPKjJdPXGsBJgnFYFxyYe3vE`,
+Produção anterior, registrada antes e depois da prévia: `dpl_B2V7ZPKjJdPXGsBJgnFYFxyYe3vE`,
 URL `https://matheus2t-91rfb87sq-matheus2ts-projects.vercel.app`, SHA main acima.
-O domínio `https://matheus2t.com.br/` continuou HTTP 200. Não houve release de produção.
+O domínio continuou HTTP 200; esse deployment é a versão de retorno anterior ao Call.
 
-Antes de publicar: registrar ID da produção ativa e SHA, comparar a main atual,
+Antes de futuras publicações: registrar ID da produção ativa e SHA, comparar a main atual,
 resolver conflitos preservando ambos os históricos e confirmar artefato anterior
 disponível. Em falha de navegação/API, vazamento, custo ou conexão relevante, promover
 novamente aquele deployment no painel Vercel; nunca reset/force-push na main.
@@ -455,5 +483,5 @@ Para retirar apenas esta homologação, excluir somente o deployment Preview
 se desejado, remover só a Config CALL_SIGNAL_URL desta branch/Preview. Preservar
 as outras origens, o projeto, a chave e as variáveis Production. Nada disso foi apagado.
 
-O registro histórico da prévia acima foi preservado. A nova autorização permite
-publicação inicial no domínio público; seu resultado será registrado após o deploy.
+O registro histórico da prévia foi preservado. O Call está publicado no domínio
+público e as prévias continuam protegidas. A homologação física permanece pendente.
