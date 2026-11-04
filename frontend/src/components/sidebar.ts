@@ -18,6 +18,7 @@ export class AppSidebar extends LightElement {
         <team-shortcuts .page=${this.page}></team-shortcuts>
       </details>
       <a class="nav-item" href="#/learn" aria-current=${this.page.startsWith('learn')?'page':'false'}>Learn</a>
+      <a class="nav-item" href="#/call" aria-current=${this.page==='call'?'page':'false'}>2T Call</a>
     </nav>`;
   }
 }

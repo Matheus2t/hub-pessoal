@@ -1,0 +1,26 @@
+# Candidate only. Apply ONLY to a Hobby workspace without a payment method.
+# Free sleeps after inactivity; this is not a guarantee of continuously warm service.
+services:
+  - type: web
+    name: 2t-call
+    runtime: docker
+    branch: codex/2t-call-stage-0
+    plan: free
+    region: virginia
+    dockerfilePath: ./deploy/call/Dockerfile
+    dockerContext: .
+    autoDeployTrigger: "off"
+    healthCheckPath: /call/health
+    envVars:
+      - key: CALL_PROXY_MODE
+        value: render
+      - key: CALL_ALLOWED_ORIGINS
+        value: https://matheus2t.com.br
+      - key: CALL_SERVE_FRONTEND
+        value: "false"
+      - key: CALL_MAX_ROOMS
+        value: "1"
+      - key: CALL_TURN_PROVIDER
+        value: none
+      - key: CALL_ADMIN_KEY
+        sync: false
