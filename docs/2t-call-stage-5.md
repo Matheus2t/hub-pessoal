@@ -1,10 +1,30 @@
 # 2T Call — Etapa 5: integração Render e prévia privada
 
 Data da revisão: 04/11/2026. Branch `codex/2t-call-stage-0`, base `c4c897f` preservada.
-**Prévia publicada e testada; publicação definitiva pendente.** O proprietário
-implantou o sinalizador no Render. Nesta retomada o agente criou somente uma prévia
-no projeto Vercel existente, sem contratação, cartão, merge na main ou alteração de DNS.
+**Publicação inicial em produção expressamente autorizada em 04/11/2026.**
+O proprietário autorizou integrar à main e publicar no domínio existente sem aguardar
+testes físicos, cinco pessoas ou 30 minutos. Falhas críticas de segurança, build ou
+funcionamento básico continuam bloqueando a publicação. Não declarar homologação completa.
 O bloqueio de deploy automático da branch em `vercel.json` permanece ativo.
+
+## Publicação inicial autorizada — preparação
+
+- Destino público: https://matheus2t.com.br/#/call, sem login Vercel.
+- Production recebeu `CALL_SIGNAL_URL=wss://twot-call.onrender.com/call/ws` como
+  Config pública. A Config Preview anterior foi preservada.
+- Proteção Vercel mantida em `all_except_custom_domains`; não foi desativada globalmente.
+- A main `b4405e3717b02802ed778d85dc87a2c32b780478` tinha 17 commits ainda ausentes
+  no Call. Foram incorporados sem conflitos, preservando os ajustes de Calculadoras,
+  Ações e seus testes. O histórico do Call foi mantido; integração final por PR.
+- Rollback preparado: `dpl_B2V7ZPKjJdPXGsBJgnFYFxyYe3vE`, produção anterior estável.
+- Não houve alteração de segredos Render, ativação de TURN ou contratação de serviços.
+- Validação da versão conciliada: typecheck/build aprovados; 101 testes Python
+  Call aprovados; regressão das demais áreas com 287 aprovados e um TradingView live
+  opt-in ignorado; três testes de mídia com cinco navegadores locais aprovados.
+  Nenhuma falha nessas execuções. As mídias sintéticas não equivalem a dispositivos físicos.
+- Render real confirmou health 200, WSS 101 com Origin de produção, recusa 403 de
+  origem indevida e recusa de criação sem credencial/entrada com convite inexistente.
+- Os resultados e identificadores do deploy serão registrados após a validação pública.
 
 ## Integração real validada em 04/11/2026
 
@@ -372,7 +392,7 @@ atuais acima. São preservados para rastreabilidade, inclusive falhas e bloqueio
   dispositivos físicos não tinham sido testados. A integração externa atual está
   registrada acima; as demais homologações não devem ser inferidas dela.
 
-## Roteiro físico indispensável e liberação
+## Homologação física posterior à publicação inicial
 
 Com a infraestrutura e as origens atuais, iniciar a homologação com STUN ativo e
 TURN desligado. Se NAT/firewall impedir mídia, registrar a rede e o diagnóstico; não
@@ -391,11 +411,11 @@ contratar relay nesta etapa para contornar o problema.
    Credenciais configuradas não bastam: comprovar candidate-pair relay e mídia,
    incluindo redes restritivas, depois de confirmar contenção financeira.
 
-**Bloqueios para produção:** criação/admissão real com proprietário ainda não
-homologadas; dispositivos/redes reais e 30 min ausentes; limitações de
-STUN/Render/custo ainda sem aceite final; compatibilidade Firefox e
-mídia Safari/WebKit pendentes conforme o histórico. Não fazer merge/deploy definitivo
-ou retirar a proteção de preview com esses critérios pendentes.
+**Pendências de homologação, não bloqueantes para a publicação inicial autorizada:**
+criação/admissão real com a chave do proprietário; dispositivos/redes reais; cinco
+pessoas e 30 minutos; limitações STUN/Render; Firefox e Safari reais. Permanecem
+bloqueantes falhas críticas de segurança, compilação ou funcionamento básico.
+Não retirar a proteção das prévias nem ativar TURN/cobrança para facilitar testes.
 
 Próximas ações, nesta ordem:
 
@@ -407,8 +427,8 @@ Próximas ações, nesta ordem:
 3. Manter TURN desligado enquanto não houver orçamento rigidamente controlado;
    documentar o aceite das redes que falham sem relay. Não contratar para contornar
    falhas. Revalidar os navegadores bloqueados num ambiente compatível/autorizado.
-4. Confirmar versão/logs do serviço na conta Render, testar rollback e regressão
-   final; só então integrar à main e liberar produção, se os critérios forem atendidos.
+4. Confirmar versão/logs do serviço na conta Render e registrar os resultados da
+   homologação em produção. Corrigir regressões por alterações revisadas e testadas.
    O agente não teve acesso administrativo aos logs/variáveis internas Render.
 
 ## Rollback e manutenção
@@ -435,5 +455,5 @@ Para retirar apenas esta homologação, excluir somente o deployment Preview
 se desejado, remover só a Config CALL_SIGNAL_URL desta branch/Preview. Preservar
 as outras origens, o projeto, a chave e as variáveis Production. Nada disso foi apagado.
 
-Não há PR de integração, merge ou deploy definitivo. O Call está disponível apenas
-na prévia protegida; `https://matheus2t.com.br/#/call` não foi publicado nesta etapa.
+O registro histórico da prévia acima foi preservado. A nova autorização permite
+publicação inicial no domínio público; seu resultado será registrado após o deploy.
