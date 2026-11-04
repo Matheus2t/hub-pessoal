@@ -6,6 +6,11 @@ on:
       - 'frontend/src/components/market-page.ts'
       - 'frontend/src/components/tradingview-widget.ts'
       - 'frontend/tests/market-scroll.spec.ts'
+      - 'frontend/tests/market-nav.spec.ts'
+      - 'frontend/src/components/financial-comparison.ts'
+      - 'frontend/tests/comparison-layout.spec.ts'
+      - 'frontend/src/components/market-tools.ts'
+      - 'frontend/tests/rankings-layout.spec.ts'
       - '.github/workflows/market-scroll-regression.yml'
   push:
     branches:
@@ -31,6 +36,11 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/market-scroll.spec.ts
+      - name: Test ações navigation chips
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/market-nav.spec.ts
       - name: Test market adapter and responsive panels
         env:
           PW_CHANNEL: chromium
@@ -38,6 +48,16 @@ jobs:
         run: |
           npx playwright test frontend/tests/market.spec.ts --grep 'TradingView adapter'
           npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market terminal'
+      - name: Test financial comparison redesign
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/comparison-layout.spec.ts
+      - name: Test rankings CVM redesign
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/rankings-layout.spec.ts
       - name: Test real TradingView ticker layout
         env:
           PW_CHANNEL: chromium

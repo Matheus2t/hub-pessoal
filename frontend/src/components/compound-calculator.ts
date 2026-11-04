@@ -290,8 +290,6 @@ export class CompoundCalculator extends LightElement {
             </div>
           </section>`
         : nothing}</div>
-      </panel-workspace>
-      <p class="disclaimer">Esta simulação é uma estimativa matemática e não considera impostos, taxas ou inflação. Os resultados não representam garantia de rentabilidade.</p>
-      <p class="privacy-note">${icon("info")} Os valores são enviados ao serviço de cálculo. O histórico público de simulações está desativado.</p>`;
+      </panel-workspace>`;
   }
 }
