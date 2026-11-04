@@ -1,8 +1,9 @@
 # 2T Call — Etapa 3.5: conexão externa preparada
 
 Branch: `codex/2t-call-stage-0`. Base: `dbcdc41`. Avaliação em 03/11/2026.
-**Status: infraestrutura preparada e testada localmente; túnel público autorizado
-pelo proprietário, com validação externa e homologação física PENDENTES.** Não houve merge, deploy na Vercel, contratação ou cadastro de cartão.
+**Status: preparação e acesso externo HTTPS/WSS validados; homologação entre
+dispositivos físicos ADIADA pelo proprietário.** Túnel temporário encerrado após
+a verificação. Não houve merge, deploy na Vercel, contratação ou cadastro de cartão.
 Etapas 0–3 preservadas. Tela/câmera remotas e Etapa 4 não iniciadas.
 
 ## Uso no Windows
@@ -185,11 +186,11 @@ do endpoint cliente. Este estágio não publicou Render nem modificou a Vercel.
   funcionalidades financeiras, Times, Learn, início, banco e configuração Vercel preservados.
 - Teste TLS usa `backend/tests/call_tls_harness.py`, certificados ignorados e
   `CALL_TEST_LOCAL_TLS=1` apenas nos testes. Não desabilita TLS na aplicação real.
-- Cloudflared teve apenas ajuda/versão executadas; flags verificadas na versão oficial.
-  A abertura foi autorizada pelo proprietário após essa preparação; a validação
-  do Quick Tunnel real é registrada na retomada abaixo.
+- Na preparação inicial, cloudflared teve somente ajuda/versão executadas.
+  Após autorização e entrada privada da credencial, o Quick Tunnel real foi iniciado
+  e validado em 04/11/2026, conforme o resultado da retomada abaixo.
 
-## Homologação física — PENDENTE (preencher após autorização)
+## Homologação física — ADIADA pelo proprietário
 
 1. Executar External autorizado com chave nova. Computador no Wi-Fi; celular com
    Wi-Fi desligado e 4G/5G ativo. Usar fones e o mesmo endereço HTTPS do túnel.
@@ -206,10 +207,11 @@ do endpoint cliente. Este estágio não publicou Render nem modificou a Vercel.
 
 | Teste real | Resultado |
 | --- | --- |
-| URL pública / criação / convidados por WSS | PENDENTE — autorizado, inicialização em retomada |
-| Wi-Fi ↔ 4G/5G, fala/escuta e mute | PENDENTE — dispositivos do proprietário |
-| 30 minutos e reconexões físicas | PENDENTE |
-| Cinco pessoas reais | PENDENTE |
+| URL pública HTTPS / assets / health / handshake WSS | APROVADO — túnel real autorizado |
+| Sala e convidados pelo túnel com credencial real | NÃO EXECUTADO — proprietário não entrou; teste adiado |
+| Wi-Fi ↔ 4G/5G, fala/escuta e mute | ADIADO — dispositivos do proprietário |
+| 30 minutos e reconexões físicas | ADIADO |
+| Cinco pessoas reais | ADIADO |
 | TURN/relay real | PENDENTE — provedor e configuração autorizados |
 
 Nenhum desses itens físicos foi marcado como aprovado por testes sintéticos.
@@ -234,3 +236,44 @@ Nenhum desses itens físicos foi marcado como aprovado por testes sintéticos.
 - A nova janela interativa pede a credencial localmente. Um estado operacional
   ignorado registra apenas fase, PID e eventual tipo/linha de erro, sem mensagens
   de exceção ou valores privados. Em erro transitório, pode repetir sem gravar senha.
+- Os oito cenários Playwright foram repetidos por HTTPS/WSS em loopback e aprovados:
+  cinco de voz e três de salas, sem usar a credencial real do proprietário.
+- GitHub apresentou HTTP 500 no push durante um incidente de Git Operations.
+  Os objetos foram publicados pela API com árvore, autor, datas e mensagens originais,
+  verificando os mesmos SHAs e atualizando somente a branch por fast-forward.
+  O push posterior confirmou Everything up-to-date; histórico e main preservados.
+
+### Resultado externo real
+
+O proprietário autorizou o teste e digitou a credencial na janela local. O iniciador
+abriu um Quick Tunnel real com a origem exata descoberta. Não se usou chave de
+desenvolvimento no serviço externo e o agente não leu a credencial. O hostname
+temporário foi informado somente no chat e no estado operacional ignorado, não
+publicado nesta documentação do repositório.
+
+| Verificação pelo túnel real | Resultado |
+| --- | --- |
+| GET / | HTTP 200, text/html, shell Lit e CSP WSS corretos |
+| bundle.js / styles.css | HTTP 200, tipos JavaScript/CSS corretos |
+| Logo WEBP / marca SVG | HTTP 200, tipos de imagem corretos |
+| GET /call/health | HTTP 200, status ok, single-process, sem mídia no servidor |
+| WSS /call/ws com Origin correto | Handshake 101 |
+| Tentativa de criar sala sem credencial | Recusada com unauthorized; nenhuma sala criada |
+| WSS com Origin incorreto | HTTP 403 |
+| .env / API principal / manifest financeiro | HTTP 404 intencional |
+| Interface pública em 1366 e 390 px | Renderizada, sem erro JavaScript ou rolagem horizontal |
+
+A inspeção do navegador foi feita em contexto isolado, sem preencher a credencial,
+sem solicitar microfone e sem criar participantes. Logs do servidor ficaram vazios;
+o log operacional info do conector não apresentou campos de credencial, SDP ou ICE.
+Arquivos de chave TLS, logs, binário e estado continuam fora do Git.
+
+O proprietário informou que não entrou na sala e preferiu testar os dispositivos
+quando o produto estiver mais completo. Portanto não foi declarada homologação de
+voz externa nem da duração de 30 minutos. TURN/relay real continua não configurado.
+Túnel e servidor foram encerrados pelo Stop com as identidades conferidas, e a
+janela interativa foi fechada para liberar a credencial da memória.
+Após o Stop, o health público respondeu HTTP 530 e o backend deixou de estar
+acessível pelo túnel; o registro de sessão foi removido e não restaram seus filhos.
+O teste físico deve ser retomado antes de declarar conectividade entre redes ou
+publicar a aplicação como homologada. A Etapa 4 não foi iniciada nesta execução.
