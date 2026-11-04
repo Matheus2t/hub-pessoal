@@ -1,0 +1,65 @@
+import type {AdmissionRequest,ClientMessage,Participant,ServerMessage,Session,Signal} from './protocol';
+
+export const callErrors:Record<string,string>={
+ unauthorized:'Credencial inválida.',invalid_invite:'Convite inválido ou expirado.',room_full:'A sala já tem cinco vagas ocupadas ou reservadas.',
+ capacity:'Limite de salas ou conexões atingido.',rate_limited:'Muitas tentativas. Aguarde um minuto.',invalid_message:'Mensagem inválida.',
+ invalid_target:'Participante indisponível nesta sala.',forbidden:'Apenas o anfitrião pode realizar esta ação.',awaiting_approval:'Aguarde a aprovação do anfitrião.',
+ session_expired:'A sessão expirou. Peça um novo convite.',expired:'A sala expirou.',host_left:'O anfitrião saiu. Sala encerrada.',
+ host_closed:'O anfitrião encerrou a sala.',rejected:'O anfitrião recusou a entrada.',approval_expired:'O prazo para aprovação terminou.',
+ replaced:'Esta sessão foi reconectada em outra conexão.',timeout:'A conexão expirou.',slow_client:'A conexão não acompanhou as atualizações.',
+ message_too_large:'Mensagem muito grande.',server_stopped:'O sinalizador foi encerrado.'
+};
+export type ConnectionState='idle'|'connecting'|'waiting'|'connected'|'reconnecting'|'closed';
+
+/** One transport per mounted page. Session secrets stay in RAM and never enter URLs/storage. */
+export class CallSignaling {
+ state:ConnectionState='idle';error='';session?:Session;people:Participant[]=[];requests:AdmissionRequest[]=[];
+ private socket?:WebSocket;private heartbeat?:number;private retry?:number;private attempts=0;
+ private stopped=false;private credential='';private generation=0;
+ constructor(private changed:()=>void,private signal:(message:Extract<ServerMessage,{from:string}>)=>void=()=>{}){}
+ start(message:Extract<ClientMessage,{type:'create'|'join'}>){this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.requests=[];this.credential='';this.attempts=0;this.connect(message)}
+ private connect(first:ClientMessage){
+  const generation=++this.generation;
+  this.state=this.session?'reconnecting':'connecting';this.changed();
+  const url=new URL('/call/ws',location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';
+  let socket:WebSocket;
+  try{socket=new WebSocket(url)}catch{this.fail('Sinalizador indisponível. Abra a versão local na porta 8001.');return}
+  this.socket=socket;
+  let initial:ClientMessage|undefined=first;
+  socket.onopen=()=>{if(generation!==this.generation)return;socket.send(JSON.stringify(initial));initial=undefined;
+   this.heartbeat=window.setInterval(()=>{if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'ping'}))},8000)};
+  socket.onmessage=event=>{
+   if(generation!==this.generation||this.stopped)return;
+   let message:ServerMessage;try{message=JSON.parse(event.data)}catch{this.fail('Resposta inválida do sinalizador.');return}
+   if(message.type==='session'){
+    this.credential=message.credential??this.credential;
+    this.session={...message,credential:null,invite:message.invite??this.session?.invite??null};
+    this.state=message.approved?'connected':'waiting';this.attempts=0;this.error='';
+    // Clear the invitation from the address bar once accepted into a session.
+    if(location.hash!=='#/call')history.replaceState(null,'','#/call');
+   }else if(message.type==='presence')this.people=message.participants;
+   else if(message.type==='requests')this.requests=message.participants;
+   else if(message.type==='approved'){this.state='connected';if(this.session)this.session.approved=true}
+   else if(message.type==='error')this.error=callErrors[message.code]??'Ação recusada pelo servidor.';
+   else if(message.type==='closed'){this.fail(message.reason==='left'?'':callErrors[message.reason]??'Sala encerrada.');return}
+   else if('from' in message)this.signal(message);
+   this.changed();
+  };
+  socket.onclose=()=>{
+   if(generation!==this.generation||this.stopped)return;
+   window.clearInterval(this.heartbeat);
+   if(this.session&&this.credential&&this.attempts<5){
+    this.state='reconnecting';this.people=this.people.map(p=>({...p,connected:false}));this.changed();
+    this.retry=window.setTimeout(()=>this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential}),Math.min(500*2**this.attempts++,4000));
+   }else this.fail(this.error||'Sinalizador indisponível. Use o servidor local na porta 8001 e confira a configuração.');
+  };
+  socket.onerror=()=>{}; // close supplies the visible failure/retry state without logging secrets.
+ }
+ send(message:{type:'close'}|Extract<ClientMessage,{type:'admit'|'reject'}>|Signal){
+  if(this.state!=='connected'||this.socket?.readyState!==WebSocket.OPEN)return;
+  this.socket.send(JSON.stringify(message));
+ }
+ private fail(error:string){this.dispose();this.state='closed';this.error=error;this.people=[];this.requests=[];this.session=undefined;this.changed()}
+ leave(){if(this.socket?.readyState===WebSocket.OPEN)this.socket.send(JSON.stringify({type:'leave'}));this.dispose();this.session=undefined;this.people=[];this.requests=[];this.error='';this.state='idle';this.changed()}
+ dispose(){this.stopped=true;this.generation++;window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);this.socket?.close();this.socket=undefined;this.credential=''}
+}
