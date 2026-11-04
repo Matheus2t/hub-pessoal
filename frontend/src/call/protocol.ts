@@ -10,7 +10,7 @@ export interface Session {
  type:'session';room:string;participant:string;credential:string|null;host:boolean;approved:boolean;
  invite:string|null;expires:number;inviteExpires:number;
 }
-export interface RtcConfig {type:'rtc_config';iceServers:RTCIceServer[];turnExpires:number|null;relayAvailable:boolean}
+export interface RtcConfig {type:'rtc_config';iceServers:RTCIceServer[];turnExpires:number|null;relayAvailable:boolean;relayError?:boolean}
 export type Signal = ({type:'offer'|'answer';target:string;sdp:string;roles:MediaRoles}|{type:'ice';target:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
 export type RemoteSignal = ({type:'offer'|'answer';from:string;sdp:string;roles:MediaRoles}|{type:'ice';from:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
 export type ClientMessage =

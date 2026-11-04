@@ -7,19 +7,23 @@ import os
 import re
 import secrets
 import time
+import json
+import logging
 from collections import deque
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
+from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import Field, SecretStr, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .call_protocol import Action, Create, Handshake, Join, Resume
 from .call_boundary import CallBoundary, https_origin
+from .call_turn import CloudflareTurn, TurnUnavailable
 
 
 class CallSettings(BaseSettings):
@@ -28,7 +32,7 @@ class CallSettings(BaseSettings):
     allowed_origins: str = "http://localhost:8001,http://127.0.0.1:8001"
     serve_frontend: bool = False
     public_origin: str | None = None
-    proxy_mode: str = Field(default="none", pattern="^(none|cloudflare)$")
+    proxy_mode: str = Field(default="none", pattern="^(none|cloudflare|render)$")
     room_seconds: int = Field(default=3600, ge=60, le=14400)
     invite_seconds: int = Field(default=900, ge=30, le=3600)
     reconnect_seconds: int = Field(default=20, ge=1, le=60)
@@ -38,16 +42,38 @@ class CallSettings(BaseSettings):
     stun_urls: str = "stun:stun.cloudflare.com:3478"
     turn_urls: str = ""
     turn_shared_secret: SecretStr | None = None
+    turn_provider: str = Field(default="coturn", pattern="^(none|coturn|cloudflare)$")
+    cloudflare_turn_key_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{16,128}$")
+    cloudflare_turn_api_token: SecretStr | None = None
     turn_seconds: int = Field(default=600, ge=60, le=600)
     screen_claim_seconds: int = Field(default=45, ge=5, le=120)
 
     @model_validator(mode="after")
     def ice_settings(self):
+        cloudflare_configured = self.cloudflare_turn_key_id or self.cloudflare_turn_api_token
+        if self.turn_provider == "cloudflare":
+            if (not self.cloudflare_turn_key_id or not self.cloudflare_turn_api_token or
+                    len(self.cloudflare_turn_api_token.get_secret_value()) < 32 or self.turn_urls or self.turn_shared_secret):
+                raise ValueError("Cloudflare TURN requires its own key ID/token, not coturn credentials")
+        elif cloudflare_configured:
+            raise ValueError("Cloudflare credentials require an explicit provider selection")
+        if self.turn_provider == "none" and (self.turn_urls or self.turn_shared_secret):
+            raise ValueError("Disabled TURN cannot have relay credentials")
+        if self.proxy_mode == "render":
+            managed = os.getenv("RENDER_EXTERNAL_URL", "")
+            if os.getenv("RENDER") != "true" or not managed:
+                raise ValueError("Render proxy mode requires the managed Render runtime")
+            managed = https_origin(managed)
+            if self.public_origin and https_origin(self.public_origin) != managed:
+                raise ValueError("Render public origin must match its managed external URL")
+            self.public_origin = managed
+            if not self.admin_key or len(self.admin_key.get_secret_value()) < 48 or self.admin_key.get_secret_value().startswith("test-only-"):
+                raise ValueError("Hosted Call requires a new private owner credential of at least 48 characters")
         if self.public_origin:
             self.public_origin = https_origin(self.public_origin)
             origins = [s.strip() for s in self.allowed_origins.split(",")]
-            if self.public_origin not in origins or any(https_origin(s) != s for s in origins):
-                raise ValueError("Public Call requires exact HTTPS allowed origins, including its own")
+            if (self.serve_frontend and self.public_origin not in origins) or any(https_origin(s) != s for s in origins):
+                raise ValueError("Public Call requires exact HTTPS origins; serving its shell also requires its own origin")
         if self.proxy_mode == "cloudflare" and not self.public_origin:
             raise ValueError("Cloudflare proxy mode requires an exact public origin")
         for value, schemes in [(self.stun_urls, "stuns?"), (self.turn_urls, "turns?")]:
@@ -137,6 +163,11 @@ class Rooms:
         self.lock = asyncio.Lock()
         self.limits: dict[tuple[str, str], deque] = {}
         self.connections = 0
+        self.turn = (CloudflareTurn(settings.cloudflare_turn_key_id, settings.cloudflare_turn_api_token)
+                     if settings.turn_provider == "cloudflare" else None)
+        self.rtc_tasks: dict[tuple[str, str], asyncio.Task] = {}
+        self.rtc_cache: dict[tuple[str, str], tuple[float, dict]] = {}
+        self.turn_slots = asyncio.Semaphore(4)
 
     def limit(self, category: str, key: str, maximum: int, seconds: int = 60):
         now = self.clock()
@@ -154,6 +185,12 @@ class Rooms:
 
     def close(self, room: Room, reason: str):
         self.rooms.pop(room.id, None)
+        for key, task in list(self.rtc_tasks.items()):
+            if key[0] == room.id:
+                task.cancel()
+        for key in list(self.rtc_cache):
+            if key[0] == room.id:
+                self.rtc_cache.pop(key, None)
         for person in room.people.values():
             if person.connection:
                 person.connection.finish(reason)
@@ -232,6 +269,16 @@ class Rooms:
         self.broadcast(room, "screen_started" if message.action == "start" else "screen_stopped")
 
     def rtc_config(self, room: Room, person: Participant):
+        if self.turn:
+            key = (room.id, person.id)
+            cached = self.rtc_cache.get(key)
+            if cached and cached[0] > self.clock():
+                if person.connection:
+                    person.connection.send(cached[1])
+                return
+            if key not in self.rtc_tasks:
+                self.rtc_tasks[key] = asyncio.create_task(self.fetch_cloudflare_config(room, person, person.connection))
+            return
         servers = [{"urls": u.strip()} for u in self.settings.stun_urls.split(",") if u.strip()]
         expires = None
         if self.settings.turn_shared_secret:
@@ -245,6 +292,30 @@ class Rooms:
         if person.connection:
             person.connection.send({"type": "rtc_config", "iceServers": servers, "turnExpires": expires,
                                     "relayAvailable": expires is not None})
+
+    async def fetch_cloudflare_config(self, room, person, connection):
+        key = (room.id, person.id)
+        try:
+            async with self.turn_slots:
+                ttl = max(1, int(min(self.settings.turn_seconds, room.expires - self.clock())))
+                expires = int(self.clock() + ttl - 5)
+                servers = await self.turn.credentials(ttl)
+            result = {"type": "rtc_config", "iceServers": servers, "turnExpires": expires, "relayAvailable": True}
+        except TurnUnavailable:
+            logging.getLogger("2t.call").warning("turn_credential_unavailable")
+            result = {"type": "rtc_config", "iceServers": [{"urls": u.strip()} for u in self.settings.stun_urls.split(",") if u.strip()],
+                      "turnExpires": None, "relayAvailable": False, "relayError": True}
+        finally:
+            if self.rtc_tasks.get(key) is asyncio.current_task():
+                self.rtc_tasks.pop(key, None)
+        async with self.lock:
+            current = self.rooms.get(room.id)
+            if (current is room and self.clock() < room.expires and current.people.get(person.id) is person
+                    and person.approved and person.connection is connection and connection and not connection.closing):
+                self.rtc_cache[key] = (result["turnExpires"] - 60 if result["relayAvailable"] else self.clock() + 30, result)
+                if not result["relayAvailable"]:
+                    connection.send({"type": "error", "code": "turn_unavailable"})
+                connection.send(result)
 
     async def enter(self, message, connection: Connection, address: str):
         async with self.lock:
@@ -274,6 +345,9 @@ class Rooms:
                 if not person or not secrets.compare_digest(person.credential_hash, digest(message.credential.get_secret_value())):
                     raise Rejected("unauthorized")
                 old = person.connection
+                pending = self.rtc_tasks.pop((room.id, person.id), None)
+                if pending:
+                    pending.cancel()
                 if old:
                     old.finish("replaced")
                 person.camera = False
@@ -373,6 +447,9 @@ class Rooms:
             room = self.rooms.get(room_id)
             person = room.people.get(person_id) if room else None
             if person and person.connection is connection:
+                pending = self.rtc_tasks.pop((room.id, person.id), None)
+                if pending:
+                    pending.cancel()
                 person.connection, person.disconnected_at = None, self.clock()
                 person.camera = False
                 self.release_screen(room, person_id)
@@ -395,16 +472,22 @@ def create_app(settings: CallSettings | None = None, clock=time.time, *, fronten
         task.cancel()
         with suppress(asyncio.CancelledError):
             await task
+        pending = list(rooms.rtc_tasks.values())
         for room in list(rooms.rooms.values()):
             rooms.close(room, "server_stopped")
+        await asyncio.gather(*pending, return_exceptions=True)
 
     app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
+    app.add_middleware(CORSMiddleware, allow_origins=[s.strip() for s in config.allowed_origins.split(",")],
+                       allow_credentials=False, allow_methods=["GET"], allow_headers=[])
     app.add_middleware(CallBoundary, public_origin=config.public_origin, proxy_mode=config.proxy_mode)
     app.state.rooms = rooms
+    boot, started = secrets.token_hex(8), time.monotonic()
 
     @app.get("/call/health")
     async def health():
-        return {"status": "ok", "mode": "single-process", "media": False}
+        return {"status": "ok", "mode": "single-process", "media": False,
+                "boot": boot, "uptimeSeconds": int(time.monotonic() - started)}
 
     @app.websocket("/call/ws")
     async def websocket(socket: WebSocket):
@@ -497,6 +580,15 @@ def create_app(settings: CallSettings | None = None, clock=time.time, *, fronten
 
     if config.serve_frontend:
         dist = frontend_dir or Path(__file__).resolve().parents[2] / "dist"
+
+        @app.get("/call-config.js")
+        async def public_call_config(request: Request):
+            origin = config.public_origin or f"{request.url.scheme}://{request.url.netloc}"
+            if origin not in {s.strip() for s in config.allowed_origins.split(",")}:
+                return Response(status_code=403)
+            endpoint = origin.replace("https://", "wss://").replace("http://", "ws://") + "/call/ws"
+            return Response("globalThis.__2T_CALL_SIGNAL_URL__=" + json.dumps(endpoint) + ";\n",
+                            media_type="application/javascript")
 
         @app.get("/", response_class=HTMLResponse)
         async def index(request: Request):

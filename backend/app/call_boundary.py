@@ -54,6 +54,16 @@ class CallBoundary:
                     return await reject()
                 scope["client"] = (str(visitor), 0)
                 scope["scheme"] = ("wss" if scope["type"] == "websocket" else "https") if scheme == "https" else "http"
+            elif self.proxy_mode == "render":
+                # Render is the only public ingress (validated at startup). Never use
+                # client-controlled X-Forwarded-For for rate limiting. Edge users share
+                # the conservative admission budget; forged IPs cannot reset it.
+                probe = (scope["type"] == "http" and scope.get("method") in {"GET", "HEAD"}
+                         and scope.get("path") == "/call/health" and not scope.get("query_string"))
+                if headers.get("x-forwarded-proto") != "https" and not probe:
+                    return await reject()
+                scope["client"] = ("render-edge", 0)
+                scope["scheme"] = "wss" if scope["type"] == "websocket" else "https"
             if scope["scheme"] not in ("https", "wss"):
                 if scope["type"] == "websocket":
                     return await reject()
@@ -66,7 +76,7 @@ class CallBoundary:
             # source maps, unrelated lazy modules, filesystem contents or API endpoints.
             if scope.get("path") not in {
                 "/", "/bundle.js", "/styles.css", "/2t-logo.webp", "/2t-mark.svg",
-                "/call/ws", "/call/health",
+                "/call/ws", "/call/health", "/call-config.js",
             }:
                 return await reject(404)
 

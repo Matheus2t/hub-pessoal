@@ -89,7 +89,7 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   }
   writeFileSync(testInfo.outputPath('webrtc-stats-2-3-4-5.json'),JSON.stringify(stats,null,2));
   await testInfo.attach('webrtc-stats-2-3-4-5.json',{path:testInfo.outputPath('webrtc-stats-2-3-4-5.json'),contentType:'application/json'});
-  expect(sockets.every(url=>url.startsWith(origin.replace('https:','wss:').replace('http:','ws:')+'/call/ws'))).toBe(true);
+  expect(sockets.every(url=>url===(process.env.CALL_TEST_SIGNAL_URL||origin.replace('https:','wss:').replace('http:','ws:')+'/call/ws'))).toBe(true);
   await host.getByText('Verificar conexão',{exact:true}).click();
   await host.getByRole('button',{name:'Copiar diagnóstico',exact:true}).click();
   const diagnostic=JSON.parse(await host.evaluate(()=>navigator.clipboard.readText()));
