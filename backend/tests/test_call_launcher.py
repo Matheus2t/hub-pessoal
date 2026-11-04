@@ -37,6 +37,12 @@ def test_tunnel_parser_and_pid_reuse_guard():
     assert "guard-preserved-process" in result.stdout
 
 
+def test_new_process_record_does_not_depend_on_racy_process_path():
+    result = shell("-Command", ". ./scripts/2t-call.ps1 -Plan; $p=[pscustomobject]@{Id=123;StartTime=[datetime]::UtcNow;Path=$null};$p|Add-Member ScriptMethod Refresh {}; $exe=(Get-Command python.exe).Source;$record=Get-CallProcessRecord $p 'server' $exe;if($record.Executable -ne [IO.Path]::GetFullPath($exe)){exit 1};if(-not $record.Started){exit 2};Write-Output 'exact-launch-path-recorded'")
+    assert result.returncode == 0, result.stderr
+    assert "exact-launch-path-recorded" in result.stdout
+
+
 def credential_command(port):
     return ("$key=ConvertTo-SecureString 'test-only-owner-credential-not-for-production' -AsPlainText -Force; "
             f"& ./scripts/2t-call.ps1 -Mode Local -SkipBuild -Port {port} -Minutes 5 -OwnerCredential $key")

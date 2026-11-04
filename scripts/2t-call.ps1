@@ -36,10 +36,13 @@ function Get-CallTunnelOrigin([string]$Text) {
     return $match.Value
 }
 
-function Get-CallProcessRecord($Process, [string]$Kind) {
+function Get-CallProcessRecord($Process, [string]$Kind, [string]$Executable) {
     $Process.Refresh()
+    # Process.Path can briefly be null immediately after Start-Process. Record the
+    # exact executable we launched; Stop still checks Path, creation time and CLI.
+    if (-not $Executable) { throw 'Executavel iniciado nao identificado.' }
     return @{ Id = $Process.Id; Started = $Process.StartTime.ToUniversalTime().Ticks.ToString();
-        Executable = $Process.Path; Kind = $Kind }
+        Executable = [IO.Path]::GetFullPath($Executable); Kind = $Kind }
 }
 
 function Stop-CallRecordedProcess($Record) {
@@ -154,7 +157,7 @@ try {
             foreach ($name in $connectorEnv.Keys) { [Environment]::SetEnvironmentVariable($name, $connectorEnv[$name], 'Process') }
         }
         $processes += $tunnel
-        $session.Processes += Get-CallProcessRecord $tunnel 'tunnel'
+        $session.Processes += Get-CallProcessRecord $tunnel 'tunnel' $cloudflared
         $session | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $callState -Encoding utf8
         $deadline = [DateTime]::UtcNow.AddSeconds(45)
         do {
@@ -177,7 +180,7 @@ try {
     $processes += $server
     foreach ($name in $envNames) { [Environment]::SetEnvironmentVariable($name, $savedEnv[$name], 'Process') }
     $plain = $null
-    $session.Processes += Get-CallProcessRecord $server 'server'
+    $session.Processes += Get-CallProcessRecord $server 'server' $python
     $session.Origin = $origin
     $session | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $callState -Encoding utf8
     $healthHeaders = @{}
