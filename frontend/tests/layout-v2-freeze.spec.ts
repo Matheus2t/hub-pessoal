@@ -13,6 +13,11 @@ for(const width of [1920,1366,768,390,320])test(`approved team visuals unchanged
  for(const route of ['76ers','spfc','barcelona']){
   await page.goto('/#/'+route);
   await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(3);
+  // Call's authorized navigation addition is covered by navigation/external tests.
+  // Hide only that entry to retain the original sports goldens, without masking
+  // any sports pixels or changing the approved reference images.
+  const callLink=page.locator('app-sidebar a[href="#/call"]');
+  await expect(callLink).toBeVisible();await callLink.evaluate(element=>element.style.display='none');
   await page.evaluate(()=>document.fonts.ready);
   await expect.poll(()=>page.locator('team-page img').evaluateAll(imgs=>imgs.every(img=>(img as HTMLImageElement).complete))).toBe(true);
   for(const theme of ['dark','light']){
@@ -21,5 +26,6 @@ for(const width of [1920,1366,768,390,320])test(`approved team visuals unchanged
    // Keep zero differing pixels beyond this minimal color tolerance.
    await expect(page).toHaveScreenshot(`${route}-${width}-${theme}.png`,{fullPage:true,animations:'disabled',maxDiffPixels:0,threshold:0.01});
   }
+  await callLink.evaluate(element=>element.style.removeProperty('display'));
  }
 });

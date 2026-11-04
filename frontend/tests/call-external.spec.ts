@@ -24,36 +24,55 @@ async function media(page:Page){
  await expect.poll(async()=>{
   if(await page.getByRole('button',{name:'Liberar áudio',exact:true}).isVisible())await page.getByRole('button',{name:'Liberar áudio',exact:true}).click();
   return page.evaluate(async()=>{
-   const peer=[...(document.querySelector('call-page') as any).voice.peers.values()][0] as any;if(!peer||peer.pc.connectionState!=='connected'||!peer.audio.srcObject||peer.audio.paused)return false;
-   let packets=0;(await peer.pc.getStats()).forEach((s:any)=>{if(s.type==='inbound-rtp'&&s.kind==='audio')packets+=s.packetsReceived??0});
-   const ctx=(window as any).__testContexts[0];if(!ctx)return false;
-   if(!peer.testAnalyser){peer.testAnalyser=ctx.createAnalyser();peer.testSource=ctx.createMediaStreamSource(peer.streams.microphone);peer.testSource.connect(peer.testAnalyser)}
-   const samples=new Float32Array(peer.testAnalyser.fftSize);peer.testAnalyser.getFloatTimeDomainData(samples);
-   return packets>0&&peer.audio.currentTime>0&&samples.some(x=>Math.abs(x)>.001);
+   const peer=[...(document.querySelector('call-page') as any).voice.peers.values()][0] as any;if(!peer)return 'no-peer';
+   // State/counters only: diagnostics never retain SDP, ICE addresses or session IDs.
+   let packets=0;const received:any[]=[];(await peer.pc.getStats()).forEach((s:any)=>{if(s.type==='inbound-rtp'){
+    received.push({kind:s.kind,mediaType:s.mediaType,packets:s.packetsReceived});if(s.kind==='audio')packets+=s.packetsReceived??0;
+   }});
+   const ctx=(window as any).__testContexts?.[0];let peak=0;
+   if(ctx&&peer.streams.microphone){
+    if(!peer.testAnalyser){peer.testAnalyser=ctx.createAnalyser();peer.testSource=ctx.createMediaStreamSource(peer.streams.microphone);peer.testSource.connect(peer.testAnalyser)}
+    const samples=new Float32Array(peer.testAnalyser.fftSize);peer.testAnalyser.getFloatTimeDomainData(samples);peak=Math.max(...samples.map(Math.abs));
+   }
+   if(peer.pc.connectionState==='connected'&&peer.audio.srcObject&&!peer.audio.paused&&packets>0&&peer.audio.currentTime>0&&peak>.001)return 'playing';
+   return JSON.stringify({connection:peer.pc.connectionState,ice:peer.pc.iceConnectionState,signaling:peer.pc.signalingState,received,
+    context:ctx?.state,peak,paused:peer.audio.paused,time:peer.audio.currentTime,tracks:peer.streams.microphone?.getTracks().map((t:MediaStreamTrack)=>({state:t.readyState,muted:t.muted}))});
   });
- },{timeout:15000}).toBe(true);
+ },{timeout:15000}).toBe('playing');
 }
 
-test('external WSS, decoded bidirectional audio, navigation and responsive themes',async({browser},info)=>{
+async function capabilities(page:Page){return page.evaluate(()=>({audio:!!navigator.mediaDevices?.getUserMedia,display:!!navigator.mediaDevices?.getDisplayMedia,rtc:!!window.RTCPeerConnection,canvas:!!HTMLCanvasElement.prototype.captureStream}))}
+
+test('external WSS and decoded bidirectional audio',async({browser},info)=>{
  const a=await browser.newContext({ignoreHTTPSErrors:true}),b=await browser.newContext({ignoreHTTPSErrors:true}),owner=await a.newPage(),guest=await b.newPage();
  const sockets:string[]=[],errors:string[]=[];owner.on('websocket',s=>sockets.push(s.url()));owner.on('pageerror',e=>errors.push(e.message));guest.on('pageerror',e=>errors.push(e.message));
  try{
-  await audio(owner);await audio(guest);const invite=await create(owner);await join(guest,owner,invite);
+  await audio(owner);await audio(guest);
+  await owner.goto(origin+'/#/call');const supported=await capabilities(owner);
+  writeFileSync(info.outputPath('capabilities.json'),JSON.stringify({engine,...supported}));
+  test.skip(!supported.rtc||!supported.audio,'This installed browser has no native WebRTC/getUserMedia; media remains unvalidated.');
+  const invite=await create(owner);await join(guest,owner,invite);
   for(const p of[owner,guest]){await p.getByRole('button',{name:'Entrar na chamada',exact:true}).click();await p.getByRole('button',{name:'Ativar microfone',exact:true}).click()}
   await media(owner);await media(guest);expect(sockets).toEqual([signal]);
   expect(new URL(signal).host).not.toBe(new URL(origin).host);
-  const supported=await owner.evaluate(()=>({audio:!!navigator.mediaDevices?.getUserMedia,display:!!navigator.mediaDevices?.getDisplayMedia,rtc:!!window.RTCPeerConnection,canvas:!!HTMLCanvasElement.prototype.captureStream}));
-  writeFileSync(info.outputPath('capabilities.json'),JSON.stringify({engine,...supported}));
-  for(const width of[1366,768,390,320])for(const theme of['dark','light']){
-   await owner.setViewportSize({width,height:950});await owner.evaluate(t=>{document.documentElement.dataset.theme=t;scrollTo(0,0)},theme);
-   expect(await owner.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-   await expect(owner.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveAttribute('aria-current','page');
-   await owner.screenshot({path:info.outputPath(`external-${width}-${theme}.png`),fullPage:true,animations:'disabled',timeout:10000});
-  }
   await owner.getByRole('button',{name:'Desativar microfone',exact:true}).click();await expect(guest.locator('.call-people')).toContainText('microfone desligado');
   await owner.getByRole('button',{name:'Ativar microfone',exact:true}).click();await media(guest);
   await owner.getByRole('button',{name:'Encerrar sala',exact:true}).click();await expect(guest.locator('.call-connection')).toHaveText('Conexão encerrada');expect(errors).toEqual([]);
  }finally{await a.close();await b.close()}
+});
+
+test('navigation, responsive themes and explicit unsupported-browser feedback',async({page},info)=>{
+ await create(page);const supported=await capabilities(page);
+ writeFileSync(info.outputPath('capabilities.json'),JSON.stringify({engine,...supported}));
+ try{
+  for(const width of[1366,768,390,320])for(const theme of['dark','light']){
+   await page.setViewportSize({width,height:950});await page.evaluate(t=>{document.documentElement.dataset.theme=t;scrollTo(0,0)},theme);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+   await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveAttribute('aria-current','page');
+   await page.screenshot({path:info.outputPath(`external-${width}-${theme}.png`),fullPage:true,animations:'disabled',timeout:10000});
+  }
+  if(!supported.rtc){await page.getByRole('button',{name:'Entrar na chamada',exact:true}).click();await expect(page.getByRole('alert')).toContainText('WebRTC indisponível')}
+ }finally{await page.getByRole('button',{name:'Encerrar sala',exact:true}).click()}
 });
 
 test('cold-start wait is user initiated, cancellable and rejects unsafe endpoint configuration',async({page})=>{
