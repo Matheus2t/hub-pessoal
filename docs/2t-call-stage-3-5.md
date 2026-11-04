@@ -1,8 +1,8 @@
 # 2T Call — Etapa 3.5: conexão externa preparada
 
 Branch: `codex/2t-call-stage-0`. Base: `dbcdc41`. Avaliação em 03/11/2026.
-**Status: infraestrutura preparada e testada localmente; túnel público e homologação
-física PENDENTES.** Não houve merge, deploy na Vercel, contratação ou cadastro de cartão.
+**Status: infraestrutura preparada e testada localmente; túnel público autorizado
+pelo proprietário, com validação externa e homologação física PENDENTES.** Não houve merge, deploy na Vercel, contratação ou cadastro de cartão.
 Etapas 0–3 preservadas. Tela/câmera remotas e Etapa 4 não iniciadas.
 
 ## Uso no Windows
@@ -186,7 +186,8 @@ do endpoint cliente. Este estágio não publicou Render nem modificou a Vercel.
 - Teste TLS usa `backend/tests/call_tls_harness.py`, certificados ignorados e
   `CALL_TEST_LOCAL_TLS=1` apenas nos testes. Não desabilita TLS na aplicação real.
 - Cloudflared teve apenas ajuda/versão executadas; flags verificadas na versão oficial.
-  **O caminho de criação de um Quick Tunnel real continua pendente de autorização.**
+  A abertura foi autorizada pelo proprietário após essa preparação; a validação
+  do Quick Tunnel real é registrada na retomada abaixo.
 
 ## Homologação física — PENDENTE (preencher após autorização)
 
@@ -205,10 +206,31 @@ do endpoint cliente. Este estágio não publicou Render nem modificou a Vercel.
 
 | Teste real | Resultado |
 | --- | --- |
-| URL pública / criação / convidados por WSS | PENDENTE — autorização |
+| URL pública / criação / convidados por WSS | PENDENTE — autorizado, inicialização em retomada |
 | Wi-Fi ↔ 4G/5G, fala/escuta e mute | PENDENTE — dispositivos do proprietário |
 | 30 minutos e reconexões físicas | PENDENTE |
 | Cinco pessoas reais | PENDENTE |
 | TURN/relay real | PENDENTE — provedor e configuração autorizados |
 
 Nenhum desses itens físicos foi marcado como aprovado por testes sintéticos.
+
+## Retomada em 04/11/2026
+
+- Os 13 arquivos da preparação já estavam preservados nos commits `3b6fb60` e
+  `0586411`, disponíveis no GitHub; não havia alterações locais a descartar.
+- Não havia túnel, servidor público ou janela anterior ativos. A credencial não
+  foi recuperada de arquivo/processo: ela nunca é persistida. É necessário
+  redigitá-la somente na nova janela mascarada do proprietário, sem enviá-la ao chat.
+- A autorização externa continua válida; não foi solicitada novamente.
+- Encontrada corrida Windows: `Process.Path` podia ser nulo logo após iniciar um
+  filho, causando recusa indevida do Stop. Corrigido em `ff4fa32`: registrar o caminho
+  exato usado no lançamento; preservar a checagem de PID, criação, executável e CLI.
+  Novo teste determinístico cobre o caminho nulo. Processo órfão do teste removido
+  somente após comprovar a identidade e a porta daquele teste.
+- Build/typecheck aprovados; suíte completa: **290 testes Python aprovados**.
+  Verificação de arquivos Call não encontrou padrões de chaves privadas/tokens;
+  nenhum `.env`, `.pem`, registro de sessão ou log foi versionado. Logs operacionais
+  existentes estavam vazios. Isso não substitui a regra de não ler/exibir credenciais.
+- A nova janela interativa pede a credencial localmente. Um estado operacional
+  ignorado registra apenas fase, PID e eventual tipo/linha de erro, sem mensagens
+  de exceção ou valores privados. Em erro transitório, pode repetir sem gravar senha.
