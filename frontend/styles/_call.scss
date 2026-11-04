@@ -35,6 +35,9 @@
  .call-requests { padding:16px; margin:12px 0; background:var(--panel); border:1px solid var(--line); border-radius:8px; } .call-requests h2 { font-size:15px; margin-bottom:12px; }
  .call-requests>div+div { margin-top:10px; }
  li div { min-width:0; overflow-wrap:anywhere; } .call-vacant { opacity:.6; }
+ .call-voice-controls { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:12px 0; }
+ .call-voice-controls span { font-size:13px; color:var(--secondary); }
+ .call-remote-audio { display:none; }
 }
 @media(max-width:760px) { .call-page .call-entry { grid-template-columns:1fr; } }
 @media(max-width:760px) { .call-page { .call-layout { grid-template-columns:1fr; } ol { grid-template-columns:repeat(2,minmax(0,1fr)); } li { gap:8px; } } }

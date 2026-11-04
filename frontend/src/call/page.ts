@@ -3,8 +3,9 @@ import {customElement,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
 import {CallSignaling} from './signaling';
 import {parseInvite} from './protocol';
+import {VoiceMesh} from './voice';
 
-/** Presence/signaling only. Captured media remains local; no RTCPeerConnection. */
+/** Voice is WebRTC peer-to-peer; screen capture stays strictly local. */
 @customElement('call-page')
 export class CallPage extends LightElement {
  @state() private microphone?:MediaStream;
@@ -16,11 +17,42 @@ export class CallPage extends LightElement {
  private screenRequest=0;
  @state() private roomError='';
  @state() private copied=false;
- private call=new CallSignaling(()=>{if(this.call.state==='closed')this.release();this.requestUpdate()});
+ private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})});
+ private lastMedia='';
+ private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message));
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged)}
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);this.teardown();super.disconnectedCallback()}
- private teardown=()=>{this.call.leave();this.release()};
+ private teardown=()=>{this.voice.stop();this.release();this.call.leave();this.lastMedia=''};
  private routeChanged=()=>{this.teardown();this.requestUpdate()};
+ private callChanged(){
+  if(this.call.state==='closed'||this.call.state==='idle'){
+   if(this.voice.active)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
+  }else{
+   if(this.call.state==='reconnecting')this.lastMedia='';
+   if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected');
+   this.publishMedia();
+  }
+  this.requestUpdate();
+ }
+ private publishMedia(){
+  if(this.call.state!=='connected')return;
+  const active=this.voice.active,microphone=active&&!!this.microphone?.getAudioTracks().some(t=>t.readyState==='live');
+  const signature=`${active}:${microphone}`;
+  if(signature!==this.lastMedia&&this.call.send({type:'media',active,microphone}))this.lastMedia=signature;
+ }
+ private enterVoice(){
+  if(this.call.state!=='connected'||!this.call.rtc)return;
+  this.voice.setMicrophone(this.microphone);this.voice.start();
+  this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true);this.publishMedia();
+ }
+ private leaveVoice(){this.voice.stop();this.release();this.publishMedia()}
+ private voiceStatus(id:string){
+  const person=this.call.people.find(p=>p.id===id);
+  if(!person?.voice)return 'Fora da chamada';
+  if(!this.voice.active||id===this.call.session?.participant)return person.microphone?'Microfone ligado':'Microfone desligado';
+  const peer=this.voice.peers.get(id);
+  return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
+ }
  private openRoom(event:SubmitEvent){
   event.preventDefault();const form=event.currentTarget as HTMLFormElement,data=new FormData(form);
   const name=String(data.get('name')??'').trim();this.roomError='';this.copied=false;
@@ -40,7 +72,7 @@ export class CallPage extends LightElement {
   try{await navigator.clipboard.writeText(url.href);this.copied=true;this.roomError=''}catch{this.roomError='Não foi possível copiar. Permita o acesso à área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
- private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false}
+ private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia()}
  private stopScreen(){this.screenRequest++;this.stop(this.screen);this.screen=undefined;this.screenBusy=false;const video=this.querySelector('video');if(video)video.srcObject=null}
  private release=()=>{this.stopMicrophone();this.stopScreen();this.error=''};
  private message(error:unknown,screen:boolean){
@@ -58,10 +90,11 @@ export class CallPage extends LightElement {
   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='O microfone exige um navegador compatível e HTTPS ou localhost.';return}
   const request=++this.micRequest;this.micBusy=true;
   try{
-   const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+   const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
    if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
    if(!stream.getAudioTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No audio','NotFoundError')}
    this.microphone=stream;
+   this.voice.setMicrophone(stream);this.publishMedia();
    stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
@@ -82,7 +115,7 @@ export class CallPage extends LightElement {
   finally{if(request===this.screenRequest)this.screenBusy=false}
  }
  render(){return html`
-  <header><div><h1>2T Call</h1><p>Salas privadas · mídia apenas na prévia local.</p></div><span class="call-badge">Protótipo local</span></header>
+  <header><div><h1>2T Call</h1><p>Salas privadas · voz entre até cinco pessoas.</p></div><span class="call-badge">Em homologação</span></header>
   ${!this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" required></label>
    <label class="call-invite">Link de convite<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o link recebido"></label>
@@ -92,6 +125,14 @@ export class CallPage extends LightElement {
    ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
    <button type="button" @click=${this.teardown}>Sair da sala</button></div>`}
   <p class="call-connection" role="status">${({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>
+  ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
+   ${this.voice.active?html`<span>Na chamada${this.microphone?'':' · apenas ouvindo'}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
+   ${this.voice.blocked?html`<button type="button" @click=${()=>this.voice.unlockAudio()}>Liberar áudio</button>`:nothing}
+   ${this.voice.error?html`<button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.voice.retry()}>Reconectar áudio</button>`:nothing}
+  </div>`:nothing}
+  ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
+  ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
+  <div class="call-remote-audio" aria-hidden="true"></div>
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
   <div class="call-layout">
@@ -101,7 +142,7 @@ export class CallPage extends LightElement {
     </div><p class="call-caption" role="status">${this.screen?`Compartilhamento local ativo · ${this.screen.getAudioTracks().some(t=>t.readyState==='live')?'áudio capturado, prévia silenciada':'sem áudio compartilhado'}`:'Nenhuma tela selecionada'}</p>
    </section>
    <aside class="call-people"><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2><ol aria-label="Participantes da sala">
-    ${this.call.people.map(p=>html`<li><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===this.call.session?.participant?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small></div></li>`)}
+    ${this.call.people.map(p=>html`<li data-participant=${p.id}><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===this.call.session?.participant?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small></div></li>`)}
     ${Array.from({length:5-this.call.people.length},(_,n)=>html`<li class="call-vacant"><span class="call-avatar" aria-hidden="true">${this.call.people.length+n+1}</span><div><strong>Vaga disponível</strong><small>Sem participante</small></div></li>`)}
    </ol></aside>
   </div>
@@ -111,5 +152,5 @@ export class CallPage extends LightElement {
    <button type="button" ?disabled=${!this.microphone&&!this.screen&&!this.micBusy&&!this.screenBusy} @click=${this.release}>Encerrar prévia</button>
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
-  <p class="call-note">Ainda não há áudio ou vídeo entre participantes. Microfone e tela ficam apenas neste navegador. A sala exige o sinalizador local; o convite expira em 15 minutos por padrão. O áudio da tela depende do navegador.</p>`}
+  <p class="call-note">${this.voice.active?'Seu microfone é enviado aos participantes da chamada quando ligado.':'Fora da chamada, o microfone fica apenas neste navegador.'} A tela e seu áudio continuam somente na prévia local. Não há câmera nem gravação.</p>`}
 }
