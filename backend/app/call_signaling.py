@@ -19,13 +19,16 @@ from pydantic import Field, SecretStr, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .call_protocol import Action, Create, Handshake, Join, Resume
+from .call_boundary import CallBoundary, https_origin
 
 
 class CallSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="CALL_", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="CALL_", extra="ignore", hide_input_in_errors=True)
     admin_key: SecretStr | None = None
     allowed_origins: str = "http://localhost:8001,http://127.0.0.1:8001"
     serve_frontend: bool = False
+    public_origin: str | None = None
+    proxy_mode: str = Field(default="none", pattern="^(none|cloudflare)$")
     room_seconds: int = Field(default=3600, ge=60, le=14400)
     invite_seconds: int = Field(default=900, ge=30, le=3600)
     reconnect_seconds: int = Field(default=20, ge=1, le=60)
@@ -39,6 +42,13 @@ class CallSettings(BaseSettings):
 
     @model_validator(mode="after")
     def ice_settings(self):
+        if self.public_origin:
+            self.public_origin = https_origin(self.public_origin)
+            origins = [s.strip() for s in self.allowed_origins.split(",")]
+            if self.public_origin not in origins or any(https_origin(s) != s for s in origins):
+                raise ValueError("Public Call requires exact HTTPS allowed origins, including its own")
+        if self.proxy_mode == "cloudflare" and not self.public_origin:
+            raise ValueError("Cloudflare proxy mode requires an exact public origin")
         for value, schemes in [(self.stun_urls, "stuns?"), (self.turn_urls, "turns?")]:
             for url in filter(None, (s.strip() for s in value.split(","))):
                 if not re.fullmatch(rf"(?:{schemes}):(?:\[[0-9a-fA-F:]+\]|[a-zA-Z0-9.-]+)(?::[0-9]{{1,5}})?(?:\?transport=(?:udp|tcp))?", url):
@@ -306,7 +316,7 @@ class Rooms:
                 self.broadcast(room, "disconnected")
 
 
-def create_app(settings: CallSettings | None = None, clock=time.time) -> FastAPI:
+def create_app(settings: CallSettings | None = None, clock=time.time, *, frontend_dir: Path | None = None) -> FastAPI:
     config = settings or CallSettings()
     rooms = Rooms(config, clock)
 
@@ -326,6 +336,7 @@ def create_app(settings: CallSettings | None = None, clock=time.time) -> FastAPI
             rooms.close(room, "server_stopped")
 
     app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
+    app.add_middleware(CallBoundary, public_origin=config.public_origin, proxy_mode=config.proxy_mode)
     app.state.rooms = rooms
 
     @app.get("/call/health")
@@ -422,7 +433,7 @@ def create_app(settings: CallSettings | None = None, clock=time.time) -> FastAPI
                 rooms.connections -= 1
 
     if config.serve_frontend:
-        dist = Path(__file__).resolve().parents[2] / "dist"
+        dist = frontend_dir or Path(__file__).resolve().parents[2] / "dist"
 
         @app.get("/", response_class=HTMLResponse)
         async def index(request: Request):
