@@ -1,7 +1,7 @@
 import type {Participant,RemoteSignal,RtcConfig,Signal} from './protocol';
 
 type VoiceSignal = {type:'offer'|'answer';sdp:string}|{type:'ice';candidate:RTCIceCandidateInit|null};
-export interface VoiceStats {received:number;lost:number;jitterMs?:number;rttMs?:number;relay:boolean}
+export interface VoiceStats {received:number;lost:number;jitterMs?:number;rttMs?:number;relay:boolean;path:'unknown'|'direct'|'relay'}
 interface Peer {
  id:string;epoch:number;pc:RTCPeerConnection;sender?:RTCRtpSender;audio:HTMLAudioElement;
  polite:boolean;makingOffer:boolean;settingAnswer:boolean;ignored:Set<string>;candidates:(RTCIceCandidateInit|null)[];
@@ -166,14 +166,28 @@ export class VoiceMesh {
   try{await Promise.all([...this.peers.values()].map(async peer=>{
    if(!this.current(peer))return;
    const report=await peer.pc.getStats();if(!this.current(peer))return;
-   const stats:VoiceStats={received:0,lost:0,relay:false};
+   const stats:VoiceStats={received:0,lost:0,relay:false,path:'unknown'};
+   let selected:any;
    report.forEach(s=>{
     if(s.type==='inbound-rtp'&&s.kind==='audio'){stats.received+=s.packetsReceived??0;stats.lost+=s.packetsLost??0;if(s.jitter!==undefined)stats.jitterMs=s.jitter*1000}
-    if(s.type==='candidate-pair'&&s.state==='succeeded'&&s.nominated){stats.rttMs=s.currentRoundTripTime===undefined?undefined:s.currentRoundTripTime*1000;
-     stats.relay=report.get(s.localCandidateId)?.candidateType==='relay'||report.get(s.remoteCandidateId)?.candidateType==='relay'}
-   });peer.stats=stats;
+    if(s.type==='transport'&&s.selectedCandidatePairId)selected=report.get(s.selectedCandidatePairId);
+   });
+   if(!selected)report.forEach(s=>{if(s.type==='candidate-pair'&&s.state==='succeeded'&&s.nominated)selected=s});
+   if(selected&&selected.state==='succeeded'&&peer.pc.connectionState==='connected'){
+    stats.rttMs=selected.currentRoundTripTime===undefined?undefined:selected.currentRoundTripTime*1000;
+    stats.relay=report.get(selected.localCandidateId)?.candidateType==='relay'||report.get(selected.remoteCandidateId)?.candidateType==='relay';
+    stats.path=stats.relay?'relay':'direct';
+   }
+   peer.stats=stats;
   }));this.changed()}catch{/* Stats are diagnostic; a closed peer must not stop other audio. */}
   finally{this.measuring=false}
+ }
+ diagnostics(){
+  // Intentionally omit IDs, names, IPs, URLs, credentials, SDP and raw candidates.
+  return {version:1,at:new Date().toISOString(),active:this.active,relayConfigured:this.rtc?.relayAvailable??false,
+   peers:[...this.peers.values()].map((p,n)=>({connection:n+1,state:p.pc.connectionState,ice:p.pc.iceConnectionState,
+    path:p.stats?.path??'unknown',received:p.stats?.received??0,lost:p.stats?.lost??0,
+    jitterMs:p.stats?.jitterMs,rttMs:p.stats?.rttMs,attempts:p.attempts,failed:p.failed}))};
  }
  private closePeer(peer:Peer){
   this.peers.delete(peer.id);window.clearTimeout(peer.timer);

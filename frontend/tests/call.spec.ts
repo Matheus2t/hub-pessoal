@@ -5,7 +5,8 @@ import {test,expect,type Page} from '@playwright/test';
 const origin=process.env.CALL_TEST_URL||'http://127.0.0.1:8001';
 const key=process.env.CALL_TEST_ADMIN_KEY;
 test.skip(!key,'Start the Call test service and set CALL_TEST_ADMIN_KEY.');
-test.use({permissions:['clipboard-read','clipboard-write']});
+const localTLS=process.env.CALL_TEST_LOCAL_TLS==='1'; // Self-signed loopback fixture only.
+test.use({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:localTLS});
 
 async function open(page:Page){await page.goto(`${origin}/#/call`);await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible()}
 async function create(page:Page){
@@ -22,7 +23,7 @@ async function join(page:Page,invite:string,name:string){
  await page.getByRole('button',{name:'Entrar por convite',exact:true}).click();
 }
 test('five real tabs, admission, sixth rejection, reconnect, leave and host close',async({browser})=>{
- const context=await browser.newContext({permissions:['clipboard-read','clipboard-write']});
+ const context=await browser.newContext({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:localTLS});
  const owner=await context.newPage();const errors:string[]=[];
  context.on('page',page=>page.on('pageerror',e=>errors.push(e.message)));
  owner.on('pageerror',e=>errors.push(e.message));
@@ -58,7 +59,7 @@ test('five real tabs, admission, sixth rejection, reconnect, leave and host clos
 });
 
 test('simultaneous requests reserve only four guest slots',async({browser})=>{
- const context=await browser.newContext({permissions:['clipboard-read','clipboard-write']});
+ const context=await browser.newContext({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:localTLS});
  try{
   const owner=await context.newPage(),invite=await create(owner);
   const guests=await Promise.all(Array.from({length:5},()=>context.newPage()));

@@ -38,6 +38,7 @@
  .call-voice-controls { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:12px 0; }
  .call-voice-controls span { font-size:13px; color:var(--secondary); }
  .call-remote-audio { display:none; }
+ .call-diagnostics { margin:12px 0; font-size:13px; color:var(--secondary); } .call-diagnostics p { margin:8px 0; } .call-diagnostics button { margin:8px 0; }
 }
 @media(max-width:760px) { .call-page .call-entry { grid-template-columns:1fr; } }
 @media(max-width:760px) { .call-page { .call-layout { grid-template-columns:1fr; } ol { grid-template-columns:repeat(2,minmax(0,1fr)); } li { gap:8px; } } }

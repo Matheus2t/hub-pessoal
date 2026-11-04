@@ -19,7 +19,7 @@ test.beforeAll(()=>{
 });
 
 async function tab(browser:Browser){
- const context=await browser.newContext({permissions:['microphone','clipboard-read','clipboard-write']});
+ const context=await browser.newContext({permissions:['microphone','clipboard-read','clipboard-write'],ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1'});
  const page=await context.newPage();
  await page.addInitScript(()=>{
   const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
@@ -78,7 +78,8 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
  const contexts:BrowserContext[]=[],pages:Page[]=[],errors:string[]=[];
  const add=async()=>{const result=await tab(browser);contexts.push(result.context);pages.push(result.page);result.page.on('pageerror',e=>errors.push(e.message));return result.page};
  try{
-  const host=await add(),invite=await owner(host);await enter(host);
+  const host=await add(),sockets:string[]=[];host.on('websocket',socket=>sockets.push(socket.url()));
+  const invite=await owner(host);await enter(host);
   const stats=[];
   for(let n=1;n<=4;n++){
    const page=await add();await guest(page,host,invite,`Pessoa ${n}`);await enter(page);
@@ -88,6 +89,13 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   }
   writeFileSync(testInfo.outputPath('webrtc-stats-2-3-4-5.json'),JSON.stringify(stats,null,2));
   await testInfo.attach('webrtc-stats-2-3-4-5.json',{path:testInfo.outputPath('webrtc-stats-2-3-4-5.json'),contentType:'application/json'});
+  expect(sockets.every(url=>url.startsWith(origin.replace('https:','wss:').replace('http:','ws:')+'/call/ws'))).toBe(true);
+  await host.getByText('Verificar conexão',{exact:true}).click();
+  await host.getByRole('button',{name:'Copiar diagnóstico',exact:true}).click();
+  const diagnostic=JSON.parse(await host.evaluate(()=>navigator.clipboard.readText()));
+  expect(diagnostic.peers).toHaveLength(4);expect(diagnostic.peers.every((p:any)=>p.path==='direct'&&p.received>0)).toBe(true);
+  const text=JSON.stringify(diagnostic);expect(text).not.toContain('Anfitrião');expect(text).not.toContain('Pessoa');
+  expect(text).not.toMatch(/candidate:|sdp|credential|invite|iceServers|\b\d{1,3}(?:\.\d{1,3}){3}\b/);
   for(const width of[1366,390])for(const theme of['dark','light']){
    await host.setViewportSize({width,height:950});await host.evaluate(t=>document.documentElement.dataset.theme=t,theme);
    await host.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));

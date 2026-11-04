@@ -17,6 +17,7 @@ export class CallPage extends LightElement {
  private screenRequest=0;
  @state() private roomError='';
  @state() private copied=false;
+ @state() private diagnosticCopied=false;
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})});
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message));
@@ -70,6 +71,11 @@ export class CallPage extends LightElement {
   const session=this.call.session;if(!session?.invite)return;
   const url=new URL(location.href);url.hash=`/call/${session.room}?invite=${session.invite}`;
   try{await navigator.clipboard.writeText(url.href);this.copied=true;this.roomError=''}catch{this.roomError='Não foi possível copiar. Permita o acesso à área de transferência.'}
+ }
+ private async copyDiagnostic(){
+  await this.voice.measure();
+  try{await navigator.clipboard.writeText(JSON.stringify(this.voice.diagnostics(),null,2));this.diagnosticCopied=true}
+  catch{this.roomError='Não foi possível copiar o diagnóstico. Confira a permissão da área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
  private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia()}
@@ -132,6 +138,11 @@ export class CallPage extends LightElement {
   </div>`:nothing}
   ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
   ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
+  ${this.voice.active?html`<details class="call-diagnostics"><summary @click=${()=>void this.voice.measure()}>Verificar conexão</summary>
+   ${this.voice.diagnostics().peers.map((p,n)=>html`<p>Conexão ${n+1} · ${p.path==='relay'?'Via relay':p.path==='direct'?'Direta':'Aguardando conexão'} · ${p.received} pacotes recebidos</p>`)}
+   <button type="button" @click=${this.copyDiagnostic}>${this.diagnosticCopied?'Diagnóstico copiado':'Copiar diagnóstico'}</button>
+   <p>O relatório não inclui nomes, endereços IP ou convites.</p>
+  </details>`:nothing}
   <div class="call-remote-audio" aria-hidden="true"></div>
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
