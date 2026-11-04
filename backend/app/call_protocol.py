@@ -39,7 +39,19 @@ class Resume(Message):
 
 
 class Simple(Message):
-    type: Literal["ping", "leave", "close"]
+    type: Literal["ping", "leave", "close", "rtc_config"]
+
+
+class MediaState(Message):
+    type: Literal["media"]
+    active: bool
+    microphone: bool
+
+
+class EpochSignal(Message):
+    target: Identifier
+    epoch: Annotated[int, Field(ge=1)]
+    targetEpoch: Annotated[int, Field(ge=1)]
 
 
 class Admission(Message):
@@ -54,17 +66,15 @@ class Ice(Message):
     usernameFragment: Annotated[str, Field(max_length=256)] | None = None
 
 
-class SdpSignal(Message):
+class SdpSignal(EpochSignal):
     type: Literal["offer", "answer"]
-    target: Identifier
     sdp: Annotated[str, Field(min_length=1, max_length=24576)]
 
 
-class IceSignal(Message):
+class IceSignal(EpochSignal):
     type: Literal["ice"]
-    target: Identifier
     candidate: Ice | None
 
 
 Handshake = TypeAdapter(Annotated[Create | Join | Resume, Field(discriminator="type")])
-Action = TypeAdapter(Annotated[Simple | Admission | SdpSignal | IceSignal, Field(discriminator="type")])
+Action = TypeAdapter(Annotated[Simple | MediaState | Admission | SdpSignal | IceSignal, Field(discriminator="type")])

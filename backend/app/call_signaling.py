@@ -1,7 +1,10 @@
 """Single-process, ephemeral signaling. Deliberately NOT mounted in the production API."""
 import asyncio
 import hashlib
+import base64
+import hmac
 import os
+import re
 import secrets
 import time
 from collections import deque
@@ -12,7 +15,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import Field, SecretStr, ValidationError
+from pydantic import Field, SecretStr, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .call_protocol import Action, Create, Handshake, Join, Resume
@@ -29,6 +32,22 @@ class CallSettings(BaseSettings):
     approval_seconds: int = Field(default=60, ge=1, le=120)
     heartbeat_seconds: int = Field(default=30, ge=1, le=120)
     max_rooms: int = Field(default=8, ge=1, le=32)
+    stun_urls: str = "stun:stun.cloudflare.com:3478"
+    turn_urls: str = ""
+    turn_shared_secret: SecretStr | None = None
+    turn_seconds: int = Field(default=600, ge=60, le=600)
+
+    @model_validator(mode="after")
+    def ice_settings(self):
+        for value, schemes in [(self.stun_urls, "stuns?"), (self.turn_urls, "turns?")]:
+            for url in filter(None, (s.strip() for s in value.split(","))):
+                if not re.fullmatch(rf"(?:{schemes}):(?:\[[0-9a-fA-F:]+\]|[a-zA-Z0-9.-]+)(?::[0-9]{{1,5}})?(?:\?transport=(?:udp|tcp))?", url):
+                    raise ValueError("Invalid ICE server URL")
+        if bool(self.turn_urls.strip()) != bool(self.turn_shared_secret):
+            raise ValueError("TURN requires both URLs and a server-only shared secret")
+        if self.turn_shared_secret and len(self.turn_shared_secret.get_secret_value()) < 32:
+            raise ValueError("TURN shared secret must contain at least 32 characters")
+        return self
 
 
 class Rejected(Exception):
@@ -72,6 +91,9 @@ class Participant:
     approved: bool = True
     disconnected_at: float | None = None
     requested_at: float = 0
+    voice: bool = False
+    microphone: bool = False
+    voice_epoch: int = 0
 
 
 @dataclass
@@ -135,7 +157,8 @@ class Rooms:
 
     def broadcast(self, room: Room, reason: str):
         people = [{"id": p.id, "name": p.name, "host": p.id == room.host,
-                   "connected": p.connection is not None and not p.connection.closing}
+                   "connected": p.connection is not None and not p.connection.closing,
+                   "voice": p.voice, "microphone": p.microphone, "voiceEpoch": p.voice_epoch}
                   for p in room.people.values() if p.approved]
         for person in room.people.values():
             if person.connection and person.approved:
@@ -144,6 +167,21 @@ class Rooms:
         if host and host.connection:
             host.connection.send({"type": "requests", "participants": [
                 {"id": p.id, "name": p.name} for p in room.people.values() if not p.approved]})
+
+    def rtc_config(self, room: Room, person: Participant):
+        servers = [{"urls": u.strip()} for u in self.settings.stun_urls.split(",") if u.strip()]
+        expires = None
+        if self.settings.turn_shared_secret:
+            expires = int(min(room.expires, self.clock() + self.settings.turn_seconds))
+            username = f"{expires}:{person.id}"
+            credential = base64.b64encode(hmac.new(
+                self.settings.turn_shared_secret.get_secret_value().encode(), username.encode(), hashlib.sha1
+            ).digest()).decode()
+            servers.append({"urls": [u.strip() for u in self.settings.turn_urls.split(",") if u.strip()],
+                            "username": username, "credential": credential})
+        if person.connection:
+            person.connection.send({"type": "rtc_config", "iceServers": servers, "turnExpires": expires,
+                                    "relayAvailable": expires is not None})
 
     async def enter(self, message, connection: Connection, address: str):
         async with self.lock:
@@ -193,6 +231,8 @@ class Rooms:
                              "credential": credential, "host": person.id == room.host,
                              "approved": person.approved, "invite": invite,
                              "expires": room.expires, "inviteExpires": room.invite_expires})
+            if person.approved:
+                self.rtc_config(room, person)
             self.broadcast(room, "reconnected" if isinstance(message, Resume) else "joined")
             return room.id, person.id
 
@@ -216,6 +256,18 @@ class Rooms:
                 return
             if not person.approved:
                 raise Rejected("awaiting_approval")
+            if message.type == "rtc_config":
+                self.rtc_config(room, person)
+                return
+            if message.type == "media":
+                if message.microphone and not message.active:
+                    raise Rejected("invalid_message")
+                if message.active != person.voice:
+                    person.voice_epoch += 1
+                if (person.voice, person.microphone) != (message.active, message.microphone):
+                    person.voice, person.microphone = message.active, message.microphone
+                    self.broadcast(room, "media")
+                return
             if message.type in ("close", "admit", "reject"):
                 if person_id != room.host:
                     raise Rejected("forbidden")
@@ -229,6 +281,7 @@ class Rooms:
                     target.approved = True
                     if target.connection:
                         target.connection.send({"type": "approved"})
+                        self.rtc_config(room, target)
                 else:
                     if target.connection:
                         target.connection.finish("rejected")
@@ -238,6 +291,8 @@ class Rooms:
             target = room.people.get(message.target)
             if not target or target.id == person_id or not target.approved or not target.connection or target.connection.closing:
                 raise Rejected("invalid_target")
+            if not person.voice or not target.voice or message.epoch != person.voice_epoch or message.targetEpoch != target.voice_epoch:
+                raise Rejected("stale_voice")
             payload = message.model_dump(exclude={"target"})
             payload["from"] = person_id  # Never accept a client-supplied sender or room.
             target.connection.send(payload)

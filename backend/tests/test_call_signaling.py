@@ -48,6 +48,16 @@ def admit(owner, visitor, session):
     until(visitor, "approved")
 
 
+def activate(socket, participant):
+    socket.send_json({"type": "media", "active": True, "microphone": False})
+    for _ in range(40):
+        people = until(socket, "presence")["participants"]
+        own = next((p for p in people if p["id"] == participant), None)
+        if own and own["voice"]:
+            return own["voiceEpoch"]
+    raise AssertionError("Voice not authorized")
+
+
 def latest_presence(socket, expected, connected=None):
     for _ in range(40):
         message = until(socket, "presence")
@@ -154,14 +164,17 @@ def test_isolation_and_directed_sdp_ice(service):
     other, other_session = host(connect, "Other owner")
     visitor, joined = guest(connect, session)
     admit(owner, visitor, joined)
-    visitor.send_json({"type": "offer", "target": other_session["participant"], "sdp": "v=0\r\n"})
+    epoch = activate(owner, session["participant"])
+    visitor_epoch = activate(visitor, joined["participant"])
+    metadata = {"epoch": visitor_epoch, "targetEpoch": epoch}
+    visitor.send_json({"type": "offer", "target": other_session["participant"], "sdp": "v=0\r\n", **metadata})
     assert until(visitor, "error")["code"] == "invalid_target"
-    visitor.send_json({"type": "offer", "target": session["participant"], "sdp": "v=0\r\n"})
+    visitor.send_json({"type": "offer", "target": session["participant"], "sdp": "v=0\r\n", **metadata})
     offer = until(owner, "offer")
-    assert offer == {"type": "offer", "from": joined["participant"], "sdp": "v=0\r\n"}
-    owner.send_json({"type": "answer", "target": joined["participant"], "sdp": "v=0\r\nanswer"})
+    assert offer == {"type": "offer", "from": joined["participant"], "sdp": "v=0\r\n", **metadata}
+    owner.send_json({"type": "answer", "target": joined["participant"], "sdp": "v=0\r\nanswer", "epoch": epoch, "targetEpoch": visitor_epoch})
     assert until(visitor, "answer")["from"] == session["participant"]
-    owner.send_json({"type": "ice", "target": joined["participant"], "candidate": {"candidate": "candidate:test", "sdpMid": "0", "sdpMLineIndex": 0}})
+    owner.send_json({"type": "ice", "target": joined["participant"], "candidate": {"candidate": "candidate:test", "sdpMid": "0", "sdpMLineIndex": 0}, "epoch": epoch, "targetEpoch": visitor_epoch})
     assert until(visitor, "ice")["candidate"]["candidate"] == "candidate:test"
     other.send_json({"type": "ping"})
     until(other, "pong")
