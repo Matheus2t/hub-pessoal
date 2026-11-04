@@ -96,6 +96,10 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   expect(diagnostic.peers).toHaveLength(4);expect(diagnostic.peers.every((p:any)=>p.path==='direct'&&p.received>0)).toBe(true);
   const text=JSON.stringify(diagnostic);expect(text).not.toContain('Anfitrião');expect(text).not.toContain('Pessoa');
   expect(text).not.toMatch(/candidate:|sdp|credential|invite|iceServers|\b\d{1,3}(?:\.\d{1,3}){3}\b/);
+  await host.evaluate(()=>{const page=(document.querySelector('call-page') as any);(window as any).__previousRtc=page.call.rtc;page.call.send({type:'rtc_config'})});
+  await expect.poll(()=>host.evaluate(()=>(document.querySelector('call-page') as any).call.rtc!==(window as any).__previousRtc)).toBe(true);
+  expect(await host.evaluate(()=>(document.querySelector('call-page') as any).voice.error)).toBe('');
+  await audioEvidence(host,4);
   for(const width of[1366,390])for(const theme of['dark','light']){
    await host.setViewportSize({width,height:950});await host.evaluate(t=>document.documentElement.dataset.theme=t,theme);
    await host.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));

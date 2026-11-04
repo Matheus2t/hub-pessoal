@@ -133,6 +133,7 @@ test('screen, independent audio and camera reach five real peers including late 
   for(const p of pages.slice(0,5))expect(await p.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>(window as any).__stable.some((old:any)=>old.pc===p.pc&&JSON.stringify(old.mids)===JSON.stringify(p.pc.getTransceivers().map((t:RTCRtpTransceiver)=>t.mid)))))).toBe(true);
   await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;await mesh.measure();(window as any).__metrics=mesh.diagnostics()});
   const signaling=await Promise.all(pages.slice(0,5).map(p=>p.evaluate(()=>({peakMessagesPer10s:(window as any).__peakSignals,types:(window as any).__signalTypes}))));
+  expect(signaling.every(s=>s.peakMessagesPer10s<120)).toBe(true);
   writeFileSync(info.outputPath('five-peer-media.json'),JSON.stringify({receivers:result,signaling,diagnostics:await host.evaluate(()=>(window as any).__metrics)},null,2));
   await host.getByRole('button',{name:'Encerrar sala',exact:true}).click();for(const p of pages.slice(0,5))await closedSources(p);
   expect(errors).toEqual([]);

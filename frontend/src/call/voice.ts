@@ -37,7 +37,7 @@ export class VoiceMesh {
   if(rtc&&rtc!==this.rtc){
    const previous=this.rtc;this.rtc=rtc;
    for(const peer of this.peers.values()){
-    try{peer.pc.setConfiguration({iceServers:rtc.iceServers});if(previous?.turnExpires&&rtc.turnExpires!==previous.turnExpires)peer.resignal=true}
+    try{peer.pc.setConfiguration({iceServers:rtc.iceServers,bundlePolicy:'max-bundle'});if(previous?.turnExpires&&rtc.turnExpires!==previous.turnExpires)peer.resignal=true}
     catch{this.fail(peer,'Não foi possível atualizar os servidores ICE.')}
    }
    this.scheduleRefresh();
@@ -61,7 +61,9 @@ export class VoiceMesh {
   if(!this.ready||!this.send({...message,target:peer.id,epoch:this.epoch,targetEpoch:peer.epoch}))peer.resignal=true;
  }
  private createPeer(person:Participant){
-  const pc=new RTCPeerConnection({iceServers:this.rtc?.iceServers??[]});
+  // All peers run this BUNDLE-aware client. One ICE/DTLS transport avoids a
+  // candidate burst per media kind when four connections start at once.
+  const pc=new RTCPeerConnection({iceServers:this.rtc?.iceServers??[],bundlePolicy:'max-bundle'});
   const audio=document.createElement('audio');audio.autoplay=true;audio.setAttribute('playsinline','');audio.dataset.participant=person.id;
   this.audioRoot()?.append(audio);
   const elements={} as Record<MediaRole,HTMLMediaElement>;
