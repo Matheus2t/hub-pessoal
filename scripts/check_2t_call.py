@@ -55,13 +55,13 @@ def main():
 
         status, headers, body = request("/call/health")
         health = json.loads(body)
-        assert status == 200 and health["status"] == "ok" and health["media"] is False
+        assert status == 200 and health["status"] == "ok" and health["mode"] == "single-process" and health["media"] is False
         assert {k.lower(): v for k, v in headers.items()}.get("access-control-allow-origin") == args.origin
         ws = request("/call/ws", upgrade=True)[0]
         refused = request("/call/ws", source="https://unauthorized-origin.invalid", upgrade=True)[0]
         assert ws == 101 and refused == 403
         assert all(request(path)[0] == 404 for path in ("/.env", "/docs", "/api/health"))
-        print(json.dumps({"https": status, "wss": ws, "forbiddenOrigin": refused, "internalPaths": "blocked",
+        print(json.dumps({"https": status, "mode": health["mode"], "wss": ws, "forbiddenOrigin": refused, "internalPaths": "blocked",
                           "uptimeSeconds": health.get("uptimeSeconds"), "elapsedMs": round((time.monotonic() - started) * 1000),
                           "scope": "local-fixture" if args.local_ca else "external"}))
         return 0
