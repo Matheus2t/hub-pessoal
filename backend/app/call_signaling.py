@@ -39,6 +39,7 @@ class CallSettings(BaseSettings):
     turn_urls: str = ""
     turn_shared_secret: SecretStr | None = None
     turn_seconds: int = Field(default=600, ge=60, le=600)
+    screen_claim_seconds: int = Field(default=45, ge=5, le=120)
 
     @model_validator(mode="after")
     def ice_settings(self):
@@ -104,6 +105,17 @@ class Participant:
     voice: bool = False
     microphone: bool = False
     voice_epoch: int = 0
+    camera: bool = False
+
+
+@dataclass
+class ScreenShare:
+    owner: str
+    request: str
+    generation: int
+    deadline: float
+    active: bool = False
+    audio: bool = False
 
 
 @dataclass
@@ -114,6 +126,8 @@ class Room:
     expires: float
     invite_expires: float
     people: dict[str, Participant] = field(default_factory=dict)
+    screen: ScreenShare | None = None
+    screen_generation: int = 0
 
 
 class Rooms:
@@ -151,6 +165,9 @@ class Rooms:
                 self.close(room, "expired")
                 continue
             changed = False
+            if room.screen and not room.screen.active and now >= room.screen.deadline:
+                room.screen = None
+                changed = True
             for person in list(room.people.values()):
                 lost = person.disconnected_at is not None and now - person.disconnected_at >= self.settings.reconnect_seconds
                 waiting = not person.approved and now - person.requested_at >= self.settings.approval_seconds
@@ -161,6 +178,7 @@ class Rooms:
                     if person.connection:
                         person.connection.finish("approval_expired" if waiting else "disconnected")
                     del room.people[person.id]
+                    self.release_screen(room, person.id)
                     changed = True
             if room.id in self.rooms and changed:
                 self.broadcast(room, "disconnected")
@@ -168,15 +186,50 @@ class Rooms:
     def broadcast(self, room: Room, reason: str):
         people = [{"id": p.id, "name": p.name, "host": p.id == room.host,
                    "connected": p.connection is not None and not p.connection.closing,
-                   "voice": p.voice, "microphone": p.microphone, "voiceEpoch": p.voice_epoch}
+                   "voice": p.voice, "microphone": p.microphone, "voiceEpoch": p.voice_epoch,
+                   "camera": p.camera}
                   for p in room.people.values() if p.approved]
+        screen = ({"owner": room.screen.owner, "generation": room.screen.generation,
+                   "active": room.screen.active, "audio": room.screen.audio} if room.screen else None)
         for person in room.people.values():
             if person.connection and person.approved:
-                person.connection.send({"type": "presence", "participants": people, "reason": reason})
+                person.connection.send({"type": "presence", "participants": people, "reason": reason, "screen": screen})
         host = room.people.get(room.host)
         if host and host.connection:
             host.connection.send({"type": "requests", "participants": [
                 {"id": p.id, "name": p.name} for p in room.people.values() if not p.approved]})
+
+    def release_screen(self, room: Room, owner: str):
+        if room.screen and room.screen.owner == owner:
+            room.screen = None
+
+    def screen_control(self, room: Room, person: Participant, message, connection: Connection):
+        def denied(code):
+            connection.send({"type": "screen_denied", "request": message.request, "code": code})
+        if not person.voice:
+            denied("voice_required")
+            return
+        share = room.screen
+        if message.action == "claim":
+            if share and (share.owner != person.id or share.request != message.request):
+                denied("screen_busy")
+                return
+            if not share:
+                room.screen_generation += 1
+                share = room.screen = ScreenShare(person.id, message.request, room.screen_generation,
+                                                  self.clock() + self.settings.screen_claim_seconds)
+            connection.send({"type": "screen_granted", "request": message.request, "generation": share.generation})
+            self.broadcast(room, "screen_claimed")
+            return
+        if (not share or share.owner != person.id or share.request != message.request
+                or message.generation is not None and message.generation != share.generation):
+            denied("stale_screen")
+            return
+        if message.action == "start":
+            share.active, share.audio = True, message.audio
+        else:
+            room.screen = None
+        self.broadcast(room, "screen_started" if message.action == "start" else "screen_stopped")
 
     def rtc_config(self, room: Room, person: Participant):
         servers = [{"urls": u.strip()} for u in self.settings.stun_urls.split(",") if u.strip()]
@@ -223,6 +276,8 @@ class Rooms:
                 old = person.connection
                 if old:
                     old.finish("replaced")
+                person.camera = False
+                self.release_screen(room, person.id)
                 person.connection, person.disconnected_at = connection, None
             else:
                 if isinstance(message, Join):
@@ -261,6 +316,7 @@ class Rooms:
                     self.close(room, "host_left")
                 else:
                     del room.people[person_id]
+                    self.release_screen(room, person_id)
                     connection.finish("left")
                     self.broadcast(room, "left")
                 return
@@ -270,13 +326,18 @@ class Rooms:
                 self.rtc_config(room, person)
                 return
             if message.type == "media":
-                if message.microphone and not message.active:
+                if (message.microphone or message.camera) and not message.active:
                     raise Rejected("invalid_message")
                 if message.active != person.voice:
                     person.voice_epoch += 1
-                if (person.voice, person.microphone) != (message.active, message.microphone):
-                    person.voice, person.microphone = message.active, message.microphone
+                if (person.voice, person.microphone, person.camera) != (message.active, message.microphone, message.camera):
+                    person.voice, person.microphone, person.camera = message.active, message.microphone, message.camera
+                    if not person.voice:
+                        self.release_screen(room, person_id)
                     self.broadcast(room, "media")
+                return
+            if message.type == "screen":
+                self.screen_control(room, person, message, connection)
                 return
             if message.type in ("close", "admit", "reject"):
                 if person_id != room.host:
@@ -313,6 +374,8 @@ class Rooms:
             person = room.people.get(person_id) if room else None
             if person and person.connection is connection:
                 person.connection, person.disconnected_at = None, self.clock()
+                person.camera = False
+                self.release_screen(room, person_id)
                 self.broadcast(room, "disconnected")
 
 

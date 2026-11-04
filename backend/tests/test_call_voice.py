@@ -88,7 +88,8 @@ def test_stale_or_inactive_voice_cannot_signal(service):
     owner, session = host(connect)
     visitor, joined = guest(connect, session)
     admit(owner, visitor, joined)
-    message = {"type": "offer", "target": joined["participant"], "epoch": 1, "targetEpoch": 1, "sdp": "v=0\r\n"}
+    message = {"type": "offer", "target": joined["participant"], "epoch": 1, "targetEpoch": 1, "sdp": "v=0\r\n",
+               "roles": {"microphone": "0", "screenAudio": "1", "screenVideo": "2", "camera": "3"}}
     owner.send_json(message)
     assert until(owner, "error")["code"] == "stale_voice"
     activate(owner, session["participant"])

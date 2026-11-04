@@ -42,7 +42,7 @@ def test_public_https_assets_wss_csp_and_private_headers(external_service):
     assert page.headers["cache-control"] == "no-store"
     assert page.headers["referrer-policy"] == "no-referrer"
     assert page.headers["x-frame-options"] == "DENY"
-    assert "camera=()" in page.headers["permissions-policy"]
+    assert "camera=(self)" in page.headers["permissions-policy"]
     for asset in ["bundle.js", "styles.css"]:
         assert client.get(f"/{asset}", headers=PROXY_HEADERS).status_code == 200
     headers = {**PROXY_HEADERS, "origin": PUBLIC}

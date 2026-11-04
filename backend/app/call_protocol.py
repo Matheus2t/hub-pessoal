@@ -1,6 +1,6 @@
 """Call v1 wire protocol. Credentials travel in the first frame, never in URLs."""
 from typing import Annotated, Literal
-from pydantic import BaseModel, ConfigDict, Field, SecretStr, TypeAdapter, field_validator
+from pydantic import BaseModel, ConfigDict, Field, SecretStr, TypeAdapter, field_validator, model_validator
 
 
 class Message(BaseModel):
@@ -46,6 +46,41 @@ class MediaState(Message):
     type: Literal["media"]
     active: bool
     microphone: bool
+    camera: bool = False
+
+
+class ScreenControl(Message):
+    type: Literal["screen"]
+    action: Literal["claim", "start", "release"]
+    request: Identifier
+    generation: Annotated[int, Field(ge=1)] | None = None
+    audio: bool = False
+
+    @model_validator(mode="after")
+    def valid_control(self):
+        if self.action == "start" and self.generation is None:
+            raise ValueError("A granted generation is required")
+        if self.action == "claim" and self.generation is not None:
+            raise ValueError("The server assigns the generation")
+        if self.action != "start" and self.audio:
+            raise ValueError("Audio state belongs to an active screen")
+        return self
+
+
+Mid = Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]{1,32}$")]
+
+
+class MediaRoles(Message):
+    microphone: Mid
+    screenAudio: Mid
+    screenVideo: Mid
+    camera: Mid
+
+    @model_validator(mode="after")
+    def unique_mids(self):
+        if len(set(self.model_dump().values())) != 4:
+            raise ValueError("Each media role needs its own MID")
+        return self
 
 
 class EpochSignal(Message):
@@ -69,6 +104,7 @@ class Ice(Message):
 class SdpSignal(EpochSignal):
     type: Literal["offer", "answer"]
     sdp: Annotated[str, Field(min_length=1, max_length=24576)]
+    roles: MediaRoles
 
 
 class IceSignal(EpochSignal):
@@ -77,4 +113,4 @@ class IceSignal(EpochSignal):
 
 
 Handshake = TypeAdapter(Annotated[Create | Join | Resume, Field(discriminator="type")])
-Action = TypeAdapter(Annotated[Simple | MediaState | Admission | SdpSignal | IceSignal, Field(discriminator="type")])
+Action = TypeAdapter(Annotated[Simple | MediaState | ScreenControl | Admission | SdpSignal | IceSignal, Field(discriminator="type")])

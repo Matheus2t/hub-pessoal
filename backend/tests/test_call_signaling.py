@@ -166,13 +166,14 @@ def test_isolation_and_directed_sdp_ice(service):
     admit(owner, visitor, joined)
     epoch = activate(owner, session["participant"])
     visitor_epoch = activate(visitor, joined["participant"])
-    metadata = {"epoch": visitor_epoch, "targetEpoch": epoch}
+    metadata = {"epoch": visitor_epoch, "targetEpoch": epoch,
+                "roles": {"microphone": "0", "screenAudio": "1", "screenVideo": "2", "camera": "3"}}
     visitor.send_json({"type": "offer", "target": other_session["participant"], "sdp": "v=0\r\n", **metadata})
     assert until(visitor, "error")["code"] == "invalid_target"
     visitor.send_json({"type": "offer", "target": session["participant"], "sdp": "v=0\r\n", **metadata})
     offer = until(owner, "offer")
     assert offer == {"type": "offer", "from": joined["participant"], "sdp": "v=0\r\n", **metadata}
-    owner.send_json({"type": "answer", "target": joined["participant"], "sdp": "v=0\r\nanswer", "epoch": epoch, "targetEpoch": visitor_epoch})
+    owner.send_json({"type": "answer", "target": joined["participant"], "sdp": "v=0\r\nanswer", "epoch": epoch, "targetEpoch": visitor_epoch, "roles": metadata["roles"]})
     assert until(visitor, "answer")["from"] == session["participant"]
     owner.send_json({"type": "ice", "target": joined["participant"], "candidate": {"candidate": "candidate:test", "sdpMid": "0", "sdpMLineIndex": 0}, "epoch": epoch, "targetEpoch": visitor_epoch})
     assert until(visitor, "ice")["candidate"]["candidate"] == "candidate:test"

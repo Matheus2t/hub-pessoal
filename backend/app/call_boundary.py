@@ -78,7 +78,7 @@ class CallBoundary:
                 response["X-Content-Type-Options"] = "nosniff"
                 response["X-Frame-Options"] = "DENY"
                 response["X-Robots-Tag"] = "noindex, nofollow, noarchive"
-                response["Permissions-Policy"] = 'microphone=(self), camera=(), display-capture=(self)'
+                response["Permissions-Policy"] = 'microphone=(self), camera=(self), display-capture=(self)'
             await send(message)
 
         await self.app(scope, receive, secure_send)
