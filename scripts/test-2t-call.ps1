@@ -1,6 +1,6 @@
 # Local synthetic fixtures only. Never uses the owner's credential or a public tunnel.
 [CmdletBinding()]
-param([ValidateSet('Start','Stop')][string]$Mode='Start')
+param([ValidateSet('Start','Stop')][string]$Mode='Start', [string]$Python)
 $ErrorActionPreference='Stop'
 $callTestRoot=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $callTestDir=Join-Path $callTestRoot '.vercel/call-stage5'
@@ -23,8 +23,9 @@ foreach($port in @(8443,8444)){if(Get-NetTCPConnection -LocalPort $port -State L
 New-Item -ItemType Directory -Path $callTestDir -Force | Out-Null
 Push-Location $callTestRoot
 try{
- $python=(Get-Command python).Source
- & $python backend/tests/call_tls_harness.py .vercel/call-stage5/tls
+ $fixturePython=(Get-Command python).Source
+ $callPython=if($Python){(Resolve-Path -LiteralPath $Python).Path}else{$fixturePython}
+ & $fixturePython backend/tests/call_tls_harness.py .vercel/call-stage5/tls
  if($LASTEXITCODE -ne 0){throw 'Local TLS certificate could not be prepared.'}
  $env:CALL_ADMIN_KEY='test-only-owner-credential-not-for-production'
  $env:CALL_SERVE_FRONTEND='true'; $env:CALL_STUN_URLS=''; $env:CALL_TURN_PROVIDER='none'
@@ -33,8 +34,8 @@ try{
  $env:CALL_PROXY_MODE='cloudflare'
  $records=@()
  foreach($entry in @(@{Port=8443;Module='backend.tests.call_tls_harness:app'},@{Port=8444;Module='backend.tests.call_frontend_harness:app'})){
-  $proc=Start-Process -FilePath $python -ArgumentList @('-m','uvicorn',$entry.Module,'--host','127.0.0.1','--port',$entry.Port,'--workers','1','--no-proxy-headers','--ssl-keyfile','.vercel/call-stage5/tls/key.pem','--ssl-certfile','.vercel/call-stage5/tls/cert.pem','--ws-max-size','32768','--no-access-log','--log-level','warning') -WorkingDirectory $callTestRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $callTestDir "$($entry.Port).out.log") -RedirectStandardError (Join-Path $callTestDir "$($entry.Port).err.log")
-  $records+=@{Id=$proc.Id;Started=$proc.StartTime.ToUniversalTime().Ticks.ToString();Executable=$python;Module=$entry.Module;Port=$entry.Port}
+  $proc=Start-Process -FilePath $callPython -ArgumentList @('-m','uvicorn',$entry.Module,'--host','127.0.0.1','--port',$entry.Port,'--workers','1','--no-proxy-headers','--ssl-keyfile','.vercel/call-stage5/tls/key.pem','--ssl-certfile','.vercel/call-stage5/tls/cert.pem','--ws-max-size','32768','--no-access-log','--log-level','warning') -WorkingDirectory $callTestRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $callTestDir "$($entry.Port).out.log") -RedirectStandardError (Join-Path $callTestDir "$($entry.Port).err.log")
+  $records+=@{Id=$proc.Id;Started=$proc.StartTime.ToUniversalTime().Ticks.ToString();Executable=$callPython;Module=$entry.Module;Port=$entry.Port}
   ConvertTo-Json -InputObject @($records) -Depth 3 | Set-Content -LiteralPath $callTestState
  }
  foreach($check in @('https://127.0.0.1:8443/call/health','https://127.0.0.1:8444/')){

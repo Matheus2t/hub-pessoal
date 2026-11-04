@@ -9,6 +9,7 @@ import secrets
 import time
 import json
 import logging
+import anyio
 from collections import deque
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field
@@ -570,13 +571,17 @@ def create_app(settings: CallSettings | None = None, clock=time.time, *, fronten
         except (WebSocketDisconnect, RuntimeError):
             pass
         finally:
-            for task in (reader, writer):
-                task.cancel()
-            await asyncio.gather(reader, writer, return_exceptions=True)
-            if room_id and person_id:
-                await rooms.detach(room_id, person_id, connection)
-            async with rooms.lock:
-                rooms.connections -= 1
+            # ASGI shutdown can cancel the endpoint while it is cleaning up its
+            # child tasks. Shield this bounded, local cleanup so leases/counters
+            # are released even under a cancelling AnyIO scope.
+            with anyio.CancelScope(shield=True):
+                for task in (reader, writer):
+                    task.cancel()
+                await asyncio.gather(reader, writer, return_exceptions=True)
+                if room_id and person_id:
+                    await rooms.detach(room_id, person_id, connection)
+                async with rooms.lock:
+                    rooms.connections -= 1
 
     if config.serve_frontend:
         dist = frontend_dir or Path(__file__).resolve().parents[2] / "dist"
