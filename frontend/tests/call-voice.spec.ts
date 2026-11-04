@@ -84,7 +84,7 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   for(let n=1;n<=4;n++){
    const page=await add();await guest(page,host,invite,`Pessoa ${n}`);await enter(page);
    for(const current of pages)await audioEvidence(current,n);
-   for(const current of pages)expect(await current.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.pc.getTransceivers().length===1&&p.pc.getTransceivers()[0].currentDirection==='sendrecv'))).toBe(true);
+   for(const current of pages)expect(await current.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.pc.getTransceivers().length===4&&p.pc.getTransceivers().every((t:RTCRtpTransceiver)=>t.currentDirection==='sendrecv')&&new Set(Object.values(p.remoteRoles)).size===4))).toBe(true);
    stats.push(await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;await mesh.measure();return [...mesh.peers.values()].map((p:any)=>p.stats)}));
   }
   writeFileSync(testInfo.outputPath('webrtc-stats-2-3-4-5.json'),JSON.stringify(stats,null,2));
@@ -183,24 +183,9 @@ test('listen only, denied microphone, late capture cleanup and route exit',async
   await b.page.evaluate(()=>{(window as any).__nativeMic=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);navigator.mediaDevices.getUserMedia=async()=>{throw new DOMException('Denied','NotAllowedError')}});
   await b.page.getByRole('button',{name:'Ativar microfone',exact:true}).click();await expect(b.page.getByRole('alert')).toContainText('Permita');
   await audioEvidence(b.page,1);
-  // Capture a synthetic screen with its own audio track; neither may enter the voice senders.
-  await b.page.evaluate(()=>{navigator.mediaDevices.getDisplayMedia=async()=>{
-   const canvas=document.createElement('canvas');canvas.width=320;canvas.height=180;
-   const context=new AudioContext();(window as any).__screenContext=context;
-   const stream=new MediaStream([...canvas.captureStream(5).getTracks(),...context.createMediaStreamDestination().stream.getTracks()]);
-   (window as any).__screenPreview=stream;return stream;
-  }});
-  await b.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
-  await expect(b.page.getByRole('button',{name:'Parar compartilhamento',exact:true})).toBeVisible();
-  expect(await b.page.evaluate(()=>{
-   const page=(document.querySelector('call-page') as any),screenTracks=(window as any).__screenPreview.getTracks();
-   return [...page.voice.peers.values()].every((p:any)=>p.pc.getSenders().every((s:RTCRtpSender)=>!s.track||s.track.kind==='audio'&&!screenTracks.includes(s.track)));
-  })).toBe(true);
   await b.page.evaluate(()=>{navigator.mediaDevices.getUserMedia=()=>new Promise(resolve=>(window as any).__lateMic=resolve)});
   await b.page.getByRole('button',{name:'Ativar microfone',exact:true}).click();await expect(b.page.getByRole('button',{name:'Aguardando microfone…',exact:true})).toBeVisible();
   await retained(b.page);await b.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await cleaned(b.page);
-  expect(await b.page.evaluate(()=>(window as any).__screenPreview.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended'))).toBe(true);
-  await b.page.evaluate(()=>(window as any).__screenContext.close());
   await b.page.evaluate(async()=>{const stream=await(window as any).__nativeMic({audio:true});(window as any).__lateStream=stream;(window as any).__lateMic(stream)});
   await expect.poll(()=>b.page.evaluate(()=>(window as any).__lateStream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended'))).toBe(true);
   await retained(a.page);await a.page.evaluate(()=>location.hash='#/');await cleaned(a.page);

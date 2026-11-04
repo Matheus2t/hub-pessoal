@@ -1,4 +1,4 @@
-import type {AdmissionRequest,ClientMessage,Participant,ServerMessage,Session,Signal,RtcConfig} from './protocol';
+import type {AdmissionRequest,ClientMessage,Participant,ServerMessage,Session,Signal,RtcConfig,RoomScreen,ScreenControl,ScreenEvent} from './protocol';
 
 export const callErrors:Record<string,string>={
  unauthorized:'Credencial inválida.',invalid_invite:'Convite inválido ou expirado.',room_full:'A sala já tem cinco vagas ocupadas ou reservadas.',
@@ -15,9 +15,10 @@ export type ConnectionState='idle'|'connecting'|'waiting'|'connected'|'reconnect
 export class CallSignaling {
  state:ConnectionState='idle';error='';session?:Session;people:Participant[]=[];requests:AdmissionRequest[]=[];
  rtc?:RtcConfig;
+ screen:RoomScreen|null=null;
  private socket?:WebSocket;private heartbeat?:number;private retry?:number;private watchdog?:number;private attempts=0;
  private stopped=false;private credential='';private generation=0;
- constructor(private changed:()=>void,private signal:(message:Extract<ServerMessage,{from:string}>)=>void=()=>{}){}
+ constructor(private changed:()=>void,private signal:(message:Extract<ServerMessage,{from:string}>)=>void=()=>{},private screenEvent:(message:ScreenEvent)=>void=()=>{}){}
  start(message:Extract<ClientMessage,{type:'create'|'join'}>){this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.requests=[];this.credential='';this.attempts=0;this.connect(message)}
  private connect(first:ClientMessage){
   const generation=++this.generation;
@@ -42,7 +43,8 @@ export class CallSignaling {
     // Clear the invitation from the address bar once accepted into a session.
     if(location.hash!=='#/call')history.replaceState(null,'','#/call');
    }else if(message.type==='rtc_config')this.rtc=message;
-   else if(message.type==='presence')this.people=message.participants;
+   else if(message.type==='presence'){this.people=message.participants;this.screen=message.screen}
+   else if(message.type==='screen_granted'||message.type==='screen_denied')this.screenEvent(message);
    else if(message.type==='requests')this.requests=message.participants;
    else if(message.type==='approved'){this.state='connected';if(this.session)this.session.approved=true}
    else if(message.type==='error')this.error=callErrors[message.code]??'Ação recusada pelo servidor.';
@@ -55,7 +57,7 @@ export class CallSignaling {
    finished=true;window.clearInterval(this.heartbeat);window.clearTimeout(this.watchdog);
    socket.onopen=socket.onmessage=socket.onclose=null;socket.close();
    if(this.session&&this.credential&&this.attempts<5){
-    this.state='reconnecting';this.changed();
+    this.state='reconnecting';this.screen=null;this.changed();
     this.retry=window.setTimeout(()=>this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential}),Math.min(500*2**this.attempts++,4000));
    }else this.fail(this.error||'Sinalizador indisponível. Use o servidor local na porta 8001 e confira a configuração.');
   };
@@ -63,11 +65,11 @@ export class CallSignaling {
   this.watchdog=window.setTimeout(disconnected,10000);
   socket.onerror=()=>{}; // close supplies the visible failure/retry state without logging secrets.
  }
- send(message:{type:'close'|'rtc_config'}|Extract<ClientMessage,{type:'admit'|'reject'|'media'}>|Signal){
+ send(message:{type:'close'|'rtc_config'}|Extract<ClientMessage,{type:'admit'|'reject'|'media'}>|Signal|ScreenControl){
   if(this.state!=='connected'||this.socket?.readyState!==WebSocket.OPEN)return false;
   this.socket.send(JSON.stringify(message));return true;
  }
  private fail(error:string){this.dispose();this.state='closed';this.error=error;this.people=[];this.requests=[];this.session=undefined;this.changed()}
  leave(){if(this.socket?.readyState===WebSocket.OPEN)this.socket.send(JSON.stringify({type:'leave'}));this.dispose();this.session=undefined;this.people=[];this.requests=[];this.error='';this.state='idle';this.changed()}
- dispose(){this.stopped=true;this.generation++;window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.rtc=undefined}
+ dispose(){this.stopped=true;this.generation++;window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.rtc=undefined;this.screen=null}
 }

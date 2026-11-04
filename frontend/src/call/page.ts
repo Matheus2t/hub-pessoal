@@ -4,33 +4,37 @@ import {LightElement} from '../ui';
 import {CallSignaling} from './signaling';
 import {parseInvite} from './protocol';
 import {VoiceMesh} from './voice';
+import {CallCapture} from './capture';
+import {repeat} from 'lit/directives/repeat.js';
 
-/** Voice is WebRTC peer-to-peer; screen capture stays strictly local. */
+/** Private WebRTC room. Capture and transport have independent lifecycles. */
 @customElement('call-page')
 export class CallPage extends LightElement {
  @state() private microphone?:MediaStream;
- @state() private screen?:MediaStream;
  @state() private micBusy=false;
- @state() private screenBusy=false;
  @state() private error='';
  private micRequest=0;
- private screenRequest=0;
  @state() private roomError='';
  @state() private copied=false;
  @state() private diagnosticCopied=false;
- private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})});
+ private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
+  (role,id)=>role==='screenVideo'?this.querySelector('.call-remote-screen'):this.querySelector(`[data-camera="${id}"]`));
  private lastMedia='';
- private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message));
+ private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
+ private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,screen:this.call.screen}),message=>this.call.send(message),()=>this.captureChanged());
+ private captureChanged(){this.voice.setScreen(this.capture.transmitting?this.capture.screen:undefined);this.voice.setCamera(this.capture.camera);this.publishMedia();this.requestUpdate()}
+ protected updated(){this.voice.mountMedia()}
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged)}
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{this.voice.stop();this.release();this.call.leave();this.lastMedia=''};
  private routeChanged=()=>{this.teardown();this.requestUpdate()};
  private callChanged(){
+  this.capture.sync();this.captureChanged();
   if(this.call.state==='closed'||this.call.state==='idle'){
    if(this.voice.active)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
-   if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected');
+   if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.call.screen);
    this.publishMedia();
   }
   this.requestUpdate();
@@ -38,11 +42,13 @@ export class CallPage extends LightElement {
  private publishMedia(){
   if(this.call.state!=='connected')return;
   const active=this.voice.active,microphone=active&&!!this.microphone?.getAudioTracks().some(t=>t.readyState==='live');
-  const signature=`${active}:${microphone}`;
-  if(signature!==this.lastMedia&&this.call.send({type:'media',active,microphone}))this.lastMedia=signature;
+  const camera=active&&!!this.capture.camera;
+  const signature=`${active}:${microphone}:${camera}`;
+  if(signature!==this.lastMedia&&this.call.send({type:'media',active,microphone,camera}))this.lastMedia=signature;
  }
  private enterVoice(){
   if(this.call.state!=='connected'||!this.call.rtc)return;
+  this.capture.release();
   this.voice.setMicrophone(this.microphone);this.voice.start();
   this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true);this.publishMedia();
  }
@@ -79,8 +85,7 @@ export class CallPage extends LightElement {
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
  private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia()}
- private stopScreen(){this.screenRequest++;this.stop(this.screen);this.screen=undefined;this.screenBusy=false;const video=this.querySelector('video');if(video)video.srcObject=null}
- private release=()=>{this.stopMicrophone();this.stopScreen();this.error=''};
+ private release=()=>{this.stopMicrophone();this.capture.release();this.error=''};
  private message(error:unknown,screen:boolean){
   const name=error instanceof DOMException?error.name:'';
   if(name==='NotAllowedError'||name==='SecurityError')return screen?'Compartilhamento não autorizado ou cancelado.':'Permita o acesso ao microfone nas configurações do navegador.';
@@ -105,22 +110,11 @@ export class CallPage extends LightElement {
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
  }
- private async toggleScreen(){
-  if(this.screenBusy)return;
-  if(this.screen){this.stopScreen();return}
-  this.error='';
-  if(!window.isSecureContext||!navigator.mediaDevices?.getDisplayMedia){this.error='Compartilhamento de tela indisponível neste navegador. Use HTTPS ou localhost em um navegador compatível.';return}
-  const request=++this.screenRequest;this.screenBusy=true;
-  try{
-   const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
-   if(!this.isConnected||request!==this.screenRequest){this.stop(stream);return}
-   if(!stream.getVideoTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No video','NotFoundError')}
-   this.screen=stream;
-   stream.getVideoTracks().forEach(track=>track.onended=()=>{if(this.screen===stream)this.stopScreen()});
-  }catch(error){if(this.isConnected&&request===this.screenRequest)this.error=this.message(error,true)}
-  finally{if(request===this.screenRequest)this.screenBusy=false}
- }
- render(){return html`
+ render(){const self=this.call.session?.participant,screen=this.capture.screen,shared=this.call.screen;
+  const remote=!!shared?.active&&shared.owner!==self&&this.voice.active;
+  const sharer=this.call.people.find(p=>p.id===shared?.owner);
+  const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
+  return html`
   <header><div><h1>2T Call</h1><p>Salas privadas · voz entre até cinco pessoas.</p></div><span class="call-badge">Em homologação</span></header>
   ${!this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" required></label>
@@ -147,21 +141,28 @@ export class CallPage extends LightElement {
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
   <div class="call-layout">
-   <section class="call-stage" aria-label="Prévia de tela">
-    <div class="call-preview"><video autoplay playsinline muted .muted=${true} .srcObject=${this.screen??null} ?hidden=${!this.screen} aria-label="Tela compartilhada localmente"></video>
-     ${!this.screen?html`<div class="call-empty"><h2>Sua tela</h2><p>Selecione uma tela, janela ou aba para visualizar aqui.</p></div>`:nothing}
-    </div><p class="call-caption" role="status">${this.screen?`Compartilhamento local ativo · ${this.screen.getAudioTracks().some(t=>t.readyState==='live')?'áudio capturado, prévia silenciada':'sem áudio compartilhado'}`:'Nenhuma tela selecionada'}</p>
+   <section class="call-stage" aria-label="Tela compartilhada">
+    <div class="call-preview"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
+     <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
+     ${!screen&&!remote?html`<div class="call-empty"><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
+    </div><p class="call-caption" role="status">${screenCaption}</p>
    </section>
    <aside class="call-people"><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2><ol aria-label="Participantes da sala">
-    ${this.call.people.map(p=>html`<li data-participant=${p.id}><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===this.call.session?.participant?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small></div></li>`)}
+    ${repeat(this.call.people,p=>p.id,p=>html`<li data-participant=${p.id} class=${shared?.owner===p.id?'call-sharing':''}>
+     <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small><small>${p.camera?'Câmera ligada':'Câmera desligada'}${shared?.owner===p.id?' · compartilhando':''}</small></div></div>
+     <div class="call-camera-frame" data-camera=${p.id} ?hidden=${!p.camera||!this.voice.active} aria-label=${`Câmera de ${p.name}`}>
+      ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
+     </div></li>`)}
     ${Array.from({length:5-this.call.people.length},(_,n)=>html`<li class="call-vacant"><span class="call-avatar" aria-hidden="true">${this.call.people.length+n+1}</span><div><strong>Vaga disponível</strong><small>Sem participante</small></div></li>`)}
    </ol></aside>
   </div>
   <div class="call-controls" role="group" aria-label="Controles locais">
    <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
-   <button type="button" aria-pressed=${!!this.screen} ?disabled=${this.screenBusy} @click=${this.toggleScreen}>${this.screenBusy?'Aguardando seleção…':this.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
-   <button type="button" ?disabled=${!this.microphone&&!this.screen&&!this.micBusy&&!this.screenBusy} @click=${this.release}>Encerrar prévia</button>
+   <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${!this.voice.active||this.call.state!=='connected'} @click=${()=>void this.capture.toggleCamera()}>${this.capture.cameraBusy?'Cancelar câmera':this.capture.camera?'Desativar câmera':'Ativar câmera'}</button>
+   <button type="button" aria-pressed=${!!screen} ?disabled=${this.voice.active&&(this.call.state!=='connected'||!!shared&&shared.owner!==self)} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':screen?'Parar compartilhamento':'Compartilhar tela'}</button>
+   <button type="button" ?disabled=${!this.microphone&&!screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
-  <p class="call-note">${this.voice.active?'Seu microfone é enviado aos participantes da chamada quando ligado.':'Fora da chamada, o microfone fica apenas neste navegador.'} A tela e seu áudio continuam somente na prévia local. Não há câmera nem gravação.</p>`}
+  ${this.capture.error?html`<p class="call-error" role="alert">${this.capture.error}</p>`:nothing}
+  <p class="call-note">${this.voice.active?'Microfone, câmera e tela ligados são enviados aos participantes aprovados.':'Fora da chamada, as prévias ficam apenas neste navegador.'} Não há gravação. O áudio da tela depende do navegador e da superfície escolhida.</p>`}
 }
