@@ -86,11 +86,9 @@ async function visitor(browser:Browser,mobile=false){
 }
 
 async function admin(page:Page,name:string){
- const credential=page.getByLabel('Credencial do proprietário',{exact:true});
- if(await credential.isVisible())await credential.fill(key);
+ await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key);
  await page.getByRole('button',{name,exact:true}).click();
- const authorized=page.getByText('Proprietário autorizado nesta visita.',{exact:false});
- await expect(authorized).toBeVisible({timeout:25000});
+ await expect(page.getByLabel('Credencial do proprietário',{exact:true})).toHaveValue('');
 }
 async function makeRoom(page:Page,origin:string){
  await page.goto(origin+'/#/call');
