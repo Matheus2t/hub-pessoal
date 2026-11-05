@@ -9,6 +9,17 @@ export class HomePage extends LightElement {
       <section class="platform-intro">
         <h1>Início</h1>
       </section>
+      <a class="home-call" href="#/call" aria-label="Acessar 2T Call">
+        <span class="home-call-icon" aria-hidden="true">
+          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="11" width="24" height="22" rx="4"/>
+            <path d="m30 18 8-5v18l-8-5"/>
+            <path d="M12 39h18"/>
+          </svg>
+        </span>
+        <span class="home-call-copy"><strong>2T Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
+        <span class="home-call-action">Acessar <span aria-hidden="true">↗</span></span>
+      </a>
       <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras"><span class="area-icon">${icon("calculator")}</span>
           <div class="area-content"><div class="area-copy"><h2>Calculadoras</h2><p>Simule juros, aportes e parcelas de financiamentos.</p></div>

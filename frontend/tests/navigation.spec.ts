@@ -8,7 +8,15 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  await expect(page.locator('.platform-name, .area-index, .area-tag')).toHaveCount(0);
  await expect(page.locator('tool-card, .category-filters, .catalog-search, tradingview-widget')).toHaveCount(0);
  const navigation=page.getByRole('navigation',{name:'Navegação principal'});
- await expect(navigation.getByRole('link')).toHaveText(['Início','Calculadoras','Ações','Renda Fixa','Learn','2T Call']);
+ await expect(navigation.getByRole('link')).toHaveCount(4);
+ await expect(navigation.getByRole('link',{name:'Início',exact:true})).toBeVisible();
+ for(const team of ['Philadelphia 76ers','São Paulo Futebol Clube','FC Barcelona']){
+   const link=navigation.getByRole('link',{name:team,exact:true});
+   await expect(link).toBeVisible();
+   await expect.poll(()=>link.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);
+ }
+ await expect(navigation.getByRole('link',{name:'2T Call',exact:true})).toHaveCount(0);
+ await expect(page.locator('home-page a.home-call[href="#/call"]')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1 || document.querySelector('.page-footer')!.getBoundingClientRect().bottom>=innerHeight-50)).toBe(true);
  await page.screenshot({path:info.outputPath('home-dark.png'),fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:'Ativar tema claro'}).click();
@@ -23,7 +31,9 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  await page.getByRole('navigation',{name:'Caminho da página'}).getByRole('link',{name:'Calculadoras',exact:true}).click();
  await expect(page.locator('tool-card')).toHaveCount(4);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await navigation.getByRole('link',{name:'Ações',exact:true}).click();await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
+ await navigation.getByRole('link',{name:'Início',exact:true}).click();
+ await page.locator('home-page').getByRole('link',{name:/Mercado de Ações/}).click();
+ await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
 });
 test('legacy routes and calculator breadcrumbs',async({page})=>{
  await page.goto('/#/ferramentas');await expect(page).toHaveURL(/#\/calculadoras$/);

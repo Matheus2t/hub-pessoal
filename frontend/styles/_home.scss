@@ -64,3 +64,32 @@ tool-card { height: 100%; }
   .tool-card h2 { font-size: 20px; }
 }
 
+
+/* Direct 2T Call entry on the landing page, independent of the compact header. */
+home-page .home-call {
+  display: grid; grid-template-columns: 50px minmax(0, 1fr) auto;
+  align-items: center; gap: 22px;
+  width: 100%; max-width: 1440px; margin-inline: auto; min-height: 128px;
+  padding: 26px 30px; border: 1px solid var(--line-soft); border-radius: 10px;
+  background: var(--panel); color: var(--text);
+  text-decoration: none; transition: background var(--duration), border-color var(--duration);
+}
+home-page .home-call:hover { background: var(--raised); border-color: var(--border-highlight); }
+home-page .home-call:focus-visible { outline: 2px solid var(--detail); outline-offset: 4px; }
+.home-call-icon { display: grid; place-items: center; width: 50px; height: 50px; border: 1px solid var(--line-soft); border-radius: 10px; color: var(--secondary); }
+.home-call-icon svg { width: 32px; height: 32px; }
+.home-call-copy { display: grid; min-width: 0; gap: 7px; }
+.home-call-copy strong { font-size: clamp(21px,2vw,26px); line-height: 1.2; font-weight: 600; letter-spacing: -.03em; }
+.home-call-copy > span { font-size: 14px; line-height: 1.5; color: var(--secondary); }
+.home-call-action { display: inline-flex; align-items: center; gap: 16px; padding-left: 20px; border-left: 1px solid var(--line-soft); font-size: 13px; }
+.home-call-action span { font-size: 23px; line-height: 1; }
+@media (max-width: 1199px) { home-page .home-call { max-width: 700px; } }
+@media (max-width: 600px) {
+  home-page { flex: initial; justify-content: flex-start; gap: 18px; padding-block: 8px 16px; }
+  home-page .home-call { max-width: 350px; grid-template-columns: 42px minmax(0,1fr); gap: 10px 14px; min-height: 0; padding: 18px; }
+  .home-call-icon { width: 42px; height: 42px; }
+  .home-call-icon svg { width: 28px; height: 28px; }
+  .home-call-copy strong { font-size: 21px; }
+  .home-call-copy > span { font-size: 12px; }
+  .home-call-action { grid-column: 2; padding: 0; border: 0; gap: 10px; }
+}

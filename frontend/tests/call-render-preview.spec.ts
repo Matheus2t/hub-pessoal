@@ -45,11 +45,14 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveAttribute('aria-current','page');
+  await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveCount(0);
   if((width===1366&&theme==='dark')||(width===320&&theme==='light'))await page.screenshot({path:test.info().outputPath(`preview-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
  }
  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início',exact:true}).click();
  await expect(page.locator('call-page')).toHaveCount(0);
+ await expect(page.locator('home-page .home-call[href="#/call"]')).toBeVisible();
+ await page.locator('home-page .home-call').click();
+ await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();
  if(publicUrl){
   // Public, deliberately invalid invitation: no owner's credential or real room.
   // A new context models a guest without cookies and forces a real document load;

@@ -171,7 +171,6 @@ team-shortcuts { display: block; }
   .masthead app-topbar { margin-left: auto; }
   .masthead team-shortcuts { order: 4; flex-basis: 100%; }
   .team-shortcuts { border-left: 0; border-top: 1px solid var(--line-soft); padding: 6px 0 0; justify-content: flex-end; }
-  .main-content:has(home-page) { min-height: calc(100svh - 130px); }
   .sports-heading { align-items: start; flex-wrap: wrap; gap: 20px; }
   .sports-record { padding-left: 100px; }
   .sports-grid { display: flex; flex-direction: column; gap: 24px; }
