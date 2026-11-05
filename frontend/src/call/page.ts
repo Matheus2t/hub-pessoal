@@ -250,7 +250,7 @@ export class CallPage extends LightElement {
   const channelRoute=location.hash.startsWith('#/call/sala/')||!!channelSession,channelId=parseChannel(location.href)??channelSession?.room;
   const channelBusy=this.call.state==='connecting'||this.call.state==='reconnecting';
   const isLanding=!channelRoute&&!this.call.session&&!parseInvite(location.href);
-  if(location.hash==='#/call/gerenciar')return html`<call-channel-owner></call-channel-owner>`;
+  if(location.hash==='#/call/gerenciar'&&!this.call.session)return html`<call-channel-owner></call-channel-owner>`;
   const remote=!!shared?.active&&shared.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
