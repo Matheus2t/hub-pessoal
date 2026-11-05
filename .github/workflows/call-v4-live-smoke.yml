@@ -40,6 +40,7 @@ jobs:
           if lobby.get('type')!='channel' or not lobby.get('name') or lobby.get('requiresPassword') is not True or lobby.get('setupRequired'):
               raise RuntimeError('Permanent D1 room unavailable or not password protected')
           print('Existing permanent room and password protection: OK')
+          print('Participants currently online in permanent room:',lobby.get('online'))
           PY
       - name: Verify production origin WebSocket handshake
         run: |
