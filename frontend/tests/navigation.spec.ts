@@ -19,13 +19,13 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  await expect(page.locator('home-page a.home-call[href="#/call"]')).toBeVisible();
  if(width<=600){
    const positions=await page.evaluate(()=>{
-     const brand=document.querySelector('.masthead .brand')!.getBoundingClientRect();
      const sidebar=document.querySelector('.masthead app-sidebar')!.getBoundingClientRect();
      const first=document.querySelector('.masthead app-sidebar .nav-item')!.getBoundingClientRect();
-     return {brandX:brand.left,sidebarX:sidebar.left,firstX:first.left};
+     const last=document.querySelector('.masthead app-sidebar .nav-team-icon:last-child')!.getBoundingClientRect();
+     return {sidebarLeft:sidebar.left,sidebarRight:sidebar.right,firstLeft:first.left,lastRight:last.right};
    });
-   expect(Math.abs(positions.sidebarX-positions.brandX)).toBeLessThan(2);
-   expect(Math.abs(positions.firstX-positions.brandX)).toBeLessThan(2);
+   expect(positions.firstLeft).toBeGreaterThan(positions.sidebarLeft+8);
+   expect(Math.abs(positions.lastRight-positions.sidebarRight)).toBeLessThan(2);
  }
  expect(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1 || document.querySelector('.page-footer')!.getBoundingClientRect().bottom>=innerHeight-50)).toBe(true);
  await page.screenshot({path:info.outputPath('home-dark.png'),fullPage:true,animations:'disabled'});
