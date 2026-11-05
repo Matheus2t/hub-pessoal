@@ -155,7 +155,7 @@ test('screen, independent audio and camera reach five real peers including late 
   for(const page of pages)await page.evaluate(()=>{const mesh=(document.querySelector('call-page') as any).voice;(window as any).__stable=[...mesh.peers.values()].map((p:any)=>({pc:p.pc,mids:p.pc.getTransceivers().map((t:RTCRtpTransceiver)=>t.mid)}))});
   const before=await evidence(second,hostId,'screenAudio');await host.getByRole('button',{name:'Desativar microfone',exact:true}).click();
   await expect.poll(async()=> (await evidence(second,hostId,'screenAudio')).energy).toBeGreaterThan(before.energy);
-  expect(await host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.transceivers.microphone.sender.track===null&&p.transceivers.screenAudio.sender.track!==null))).toBe(true);
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.transceivers.microphone.sender.track===null&&p.transceivers.screenAudio.sender.track!==null))).toBe(true);
   await host.getByRole('button',{name:'Ativar microfone',exact:true}).click();await media(second,hostId,'microphone');
   // Each receiver has a decoded frame and an advancing remote video, not just a DOM placeholder.
   for(const p of pages.slice(1))for(const role of['screenVideo','screenAudio','camera'])await media(p,hostId,role);
@@ -236,7 +236,7 @@ test('simultaneous screen requests, silent screen, ended audio and disconnect re
   await b.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});
   await expect(b.page.locator('call-page')).toBeHidden();await expect(b.page.locator('.call-dock')).toBeVisible();
   await expect.poll(()=>b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(1);
-  await b.page.getByRole('button',{name:'Sair',exact:true}).click();await closedSources(b.page);
+  await b.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(b.page);
   expect(await b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(0);
   await expect(a.page.locator('.call-caption')).toHaveText('Nenhuma tela compartilhada');
   await a.page.getByRole('button',{name:'Encerrar sala',exact:true}).click();await closedSources(a.page);
@@ -260,7 +260,7 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
   await a.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});
   await expect(a.page.locator('call-page')).toBeHidden();await expect(a.page.locator('.call-dock')).toBeVisible();
-  await a.page.getByRole('button',{name:'Sair',exact:true}).click();
+  await a.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
   await a.page.evaluate(()=>{(window as any).__resolveCamera();(window as any).__resolveDisplay()});await closedSources(a.page);
   expect(await a.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(0);
   await expect(b.page.locator('.call-connection')).toHaveText('Conexão encerrada');await closedSources(b.page);
