@@ -102,5 +102,5 @@ test('owner credential, malformed invite, route exit and responsive themes',asyn
  await page.getByRole('link',{name:'Voltar à chamada'}).click();
  await expect(page.locator('.call-connection')).toHaveText('Conectado');
  await page.getByRole('button',{name:'Sair da sala',exact:true}).click();
- await expect(page.locator('.call-connection')).toHaveText('Sem sala conectada');
+ await expect(page.locator('.call-layout')).toBeHidden();
 });
