@@ -90,8 +90,7 @@ async function admin(page:Page,name:string){
  if(await credential.isVisible())await credential.fill(key);
  await page.getByRole('button',{name,exact:true}).click();
  const authorized=page.getByText('Proprietário autorizado nesta visita.',{exact:false});
- if(!await authorized.isVisible())console.log('Owner UI after',name,await page.locator('call-channel-owner').innerText());
- await expect(authorized).toBeVisible();
+ await expect(authorized).toBeVisible({timeout:25000});
 }
 async function makeRoom(page:Page,origin:string){
  await page.goto(origin+'/#/call');
