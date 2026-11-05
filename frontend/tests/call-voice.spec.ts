@@ -53,7 +53,11 @@ async function energy(page:Page,id:string){
 }
 async function audioEvidence(page:Page,count:number){
  await connected(page,count);
- if(await page.getByRole('button',{name:'Liberar áudio',exact:true}).isVisible())await page.getByRole('button',{name:'Liberar áudio',exact:true}).click();
+ const unlock=page.getByRole('button',{name:'Liberar áudio',exact:true});
+ if(await unlock.isVisible()){
+  try{await unlock.click({timeout:1200})}
+  catch(error){if(await unlock.isVisible())throw error}
+ }
  await expect.poll(()=>page.evaluate(async()=>{
   const mesh=(document.querySelector('call-page') as any).voice;let received=0;
   for(const p of mesh.peers.values()){
@@ -194,7 +198,7 @@ test('listen only, denied microphone, late capture cleanup and route exit',async
   await expect.poll(()=>b.page.evaluate(()=>(window as any).__lateStream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended'))).toBe(true);
   await retained(a.page);await a.page.evaluate(()=>location.hash='#/');
   await expect(a.page.locator('call-page')).toBeHidden();await expect(a.page.locator('.call-dock')).toBeVisible();
-  await a.page.getByRole('button',{name:'Sair',exact:true}).click();await cleaned(a.page);
+  await a.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await cleaned(a.page);
   expect(await a.page.locator('.call-remote-audio audio').count()).toBe(0);
  }finally{await a.context.close();await b.context.close()}
 });
