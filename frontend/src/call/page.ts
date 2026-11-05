@@ -59,7 +59,7 @@ export class CallPage extends LightElement {
  private routeChanged=()=>{
   // A mounted Call page is owned by the application shell, not its current route.
   // Navigating to Ações, Learn or Calculadoras must not stop an ongoing call.
-  if(this.call.session){this.requestUpdate();return}
+  if(this.call.session){this.fullscreen.close();this.requestUpdate();return}
   this.teardown();this.channel=undefined;this.lobby=undefined;
   this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;
   this.loadChannel();this.requestUpdate();
@@ -261,9 +261,9 @@ export class CallPage extends LightElement {
     <button type="button" aria-pressed=${entryMode==='join'} @click=${()=>this.privateMode='join'}>Usar convite</button>
    </div>
    <form class="call-entry" @submit=${this.openRoom}>
-    <label>Como você quer aparecer?<input name="name" autocomplete="nickname" maxlength="40" placeholder="Seu nome ou apelido" required></label>
+    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" placeholder="Seu nome ou apelido" required></label>
     ${entryMode==='join'?html`<label class="call-invite">Link recebido<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o convite aqui" required></label>`:nothing}
-    <button class="call-primary-action" type="submit" value=${entryMode} ?disabled=${this.call.state==='connecting'}>${entryMode==='create'?'Criar sala privada':'Entrar na sala'}</button>
+    <button class="call-primary-action" type="submit" value=${entryMode} ?disabled=${this.call.state==='connecting'}>${entryMode==='create'?'Criar sala privada':'Entrar por convite'}</button>
    </form>
    <p class="call-entry-hint">${entryMode==='create'?'Sem cadastro. Compartilhe o convite para chamar seus amigos.':'O anfitrião aprova a entrada dos convidados.'}</p>
   </div>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
@@ -289,7 +289,7 @@ export class CallPage extends LightElement {
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
    <section class="call-channel-panel" aria-label="Sala Permanente"><div class="call-card-symbol" aria-hidden="true">01 <span>●</span></div>
     <span class="call-panel-label">CANAL PERMANENTE · 01</span>
-    <div class="call-panel-copy"><h2>Sala permanente</h2><p class="call-note">Seu ponto de encontro. Disponível mesmo quando ninguém está online.</p></div>
+    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Seu ponto de encontro. Disponível mesmo quando ninguém está online.</p></div>
     ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
     ${this.lobby?.room?html`<a class="button call-lobby-enter call-primary-action" href=${channelLink(this.lobby.room)}>Entrar na sala <span aria-hidden="true">→</span></a>`:
      html`<p class="call-note" role="status">${this.channelLoading?'Consultando a sala…':this.lobbyError||
@@ -299,7 +299,7 @@ export class CallPage extends LightElement {
    </section>
    <section class="call-private-panel" aria-label="Chamada Privada"><div class="call-card-symbol" aria-hidden="true">02 <span>↗</span></div>
     <span class="call-panel-label">SALA TEMPORÁRIA · 02</span>
-    <div class="call-panel-copy"><h2>Chamada privada</h2><p class="call-note">Crie um espaço só para você e quem receber o convite.</p></div>
+    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Crie um espaço só para você e quem receber o convite.</p></div>
     ${privateEntry}
    </section>
   </div>`:privateEntry}`}
