@@ -23,7 +23,7 @@ ChannelPassword = Annotated[SecretStr, Field(min_length=1, max_length=128)]
 class Create(Message):
     type: Literal["create"]
     name: Name
-    admin: SecretStr
+    admin: SecretStr | None = None  # Older clients may still send it; private rooms are owner-key-free.
 
 
 class Join(Message):
