@@ -3,6 +3,12 @@ for(const width of [1920,1366,768,390,320])test(`portrait home ${width}`,async({
  await page.setViewportSize({width,height:1080});await page.goto('/#/');
  for(const theme of ['dark','light']){
  await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+ const call=page.locator('home-page .home-call');
+ await expect(call).toBeVisible();
+ await expect(call).toHaveAttribute('href','#/call');
+ const icons=page.locator('app-sidebar .nav-team-icons a');
+ await expect(icons).toHaveCount(3);
+ await expect.poll(()=>icons.locator('img').evaluateAll(imgs=>imgs.every(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0))).toBe(true);
  const boxes=await page.locator('home-page .area-card').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height}}));
  expect(boxes).toHaveLength(4);for(const b of boxes)expect(b.h/b.w).toBeGreaterThan(1.2);
  expect(Math.abs(boxes[0].h-boxes[2].h)).toBeLessThan(2);
