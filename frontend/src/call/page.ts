@@ -110,7 +110,7 @@ export class CallPage extends LightElement {
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
-   if(this.voice.active)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
+   if(this.voice.active||this.voice.error)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
    if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.call.screen);

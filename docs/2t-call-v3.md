@@ -24,3 +24,12 @@ Cada vídeo de câmera tem um botão próprio de tela cheia. O controle de saíd
 4. Reinicie o Render e compare o campo `boot` no health. Confirme que nome, link, senha e bloqueios persistem no D1 e que o canal se recupera. Teste câmera e tela cheia em dispositivos físicos. Com as verificações essenciais aprovadas, integre o PR e confirme Production / Ready e os fluxos no domínio oficial.
 
 Para rollback, guarde o SHA ativo do Render e o deployment da Vercel antes de publicar. Restaurar só o frontend anterior mantém a Chamada Privada, mas o frontend antigo não consegue entrar em canais protegidos. O leitor da V2 rejeita a definição com campo de senha e desativa a sala permanente. Em qualquer rollback, preserve o hash e a linha no D1 para que a sala continue protegida ao retornar à V3.
+
+Antes da V3, a Vercel servia a `main` `607fbf4f7bb9a9544ef07dd471403dfe344635c3` em `dpl_9R8SjgUsvytgvpgPaF9KVwxx3AH1`. O health do Render respondeu HTTP 200 após a inicialização. A rota `/call/lobby` respondeu 404 nessa versão. No painel do Render, anote o SHA e o deploy Live imediatamente antes de usar **Manual Deploy → Deploy a specific commit**.
+
+## Verificações locais
+
+- Typecheck e build aprovados. 110 testes Python do Call aprovados, incluindo leitura do formato V2, gravação do hash sem senha em texto puro, limite de tentativas e invalidação da prova de reconexão.
+- Sala Permanente em Playwright: três casos aprovados em cada um de Chrome, Edge e Firefox. No WebKit para Windows, autenticação e moderação passaram e dois cenários de mídia foram ignorados por ausência das APIs exigidas pelo ambiente. Os testes usam SQLite em arquivo e WebRTC com mídia sintética, incluindo reinício real do processo local.
+- As 16 regressões Playwright da Chamada Privada passaram em Chrome. Dois testes identificaram que a altura compacta do lobby também limitava o modo expandido. A regra foi corrigida e a suíte passou novamente.
+- A compatibilidade com a forma da linha D1 foi exercitada localmente. A validação da linha real no Render, a prévia integrada e o teste em dispositivos físicos dependem da homologação descrita acima.

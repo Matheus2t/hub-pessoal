@@ -109,9 +109,17 @@ async function join(page:Page,name:string,secret=password){
  await page.getByRole('button',{name:'Entrar no canal',exact:true}).click();
  expect(await page.evaluate(()=>(document.querySelector('call-page input[name="password"]') as HTMLInputElement|null)?.value??'')).toBe('');
 }
-async function ready(page:Page){
+async function ready(page:Page,requireMedia=true){
  await expect(page.locator('.call-connection')).toHaveText('Conectado');
- await expect(page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeEnabled();
+ if(requireMedia)await expect(page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeEnabled();
+}
+async function requireWebRTC(page:Page,origin:string){
+ await page.goto(origin+'/#/call');
+ const missing=await page.evaluate(()=>[
+  typeof RTCPeerConnection==='undefined'?'RTCPeerConnection':'',
+  typeof HTMLCanvasElement.prototype.captureStream!=='function'?'canvas.captureStream':'',
+ ].filter(Boolean).join(', '));
+ test.skip(!!missing,`Media fixture unavailable in this browser build: ${missing}`);
 }
 async function session(page:Page){return page.evaluate(()=>(document.querySelector('call-page') as any).call.session.participant as string)}
 async function media(page:Page,from:string,role:string){
@@ -131,7 +139,8 @@ test('permanent channel receives real media, preserves peers on leave and restor
  const tab=async(mobile=false)=>{const page=await visitor(browser,mobile);pages.push(page);return page};
  try{
   const boot=await fixture.start();
-  const owner=await tab(),link=await makeRoom(owner,fixture.origin);
+  const owner=await tab();await requireWebRTC(owner,fixture.origin);
+  const link=await makeRoom(owner,fixture.origin);
   await owner.context().close();
   const a=await tab(),b=await tab(true);
   await open(a,link);await expect(a.getByText('Ninguém conectado. Entre quando quiser.')).toBeVisible();
@@ -197,14 +206,14 @@ test('owner can moderate and rotate without joining; guests use the room passwor
   await panel.getByRole('link',{name:'Entrar na sala',exact:true}).click();
   expect(guest.url()).toBe(link);
   await join(guest,'Visitante','wrong-password');await expect(guest.getByRole('alert')).toContainText('Senha da sala incorreta');
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await admin(owner,'Consultar sala');await expect(owner.getByRole('button',{name:'Bloquear Visitante',exact:true})).toBeVisible();
   await admin(owner,'Bloquear Visitante');await expect(guest.getByRole('alert')).toContainText('bloqueou este navegador');
   await join(guest,'Novo apelido');await expect(guest.getByRole('alert')).toContainText('bloqueou este navegador');
   await admin(owner,'Desbloquear Visitante');await expect(owner.getByRole('button',{name:'Desbloquear Visitante',exact:true})).toHaveCount(0);
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await admin(owner,'Consultar sala');await admin(owner,'Expulsar Visitante');await expect(guest.getByRole('alert')).toContainText('removeu você');
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await owner.getByLabel('Nome da sala',{exact:true}).fill('Canal dos Amigos');
   await admin(owner,'Renomear sala');await expect(guest.getByRole('heading',{name:'Canal dos Amigos',exact:true})).toBeVisible();
   owner.once('dialog',dialog=>dialog.accept());
@@ -213,12 +222,12 @@ test('owner can moderate and rotate without joining; guests use the room passwor
   await guest.reload();await expect(guest.getByRole('alert')).toContainText('link da sala não está mais disponível');
   await guest.goto((await newLink.getAttribute('href'))!);
   await expect(guest.getByRole('heading',{name:'Canal dos Amigos',exact:true})).toBeVisible();
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await owner.getByLabel('Nova senha da sala',{exact:true}).fill(password+'-updated');
   await admin(owner,'Alterar senha');await expect(guest.getByRole('alert')).toContainText('O proprietário alterou a senha');
   await expect(newLink).toHaveAttribute('href',guest.url());
   await join(guest,'Visitante');await expect(guest.getByRole('alert')).toContainText('Senha da sala incorreta');
-  await join(guest,'Visitante',password+'-updated');await ready(guest);
+  await join(guest,'Visitante',password+'-updated');await ready(guest,false);
  }finally{await Promise.all([owner.context().close(),guest.context().close()]);await fixture.stop()}
 });
 
@@ -226,7 +235,7 @@ test('front, rear and desktop cameras keep WebRTC and fullscreen media controls 
  const fixture=await server(info.outputPath('channel.sqlite3'));
  const owner=await visitor(browser),desktop=await visitor(browser),mobile=await visitor(browser,true);
  try{
-  await fixture.start();const link=await makeRoom(owner,fixture.origin);
+  await fixture.start();await requireWebRTC(owner,fixture.origin);const link=await makeRoom(owner,fixture.origin);
   await open(desktop,link);await join(desktop,'Alice');await ready(desktop);
   await open(mobile,link);await join(mobile,'Bia');await ready(mobile);
   const a=await session(desktop),b=await session(mobile);

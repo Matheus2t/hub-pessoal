@@ -359,8 +359,13 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
 
   /* No active room: show a compact stage without sacrificing the in-call view. */
   &:has(.call-join-grid) {
+    --call-lobby-stage-height: clamp(255px, 26vw, 330px);
     .call-layout { grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr); }
-    .call-preview { aspect-ratio: auto; min-height: 0; height: clamp(255px, 26vw, 330px); }
+    .call-preview:not(:fullscreen,.is-expanded), .call-stage:has(>.call-preview.is-expanded)::before {
+      aspect-ratio: auto;
+      min-height: 0;
+      height: var(--call-lobby-stage-height);
+    }
     .call-people { padding: 18px; }
     .call-people li { min-height: 45px; padding: 7px 10px; }
     .call-people ol { gap: 5px; }
@@ -396,7 +401,7 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
     .call-controls button { padding-inline: 10px; }
     .call-people ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .call-people li { min-height: 58px; }
-    &:has(.call-join-grid) .call-preview { height: 260px; }
+    &:has(.call-join-grid) { --call-lobby-stage-height: 260px; }
   }
 }
 @media (max-width: 440px) {
