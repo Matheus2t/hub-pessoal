@@ -95,21 +95,26 @@
   .nav-team-icon { width:32px; }
 }
 
-/* Mobile: the theme switch stays beside the navigation, as on desktop. */
+/* Mobile header: logo, navigation and theme switch share one baseline. */
 @media (max-width: 600px) {
   .masthead {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 40px;
-    grid-template-areas:
-      "brand brand"
-      "navigation theme";
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "brand navigation theme";
     align-items: center;
     column-gap: 8px;
-    row-gap: 4px;
+    row-gap: 0;
+    min-height: 64px;
+    padding-block: 8px;
   }
   .masthead .brand {
     grid-area: brand;
     justify-self: start;
+    flex-shrink: 0;
+  }
+  .masthead .brand-logo,
+  .masthead .brand-logo img {
+    width: 56px;
   }
   .masthead app-sidebar {
     grid-area: navigation;
@@ -118,15 +123,18 @@
     min-width: 0;
     margin: 0;
     align-self: center;
-    text-align: right;
   }
   .masthead app-sidebar > nav {
+    display: flex;
     width: 100%;
     margin: 0;
     padding: 0;
+    flex-wrap: nowrap;
+    gap: 0 8px;
     justify-content: flex-end;
-    text-align: right;
+    align-items: center;
   }
+  .masthead app-sidebar .nav-item { white-space: nowrap; }
   .masthead app-sidebar .nav-team-icons {
     margin-left: 0;
     margin-right: 0;
@@ -138,13 +146,37 @@
     justify-self: end;
     align-self: center;
   }
+  .masthead app-topbar .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
 }
 
-/* Keep all four navigation links visible beside the theme button on 320px screens. */
-@media (max-width: 360px) {
-  .masthead app-sidebar nav { gap: 0 6px; }
-  .masthead .nav-team-icons { gap: 2px; padding-left: 6px; }
-  .masthead .nav-team-icon { width: 28px; }
-  .masthead .nav-team-icon .team-crest-frame { width: 26px; height: 26px; }
-  .masthead .nav-team-icon img { width: 24px; height: 24px; }
+/* Narrow phones: keep the same row without horizontal scrolling. */
+@media (max-width: 390px) {
+  .masthead {
+    padding-inline: 14px;
+    column-gap: 5px;
+  }
+  .masthead .brand-logo,
+  .masthead .brand-logo img { width: 48px; }
+  .masthead app-sidebar > nav { gap: 0 6px; }
+  .masthead app-sidebar .nav-team-icons { gap: 2px; padding-left: 6px; }
+  .masthead app-sidebar .nav-team-icon { width: 29px; height: 36px; }
+  .masthead app-sidebar .nav-team-icon .team-crest-frame { width: 27px; height: 27px; }
+  .masthead app-sidebar .nav-team-icon img { width: 25px; height: 25px; }
+  .masthead app-topbar .theme-toggle { width: 34px; height: 34px; }
+}
+@media (max-width: 340px) {
+  .masthead { padding-inline: 12px; column-gap: 4px; }
+  .masthead .brand-logo,
+  .masthead .brand-logo img { width: 44px; }
+  .masthead app-sidebar > nav { gap: 0 4px; }
+  .masthead app-sidebar .nav-item { font-size: 12px; }
+  .masthead app-sidebar .teams-menu summary::after { margin-left: 3px; }
+  .masthead app-sidebar .nav-team-icons { padding-left: 4px; }
+  .masthead app-sidebar .nav-team-icon { width: 26px; }
+  .masthead app-sidebar .nav-team-icon .team-crest-frame { width: 25px; height: 25px; }
+  .masthead app-sidebar .nav-team-icon img { width: 23px; height: 23px; }
+  .masthead app-topbar .theme-toggle { width: 32px; height: 32px; }
 }
