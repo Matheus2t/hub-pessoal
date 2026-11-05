@@ -11,8 +11,6 @@ test.use({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:loc
 async function open(page:Page){await page.goto(`${origin}/#/call`);await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible()}
 async function create(page:Page){
  await open(page);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
- if(!await page.getByLabel('Credencial do proprietário',{exact:true}).isVisible())await page.getByText('Sou o proprietário',{exact:true}).click();
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key!);
  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
  await expect(page.locator('.call-connection')).toHaveText('Conectado');
  await page.getByRole('button',{name:'Copiar convite',exact:true}).click();
@@ -75,19 +73,17 @@ test('simultaneous requests reserve only four guest slots',async({browser})=>{
 
 test('owner credential, malformed invite, route exit and responsive themes',async({page},testInfo)=>{
  await open(page);await page.getByLabel('Seu nome',{exact:true}).fill('Teste');
+ await page.getByRole('button',{name:'Usar convite',exact:true}).click();
+ await page.getByLabel('Link recebido',{exact:true}).fill('invalid');
  await page.getByRole('button',{name:'Entrar por convite',exact:true}).click();
  await expect(page.getByRole('alert')).toContainText('convite válido');
- await page.getByText('Sou o proprietário',{exact:true}).click();
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill('invalid');
- await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
- await expect(page.getByRole('alert')).toContainText('Credencial inválida');
  for(const width of[1366,768,390,320])for(const theme of['light','dark']){
   await page.setViewportSize({width,height:950});
   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   await page.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  expect(await page.locator('.call-preview').evaluate(e=>e.getBoundingClientRect().right<=e.parentElement!.getBoundingClientRect().right)).toBe(true);
-  await expect(page.getByRole('button',{name:'Compartilhar tela',exact:true})).toBeVisible();
+  await expect(page.locator('.call-layout')).toBeHidden();
+  await expect(page.locator('.call-controls')).toBeHidden();
  }
  await page.setViewportSize({width:1366,height:950});
  const invite=await create(page);
@@ -99,7 +95,12 @@ test('owner credential, malformed invite, route exit and responsive themes',asyn
   await page.screenshot({path:testInfo.outputPath(`call-${width}-${theme}.png`),fullPage:true});
  }
  await page.evaluate(()=>location.hash='#/');
- await expect(page.locator('call-page')).toHaveCount(0);
- await page.goBack();await expect(page.getByRole('button',{name:'Criar sala privada',exact:true})).not.toBeVisible();
+ await expect(page.locator('call-page')).toHaveCount(1);
+ await expect(page.locator('call-page')).toBeHidden();
+ await expect(page.getByRole('link',{name:'Voltar à chamada'})).toBeVisible();
+ await expect(page.locator('.call-dock')).toContainText('1/5 na sala');
+ await page.getByRole('link',{name:'Voltar à chamada'}).click();
+ await expect(page.locator('.call-connection')).toHaveText('Conectado');
+ await page.getByRole('button',{name:'Sair da sala',exact:true}).click();
  await expect(page.locator('.call-connection')).toHaveText('Sem sala conectada');
 });
