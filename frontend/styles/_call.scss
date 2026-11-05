@@ -6,10 +6,25 @@ html:has(.call-page .call-preview:is(:fullscreen,.is-expanded)) { overflow:hidde
  h1 { font-size:clamp(26px,3vw,34px); letter-spacing:-.035em; }
  header p,.call-note { font-size:13px; line-height:1.6; color:var(--secondary); margin-top:8px; }
  .call-badge { border:1px solid var(--line); border-radius:5px; padding:6px 10px; font-size:12px; white-space:nowrap; }
+ call-channel-owner { display:block; }
+ .call-channel-panel { display:grid; justify-items:start; gap:12px; padding:16px; margin-bottom:16px; border:1px solid var(--line-soft); border-radius:8px; background:var(--panel); }
+ .call-channel-panel h2,.call-private-title { font-size:17px; }
+ .call-private-title { margin-bottom:10px; }
+ .call-channel-panel .call-note { margin:0; }
+ .call-channel-panel form { width:min(100%,640px); display:flex; align-items:end; flex-wrap:wrap; gap:8px; }
+ .call-channel-panel form label { flex:1 1 220px; }
+ .call-channel-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+ .call-channel-panel ul { display:grid; gap:6px; padding:0; margin:0; list-style:none; max-width:100%; }
+ .call-channel-panel li { flex-wrap:wrap; overflow-wrap:anywhere; }
+ .call-channel-panel a,header a { text-decoration:underline; text-underline-offset:3px; }
+ .call-person { overflow-wrap:anywhere; }
+ li .call-speaking { color:var(--text); font-weight:650; }
  .call-layout { display:grid; grid-template-columns:minmax(0,3fr) minmax(180px,1fr); gap:16px; }
  .call-stage,.call-people { min-width:0; border:1px solid var(--line-soft); border-radius:8px; background:var(--panel); }
  .call-stage { overflow:hidden; align-self:start; }
  .call-preview { position:relative; width:100%; min-width:0; aspect-ratio:16/9; min-height:190px; display:grid; grid-template-columns:minmax(0,1fr); place-items:center; background:var(--raised); }
+ .call-layout[data-channel] .call-preview:has(.call-empty) { min-height:0; aspect-ratio:auto; height:clamp(140px,22vw,220px); }
+ .call-layout[data-channel] .call-people { align-self:start; }
  video { display:block; width:100%; height:100%; position:absolute; inset:0; object-fit:contain; }
  .call-empty { text-align:center; padding:24px; }
  .call-empty h2 { font-size:18px; font-weight:500; }
