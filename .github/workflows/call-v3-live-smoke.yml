@@ -50,6 +50,8 @@ jobs:
           print("Cloudflare D1-backed lobby: OK (existing permanent room found)")
           print("Room password protection configured:", bool(lobby.get("requiresPassword")))
           print("Room password setup required:", bool(lobby.get("setupRequired")))
+          if lobby.get("requiresPassword") is not True or lobby.get("setupRequired"):
+              raise RuntimeError("Permanent room password has not yet been configured")
           if cors1 != preview or cors2 != preview:
               raise RuntimeError("Preview origin is not present in allowed CORS origins")
           print("Vercel preview CORS origin: OK")
