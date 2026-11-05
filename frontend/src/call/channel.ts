@@ -15,8 +15,7 @@ export function channelDevice(){
  return deviceToken;
 }
 
-/** One request on the existing protected WSS route. Never keeps an idle socket. */
-export async function requestChannel(message:ChannelRequest,signal:AbortSignal):Promise<ChannelStatus>{
+async function readyEndpoint(signal:AbortSignal){
  const endpoint=callEndpoint();
  signal.throwIfAborted();
  const wake=new AbortController(),abortWake=()=>wake.abort();
@@ -26,6 +25,20 @@ export async function requestChannel(message:ChannelRequest,signal:AbortSignal):
  catch{throw new Error('Sinalizador indisponível. Aguarde e tente novamente.')}
  finally{clearTimeout(wakeTimer);signal.removeEventListener('abort',abortWake)}
  signal.throwIfAborted();
+ return endpoint;
+}
+
+export async function requestChannelLobby(signal:AbortSignal):Promise<ChannelStatus>{
+ const endpoint=await readyEndpoint(signal);
+ const url=new URL('/call/lobby',endpoint);url.protocol=endpoint.protocol==='wss:'?'https:':'http:';
+ const response=await fetch(url,{signal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'});
+ if(!response.ok)throw new Error(response.status===429?callErrors.rate_limited:callErrors.channel_unavailable);
+ return response.json() as Promise<ChannelStatus>;
+}
+
+/** One request on the existing protected WSS route. Never keeps an idle socket. */
+export async function requestChannel(message:ChannelRequest,signal:AbortSignal):Promise<ChannelStatus>{
+ const endpoint=await readyEndpoint(signal);
  return new Promise((resolve,reject)=>{
   const socket=new WebSocket(endpoint);
   const finish=(result?:ChannelStatus,error?:string)=>{

@@ -2,12 +2,15 @@ import type {RoomScreen,ScreenControl,ScreenEvent} from './protocol';
 
 interface State {self:string;remote:boolean;screen:RoomScreen|null}
 interface Attempt {request:string;generation?:number;seen:boolean;started:boolean;timer:number}
+type Facing='user'|'environment';
+type CameraChoice={deviceId:string}|{facingMode:Facing};
 const stop=(stream?:MediaStream)=>stream?.getTracks().forEach(t=>{t.onended=null;t.stop()});
 const liveAudio=(stream?:MediaStream)=>!!stream?.getAudioTracks().some(t=>t.readyState==='live');
 
 /** Captures belong to this page only. No media is sent until the room grants it. */
 export class CallCapture {
  screen?:MediaStream;camera?:MediaStream;screenBusy=false;cameraBusy=false;error='';
+ cameras:MediaDeviceInfo[]=[];
  private screenRequest=0;private cameraRequest=0;private attempt?:Attempt;
  private cancelled=new Set<string>();
  constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void){}
@@ -72,19 +75,59 @@ export class CallCapture {
   if(attempt){window.clearTimeout(attempt.timer);this.remember(attempt.request);this.send({type:'screen',action:'release',request:attempt.request,generation:attempt.generation})}
   stop(this.screen);this.screen=undefined;this.screenBusy=false;this.changed();
  }
- async toggleCamera(){
+ get cameraDevice(){return this.camera?.getVideoTracks()[0]?.getSettings().deviceId??''}
+ get canFlip(){return !!this.camera&&window.matchMedia('(pointer: coarse)').matches&&!!navigator.mediaDevices?.getSupportedConstraints?.().facingMode}
+ toggleCamera(){
   if(this.camera||this.cameraBusy){this.stopCamera();return}
+  void this.openCamera();
+ }
+ selectCamera(deviceId:string){
+  if(this.camera&&!this.cameraBusy&&deviceId!==this.cameraDevice&&this.cameras.some(camera=>camera.deviceId===deviceId))void this.openCamera({deviceId});
+ }
+ flipCamera(){
+  if(!this.canFlip||this.cameraBusy)return;
+  const facing=this.camera?.getVideoTracks()[0]?.getSettings().facingMode??this.facing;
+  void this.openCamera({facingMode:facing==='environment'?'user':'environment'});
+ }
+ private facing:Facing='user';
+ private async openCamera(choice?:CameraChoice){
   if(!this.state().remote)return;
   this.error='';if(!isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='Câmera indisponível. Use HTTPS e um navegador compatível.';this.changed();return}
-  const request=++this.cameraRequest;this.cameraBusy=true;this.changed();
+  const request=++this.cameraRequest,previous=this.camera,settings=previous?.getVideoTracks()[0]?.getSettings();
+  const flip=choice&&'facingMode' in choice;
+  const capture=(selection?:CameraChoice)=>navigator.mediaDevices.getUserMedia({video:{
+   width:{ideal:640,max:1280},height:{ideal:360,max:720},frameRate:{ideal:24,max:30},
+   ...(!selection?{facingMode:{ideal:'user'}}:'deviceId' in selection?{deviceId:{exact:selection.deviceId}}:{facingMode:{exact:selection.facingMode}}),
+  },audio:false});
+  this.cameraBusy=true;this.changed();
+  // Phones may expose only one physical camera at a time.
+  if(flip)stop(previous);
   try{
-   const stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640,max:1280},height:{ideal:360,max:720},frameRate:{ideal:24,max:30}},audio:false});
-   if(request!==this.cameraRequest||!this.state().remote){stop(stream);return}
-   const video=stream.getVideoTracks().find(t=>t.readyState==='live');if(!video){stop(stream);throw new DOMException('No camera','NotFoundError')}
-   video.contentHint='motion';this.camera=stream;video.onended=()=>{if(this.camera===stream){this.stopCamera();this.error='A câmera foi desconectada.';this.changed()}};
-  }catch(error){if(request===this.cameraRequest)this.error=this.failure(error,true)}
-  finally{if(request===this.cameraRequest){this.cameraBusy=false;this.changed()}}
+   if(this.attachCamera(await capture(choice),request))this.facing=flip?choice.facingMode:'user';
+  }catch(error){
+   if(request!==this.cameraRequest)return;
+   this.error=choice?'Não foi possível trocar de câmera.':this.failure(error,true);
+   if(flip&&previous){
+    const restore:CameraChoice=settings?.deviceId?{deviceId:settings.deviceId}:{facingMode:this.facing};
+    try{this.attachCamera(await capture(restore),request)}
+    catch{if(request===this.cameraRequest){this.camera=undefined;this.cameras=[]}}
+   }
+  }finally{if(request===this.cameraRequest){this.cameraBusy=false;this.changed();if(this.camera)void this.refreshCameras(request)}}
  }
- stopCamera(){this.cameraRequest++;stop(this.camera);this.camera=undefined;this.cameraBusy=false;this.changed()}
+ private attachCamera(stream:MediaStream,request:number){
+  if(request!==this.cameraRequest||!this.state().remote){stop(stream);return false}
+  const video=stream.getVideoTracks().find(t=>t.readyState==='live');
+  if(!video){stop(stream);throw new DOMException('No camera','NotFoundError')}
+  stop(this.camera);this.camera=stream;video.contentHint='motion';
+  video.onended=()=>{if(this.camera===stream){this.stopCamera();this.error='A câmera foi desconectada.';this.changed()}};
+  return true;
+ }
+ private async refreshCameras(request:number){
+  try{
+   const devices=await navigator.mediaDevices.enumerateDevices();
+   if(request===this.cameraRequest){this.cameras=devices.filter(d=>d.kind==='videoinput'&&d.deviceId);this.changed()}
+  }catch{/* A device list is optional after permission. */}
+ }
+ stopCamera(){this.cameraRequest++;stop(this.camera);this.camera=undefined;this.cameraBusy=false;this.cameras=[];this.changed()}
  release(){this.stopScreen();this.stopCamera();this.error=''}
 }

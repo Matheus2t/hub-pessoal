@@ -17,6 +17,7 @@ class Message(BaseModel):
 Name = Annotated[str, Field(min_length=1, max_length=40, pattern=r"^[^\x00-\x1f\x7f]+$")]
 Identifier = Annotated[str, Field(pattern=r"^[a-f0-9]{32}$")]
 DeviceToken = Annotated[str, Field(pattern=r"^[A-Za-z0-9_-]{43}$")]
+ChannelPassword = Annotated[SecretStr, Field(min_length=1, max_length=128)]
 
 
 class Create(Message):
@@ -49,14 +50,23 @@ class ChannelJoin(Message):
     room: Identifier
     name: Name
     device: DeviceToken
+    password: ChannelPassword | None = None
+    reentry: Annotated[str, Field(pattern=r"^[1-9][0-9]{0,11}\.[a-f0-9]{64}$")] | None = Field(default=None, repr=False)
+
+    @model_validator(mode="after")
+    def one_proof(self):
+        if self.password is not None and self.reentry is not None:
+            raise ValueError("Provide only one access proof")
+        return self
 
 
 class ChannelAdmin(Message):
     type: Literal["channel_admin"]
     admin: SecretStr
-    action: Literal["status", "create", "rename", "rotate", "kick", "block", "unblock"]
+    action: Literal["status", "create", "rename", "rotate", "kick", "block", "unblock", "password"]
     name: Name | None = None
     target: Identifier | Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")] | None = None
+    password: ChannelPassword | None = None
 
     @model_validator(mode="after")
     def valid_action(self):
@@ -66,6 +76,10 @@ class ChannelAdmin(Message):
             raise ValueError("Invalid channel action fields")
         if self.target and len(self.target) != (64 if self.action == "unblock" else 32):
             raise ValueError("Invalid channel action target")
+        if self.action == "password" and self.password is None:
+            raise ValueError("A new password is required")
+        if self.password is not None and self.action not in ("create", "password"):
+            raise ValueError("Invalid password field")
         return self
 
 

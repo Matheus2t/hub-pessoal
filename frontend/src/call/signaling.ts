@@ -6,6 +6,9 @@ export const callErrors:Record<string,string>={
  channel_exists:'Já existe uma sala permanente. Consulte a sala atual.',channel_changed:'A sala mudou. Consulte a sala e tente novamente.',
  channel_kicked:'O proprietário removeu você da sala.',channel_blocked:'O proprietário bloqueou este navegador.',
  channel_rotated:'O proprietário revogou este link. Peça o novo endereço.',channel_block_limit:'Limite de bloqueios atingido. Desbloqueie um navegador para continuar.',
+ channel_password_required:'Informe a senha da sala para entrar.',channel_bad_password:'Senha da sala incorreta.',
+ channel_password_policy:'Use pelo menos 10 caracteres e uma senha diferente da credencial do proprietário.',
+ channel_password_changed:'O proprietário alterou a senha. Informe a nova senha para voltar.',
  unauthorized:'Credencial inválida.',invalid_invite:'Convite inválido ou expirado.',room_full:'A sala já tem cinco vagas ocupadas ou reservadas.',
  capacity:'Limite de salas ou conexões atingido.',rate_limited:'Muitas tentativas. Aguarde um minuto.',invalid_message:'Mensagem inválida.',
  invalid_target:'Participante indisponível nesta sala.',forbidden:'Apenas o anfitrião pode realizar esta ação.',awaiting_approval:'Aguarde a aprovação do anfitrião.',
@@ -25,10 +28,11 @@ export class CallSignaling {
  private stopped=false;private credential='';private generation=0;
  private endpoint?:URL;private waking?:AbortController;private wakeTimeout?:number;
  private channelJoin?:ChannelJoin;
+ private channelProof?:string;
  constructor(private changed:()=>void,private signal:(message:Extract<ServerMessage,{from:string}>)=>void=()=>{},private screenEvent:(message:ScreenEvent)=>void=()=>{}){}
  start(message:Extract<ClientMessage,{type:'create'|'join'|'channel_join'}>){
   this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.requests=[];this.credential='';this.attempts=0;
-  this.channelJoin=message.type==='channel_join'?message:undefined;
+  this.channelJoin=message.type==='channel_join'?{type:message.type,room:message.room,name:message.name,device:message.device}:undefined;
   try{this.endpoint=callEndpoint()}catch(error){this.fail(error instanceof Error?error.message:'Sinalizador não configurado.');return}
   this.open(message);
  }
@@ -61,11 +65,14 @@ export class CallSignaling {
    if(message.type==='session'){
     window.clearTimeout(this.watchdog);
     this.credential=message.credential??this.credential;
-    this.session={...message,credential:null,invite:message.invite??this.session?.invite??null};
+    const {reentry,...session}=message;
+    this.channelProof=reentry;
+    this.session={...session,credential:null,invite:message.invite??this.session?.invite??null};
     this.state=message.approved?'connected':'waiting';this.attempts=0;this.error='';
     // Clear the invitation from the address bar once accepted into a session.
     if(message.mode!=='channel'&&location.hash!=='#/call')history.replaceState(null,'','#/call');
-   }else if(message.type==='rtc_config'){this.rtc=message;if(message.relayAvailable&&this.error===callErrors.turn_unavailable)this.error=''}
+   }else if(message.type==='channel_reentry'&&this.session?.mode==='channel')this.channelProof=message.proof;
+   else if(message.type==='rtc_config'){this.rtc=message;if(message.relayAvailable&&this.error===callErrors.turn_unavailable)this.error=''}
    else if(message.type==='presence'){this.people=message.participants;this.screen=message.screen}
    else if(message.type==='screen_granted'||message.type==='screen_denied')this.screenEvent(message);
    else if(message.type==='requests')this.requests=message.participants;
@@ -95,7 +102,7 @@ export class CallSignaling {
   socket.onerror=()=>{}; // close supplies the visible failure/retry state without logging secrets.
  }
  private rejoinChannel(){
-  const join=this.channelJoin!;
+  const join={...this.channelJoin!,reentry:this.channelProof};
   this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.attempts=0;
   this.open(join,true);
  }
@@ -105,5 +112,5 @@ export class CallSignaling {
  }
  private fail(error:string){this.dispose();this.channelJoin=undefined;this.state='closed';this.error=error;this.people=[];this.requests=[];this.session=undefined;this.changed()}
  leave(){if(this.socket?.readyState===WebSocket.OPEN)this.socket.send(JSON.stringify({type:'leave'}));this.dispose();this.channelJoin=undefined;this.session=undefined;this.people=[];this.requests=[];this.error='';this.state='idle';this.changed()}
- dispose(){this.stopped=true;this.generation++;this.waking?.abort();this.waking=undefined;window.clearTimeout(this.wakeTimeout);this.notice='';window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.rtc=undefined;this.screen=null}
+ dispose(){this.stopped=true;this.generation++;this.waking?.abort();this.waking=undefined;window.clearTimeout(this.wakeTimeout);this.notice='';window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.channelProof=undefined;this.rtc=undefined;this.screen=null}
 }

@@ -76,7 +76,7 @@ class CallBoundary:
             # source maps, unrelated lazy modules, filesystem contents or API endpoints.
             if scope.get("path") not in {
                 "/", "/bundle.js", "/styles.css", "/2t-logo.webp", "/2t-mark.svg",
-                "/call/ws", "/call/health", "/call-config.js",
+                "/call/ws", "/call/health", "/call/lobby", "/call-config.js",
             }:
                 return await reject(404)
 

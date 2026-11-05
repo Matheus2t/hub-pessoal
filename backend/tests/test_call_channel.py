@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sqlite3
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 
@@ -29,8 +30,8 @@ def admin(connect, action, key=KEY, **fields):
     return connect({"type": "channel_admin", "action": action, "admin": key, **fields})
 
 
-def join(connect, room, name, device):
-    return connect({"type": "channel_join", "room": room, "name": name, "device": device})
+def join(connect, room, name, device, **proof):
+    return connect({"type": "channel_join", "room": room, "name": name, "device": device, **proof})
 
 
 def info(connect, room):
@@ -183,3 +184,77 @@ def test_d1_bound_parameters_and_explicit_failure(monkeypatch):
     failure = True
     with pytest.raises(stores.ChannelUnavailable):
         asyncio.run(store.read())
+
+
+PASSWORD = "test-only-guest-passphrase"
+
+
+def test_legacy_definition_is_protected_in_place_before_lobby_discovery(tmp_path):
+    path = tmp_path / "channel.sqlite3"
+    stores.SQLiteChannelStore(path)
+    room = "d" * 32
+    legacy = {"id": room, "name": "Sala existente", "created_at": 1780000000, "revision": 3, "blocked": {"b" * 64: "Blocked"}}
+    with sqlite3.connect(path) as database:
+        database.execute("INSERT INTO call_channel VALUES (1, ?)", [json.dumps(legacy)])
+    database.close()
+
+    with running(path) as (app, connect):
+        lobby = TestClient(app).get("/call/lobby")
+        assert lobby.status_code == 200 and lobby.headers["Cache-Control"] == "no-store"
+        assert lobby.json() == {"type": "channel", "room": None, "name": "Sala existente", "online": 0, "setupRequired": True}
+        original = join(connect, room, "Legado", "A" * 43)
+        assert until(original, "session")["room"] == room
+        for unsuitable in (KEY, "short", " " * 15):
+            assert until(admin(connect, "password", password=unsuitable), "error")["code"] == "channel_password_policy"
+        protected = until(admin(connect, "password", password=PASSWORD), "channel")
+        assert protected["room"] == room and protected["requiresPassword"] is True
+        assert until(original, "closed")["reason"] == "channel_password_changed"
+        assert until(join(connect, room, "Guest", "A" * 43), "error")["code"] == "channel_password_required"
+        public = TestClient(app).get("/call/lobby").json()
+        assert public == {"type": "channel", "room": room, "name": "Sala existente", "online": 0, "requiresPassword": True}
+    with sqlite3.connect(path) as database:
+        raw = database.execute("SELECT definition FROM call_channel").fetchone()[0]
+    database.close()
+    assert PASSWORD not in raw and KEY not in raw
+    persisted = json.loads(raw)
+    assert persisted["password_hash"].startswith("$argon2id$")
+    assert persisted["created_at"] == legacy["created_at"] and persisted["blocked"] == legacy["blocked"]
+
+
+def test_password_attempts_are_limited_per_device_and_shared_address(tmp_path):
+    with running(tmp_path / "channel.sqlite3") as (_, connect):
+        room = until(admin(connect, "create", name="Sala", password=PASSWORD), "channel")["room"]
+        for device, count in (("A", 5), ("B", 5), ("C", 2)):
+            for _ in range(count):
+                assert until(join(connect, room, "Guest", device * 43, password="incorrect"), "error")["code"] == "channel_bad_password"
+            if device == "A":
+                assert until(join(connect, room, "Guest", device * 43, password=PASSWORD), "error")["code"] == "rate_limited"
+                valid = join(connect, room, "Guest", "D" * 43, password=PASSWORD)
+                assert until(valid, "session")["approved"]
+        assert until(join(connect, room, "Guest", "E" * 43, password=PASSWORD), "error")["code"] == "rate_limited"
+        assert host(connect)[1]["host"] is True
+
+
+def test_reentry_after_restart_is_bound_to_device_password_and_expiry(tmp_path):
+    path = tmp_path / "channel.sqlite3"
+    now = [1800000000.0]
+    with running(path, lambda: now[0]) as (_, connect):
+        room = until(admin(connect, "create", name="Sala", password=PASSWORD), "channel")["room"]
+        socket = join(connect, room, "Guest", "A" * 43, password=PASSWORD)
+        first = until(socket, "session")["reentry"]
+        now[0] += 301
+        socket.send_json({"type": "ping"})
+        refreshed = until(socket, "channel_reentry")["proof"]
+        assert refreshed != first
+    now[0] += 600  # Initial proof expired. The refresh still authorizes reentry.
+    with running(path, lambda: now[0]) as (_, connect):
+        assert until(join(connect, room, "Guest", "A" * 43, reentry=first), "error")["code"] == "channel_password_required"
+        assert until(join(connect, room, "Guest", "B" * 43, reentry=refreshed), "error")["code"] == "channel_password_required"
+        socket = join(connect, room, "Guest", "A" * 43, reentry=refreshed)
+        assert until(socket, "session")["room"] == room
+        new_password = PASSWORD + "-updated"
+        assert until(admin(connect, "password", password=new_password), "channel")["room"] == room
+        assert until(socket, "closed")["reason"] == "channel_password_changed"
+        assert until(join(connect, room, "Guest", "A" * 43, reentry=refreshed), "error")["code"] == "channel_password_required"
+        assert until(join(connect, room, "Guest", "A" * 43, password=PASSWORD), "error")["code"] == "channel_bad_password"
+        assert until(join(connect, room, "Guest", "A" * 43, password=new_password), "session")["approved"]

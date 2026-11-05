@@ -77,7 +77,8 @@ test('CSS fallback fits desktop and mobile in both themes, traps focus and resto
   const button=page.locator('.call-fullscreen');await button.scrollIntoViewIfNeeded();
   const before=await page.evaluate(()=>({scroll:scrollY,overflow:getComputedStyle(document.documentElement).overflow}));
   await button.click();await expect(button).toHaveText('Sair do modo expandido');await fits(page);await intact(page);
-  await page.keyboard.press('Tab');await expect(button).toBeFocused();await page.keyboard.press('Shift+Tab');await expect(button).toBeFocused();
+  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Desmutar microfone',exact:true})).toBeFocused();
+  await page.keyboard.press('Shift+Tab');await expect(button).toBeFocused();
   const outline=await button.evaluate(el=>getComputedStyle(el).outlineStyle);expect(outline).not.toBe('none');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:info.outputPath(`local-expanded-${width}-${theme}.png`)});

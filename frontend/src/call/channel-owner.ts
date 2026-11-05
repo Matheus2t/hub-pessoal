@@ -19,20 +19,26 @@ export class CallChannelOwner extends LightElement {
   if(this.busy)return;
   const form=event.currentTarget as HTMLFormElement;
   const input=form.elements.namedItem('admin') as HTMLInputElement;
+  const passwordInput=form.elements.namedItem('password') as HTMLInputElement|null;
+  const password=passwordInput?.value??'';
   const data=new FormData(form),admin=input.value,name=String(data.get('name')??'').trim();
   const [action,target]=((event.submitter as HTMLButtonElement|null)?.value??'status').split(':');
   if(!admin){input.focus();return}
   let request:ChannelAdmin;
   if(action==='create'||action==='rename'){
    if(!name){this.error='Informe o nome da sala.';return}
-   request={type:'channel_admin',admin,action,name};
+   if(action==='create'&&password.length<10){this.error='Informe uma senha com pelo menos 10 caracteres.';passwordInput?.focus();return}
+   request=action==='create'?{type:'channel_admin',admin,action,name,password}:{type:'channel_admin',admin,action,name};
+  }else if(action==='password'){
+   if(password.length<10){this.error='Informe uma senha com pelo menos 10 caracteres.';passwordInput?.focus();return}
+   request={type:'channel_admin',admin,action,password};
   }else if(action==='kick'||action==='block'||action==='unblock'){
    request={type:'channel_admin',admin,action,target};
   }else if(action==='rotate'||action==='status'){
    if(action==='rotate'&&!window.confirm('Revogar este endereço e desconectar quem está na sala?'))return;
    request={type:'channel_admin',admin,action};
   }else return;
-  input.value='';this.busy=true;this.error='';this.message='';
+  input.value='';if(passwordInput)passwordInput.value='';this.busy=true;this.error='';this.message='';
   const controller=this.pending=new AbortController();
   try{
    const channel=await requestChannel(request,controller.signal);
@@ -55,7 +61,11 @@ export class CallChannelOwner extends LightElement {
    <button type="submit" value="status" ?disabled=${this.busy}>Consultar sala</button>
    ${this.channel?html`
     <label>Nome da sala<input name="name" maxlength="40" .value=${channel?.name??''}></label>
-    <button type="submit" value=${channel?'rename':'create'} ?disabled=${this.busy}>${channel?'Renomear sala':'Criar sala permanente'}</button>`:nothing}
+    ${channel?html`<button type="submit" value="rename" ?disabled=${this.busy}>Renomear sala</button>`:nothing}
+    <label>${channel?'Nova senha da sala':'Senha da sala'}<input name="password" type="password" autocomplete="new-password" maxlength="128"></label>
+    <p class="call-note">Mínimo de 10 caracteres. Use uma senha diferente da credencial do proprietário.
+     ${channel?'Salvar a senha encerra as sessões atuais. O link continua válido.':''}</p>
+    <button type="submit" value=${channel?'password':'create'} ?disabled=${this.busy}>${channel?(channel.requiresPassword?'Alterar senha':'Definir senha'):'Criar sala permanente'}</button>`:nothing}
    ${channel?html`
     <div class="call-channel-actions"><a href=${channelLink(channel.room)}>Abrir sala</a>
      <button type="button" @click=${()=>this.copy(channel.room)}>Copiar link</button>

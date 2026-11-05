@@ -26,6 +26,8 @@ class ChannelDefinition(BaseModel):
     created_at: int
     revision: Annotated[int, Field(ge=1)] = 1
     blocked: dict[Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")], Name] = Field(default_factory=dict, max_length=100)
+    # Old D1 JSON rows omit this field. The next password change updates the same row.
+    password_hash: Annotated[str, Field(pattern=r"^\$argon2id\$", max_length=200)] | None = Field(default=None, repr=False)
 
 
 class ChannelUnavailable(Exception):
