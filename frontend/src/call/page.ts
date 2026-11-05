@@ -1,9 +1,9 @@
 import {html,nothing} from 'lit';
 import {customElement,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
-import {CallSignaling} from './signaling';
+import {CallSignaling,callErrors} from './signaling';
 import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protocol';
-import {channelDevice,requestChannel} from './channel';
+import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
 import {CallCapture} from './capture';
@@ -21,6 +21,8 @@ export class CallPage extends LightElement {
  @state() private copied=false;
  @state() private diagnosticCopied=false;
  @state() private channel?:Extract<ChannelStatus,{room:string}>;
+ @state() private lobby?:ChannelStatus;
+ @state() private lobbyError='';
  @state() private channelLoading=false;
  @state() private channelError='';
  @state() private speakers=new Set<string>();
@@ -34,7 +36,13 @@ export class CallPage extends LightElement {
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,screen:this.call.screen}),message=>this.call.send(message),()=>this.captureChanged());
  private captureChanged(){this.voice.setScreen(this.capture.transmitting?this.capture.screen:undefined);this.voice.setCamera(this.capture.camera);this.publishMedia();this.requestUpdate()}
- protected updated(){this.voice.mountMedia();this.fullscreen.sync(this.screenSource())}
+ protected updated(){this.voice.mountMedia();this.fullscreen.sync(this.viewerSource)}
+ private viewerSource=(viewer:string):MediaStream|string|undefined=>{
+  if(viewer==='screen')return this.screenSource();
+  if(!this.voice.active)return;
+  if(viewer===this.call.session?.participant)return this.capture.camera?viewer:undefined;
+  if(this.call.people.some(person=>person.id===viewer&&person.camera))return viewer;
+ };
  private screenSource():MediaStream|string|undefined{
   if(this.capture.screen?.getVideoTracks().some(t=>t.readyState==='live'))return this.capture.screen;
   const screen=this.call.screen;
@@ -47,34 +55,31 @@ export class CallPage extends LightElement {
   this.stopSpeakers();this.channelParticipant=undefined;
   this.fullscreen.close();this.voice.stop();this.release();this.call.leave();this.lastMedia='';
  };
- private routeChanged=()=>{this.teardown();this.channel=undefined;this.channelError='';this.roomError='';this.copied=false;this.loadChannel();this.requestUpdate()};
+ private routeChanged=()=>{this.teardown();this.channel=undefined;this.lobby=undefined;this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;this.loadChannel();this.requestUpdate()};
  private async loadChannel(){
   const room=parseChannel(location.href);
-  if(!room||this.channelQuery)return;
+  if(this.channelQuery||!room&&location.hash!=='#/call')return;
   const controller=this.channelQuery=new AbortController();
-  this.channelLoading=true;this.channelError='';
+  this.channelLoading=true;if(room)this.channelError='';else this.lobbyError='';
   try{
-   const status=await requestChannel({type:'channel_info',room},controller.signal);
-   if(!controller.signal.aborted&&status.room)this.channel=status;
-  }catch(error){if(!controller.signal.aborted)this.channelError=(error as Error).message}
+   const status=room?await requestChannel({type:'channel_info',room},controller.signal):await requestChannelLobby(controller.signal);
+   if(!controller.signal.aborted){if(room&&status.room)this.channel=status;else if(!room)this.lobby=status}
+  }catch(error){if(!controller.signal.aborted){if(room)this.channelError=(error as Error).message;else this.lobbyError=(error as Error).message}}
   finally{if(this.channelQuery===controller){this.channelQuery=undefined;this.channelLoading=false}}
  }
  private joinChannel(event:SubmitEvent){
   event.preventDefault();
-  const room=parseChannel(location.href),name=String(new FormData(event.currentTarget as HTMLFormElement).get('name')??'').trim();
+  const form=event.currentTarget as HTMLFormElement,data=new FormData(form);
+  const room=parseChannel(location.href),name=String(data.get('name')??'').trim();
   if(!room||!name){this.channelError='Informe seu nome.';return}
-  this.channelError='';this.call.start({type:'channel_join',room,name,device:channelDevice()});
+  const password=form.elements.namedItem('password') as HTMLInputElement|null;
+  const secret=password?.value;if(password)password.value='';
+  this.channelError='';this.call.start({type:'channel_join',room,name,device:channelDevice(),password:secret||undefined});
  }
  private leaveChannel(){
   const session=this.call.session;
-  if(session?.mode==='channel'&&session.name)this.channel={type:'channel',room:session.room,name:session.name,online:this.call.people.filter(p=>p.connected&&p.id!==session.participant).length};
+  if(session?.mode==='channel'&&session.name)this.channel={type:'channel',room:session.room,name:session.name,online:this.call.people.filter(p=>p.connected&&p.id!==session.participant).length,requiresPassword:this.channel?.requiresPassword};
   this.teardown();this.copied=false;
- }
- private openChannelLink(event:SubmitEvent){
-  event.preventDefault();
-  const room=parseChannel(String(new FormData(event.currentTarget as HTMLFormElement).get('link')??'').trim());
-  if(room)location.href=channelLink(room);
-  else this.channelError='Cole um link válido da sala permanente deste site.';
  }
  private async copyChannel(){
   const room=parseChannel(location.href);if(!room)return;
@@ -96,13 +101,16 @@ export class CallPage extends LightElement {
  }
  private callChanged(){
   this.capture.sync();this.captureChanged();
+  if(this.channel&&!this.channel.requiresPassword&&[callErrors.channel_password_required,callErrors.channel_password_changed].includes(this.call.error)){
+   this.channel={...this.channel,requiresPassword:true};
+  }
   const session=this.call.session;
   if(session?.mode==='channel'&&this.channelParticipant!==session.participant){
    if(this.channelParticipant)this.voice.stop();
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
-   if(this.voice.active)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
+   if(this.voice.active||this.voice.error)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
    if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.call.screen);
@@ -183,13 +191,32 @@ export class CallPage extends LightElement {
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
  }
+ private get cameraDisabled(){return !this.voice.active||this.call.state!=='connected'}
+ private get cameraLabel(){return this.capture.cameraBusy?'Cancelar câmera':this.capture.camera?'Desativar câmera':'Ativar câmera'}
+ private viewerControls(viewer:string,name?:string){
+  const source=this.viewerSource(viewer);
+  if(!source)return nothing;
+  const mode=this.fullscreen.modeFor(viewer),expanded=!!mode;
+  const label=mode==='expanded'?'Sair do modo expandido':mode?'Sair da tela cheia':
+   name?(this.fullscreen.supported?`Tela cheia da câmera de ${name}`:`Ampliar câmera de ${name}`):this.fullscreen.supported?'Tela cheia':'Ampliar tela';
+  return html`<button class=${`call-viewer-toggle ${name?'call-camera-fullscreen':'call-fullscreen'}`} type="button" aria-label=${label} title=${label}
+   @click=${(event:Event)=>void this.fullscreen.toggle(event.currentTarget as HTMLButtonElement,viewer,this.viewerSource(viewer))}>
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d=${expanded?'M4 9h5V4m6 0v5h5M4 15h5v5m6 0v-5h5':'M9 4H4v5m11-5h5v5M4 15v5h5m6 0h5v-5'} /></svg>
+   ${!name||expanded?html`<span>${label}</span>`:nothing}
+  </button>
+  ${expanded?html`<div class="call-viewer-media" role="group" aria-label="Controles de mídia em tela cheia">
+   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy||this.call.state==='reconnecting'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Mutar microfone':'Desmutar microfone'}</button>
+   <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
+   ${this.error||this.capture.error?html`<span class="call-viewer-error" role="status">${this.error||this.capture.error}</span>`:nothing}
+  </div>`:nothing}`;
+ }
  render(){const self=this.call.session?.participant,screen=this.capture.screen,shared=this.call.screen;
   const channelRoute=location.hash.startsWith('#/call/sala/'),channelId=parseChannel(location.href);
   const channelSession=this.call.session?.mode==='channel'?this.call.session:undefined;
   const channelBusy=this.call.state==='connecting'||this.call.state==='reconnecting';
   const isLanding=!channelRoute&&!this.call.session&&!parseInvite(location.href);
   if(location.hash==='#/call/gerenciar')return html`<call-channel-owner></call-channel-owner>`;
-  const remote=!!shared?.active&&shared.owner!==self&&this.voice.active;
+  const remote=!!shared?.active&&shared.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
   const privateEntry = !this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
@@ -209,6 +236,7 @@ export class CallPage extends LightElement {
     <h2>${this.channel.online}/5 participantes</h2>
     ${!this.channel.online?html`<p>Ninguém conectado. Entre quando quiser.</p>`:nothing}
     <form @submit=${this.joinChannel}><label>Seu nome ou apelido<input name="name" autocomplete="nickname" maxlength="40" required></label>
+     ${this.channel.requiresPassword?html`<label>Senha da sala<input name="password" type="password" autocomplete="current-password" maxlength="128" required></label>`:nothing}
      <button type="submit" ?disabled=${channelBusy}>Entrar no canal</button></form>
     ${channelBusy?html`<button type="button" @click=${this.leaveChannel}>Cancelar entrada</button>`:nothing}
     <button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button>
@@ -218,10 +246,13 @@ export class CallPage extends LightElement {
 
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
    <section class="call-channel-panel" aria-label="Sala Permanente">
-    <span class="call-panel-label">01 / ENTRADA LIVRE</span>
-    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Seu espaço de voz, sempre no mesmo endereço. Entre pelo link, mesmo sem o proprietário.</p></div>
-    <form @submit=${this.openChannelLink}><label>Link da sala permanente<input name="link" type="text" autocomplete="off" spellcheck="false" placeholder="Cole o link da sala" required></label><button type="submit">Abrir canal</button></form>
-    ${this.channelError?html`<p class="call-error" role="alert">${this.channelError}</p>`:nothing}
+    <span class="call-panel-label">01 / ACESSO POR SENHA</span>
+    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Entre com a senha da sala, mesmo sem o proprietário conectado.</p></div>
+    ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
+    ${this.lobby?.room?html`<a class="button call-lobby-enter" href=${channelLink(this.lobby.room)}>Entrar na sala</a>`:
+     html`<p class="call-note" role="status">${this.channelLoading?'Consultando a sala…':this.lobbyError||
+      (this.lobby?.room===null&&this.lobby.setupRequired?'A entrada por aqui fica disponível depois que o proprietário definir a senha.':'Nenhuma sala permanente configurada.')}</p>`}
+    ${this.lobbyError?html`<button type="button" @click=${this.loadChannel}>Atualizar sala permanente</button>`:nothing}
     <a class="call-manage-link" href="#/call/gerenciar">Gerenciar sala permanente <span aria-hidden="true">↗</span></a>
    </section>
    <section class="call-private-panel" aria-label="Chamada Privada">
@@ -248,29 +279,33 @@ export class CallPage extends LightElement {
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
   <div class="call-layout" ?data-channel=${!!channelSession} ?hidden=${channelRoute&&!channelSession}>
    <section class="call-stage" aria-label="Tela compartilhada">
-    <div class=${`call-preview${this.fullscreen.mode==='expanded'?' is-expanded':''}`} role=${this.fullscreen.mode?'dialog':nothing} aria-modal=${this.fullscreen.mode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
+    <div class=${`call-preview call-viewer${screenMode==='expanded'?' is-expanded':''}`} role=${screenMode?'dialog':nothing} aria-modal=${screenMode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
      ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
-     ${screen||remote?html`<button class="call-fullscreen" type="button" @click=${(event:Event)=>void this.fullscreen.toggle(event.currentTarget as HTMLButtonElement,this.screenSource())}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d=${this.fullscreen.mode?'M4 9h5V4m6 0v5h5M4 15h5v5m6 0v-5h5':'M9 4H4v5m11-5h5v5M4 15v5h5m6 0h5v-5'} /></svg>
-      <span>${this.fullscreen.mode==='expanded'?'Sair do modo expandido':this.fullscreen.mode?'Sair da tela cheia':this.fullscreen.supported?'Tela cheia':'Ampliar tela'}</span>
-     </button>`:nothing}
+     ${this.viewerControls('screen')}
     </div><p class="call-caption" role="status">${screenCaption}</p>
    </section>
    <aside class="call-people"><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2><ol aria-label="Participantes da sala">
-    ${repeat(this.call.people,p=>p.id,p=>html`<li data-participant=${p.id} class=${shared?.owner===p.id?'call-sharing':''}>
+    ${repeat(this.call.people,p=>p.id,p=>{const mode=this.fullscreen.modeFor(p.id);return html`<li data-participant=${p.id} class=${shared?.owner===p.id?'call-sharing':''}>
      <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small>${this.speakers.has(p.id)?html`<small class="call-speaking">Falando</small>`:nothing}<small>${p.camera?'Câmera ligada':'Câmera desligada'}${shared?.owner===p.id?' · compartilhando':''}</small></div></div>
-     <div class="call-camera-frame" data-camera=${p.id} ?hidden=${!p.camera||!this.voice.active} aria-label=${`Câmera de ${p.name}`}>
+     <div class=${`call-camera-frame call-viewer${mode==='expanded'?' is-expanded':''}`} data-camera=${p.id} ?hidden=${!this.viewerSource(p.id)} role=${mode?'dialog':nothing} aria-modal=${mode?'true':nothing} aria-label=${`Câmera de ${p.name}`}>
       ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
-     </div></li>`)}
+      ${this.viewerControls(p.id,p.name)}
+     </div></li>`})}
     ${channelSession?nothing:Array.from({length:5-this.call.people.length},(_,n)=>html`<li class="call-vacant"><span class="call-avatar" aria-hidden="true">${this.call.people.length+n+1}</span><div><strong>Vaga disponível</strong><small>Sem participante</small></div></li>`)}
    </ol></aside>
   </div>
   <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${channelRoute&&!channelSession}>
    <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
-   <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${!this.voice.active||this.call.state!=='connected'} @click=${()=>void this.capture.toggleCamera()}>${this.capture.cameraBusy?'Cancelar câmera':this.capture.camera?'Desativar câmera':'Ativar câmera'}</button>
+   <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button type="button" aria-pressed=${!!screen} ?disabled=${this.voice.active&&(this.call.state!=='connected'||!!shared&&shared.owner!==self)} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':screen?'Parar compartilhamento':'Compartilhar tela'}</button>
    <button type="button" ?disabled=${!this.microphone&&!screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
+   ${this.capture.canFlip?html`<button type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}
+   ${this.capture.camera&&this.capture.cameras.length>1?html`<label class="call-camera-select">Câmera ativa
+    <select aria-label="Câmera ativa" .value=${this.capture.cameraDevice} ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @change=${(event:Event)=>this.capture.selectCamera((event.currentTarget as HTMLSelectElement).value)}>
+     ${!this.capture.cameraDevice?html`<option value="" disabled>Câmera atual</option>`:nothing}
+     ${this.capture.cameras.map((camera,index)=>html`<option value=${camera.deviceId} ?selected=${camera.deviceId===this.capture.cameraDevice}>${camera.label||`Câmera ${index+1}`}</option>`)}
+    </select></label>`:nothing}
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
   ${this.capture.error?html`<p class="call-error" role="alert">${this.capture.error}</p>`:nothing}

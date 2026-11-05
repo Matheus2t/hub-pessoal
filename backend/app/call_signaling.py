@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import Field, SecretStr, ValidationError, model_validator
@@ -24,6 +24,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .call_protocol import Action, ChannelAdmin, ChannelInfo, ChannelJoin, Create, Handshake, Join, Resume
 from .call_channel_store import ChannelDefinition, ChannelStore, ChannelUnavailable, D1ChannelStore
+from .call_channel_auth import PROOF_SECONDS, REFRESH_SECONDS, hash_password, issue_proof, valid_password, valid_proof
 from .call_boundary import CallBoundary, https_origin
 from .call_turn import CloudflareTurn, TurnUnavailable
 
@@ -138,6 +139,7 @@ class Participant:
     voice_epoch: int = 0
     camera: bool = False
     device_hash: str | None = field(default=None, repr=False)
+    reentry_refresh: float = 0
 
 
 @dataclass
@@ -161,6 +163,7 @@ class Room:
     screen: ScreenShare | None = None
     screen_generation: int = 0
     channel_name: str | None = None
+    password_hash: str | None = field(default=None, repr=False)
 
 
 class Rooms:
@@ -168,6 +171,7 @@ class Rooms:
         self.settings, self.clock = settings, clock
         self.channel_store = channel_store
         self.channel_lock = asyncio.Lock()
+        self.lobby_slots = asyncio.Semaphore(4)
         self.rooms: dict[str, Room] = {}
         self.lock = asyncio.Lock()
         self.limits: dict[tuple[str, str], deque] = {}
@@ -178,7 +182,7 @@ class Rooms:
         self.rtc_cache: dict[tuple[str, str], tuple[float, dict]] = {}
         self.turn_slots = asyncio.Semaphore(4)
 
-    def limit(self, category: str, key: str, maximum: int, seconds: int = 60):
+    def limit(self, category: str, key: str, maximum: int, seconds: int = 60, *, consume: bool = True):
         now = self.clock()
         # Bounded in-memory limiter; no untrusted proxy headers are used.
         for old in [k for k, v in self.limits.items() if not v or v[-1] <= now - 60]:
@@ -190,7 +194,8 @@ class Rooms:
             bucket.popleft()
         if len(bucket) >= maximum:
             raise Rejected("rate_limited")
-        bucket.append(now)
+        if consume:
+            bucket.append(now)
 
     def close(self, room: Room, reason: str):
         self.rooms.pop(room.id, None)
@@ -291,10 +296,30 @@ class Rooms:
         people = list(room.people.values()) if room else []
         connected = [p for p in people if p.connection and not p.connection.closing]
         result = {"type": "channel", "room": channel.id, "name": channel.name, "online": len(connected)}
+        if channel.password_hash:
+            result["requiresPassword"] = True
         if admin:
             result["participants"] = [{"id": p.id, "name": p.name} for p in connected]
             result["blocked"] = [{"id": device, "name": name} for device, name in channel.blocked.items()]
         return result
+
+    async def channel_lobby(self, address: str):
+        async with self.lock:
+            self.limit("channel_lobby", address, 30)
+        if self.lobby_slots.locked():
+            raise Rejected("rate_limited")
+        async with self.lobby_slots:
+            stored = await self.read_channel()
+        if not stored:
+            return {"type": "channel", "room": None}
+        channel = stored[1]
+        async with self.lock:
+            self.sweep()
+            status = self.channel_status(channel)
+        # Discovery never exposes a legacy link that would permit passwordless entry.
+        if not channel.password_hash:
+            status.update(room=None, setupRequired=True)
+        return status
 
     async def channel_request(self, message: ChannelInfo | ChannelAdmin, address: str):
         async with self.lock:
@@ -317,6 +342,8 @@ class Rooms:
                 if channel:
                     raise Rejected("channel_exists")
                 channel = ChannelDefinition(id=secrets.token_hex(16), name=message.name, created_at=int(self.clock()))
+                if message.password:
+                    channel.password_hash = await self.new_channel_password(message)
                 await self.save_channel(None, channel)
             elif not channel:
                 raise Rejected("channel_not_found")
@@ -351,11 +378,15 @@ class Rooms:
             updated.name = message.name
         elif action == "rotate":
             updated.id = secrets.token_hex(16)
+        elif action == "password":
+            updated.password_hash = await self.new_channel_password(message)
         await self.save_channel(previous, updated)
         async with self.lock:
             room = self.rooms.get(channel.id)
             if room and action == "rotate":
                 self.close(room, "channel_rotated")
+            elif room and action == "password":
+                self.close(room, "channel_password_changed")
             elif room and action == "rename":
                 room.channel_name = updated.name
                 for person in room.people.values():
@@ -368,6 +399,33 @@ class Rooms:
                 self.broadcast(room, "moderated")
         return updated
 
+    async def new_channel_password(self, message: ChannelAdmin):
+        password = message.password.get_secret_value()
+        if (len(password) < 10 or not password.strip() or
+                secrets.compare_digest(digest(password), digest(message.admin.get_secret_value()))):
+            raise Rejected("channel_password_policy")
+        return await hash_password(password)
+
+    async def authorize_channel(self, channel: ChannelDefinition, message: ChannelJoin, device: str, address: str):
+        encoded = channel.password_hash
+        if not encoded:
+            return
+        if message.reentry:
+            if valid_proof(self.settings.admin_key.get_secret_value(), channel.id, device, encoded, message.reentry, self.clock()):
+                return
+            raise Rejected("channel_password_required")
+        if not message.password:
+            raise Rejected("channel_password_required")
+        budgets = (("channel_password_device", device, 5), ("channel_password_edge", address, 12))
+        async with self.lock:
+            for category, subject, maximum in budgets:
+                self.limit(category, subject, maximum, consume=False)
+        if not await valid_password(encoded, message.password.get_secret_value()):
+            async with self.lock:
+                for category, subject, maximum in budgets:
+                    self.limit(category, subject, maximum)
+            raise Rejected("channel_bad_password")
+
     async def join_channel(self, message: ChannelJoin, connection: Connection, address: str):
         async with self.lock:
             self.limit("channel_join", address, 18)
@@ -379,6 +437,7 @@ class Rooms:
             device = digest(message.device)
             if device in channel.blocked:
                 raise Rejected("channel_blocked")
+            await self.authorize_channel(channel, message, device, address)
             async with self.lock:
                 self.sweep()
                 room = self.rooms.get(channel.id)
@@ -386,7 +445,7 @@ class Rooms:
                     raise Rejected("room_full")
                 if not room:
                     room = self.rooms[channel.id] = Room(channel.id, None, "", float("inf"), 0,
-                                                          channel_name=channel.name)
+                                                          channel_name=channel.name, password_hash=channel.password_hash)
                 credential = secrets.token_urlsafe(32)
                 person = Participant(secrets.token_hex(16), message.name, digest(credential), connection,
                                      device_hash=device)
@@ -403,7 +462,15 @@ class Rooms:
                    "expires": room.expires, "inviteExpires": room.invite_expires}
         if room.channel_name is not None:
             message.update(mode="channel", name=room.channel_name, expires=None, inviteExpires=None)
+        if room.password_hash:
+            message["reentry"] = self.channel_proof(room, person)
         connection.send(message)
+
+    def channel_proof(self, room: Room, person: Participant):
+        now = self.clock()
+        person.reentry_refresh = now + REFRESH_SECONDS
+        return issue_proof(self.settings.admin_key.get_secret_value(), room.id, person.device_hash,
+                           room.password_hash, int(now) + PROOF_SECONDS)
 
     def screen_control(self, room: Room, person: Participant, message, connection: Connection):
         def denied(code):
@@ -547,6 +614,8 @@ class Rooms:
                 raise Rejected("session_expired")
             if message.type == "ping":
                 connection.send({"type": "pong"})
+                if room.password_hash and self.clock() >= person.reentry_refresh:
+                    connection.send({"type": "channel_reentry", "proof": self.channel_proof(room, person)})
                 return
             if message.type == "leave":
                 if room.channel_name is not None:
@@ -667,6 +736,15 @@ def create_app(settings: CallSettings | None = None, clock=time.time, *, fronten
     async def health():
         return {"status": "ok", "mode": "single-process", "media": False,
                 "boot": boot, "uptimeSeconds": int(time.monotonic() - started)}
+
+    @app.get("/call/lobby")
+    async def lobby(request: Request):
+        headers = {"Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow"}
+        try:
+            result = await rooms.channel_lobby(request.client.host if request.client else "unknown")
+            return JSONResponse(result, headers=headers)
+        except Rejected as error:
+            return JSONResponse({"code": error.code}, status_code=429 if error.code == "rate_limited" else 503, headers=headers)
 
     @app.websocket("/call/ws")
     async def websocket(socket: WebSocket):

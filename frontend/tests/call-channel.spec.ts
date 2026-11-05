@@ -8,8 +8,10 @@ import {resolve} from 'node:path';
 const python=process.env.CALL_CHANNEL_TEST_PYTHON;
 const tls=process.env.CALL_CHANNEL_TEST_TLS;
 const key='test-only-owner-credential-not-for-production';
+const password='test-only-channel-passphrase';
 test.skip(!python||!tls,'Provide local Python and a loopback-only TLS test certificate.');
 test.setTimeout(120000);
+test.use({actionTimeout:9000,navigationTimeout:20000});
 
 async function server(db:string){
  const socket=createServer();socket.listen(0,'127.0.0.1');await once(socket,'listening');
@@ -45,11 +47,11 @@ async function server(db:string){
 }
 
 async function visitor(browser:Browser,mobile=false){
- const context=await browser.newContext({ignoreHTTPSErrors:true,permissions:['clipboard-read','clipboard-write'],
-  ...(mobile?{viewport:{width:390,height:844},isMobile:true,hasTouch:true}:{viewport:{width:1366,height:900}})});
+ const context=await browser.newContext({ignoreHTTPSErrors:true,
+  ...(mobile?{viewport:{width:390,height:844},isMobile:browser.browserType().name()!=='firefox',hasTouch:true}:{viewport:{width:1366,height:900}})});
  const page=await context.newPage();
  await page.addInitScript(()=>{
-  const w=window as any;w.__tracks=[];w.__requests=0;
+  const w=window as any;w.__tracks=[];w.__requests=0;w.__cameraChoices=[];
   const devices=navigator.mediaDevices;
   const tone=(frequency:number)=>{
    const audio=new AudioContext(),source=audio.createOscillator(),destination=audio.createMediaStreamDestination();
@@ -63,8 +65,17 @@ async function visitor(browser:Browser,mobile=false){
    setTimeout(()=>clearInterval(timer),115000);return track;
   };
   devices.getUserMedia=async request=>{
-   w.__requests++;const track=request?.video?video():tone(440);w.__tracks.push(track);return new MediaStream([track]);
+   w.__requests++;const track=request?.video?video():tone(440);
+   if(typeof request?.video==='object'){
+    const choice=request.video,setting=(value:any)=>typeof value==='string'?value:value?.exact??value?.ideal;
+    const facing=setting(choice.facingMode),id=setting(choice.deviceId)??(facing==='environment'?'rear':'front');
+    const original=track.getSettings.bind(track);
+    track.getSettings=()=>({...original(),deviceId:id,facingMode:id==='rear'?'environment':'user'});
+    w.__cameraChoices.push({id,facing,frontReleased:w.__cameraTrack?.readyState==='ended'});w.__cameraTrack=track;
+   }
+   w.__tracks.push(track);return new MediaStream([track]);
   };
+  devices.enumerateDevices=async()=>['front','rear'].map(id=>({deviceId:id,kind:'videoinput',groupId:'test',label:id==='front'?'Câmera frontal':'Câmera traseira',toJSON(){return {}}}));
   devices.getDisplayMedia=async()=>{w.__requests++;const tracks=[video(),tone(660)];w.__tracks.push(...tracks);return new MediaStream(tracks)};
  });
  return page;
@@ -81,22 +92,34 @@ async function makeRoom(page:Page,origin:string){
  await expect(page.getByRole('heading',{name:'Chamada Privada',exact:true})).toBeVisible();
  await page.getByRole('link',{name:'Gerenciar sala permanente'}).click();
  await admin(page,'Consultar sala');await page.getByLabel('Nome da sala',{exact:true}).fill('Sala dos Amigos');
+ await page.getByLabel('Senha da sala',{exact:true}).fill(password);
  await admin(page,'Criar sala permanente');
  const link=page.getByRole('link',{name:'Abrir sala',exact:true});await expect(link).toBeVisible();
  return (await link.getAttribute('href'))!;
 }
 async function open(page:Page,link:string){
  await page.goto(link);await expect(page.getByRole('heading',{name:'Sala dos Amigos',exact:true})).toBeVisible();
- await expect(page.locator('call-page input[type="password"]')).toHaveCount(0);
+ await expect(page.getByLabel('Senha da sala',{exact:true})).toBeVisible();
+ await expect(page.getByLabel('Credencial do proprietário',{exact:true})).toHaveCount(0);
  await expect(page.getByRole('button',{name:'Ativar microfone',exact:true})).toBeHidden();
 }
-async function join(page:Page,name:string){
+async function join(page:Page,name:string,secret=password){
  await page.getByLabel('Seu nome ou apelido',{exact:true}).fill(name);
+ await page.getByLabel('Senha da sala',{exact:true}).fill(secret);
  await page.getByRole('button',{name:'Entrar no canal',exact:true}).click();
+ expect(await page.evaluate(()=>(document.querySelector('call-page input[name="password"]') as HTMLInputElement|null)?.value??'')).toBe('');
 }
-async function ready(page:Page){
+async function ready(page:Page,requireMedia=true){
  await expect(page.locator('.call-connection')).toHaveText('Conectado');
- await expect(page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeEnabled();
+ if(requireMedia)await expect(page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeEnabled();
+}
+async function requireWebRTC(page:Page,origin:string){
+ await page.goto(origin+'/#/call');
+ const missing=await page.evaluate(()=>[
+  typeof RTCPeerConnection==='undefined'?'RTCPeerConnection':'',
+  typeof HTMLCanvasElement.prototype.captureStream!=='function'?'canvas.captureStream':'',
+ ].filter(Boolean).join(', '));
+ test.skip(!!missing,`Media fixture unavailable in this browser build: ${missing}`);
 }
 async function session(page:Page){return page.evaluate(()=>(document.querySelector('call-page') as any).call.session.participant as string)}
 async function media(page:Page,from:string,role:string){
@@ -116,7 +139,8 @@ test('permanent channel receives real media, preserves peers on leave and restor
  const tab=async(mobile=false)=>{const page=await visitor(browser,mobile);pages.push(page);return page};
  try{
   const boot=await fixture.start();
-  const owner=await tab(),link=await makeRoom(owner,fixture.origin);
+  const owner=await tab();await requireWebRTC(owner,fixture.origin);
+  const link=await makeRoom(owner,fixture.origin);
   await owner.context().close();
   const a=await tab(),b=await tab(true);
   await open(a,link);await expect(a.getByText('Ninguém conectado. Entre quando quiser.')).toBeVisible();
@@ -171,19 +195,25 @@ test('permanent channel receives real media, preserves peers on leave and restor
  }finally{await Promise.all(pages.map(page=>page.context().close()));await fixture.stop()}
 });
 
-test('owner can moderate and rotate without joining; guests can enter without authentication',async({browser},info)=>{
+test('owner can moderate and rotate without joining; guests use the room password',async({browser},info)=>{
  const fixture=await server(info.outputPath('channel.sqlite3'));
  const owner=await visitor(browser),guest=await visitor(browser);
  try{
   await fixture.start();const link=await makeRoom(owner,fixture.origin);
-  await open(guest,link);await join(guest,'Visitante');await ready(guest);
+  await guest.goto(fixture.origin+'/#/call');
+  const panel=guest.getByRole('region',{name:'Sala Permanente'});
+  await expect(panel).toContainText('Sala dos Amigos');await expect(panel).toContainText('0/5 participantes');
+  await panel.getByRole('link',{name:'Entrar na sala',exact:true}).click();
+  expect(guest.url()).toBe(link);
+  await join(guest,'Visitante','wrong-password');await expect(guest.getByRole('alert')).toContainText('Senha da sala incorreta');
+  await join(guest,'Visitante');await ready(guest,false);
   await admin(owner,'Consultar sala');await expect(owner.getByRole('button',{name:'Bloquear Visitante',exact:true})).toBeVisible();
   await admin(owner,'Bloquear Visitante');await expect(guest.getByRole('alert')).toContainText('bloqueou este navegador');
   await join(guest,'Novo apelido');await expect(guest.getByRole('alert')).toContainText('bloqueou este navegador');
   await admin(owner,'Desbloquear Visitante');await expect(owner.getByRole('button',{name:'Desbloquear Visitante',exact:true})).toHaveCount(0);
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await admin(owner,'Consultar sala');await admin(owner,'Expulsar Visitante');await expect(guest.getByRole('alert')).toContainText('removeu você');
-  await join(guest,'Visitante');await ready(guest);
+  await join(guest,'Visitante');await ready(guest,false);
   await owner.getByLabel('Nome da sala',{exact:true}).fill('Canal dos Amigos');
   await admin(owner,'Renomear sala');await expect(guest.getByRole('heading',{name:'Canal dos Amigos',exact:true})).toBeVisible();
   owner.once('dialog',dialog=>dialog.accept());
@@ -192,5 +222,67 @@ test('owner can moderate and rotate without joining; guests can enter without au
   await guest.reload();await expect(guest.getByRole('alert')).toContainText('link da sala não está mais disponível');
   await guest.goto((await newLink.getAttribute('href'))!);
   await expect(guest.getByRole('heading',{name:'Canal dos Amigos',exact:true})).toBeVisible();
+  await join(guest,'Visitante');await ready(guest,false);
+  await owner.getByLabel('Nova senha da sala',{exact:true}).fill(password+'-updated');
+  await admin(owner,'Alterar senha');await expect(guest.getByRole('alert')).toContainText('O proprietário alterou a senha');
+  await expect(newLink).toHaveAttribute('href',guest.url());
+  await join(guest,'Visitante');await expect(guest.getByRole('alert')).toContainText('Senha da sala incorreta');
+  await join(guest,'Visitante',password+'-updated');await ready(guest,false);
  }finally{await Promise.all([owner.context().close(),guest.context().close()]);await fixture.stop()}
+});
+
+test('front, rear and desktop cameras keep WebRTC and fullscreen media controls inside the viewer',async({browser},info)=>{
+ const fixture=await server(info.outputPath('channel.sqlite3'));
+ const owner=await visitor(browser),desktop=await visitor(browser),mobile=await visitor(browser,true);
+ try{
+  await fixture.start();await requireWebRTC(owner,fixture.origin);const link=await makeRoom(owner,fixture.origin);
+  await open(desktop,link);await join(desktop,'Alice');await ready(desktop);
+  await open(mobile,link);await join(mobile,'Bia');await ready(mobile);
+  const a=await session(desktop),b=await session(mobile);
+  await desktop.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await mobile.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await media(mobile,a,'camera');await media(desktop,b,'camera');
+  for(const page of[desktop,mobile])expect(await page.evaluate(()=>(window as any).__cameraChoices[0])).toMatchObject({id:'front',facing:'user'});
+  await mobile.getByRole('button',{name:'Alternar câmera',exact:true}).tap();
+  await expect.poll(()=>mobile.evaluate(()=>(window as any).__cameraChoices.at(-1))).toMatchObject({id:'rear',facing:'environment',frontReleased:true});
+  await media(desktop,b,'camera');
+  const local=desktop.locator(`[data-camera="${a}"]`);
+  const remote=mobile.locator(`[data-camera="${a}"]`);
+  await desktop.getByLabel('Câmera ativa',{exact:true}).selectOption('rear');
+  await expect.poll(()=>desktop.evaluate(()=>(window as any).__cameraChoices.at(-1).id)).toBe('rear');
+  await desktop.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  await media(mobile,a,'screenVideo');
+  await mobile.evaluate(id=>{
+   const w=window as any,call=document.querySelector('call-page') as any;
+   w.__peer=call.voice.peers.get(id).pc;w.__cameraVideo=document.querySelector(`[data-camera="${id}"] video`);w.__cameraStream=w.__cameraVideo.srcObject;
+   Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true});call.requestUpdate();
+  },a);
+  await remote.getByRole('button',{name:'Ampliar câmera de Alice'}).tap();
+  await expect(remote).toHaveClass(/is-expanded/);
+  await expect(remote.locator('video')).toHaveCSS('object-fit','contain');
+  await remote.getByRole('button',{name:'Desmutar microfone'}).tap();await media(desktop,b,'microphone');
+  await remote.getByRole('button',{name:'Mutar microfone'}).tap();
+  await expect(remote.getByRole('button',{name:'Desmutar microfone'})).toBeVisible();
+  await remote.getByRole('button',{name:'Desativar câmera'}).tap();await expect(remote).toHaveClass(/is-expanded/);
+  await remote.getByRole('button',{name:'Ativar câmera'}).tap();await media(desktop,b,'camera');
+  await mobile.screenshot({path:info.outputPath('remote-camera-mobile.png')});
+  await remote.getByRole('button',{name:'Sair do modo expandido'}).tap();
+  expect(await mobile.evaluate(id=>{
+   const w=window as any,call=document.querySelector('call-page') as any;
+   return call.voice.peers.get(id).pc===w.__peer&&w.__cameraVideo===document.querySelector(`[data-camera="${id}"] video`)&&w.__cameraVideo.srcObject===w.__cameraStream;
+  },a)).toBe(true);
+
+  await local.getByRole('button',{name:'Tela cheia da câmera de Alice'}).click();
+  await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement?.classList.contains('call-camera-frame'))).toBe(true);
+  await local.getByRole('button',{name:'Desmutar microfone'}).click();await media(mobile,a,'microphone');
+  await local.getByRole('button',{name:'Mutar microfone'}).click();await media(mobile,a,'screenVideo');
+  await desktop.keyboard.press('Escape');await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement)).toBe(null);
+  const screen=desktop.locator('.call-preview');await screen.getByRole('button',{name:'Tela cheia',exact:true}).click();
+  await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement?.classList.contains('call-preview'))).toBe(true);
+  await screen.getByRole('button',{name:'Desmutar microfone'}).click();await media(mobile,a,'microphone');
+  await screen.getByRole('button',{name:'Mutar microfone'}).click();
+  await media(mobile,a,'screenVideo');await media(mobile,a,'screenAudio');await media(mobile,a,'camera');
+  await desktop.screenshot({path:info.outputPath('screen-desktop-controls.png')});
+  await screen.getByRole('button',{name:'Sair da tela cheia'}).click();
+ }finally{await Promise.all([owner,desktop,mobile].map(page=>page.context().close()));await fixture.stop()}
 });

@@ -8,13 +8,15 @@ export type ScreenEvent={type:'screen_granted';request:string;generation:number}
 export interface AdmissionRequest {id:string;name:string}
 export interface Session {
  type:'session';room:string;participant:string;credential:string|null;host:boolean;approved:boolean;
- invite:string|null;expires:number|null;inviteExpires:number|null;mode?:'channel';name?:string;
+ invite:string|null;expires:number|null;inviteExpires:number|null;mode?:'channel';name?:string;reentry?:string;
 }
-export type ChannelJoin={type:'channel_join';room:string;name:string;device:string};
+export type ChannelJoin={type:'channel_join';room:string;name:string;device:string;password?:string;reentry?:string};
 export type ChannelAdmin={type:'channel_admin';admin:string}&(
- |{action:'status'|'rotate'}|{action:'create'|'rename';name:string}|{action:'kick'|'block'|'unblock';target:string});
+ |{action:'status'|'rotate'}|{action:'create';name:string;password:string}|{action:'rename';name:string}
+ |{action:'password';password:string}|{action:'kick'|'block'|'unblock';target:string});
 export type ChannelRequest=ChannelAdmin|{type:'channel_info';room:string};
-export type ChannelStatus={type:'channel';room:null}|{type:'channel';room:string;name:string;online:number;participants?:AdmissionRequest[];blocked?:AdmissionRequest[]};
+export type ChannelStatus={type:'channel';room:null;name?:string;online?:number;setupRequired?:boolean}
+ |{type:'channel';room:string;name:string;online:number;requiresPassword?:boolean;participants?:AdmissionRequest[];blocked?:AdmissionRequest[]};
 export interface RtcConfig {type:'rtc_config';iceServers:RTCIceServer[];turnExpires:number|null;relayAvailable:boolean;relayError?:boolean}
 export type Signal = ({type:'offer'|'answer';target:string;sdp:string;roles:MediaRoles}|{type:'ice';target:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
 export type RemoteSignal = ({type:'offer'|'answer';from:string;sdp:string;roles:MediaRoles}|{type:'ice';from:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
@@ -22,7 +24,7 @@ export type ClientMessage =
  |{type:'create';name:string;admin:string}|{type:'join';name:string;room:string;invite:string}|ChannelJoin
  |{type:'resume';room:string;participant:string;credential:string}
  |{type:'ping'|'leave'|'close'|'rtc_config'}|{type:'media';active:boolean;microphone:boolean;camera?:boolean}|{type:'admit'|'reject';target:string}|Signal|ScreenControl;
-export type ServerMessage = Session|ChannelStatus
+export type ServerMessage = Session|ChannelStatus|{type:'channel_reentry';proof:string}
  |{type:'presence';participants:Participant[];reason:string;screen:RoomScreen|null}|{type:'requests';participants:AdmissionRequest[]}
  |{type:'approved'|'pong'}|{type:'closed';reason:string}|{type:'error';code:string}|RtcConfig|RemoteSignal|ScreenEvent;
 
