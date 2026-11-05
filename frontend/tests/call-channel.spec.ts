@@ -7,6 +7,7 @@ import {resolve} from 'node:path';
 
 const python=process.env.CALL_CHANNEL_TEST_PYTHON;
 const tls=process.env.CALL_CHANNEL_TEST_TLS;
+const previewAssets=process.env.CALL_CHANNEL_TEST_ASSETS;
 const key='test-only-owner-credential-not-for-production';
 const password='test-only-channel-passphrase';
 test.skip(!python||!tls,'Provide local Python and a loopback-only TLS test certificate.');
@@ -50,6 +51,9 @@ async function visitor(browser:Browser,mobile=false){
  const context=await browser.newContext({ignoreHTTPSErrors:true,
   ...(mobile?{viewport:{width:390,height:844},isMobile:browser.browserType().name()!=='firefox',hasTouch:true}:{viewport:{width:1366,height:900}})});
  const page=await context.newPage();
+ // Exercise the exact deployed assets with an isolated signaler and synthetic credentials.
+ if(previewAssets)await page.route(url=>url.hostname==='127.0.0.1'&&['/bundle.js','/styles.css'].includes(url.pathname),route=>
+  route.fulfill({path:resolve(previewAssets,new URL(route.request().url()).pathname.slice(1))}));
  await page.addInitScript(()=>{
   const w=window as any;w.__tracks=[];w.__requests=0;w.__cameraChoices=[];
   const devices=navigator.mediaDevices;
@@ -285,4 +289,115 @@ test('front, rear and desktop cameras keep WebRTC and fullscreen media controls 
   await desktop.screenshot({path:info.outputPath('screen-desktop-controls.png')});
   await screen.getByRole('button',{name:'Sair da tela cheia'}).click();
  }finally{await Promise.all([owner,desktop,mobile].map(page=>page.context().close()));await fixture.stop()}
+});
+
+test('individual listening levels isolate voice and screen audio and survive a reconnect',async({browser},info)=>{
+ const fixture=await server(info.outputPath('channel.sqlite3'));
+ const pages:Page[]=[];
+ const tab=async(mobile=false)=>{const page=await visitor(browser,mobile);pages.push(page);return page};
+ try{
+  await fixture.start();const owner=await tab();await requireWebRTC(owner,fixture.origin);
+  const link=await makeRoom(owner,fixture.origin);await owner.context().close();
+  const listener=await tab(true),sender=await tab(),observer=await tab();
+  for(const [page,name] of [[listener,'Alice'],[sender,'Bia'],[observer,'Caio']] as const){
+   await open(page,link);await join(page,name);await ready(page);
+  }
+  const bia=await session(sender),caio=await session(observer);
+  await sender.getByRole('button',{name:'Ativar microfone',exact:true}).click();
+  await sender.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await sender.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  await observer.getByRole('button',{name:'Ativar microfone',exact:true}).click();
+  for(const role of ['microphone','screenAudio','screenVideo','camera'])await media(listener,bia,role);
+  await media(listener,caio,'microphone');await media(observer,bia,'microphone');
+  const group=listener.getByRole('group',{name:'Áudio recebido de Bia'}),slider=group.getByRole('slider');
+  await expect(slider).toHaveValue('100');
+  await expect(listener.getByRole('group',{name:'Áudio recebido de Alice'})).toHaveCount(0);
+  expect(await listener.evaluate(()=>!!(document.querySelector('call-page') as any).voice.audioMix.context)).toBe(false);
+
+  const evidence=()=>listener.evaluate(({bia,caio})=>{
+   const voice=(document.querySelector('call-page') as any).voice,mix=voice.audioMix;
+   const peer=voice.peers.get(bia),other=voice.peers.get(caio),bus=mix.buses.get(bia);
+   const inputs=[...mix.inputs.get(bia).values()] as {source?:AudioNode}[];
+   return {gain:bus?Math.round(bus.gain.gain.value*100)/100:null,voiceMuted:peer.audio.muted,screenMuted:peer.elements.screenAudio.muted,
+    routed:inputs.filter(input=>!!input.source).length,otherMuted:other.audio.muted,otherVolume:other.audio.volume,
+    otherRouted:mix.buses.has(caio)};
+  },{bia,caio});
+  await slider.press('Home');await expect(slider).toHaveValue('0');
+  await expect.poll(evidence).toMatchObject({gain:null,voiceMuted:true,screenMuted:true,routed:0,otherMuted:false,otherVolume:1,otherRouted:false});
+  await slider.press('End');
+  await expect.poll(evidence).toMatchObject({gain:2,voiceMuted:true,screenMuted:true,routed:2,otherMuted:false,otherVolume:1,otherRouted:false});
+  await listener.evaluate(id=>{
+   const w=window as any,voice=(document.querySelector('call-page') as any).voice,mix=voice.audioMix;
+   const bus=mix.buses.get(id);
+   w.__listeningContext=mix.context;w.__listeningPeer=voice.peers.get(id).pc;
+   w.__listeningAnalyser=mix.context.createAnalyser();bus.ceiling.connect(w.__listeningAnalyser);
+  },bia);
+  const peak=()=>listener.evaluate(()=>{
+   const analyser=(window as any).__listeningAnalyser as AnalyserNode,data=new Float32Array(analyser.fftSize);
+   analyser.getFloatTimeDomainData(data);return data.reduce((peak,sample)=>Math.max(peak,Math.abs(sample)),0);
+  });
+  await expect.poll(peak).toBeGreaterThan(.03);expect(await peak()).toBeLessThan(.96);
+  const setLevel=(volume:number)=>slider.evaluate((element:HTMLInputElement,volume)=>{element.value=String(volume);element.dispatchEvent(new Event('input',{bubbles:true}))},volume);
+  await setLevel(50);await expect(group.locator('output')).toHaveText('50%');await expect.poll(evidence).toMatchObject({gain:.5});
+  await group.getByRole('button',{name:'Restaurar volume de Bia a 100%'}).tap();
+  await expect(group.locator('output')).toHaveText('100%');
+  await expect.poll(evidence).toMatchObject({gain:null,routed:0,voiceMuted:false,screenMuted:false});
+  await setLevel(150);await expect(group.locator('output')).toHaveText('150%');await expect.poll(evidence).toMatchObject({gain:1.5});
+  await listener.evaluate(id=>{
+   const w=window as any,mix=(document.querySelector('call-page') as any).voice.audioMix;
+   mix.buses.get(id).ceiling.connect(w.__listeningAnalyser);
+  },bia);
+  await expect.poll(peak).toBeGreaterThan(.03);
+  const observerEnergy=()=>observer.evaluate(async id=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(id);
+   const report=await peer.transceivers.microphone.receiver.getStats() as RTCStatsReport;
+   return [...report.values()].find(row=>row.type==='inbound-rtp')?.totalAudioEnergy??0;
+  },bia);
+  const energyBeforeMute=await observerEnergy();
+  await group.getByRole('button',{name:'Silenciar',exact:true}).tap();
+  await expect(group).toContainText('Silenciado para você');await expect(slider).toHaveValue('150');
+  await expect.poll(evidence).toMatchObject({gain:0,voiceMuted:true,screenMuted:true,routed:2,otherMuted:false,otherRouted:false});
+  await expect.poll(peak).toBeLessThan(.001);
+  await expect.poll(observerEnergy).toBeGreaterThan(energyBeforeMute);
+  await media(observer,bia,'microphone');await media(observer,bia,'screenAudio');
+  await expect(sender.getByRole('button',{name:'Desativar microfone',exact:true})).toBeVisible();
+
+  await listener.evaluate(()=>{(document.querySelector('call-page') as any).call.socket.close()});
+  await expect(listener.locator('.call-connection')).toHaveText('Reconectando…');await ready(listener);
+  await expect(group.getByRole('button',{name:'Ouvir novamente'})).toBeVisible();await expect(slider).toHaveValue('150');
+  await group.getByRole('button',{name:'Ouvir novamente'}).tap();await expect.poll(evidence).toMatchObject({gain:1.5,routed:2,otherMuted:false});
+  expect(await listener.evaluate(id=>{
+   const w=window as any,voice=(document.querySelector('call-page') as any).voice;
+   return voice.peers.get(id).pc===w.__listeningPeer&&voice.audioMix.context===w.__listeningContext;
+  },bia)).toBe(true);
+  await sender.getByRole('button',{name:'Desativar microfone',exact:true}).click();
+  await sender.getByRole('button',{name:'Ativar microfone',exact:true}).click();
+  await media(observer,bia,'microphone');await media(listener,bia,'camera');await media(listener,bia,'screenVideo');
+  await expect.poll(evidence).toMatchObject({gain:1.5,routed:2});
+  await listener.setViewportSize({width:320,height:844});
+  expect(await listener.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await group.screenshot({path:info.outputPath('individual-volume-mobile.png')});
+
+  // Without Web Audio, the native route stays single and the UI reports the gain limit.
+  await observer.evaluate(()=>{
+   for(const name of ['AudioContext','webkitAudioContext'])Object.defineProperty(window,name,{configurable:true,value:undefined});
+  });
+  const fallback=observer.getByRole('group',{name:'Áudio recebido de Bia'});
+  await fallback.getByRole('slider').press('End');await expect(fallback).toContainText('Ganho acima de 100% indisponível.');
+  expect(await observer.evaluate(id=>{
+   const voice=(document.querySelector('call-page') as any).voice;
+   return voice.peers.get(id).audio.volume===1&&!voice.peers.get(id).audio.muted&&!voice.audioMix.context;
+  },bia)).toBe(true);
+
+  await sender.getByRole('button',{name:'Sair do canal',exact:true}).click();
+  await expect(group).toHaveCount(0);
+  expect(await listener.evaluate(id=>{
+   const mix=(document.querySelector('call-page') as any).voice.audioMix;
+   return !mix.inputs.has(id)&&!mix.buses.has(id)&&!mix.levels.has(id);
+  },bia)).toBe(true);
+  const late=await tab();await open(late,link);await join(late,'Dani');await ready(late);
+  await expect(listener.getByRole('group',{name:'Áudio recebido de Dani'}).getByRole('slider')).toHaveValue('100');
+  await listener.getByRole('button',{name:'Sair do canal',exact:true}).click();
+  await expect.poll(()=>listener.evaluate(()=>(window as any).__listeningContext.state)).toBe('closed');
+ }finally{await Promise.all(pages.map(page=>page.context().close()));await fixture.stop()}
 });

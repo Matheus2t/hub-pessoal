@@ -1,0 +1,11 @@
+# 2T Call V3.1
+
+Na lista de participantes, use **Volume** para ajustar o áudio recebido entre 0% e 200%. O botão **100%** restaura a reprodução padrão. **Silenciar** corta o áudio para você. **Ouvir novamente** restaura o percentual anterior. O indicador de microfone continua descrevendo o estado do participante. O volume e o silêncio abrangem a voz e o áudio da tela compartilhada da mesma pessoa.
+
+O Call mantém uma preferência em memória por identificador de participante. A preferência acompanha a reconexão WebRTC e substituições de faixa quando o identificador continua igual. Ao sair da sala, os ajustes são descartados. Se o sinalizador reiniciar e gerar novos identificadores, o Call volta a 100%, pois o nome exibido não identifica uma pessoa de forma segura. Nenhum ajuste é enviado ao sinalizador ou gravado no navegador.
+
+Por padrão, o som toca nos elementos HTML existentes. Para um ajuste de ganho, o navegador abre um contexto Web Audio e encaminha a voz e o áudio da tela da pessoa ao mesmo ganho, com compressão e limitação suave de picos. Cada fluxo tem uma única saída audível. Voltar a 100% retoma a reprodução HTML. Se Web Audio estiver indisponível, o elemento HTML aplica o volume até 100% conforme a capacidade do navegador. A interface sinaliza quando o ganho acima de 100% não pode ser aplicado. O silêncio local também funciona nesse caminho. Ao sair, os nós de áudio são desconectados e o contexto é encerrado com a chamada. [Web Audio e volume nativo](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volume)
+
+Typecheck, build e 22 testes Playwright locais passaram. O cenário de volume foi executado em Chrome, Edge e Firefox. Ele usa áudio sintético em conexões WebRTC reais e cobre 0%, 50%, 100%, 150%, 200%, silêncio isolado, reconexão, troca de faixa, fallback, limpeza e interface em 320 px. A regressão inclui Sala Permanente com senha e 16 cenários da Chamada Privada.
+
+Para testar os arquivos publicados na prévia, obtenha `bundle.js` e `styles.css` pela autenticação existente da Vercel. Aponte `CALL_CHANNEL_TEST_ASSETS` para essa pasta e rode o cenário `individual listening` com o sinalizador isolado do teste. O deploy anterior para retorno é `dpl_5kcHkjbAJi7zeS39Rc9a9v5SegxM`, commit `aa57ce27fe6b5ea354e271a042704170daa0423b`.
