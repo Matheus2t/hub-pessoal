@@ -5,6 +5,7 @@ import {CallSignaling} from './signaling';
 import {parseInvite} from './protocol';
 import {VoiceMesh} from './voice';
 import {CallCapture} from './capture';
+import {ScreenFullscreen} from './fullscreen';
 import {repeat} from 'lit/directives/repeat.js';
 
 /** Private WebRTC room. Capture and transport have independent lifecycles. */
@@ -17,16 +18,22 @@ export class CallPage extends LightElement {
  @state() private roomError='';
  @state() private copied=false;
  @state() private diagnosticCopied=false;
+ private fullscreen=new ScreenFullscreen(()=>this.requestUpdate());
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
   (role,id)=>role==='screenVideo'?this.querySelector('.call-remote-screen'):this.querySelector(`[data-camera="${id}"]`));
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,screen:this.call.screen}),message=>this.call.send(message),()=>this.captureChanged());
  private captureChanged(){this.voice.setScreen(this.capture.transmitting?this.capture.screen:undefined);this.voice.setCamera(this.capture.camera);this.publishMedia();this.requestUpdate()}
- protected updated(){this.voice.mountMedia()}
+ protected updated(){this.voice.mountMedia();this.fullscreen.sync(this.screenSource())}
+ private screenSource():MediaStream|string|undefined{
+  if(this.capture.screen?.getVideoTracks().some(t=>t.readyState==='live'))return this.capture.screen;
+  const screen=this.call.screen;
+  if(screen?.active&&screen.owner!==this.call.session?.participant&&this.voice.active)return `${screen.owner}:${screen.generation}`;
+ }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged)}
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);this.teardown();super.disconnectedCallback()}
- private teardown=()=>{this.voice.stop();this.release();this.call.leave();this.lastMedia=''};
+ private teardown=()=>{this.fullscreen.close();this.voice.stop();this.release();this.call.leave();this.lastMedia=''};
  private routeChanged=()=>{this.teardown();this.requestUpdate()};
  private callChanged(){
   this.capture.sync();this.captureChanged();
@@ -142,9 +149,13 @@ export class CallPage extends LightElement {
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
   <div class="call-layout">
    <section class="call-stage" aria-label="Tela compartilhada">
-    <div class="call-preview"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
+    <div class=${`call-preview${this.fullscreen.mode==='expanded'?' is-expanded':''}`} role=${this.fullscreen.mode?'dialog':nothing} aria-modal=${this.fullscreen.mode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
      ${!screen&&!remote?html`<div class="call-empty"><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
+     ${screen||remote?html`<button class="call-fullscreen" type="button" @click=${(event:Event)=>void this.fullscreen.toggle(event.currentTarget as HTMLButtonElement,this.screenSource())}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d=${this.fullscreen.mode?'M4 9h5V4m6 0v5h5M4 15h5v5m6 0v-5h5':'M9 4H4v5m11-5h5v5M4 15v5h5m6 0h5v-5'} /></svg>
+      <span>${this.fullscreen.mode==='expanded'?'Sair do modo expandido':this.fullscreen.mode?'Sair da tela cheia':this.fullscreen.supported?'Tela cheia':'Ampliar tela'}</span>
+     </button>`:nothing}
     </div><p class="call-caption" role="status">${screenCaption}</p>
    </section>
    <aside class="call-people"><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2><ol aria-label="Participantes da sala">

@@ -14,8 +14,8 @@ test.beforeAll(()=>{
  data.writeUInt16LE(2,32);data.writeUInt16LE(16,34);data.write('data',36);data.writeUInt32LE(samples*2,40);
  for(let n=0;n<samples;n++)data.writeInt16LE(Math.round(4000*Math.sin(2*Math.PI*440*n/rate)),44+n*2);writeFileSync(tone,data);
 });
-async function tab(browser:Browser){
- const context=await browser.newContext({permissions:['microphone','camera','clipboard-read','clipboard-write'],ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1'}),page=await context.newPage();
+async function tab(browser:Browser,mobile=false){
+ const context=await browser.newContext({permissions:['microphone','camera','clipboard-read','clipboard-write'],ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1',...(mobile?{viewport:{width:390,height:844},isMobile:true,hasTouch:true}:{})}),page=await context.newPage();
  await page.addInitScript(()=>{
   const w=window as any,native=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);w.__captures=[];w.__screens=[];w.__cameraTimers=[];
   // Count message types only. Never retain credentials, SDP, candidates or frame payloads.
@@ -73,6 +73,67 @@ async function finish(pages:Page[],contexts:BrowserContext[]){
  for(const page of pages)if(!page.isClosed())await page.evaluate(()=>{for(const s of(window as any).__screens??[]){clearInterval(s.timer);void s.audio?.close()}for(const timer of(window as any).__cameraTimers??[])clearInterval(timer)}).catch(()=>{});
  await Promise.all(contexts.map(c=>c.close()));
 }
+
+test('remote fullscreen preserves the video, stream and peer; stopping the share closes both viewers',async({browser},info)=>{
+ const host=await tab(browser),guestDesktop=await tab(browser),guestMobile=await tab(browser,true);
+ const {page}=host,desktop=guestDesktop.page,mobile=guestMobile.page;
+ try{
+  const invite=await owner(page);await enter(page);
+  await guest(desktop,page,invite,'Desktop');await enter(desktop);
+  await guest(mobile,page,invite,'Celular');await enter(mobile);
+  await page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  await page.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  const hostId=await id(page);
+  for(const viewer of[desktop,mobile]){
+   for(const role of['screenVideo','screenAudio','microphone','camera'])await media(viewer,hostId,role);
+   await viewer.evaluate(hostId=>{
+    const w=window as any,call=document.querySelector('call-page') as any;
+    const video=document.querySelector('.call-remote-screen video') as HTMLVideoElement;
+    w.__viewerRefs={video,stream:video.srcObject,pc:call.voice.peers.get(hostId).pc,removed:0};
+    new MutationObserver(records=>{
+     for(const r of records)for(const node of r.removedNodes)if(node===video)w.__viewerRefs.removed++;
+    }).observe(video.parentElement!,{childList:true});
+   },hostId);
+  }
+  const full=desktop.locator('.call-fullscreen');
+  await full.click();await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement?.classList.contains('call-preview'))).toBe(true);
+  await expect(full).toHaveText('Sair da tela cheia');
+  const before=(await evidence(desktop,hostId,'screenVideo')).frames;
+  await expect.poll(async()=>(await evidence(desktop,hostId,'screenVideo')).frames).toBeGreaterThan(before);
+  await full.click();await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement)).toBe(null);
+  await full.click();await expect.poll(()=>desktop.evaluate(()=>document.fullscreenElement?.classList.contains('call-preview'))).toBe(true);
+
+  await mobile.evaluate(()=>{
+   Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{configurable:true,value:undefined});
+   (document.querySelector('call-page') as any).requestUpdate();
+  });
+  const expanded=mobile.getByRole('button',{name:'Ampliar tela',exact:true});
+  await expanded.tap();
+  await expect(mobile.getByRole('button',{name:'Sair do modo expandido',exact:true})).toBeInViewport();
+  expect(await mobile.locator('.call-preview').evaluate(el=>{
+   const r=el.getBoundingClientRect();
+   return r.x===0&&r.y===0&&Math.abs(r.width-innerWidth)<2&&Math.abs(r.height-innerHeight)<2&&getComputedStyle(el.querySelector('.call-remote-screen video')!).objectFit==='contain';
+  })).toBe(true);
+  await mobile.screenshot({path:info.outputPath('remote-expanded-mobile.png')});
+
+  for(const viewer of[desktop,mobile]){
+   expect(await viewer.evaluate(hostId=>{
+    const {video,stream,pc,removed}=(window as any).__viewerRefs;
+    const call=document.querySelector('call-page') as any;
+    return video===document.querySelector('.call-remote-screen video')&&video.srcObject===stream&&call.voice.peers.get(hostId).pc===pc&&pc.connectionState==='connected'&&removed===0;
+   },hostId)).toBe(true);
+   for(const role of['screenVideo','screenAudio','microphone','camera'])await media(viewer,hostId,role);
+  }
+  await page.getByRole('button',{name:'Parar compartilhamento',exact:true}).click();
+  for(const viewer of[desktop,mobile]){
+   await expect(viewer.locator('.call-fullscreen')).toHaveCount(0);
+   await expect(viewer.locator('.is-expanded')).toHaveCount(0);
+   await expect.poll(()=>viewer.evaluate(()=>document.fullscreenElement)).toBe(null);
+   expect(await viewer.evaluate(()=>getComputedStyle(document.documentElement).overflow)).not.toBe('hidden');
+   await media(viewer,hostId,'microphone');await media(viewer,hostId,'camera');
+  }
+ }finally{await finish([page,desktop,mobile],[host.context,guestDesktop.context,guestMobile.context])}
+});
 
 test('screen, independent audio and camera reach five real peers including late arrivals',async({browser},info)=>{
  const pages:Page[]=[],contexts:BrowserContext[]=[],errors:string[]=[];
