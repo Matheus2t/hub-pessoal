@@ -20,12 +20,12 @@ export class CallChannelOwner extends LightElement {
   event.preventDefault();
   if(this.busy)return;
   const form=event.currentTarget as HTMLFormElement;
-  const input=form.elements.namedItem('admin') as HTMLInputElement;
+  const input=form.elements.namedItem('admin') as HTMLInputElement|null;
   const passwordInput=form.elements.namedItem('password') as HTMLInputElement|null;
   const password=passwordInput?.value??'';
-  const data=new FormData(form),admin=input.value||this.ownerCredential,name=String(data.get('name')??'').trim();
+  const data=new FormData(form),admin=input?.value||this.ownerCredential,name=String(data.get('name')??'').trim();
   const [action,target]=((event.submitter as HTMLButtonElement|null)?.value??'status').split(':');
-  if(!admin){input.focus();return}
+  if(!admin){input?.focus();return}
   let request:ChannelAdmin;
   if(action==='create'||action==='rename'){
    if(!name){this.error='Informe o nome da sala.';return}
@@ -40,7 +40,7 @@ export class CallChannelOwner extends LightElement {
    if(action==='rotate'&&!window.confirm('Revogar este endereço e desconectar quem está na sala?'))return;
    request={type:'channel_admin',admin,action};
   }else return;
-  input.value='';if(passwordInput)passwordInput.value='';this.busy=true;this.error='';this.message='';
+  if(input)input.value='';if(passwordInput)passwordInput.value='';this.busy=true;this.error='';this.message='';
   const controller=this.pending=new AbortController();
   try{
    const channel=await requestChannel(request,controller.signal);
