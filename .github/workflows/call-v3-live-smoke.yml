@@ -1,0 +1,75 @@
+name: 2T Call V3 read-only live smoke
+
+on:
+  push:
+    branches:
+      - codex/2t-call-v3-live-smoke
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify Render health, Cloudflare D1-backed lobby, and preview origin
+        run: |
+          python3 - <<'PY'
+          import json, time
+          from urllib.request import Request, urlopen
+          from urllib.error import URLError, HTTPError
+
+          base = "https://twot-call.onrender.com"
+          preview = "https://matheus2t-hif7rh51o-matheus2ts-projects.vercel.app"
+
+          def get(path):
+              for attempt in range(4):
+                  try:
+                      req = Request(base + path, headers={"Origin": preview, "Cache-Control": "no-store"})
+                      with urlopen(req, timeout=70) as res:
+                          if res.status != 200:
+                              raise RuntimeError(f"{path}: HTTP {res.status}")
+                          data = json.load(res)
+                          cors = res.headers.get("Access-Control-Allow-Origin")
+                          return data, cors
+                  except (URLError, HTTPError, TimeoutError) as error:
+                      if attempt == 3:
+                          raise RuntimeError(f"{path}: request failed ({type(error).__name__})") from error
+                      time.sleep(7)
+
+          health, cors1 = get("/call/health")
+          if health.get("status") != "ok" or health.get("mode") != "single-process":
+              raise RuntimeError("V3 health response unexpectedly shaped")
+          print("Backend health: OK")
+          lobby, cors2 = get("/call/lobby")
+          if lobby.get("type") != "channel":
+              raise RuntimeError("Lobby response unexpectedly shaped")
+          if not lobby.get("name"):
+              raise RuntimeError("Cloudflare D1 read completed but no existing room was returned")
+          print("Cloudflare D1-backed lobby: OK (existing permanent room found)")
+          print("Room password protection configured:", bool(lobby.get("requiresPassword")))
+          print("Room password setup required:", bool(lobby.get("setupRequired")))
+          if cors1 != preview or cors2 != preview:
+              raise RuntimeError("Preview origin is not present in allowed CORS origins")
+          print("Vercel preview CORS origin: OK")
+          PY
+      - name: Verify secure WebSocket handshake from preview origin
+        run: |
+          python3 -m pip install --disable-pip-version-check "websockets==15.0.1" --quiet
+          python3 - <<'PY'
+          import asyncio
+          import websockets
+
+          async def check():
+              async with websockets.connect(
+                  "wss://twot-call.onrender.com/call/ws",
+                  origin="https://matheus2t-hif7rh51o-matheus2ts-projects.vercel.app",
+                  open_timeout=30,
+                  close_timeout=5,
+              ) as ws:
+                  if not ws:
+                      raise RuntimeError("WebSocket not established")
+                  print("Preview-origin WSS handshake: OK")
+          asyncio.run(check())
+          PY
