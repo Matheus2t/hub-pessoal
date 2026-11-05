@@ -3,6 +3,7 @@
 No public tunnel or internet listener. Use 127.0.0.1 and a self-signed test cert.
 """
 import ipaddress
+import os
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -30,9 +31,34 @@ def certificate(folder):
 
 
 if __name__ == "__main__":
-    certificate(sys.argv[1])
+    if sys.argv[1] == "--serve":
+        import threading
+
+        import uvicorn
+
+        folder = Path(sys.argv[3])
+        server = uvicorn.Server(uvicorn.Config(
+            "backend.tests.call_tls_harness:app", host="127.0.0.1", port=int(sys.argv[2]),
+            proxy_headers=False, ssl_keyfile=str(folder / "key.pem"), ssl_certfile=str(folder / "cert.pem"),
+            ws_max_size=32768, access_log=False, log_level="warning", timeout_graceful_shutdown=3,
+        ))
+
+        def stop_at_eof():
+            sys.stdin.buffer.read()
+            server.should_exit = True
+
+        threading.Thread(target=stop_at_eof, daemon=True).start()
+        server.run()
+    else:
+        certificate(sys.argv[1])
 else:
     from backend.app.call_signaling import app as backend
+
+    if channel_path := os.environ.get("CALL_TEST_CHANNEL_SQLITE"):
+        from backend.app.call_channel_store import SQLiteChannelStore
+        from backend.app.call_signaling import create_app
+
+        backend = create_app(channel_store=SQLiteChannelStore(Path(channel_path)))
 
     async def app(scope, receive, send):
         if scope["type"] in ("http", "websocket"):

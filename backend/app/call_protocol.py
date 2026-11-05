@@ -16,6 +16,7 @@ class Message(BaseModel):
 
 Name = Annotated[str, Field(min_length=1, max_length=40, pattern=r"^[^\x00-\x1f\x7f]+$")]
 Identifier = Annotated[str, Field(pattern=r"^[a-f0-9]{32}$")]
+DeviceToken = Annotated[str, Field(pattern=r"^[A-Za-z0-9_-]{43}$")]
 
 
 class Create(Message):
@@ -36,6 +37,36 @@ class Resume(Message):
     room: Identifier
     participant: Identifier
     credential: SecretStr
+
+
+class ChannelInfo(Message):
+    type: Literal["channel_info"]
+    room: Identifier
+
+
+class ChannelJoin(Message):
+    type: Literal["channel_join"]
+    room: Identifier
+    name: Name
+    device: DeviceToken
+
+
+class ChannelAdmin(Message):
+    type: Literal["channel_admin"]
+    admin: SecretStr
+    action: Literal["status", "create", "rename", "rotate", "kick", "block", "unblock"]
+    name: Name | None = None
+    target: Identifier | Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")] | None = None
+
+    @model_validator(mode="after")
+    def valid_action(self):
+        needs_name = self.action in ("create", "rename")
+        needs_target = self.action in ("kick", "block", "unblock")
+        if needs_name != (self.name is not None) or needs_target != (self.target is not None):
+            raise ValueError("Invalid channel action fields")
+        if self.target and len(self.target) != (64 if self.action == "unblock" else 32):
+            raise ValueError("Invalid channel action target")
+        return self
 
 
 class Simple(Message):
@@ -112,5 +143,5 @@ class IceSignal(EpochSignal):
     candidate: Ice | None
 
 
-Handshake = TypeAdapter(Annotated[Create | Join | Resume, Field(discriminator="type")])
+Handshake = TypeAdapter(Annotated[Create | Join | Resume | ChannelInfo | ChannelJoin | ChannelAdmin, Field(discriminator="type")])
 Action = TypeAdapter(Annotated[Simple | MediaState | ScreenControl | Admission | SdpSignal | IceSignal, Field(discriminator="type")])

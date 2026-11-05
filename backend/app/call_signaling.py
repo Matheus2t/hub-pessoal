@@ -22,7 +22,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import Field, SecretStr, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .call_protocol import Action, Create, Handshake, Join, Resume
+from .call_protocol import Action, ChannelAdmin, ChannelInfo, ChannelJoin, Create, Handshake, Join, Resume
+from .call_channel_store import ChannelDefinition, ChannelStore, ChannelUnavailable, D1ChannelStore
 from .call_boundary import CallBoundary, https_origin
 from .call_turn import CloudflareTurn, TurnUnavailable
 
@@ -48,6 +49,9 @@ class CallSettings(BaseSettings):
     cloudflare_turn_api_token: SecretStr | None = None
     turn_seconds: int = Field(default=600, ge=60, le=600)
     screen_claim_seconds: int = Field(default=45, ge=5, le=120)
+    d1_account_id: str = ""
+    d1_database_id: str = ""
+    d1_api_token: SecretStr | None = None
 
     @model_validator(mode="after")
     def ice_settings(self):
@@ -133,6 +137,7 @@ class Participant:
     microphone: bool = False
     voice_epoch: int = 0
     camera: bool = False
+    device_hash: str | None = field(default=None, repr=False)
 
 
 @dataclass
@@ -148,18 +153,21 @@ class ScreenShare:
 @dataclass
 class Room:
     id: str
-    host: str
+    host: str | None
     invite_hash: str = field(repr=False)
     expires: float
     invite_expires: float
     people: dict[str, Participant] = field(default_factory=dict)
     screen: ScreenShare | None = None
     screen_generation: int = 0
+    channel_name: str | None = None
 
 
 class Rooms:
-    def __init__(self, settings: CallSettings, clock=time.time):
+    def __init__(self, settings: CallSettings, clock=time.time, channel_store: ChannelStore | None = None):
         self.settings, self.clock = settings, clock
+        self.channel_store = channel_store
+        self.channel_lock = asyncio.Lock()
         self.rooms: dict[str, Room] = {}
         self.lock = asyncio.Lock()
         self.limits: dict[tuple[str, str], deque] = {}
@@ -196,6 +204,18 @@ class Rooms:
             if person.connection:
                 person.connection.finish(reason)
 
+    def remove_channel_person(self, room: Room, person: Participant, reason: str):
+        room.people.pop(person.id, None)
+        self.release_screen(room, person.id)
+        key = (room.id, person.id)
+        if task := self.rtc_tasks.pop(key, None):
+            task.cancel()
+        self.rtc_cache.pop(key, None)
+        if person.connection:
+            person.connection.finish(reason)
+        if not room.people:
+            self.close(room, reason)
+
     def sweep(self):
         now = self.clock()
         for room in list(self.rooms.values()):
@@ -210,6 +230,10 @@ class Rooms:
                 lost = person.disconnected_at is not None and now - person.disconnected_at >= self.settings.reconnect_seconds
                 waiting = not person.approved and now - person.requested_at >= self.settings.approval_seconds
                 if lost or waiting:
+                    if room.channel_name is not None:
+                        self.remove_channel_person(room, person, "disconnected")
+                        changed = True
+                        continue
                     if person.id == room.host:
                         self.close(room, "host_left")
                         break
@@ -240,6 +264,146 @@ class Rooms:
     def release_screen(self, room: Room, owner: str):
         if room.screen and room.screen.owner == owner:
             room.screen = None
+
+    def authorize_owner(self, admin):
+        key = self.settings.admin_key
+        if not key or len(key.get_secret_value()) < 32 or not secrets.compare_digest(
+                digest(admin.get_secret_value()), digest(key.get_secret_value())):
+            raise Rejected("unauthorized")
+
+    async def read_channel(self):
+        if self.channel_store is None:
+            raise Rejected("channel_unavailable")
+        try:
+            return await self.channel_store.read()
+        except ChannelUnavailable:
+            raise Rejected("channel_unavailable") from None
+
+    async def save_channel(self, previous: str | None, channel: ChannelDefinition):
+        try:
+            if not await self.channel_store.save(previous, channel):
+                raise Rejected("channel_changed")
+        except ChannelUnavailable:
+            raise Rejected("channel_unavailable") from None
+
+    def channel_status(self, channel: ChannelDefinition, *, admin: bool = False):
+        room = self.rooms.get(channel.id)
+        people = list(room.people.values()) if room else []
+        connected = [p for p in people if p.connection and not p.connection.closing]
+        result = {"type": "channel", "room": channel.id, "name": channel.name, "online": len(connected)}
+        if admin:
+            result["participants"] = [{"id": p.id, "name": p.name} for p in connected]
+            result["blocked"] = [{"id": device, "name": name} for device, name in channel.blocked.items()]
+        return result
+
+    async def channel_request(self, message: ChannelInfo | ChannelAdmin, address: str):
+        async with self.lock:
+            self.limit("channel_admin" if isinstance(message, ChannelAdmin) else "channel_info", address, 18)
+            if isinstance(message, ChannelAdmin):
+                self.authorize_owner(message.admin)
+        async with self.channel_lock:
+            stored = await self.read_channel()
+            previous, channel = stored or (None, None)
+            if isinstance(message, ChannelInfo):
+                if not channel or channel.id != message.room:
+                    raise Rejected("channel_not_found")
+                async with self.lock:
+                    self.sweep()
+                    return self.channel_status(channel)
+            action = message.action
+            if action == "status" and channel is None:
+                return {"type": "channel", "room": None}
+            if action == "create":
+                if channel:
+                    raise Rejected("channel_exists")
+                channel = ChannelDefinition(id=secrets.token_hex(16), name=message.name, created_at=int(self.clock()))
+                await self.save_channel(None, channel)
+            elif not channel:
+                raise Rejected("channel_not_found")
+            else:
+                channel = await self.moderate_channel(channel, previous, message)
+            async with self.lock:
+                self.sweep()
+                return self.channel_status(channel, admin=True)
+
+    async def moderate_channel(self, channel: ChannelDefinition, previous: str, message: ChannelAdmin):
+        action = message.action
+        if action == "status":
+            return channel
+        updated = channel.model_copy(update={"revision": channel.revision + 1})
+        target = None
+        if action in ("kick", "block"):
+            async with self.lock:
+                room = self.rooms.get(channel.id)
+                target = room.people.get(message.target) if room else None
+                if not target or not target.device_hash:
+                    raise Rejected("invalid_target")
+                if action == "kick":
+                    self.remove_channel_person(room, target, "channel_kicked")
+                    self.broadcast(room, "moderated")
+                    return channel
+            if len(channel.blocked) >= 100 and target.device_hash not in channel.blocked:
+                raise Rejected("channel_block_limit")
+            updated.blocked = {**channel.blocked, target.device_hash: target.name}
+        elif action == "unblock":
+            updated.blocked = {device: name for device, name in channel.blocked.items() if device != message.target}
+        elif action == "rename":
+            updated.name = message.name
+        elif action == "rotate":
+            updated.id = secrets.token_hex(16)
+        await self.save_channel(previous, updated)
+        async with self.lock:
+            room = self.rooms.get(channel.id)
+            if room and action == "rotate":
+                self.close(room, "channel_rotated")
+            elif room and action == "rename":
+                room.channel_name = updated.name
+                for person in room.people.values():
+                    if person.connection:
+                        person.connection.send(self.channel_status(updated))
+            elif room and target:
+                for person in list(room.people.values()):
+                    if person.device_hash == target.device_hash:
+                        self.remove_channel_person(room, person, "channel_blocked")
+                self.broadcast(room, "moderated")
+        return updated
+
+    async def join_channel(self, message: ChannelJoin, connection: Connection, address: str):
+        async with self.lock:
+            self.limit("channel_join", address, 18)
+        async with self.channel_lock:
+            stored = await self.read_channel()
+            if not stored or stored[1].id != message.room:
+                raise Rejected("channel_not_found")
+            channel = stored[1]
+            device = digest(message.device)
+            if device in channel.blocked:
+                raise Rejected("channel_blocked")
+            async with self.lock:
+                self.sweep()
+                room = self.rooms.get(channel.id)
+                if room and len(room.people) >= 5:
+                    raise Rejected("room_full")
+                if not room:
+                    room = self.rooms[channel.id] = Room(channel.id, None, "", float("inf"), 0,
+                                                          channel_name=channel.name)
+                credential = secrets.token_urlsafe(32)
+                person = Participant(secrets.token_hex(16), message.name, digest(credential), connection,
+                                     device_hash=device)
+                room.people[person.id] = person
+                self.send_session(room, person, connection, credential)
+                self.rtc_config(room, person)
+                self.broadcast(room, "joined")
+                return room.id, person.id
+
+    def send_session(self, room, person, connection, credential, invite=None):
+        message = {"type": "session", "room": room.id, "participant": person.id,
+                   "credential": credential, "host": person.id == room.host,
+                   "approved": person.approved, "invite": invite,
+                   "expires": room.expires, "inviteExpires": room.invite_expires}
+        if room.channel_name is not None:
+            message.update(mode="channel", name=room.channel_name, expires=None, inviteExpires=None)
+        connection.send(message)
 
     def screen_control(self, room: Room, person: Participant, message, connection: Connection):
         def denied(code):
@@ -319,17 +483,16 @@ class Rooms:
                 connection.send(result)
 
     async def enter(self, message, connection: Connection, address: str):
+        if isinstance(message, ChannelJoin):
+            return await self.join_channel(message, connection, address)
         async with self.lock:
             self.sweep()
             invite = None
             now = self.clock()
             if isinstance(message, Create):
                 self.limit("create", address, 5)
-                key = self.settings.admin_key
-                if not key or len(key.get_secret_value()) < 32 or not secrets.compare_digest(
-                        digest(message.admin.get_secret_value()), digest(key.get_secret_value())):
-                    raise Rejected("unauthorized")
-                if len(self.rooms) >= self.settings.max_rooms:
+                self.authorize_owner(message.admin)
+                if sum(room.channel_name is None for room in self.rooms.values()) >= self.settings.max_rooms:
                     raise Rejected("capacity")
                 invite = secrets.token_urlsafe(32)
                 room_id, participant_id = secrets.token_hex(16), secrets.token_hex(16)
@@ -345,6 +508,8 @@ class Rooms:
                 person = room.people.get(message.participant)
                 if not person or not secrets.compare_digest(person.credential_hash, digest(message.credential.get_secret_value())):
                     raise Rejected("unauthorized")
+                if room.channel_name is not None:
+                    self.limit("channel_resume", person.id, 8)
                 old = person.connection
                 pending = self.rtc_tasks.pop((room.id, person.id), None)
                 if pending:
@@ -356,7 +521,7 @@ class Rooms:
                 person.connection, person.disconnected_at = connection, None
             else:
                 if isinstance(message, Join):
-                    if now >= room.invite_expires or not secrets.compare_digest(room.invite_hash, digest(message.invite.get_secret_value())):
+                    if room.channel_name is not None or now >= room.invite_expires or not secrets.compare_digest(room.invite_hash, digest(message.invite.get_secret_value())):
                         raise Rejected("invalid_invite")
                     if len(room.people) >= 5:
                         raise Rejected("room_full")
@@ -367,10 +532,7 @@ class Rooms:
                 if not person.name:
                     raise Rejected("invalid_message")
                 room.people[person.id] = person
-            connection.send({"type": "session", "room": room.id, "participant": person.id,
-                             "credential": credential, "host": person.id == room.host,
-                             "approved": person.approved, "invite": invite,
-                             "expires": room.expires, "inviteExpires": room.invite_expires})
+            self.send_session(room, person, connection, credential, invite)
             if person.approved:
                 self.rtc_config(room, person)
             self.broadcast(room, "reconnected" if isinstance(message, Resume) else "joined")
@@ -387,7 +549,10 @@ class Rooms:
                 connection.send({"type": "pong"})
                 return
             if message.type == "leave":
-                if person_id == room.host:
+                if room.channel_name is not None:
+                    self.remove_channel_person(room, person, "left")
+                    self.broadcast(room, "left")
+                elif person_id == room.host:
                     self.close(room, "host_left")
                 else:
                     del room.people[person_id]
@@ -457,9 +622,22 @@ class Rooms:
                 self.broadcast(room, "disconnected")
 
 
-def create_app(settings: CallSettings | None = None, clock=time.time, *, frontend_dir: Path | None = None) -> FastAPI:
+def configured_channel_store(config: CallSettings):
+    account, database, token = config.d1_account_id, config.d1_database_id, config.d1_api_token
+    if not (account or database or token):
+        return None
+    if (re.fullmatch(r"[a-f0-9]{32}", account) and
+            re.fullmatch(r"[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}", database) and
+            token and re.fullmatch(r"[A-Za-z0-9_-]{20,256}", token.get_secret_value())):
+        return D1ChannelStore(account, database, token.get_secret_value())
+    logging.getLogger(__name__).warning("Permanent Call channel disabled: incomplete or invalid D1 configuration")
+    return None
+
+
+def create_app(settings: CallSettings | None = None, clock=time.time, *, frontend_dir: Path | None = None,
+               channel_store: ChannelStore | None = None) -> FastAPI:
     config = settings or CallSettings()
-    rooms = Rooms(config, clock)
+    rooms = Rooms(config, clock, channel_store or configured_channel_store(config))
 
     @asynccontextmanager
     async def lifespan(app):
@@ -537,6 +715,10 @@ def create_app(settings: CallSettings | None = None, clock=time.time, *, fronten
         async def receive():
             nonlocal room_id, person_id
             message = await read(Handshake, 8)
+            if isinstance(message, (ChannelInfo, ChannelAdmin)):
+                connection.send(await rooms.channel_request(message, address))
+                connection.finish("left")
+                return
             room_id, person_id = await rooms.enter(message, connection, address)
             bucket = deque()
             while not connection.closing:
