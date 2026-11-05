@@ -204,7 +204,7 @@ def test_legacy_definition_is_protected_in_place_before_lobby_discovery(tmp_path
         assert lobby.json() == {"type": "channel", "room": None, "name": "Sala existente", "online": 0, "setupRequired": True}
         original = join(connect, room, "Legado", "A" * 43)
         assert until(original, "session")["room"] == room
-        for unsuitable in (KEY, "short", " " * 15):
+        for unsuitable in (KEY, "four", " " * 15):
             assert until(admin(connect, "password", password=unsuitable), "error")["code"] == "channel_password_policy"
         protected = until(admin(connect, "password", password=PASSWORD), "channel")
         assert protected["room"] == room and protected["requiresPassword"] is True
