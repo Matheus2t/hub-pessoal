@@ -94,3 +94,26 @@
   .masthead app-sidebar nav { gap:0 10px; }
   .nav-team-icon { width:32px; }
 }
+
+/* Mobile navigation is anchored to the same left edge as the 2T logo. */
+@media (max-width: 600px) {
+  .masthead app-sidebar {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0;
+    align-self: flex-start;
+    text-align: left;
+  }
+  .masthead app-sidebar > nav {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .masthead app-sidebar .nav-team-icons {
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
