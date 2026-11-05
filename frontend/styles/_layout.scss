@@ -95,14 +95,29 @@
   .nav-team-icon { width:32px; }
 }
 
-/* Mobile navigation aligned to the right; desktop remains unchanged. */
+/* Mobile: the theme switch stays beside the navigation, as on desktop. */
 @media (max-width: 600px) {
+  .masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px;
+    grid-template-areas:
+      "brand brand"
+      "navigation theme";
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 4px;
+  }
+  .masthead .brand {
+    grid-area: brand;
+    justify-self: start;
+  }
   .masthead app-sidebar {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
+    grid-area: navigation;
+    order: unset;
+    width: auto;
+    min-width: 0;
     margin: 0;
-    align-self: flex-end;
+    align-self: center;
     text-align: right;
   }
   .masthead app-sidebar > nav {
@@ -116,4 +131,20 @@
     margin-left: 0;
     margin-right: 0;
   }
+  .masthead app-topbar {
+    grid-area: theme;
+    order: unset;
+    margin: 0;
+    justify-self: end;
+    align-self: center;
+  }
+}
+
+/* Keep all four navigation links visible beside the theme button on 320px screens. */
+@media (max-width: 360px) {
+  .masthead app-sidebar nav { gap: 0 6px; }
+  .masthead .nav-team-icons { gap: 2px; padding-left: 6px; }
+  .masthead .nav-team-icon { width: 28px; }
+  .masthead .nav-team-icon .team-crest-frame { width: 26px; height: 26px; }
+  .masthead .nav-team-icon img { width: 24px; height: 24px; }
 }
