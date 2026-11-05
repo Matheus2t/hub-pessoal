@@ -192,6 +192,14 @@ export class CallPage extends LightElement {
   const remote=!!shared?.active&&shared.owner!==self&&this.voice.active;
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
+  const privateEntry = !this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
+   <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" required></label>
+   <label class="call-invite">Link de convite<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o link recebido"></label>
+   <button type="submit" value="join" ?disabled=${this.call.state==='connecting'}>Entrar por convite</button>
+   <details><summary>Sou o proprietário</summary><label>Credencial do proprietário<input name="admin" type="password" autocomplete="off" maxlength="256"></label><button type="submit" value="create" ?disabled=${this.call.state==='connecting'}>Criar sala privada</button></details>
+  </form>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
+   ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
+   <button type="button" @click=${this.teardown}>Sair da sala</button></div>`}`;
   return html`
   ${channelRoute?html`<header><div><a href="#/call">Voltar ao 2T Call</a><h1>${channelSession?.name??this.channel?.name??'Sala Permanente'}</h1><p>Canal de voz · até cinco pessoas.</p></div></header>
    ${this.channelLoading?html`<p role="status">Carregando sala. O sinalizador pode levar até 90 segundos para iniciar.</p>`:nothing}
@@ -206,21 +214,22 @@ export class CallPage extends LightElement {
     <button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button>
    </section>`:nothing}
    ${channelSession?html`<div class="call-room-actions"><button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button><button type="button" @click=${this.leaveChannel}>Sair do canal</button></div>`:nothing}
-  `:html`<header><div><h1>2T Call</h1><p>Voz, vídeo e tela para até cinco pessoas.</p></div><span class="call-badge">Em homologação</span></header>
-  ${isLanding?html`<section class="call-channel-panel" aria-label="Sala Permanente">
-   <h2>Sala Permanente</h2><p class="call-note">Entre pelo link reutilizável, mesmo sem o proprietário conectado.</p>
-   <form @submit=${this.openChannelLink}><label>Link da sala permanente<input name="link" type="text" autocomplete="off" spellcheck="false" required></label><button type="submit">Abrir canal</button></form>
-   ${this.channelError?html`<p class="call-error" role="alert">${this.channelError}</p>`:nothing}
-   <a href="#/call/gerenciar">Gerenciar sala permanente</a>
-  </section><h2 class="call-private-title">Chamada Privada</h2>`:nothing}
-  ${!this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
-   <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" required></label>
-   <label class="call-invite">Link de convite<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o link recebido"></label>
-   <button type="submit" value="join" ?disabled=${this.call.state==='connecting'}>Entrar por convite</button>
-   <details><summary>Sou o proprietário</summary><label>Credencial do proprietário<input name="admin" type="password" autocomplete="off" maxlength="256"></label><button type="submit" value="create" ?disabled=${this.call.state==='connecting'}>Criar sala privada</button></details>
-  </form>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
-   ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
-   <button type="button" @click=${this.teardown}>Sair da sala</button></div>`}`}
+  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1><p>Voz, vídeo e compartilhamento de tela em um só lugar.</p></div><span class="call-badge">ATÉ 5 PESSOAS</span></header>
+
+  ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
+   <section class="call-channel-panel" aria-label="Sala Permanente">
+    <span class="call-panel-label">01 / ENTRADA LIVRE</span>
+    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Seu espaço de voz, sempre no mesmo endereço. Entre pelo link, mesmo sem o proprietário.</p></div>
+    <form @submit=${this.openChannelLink}><label>Link da sala permanente<input name="link" type="text" autocomplete="off" spellcheck="false" placeholder="Cole o link da sala" required></label><button type="submit">Abrir canal</button></form>
+    ${this.channelError?html`<p class="call-error" role="alert">${this.channelError}</p>`:nothing}
+    <a class="call-manage-link" href="#/call/gerenciar">Gerenciar sala permanente <span aria-hidden="true">↗</span></a>
+   </section>
+   <section class="call-private-panel" aria-label="Chamada Privada">
+    <span class="call-panel-label">02 / ACESSO POR CONVITE</span>
+    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Uma sala temporária para conversar apenas com quem você convidar.</p></div>
+    ${privateEntry}
+   </section>
+  </div>`:privateEntry}
   ${!channelRoute||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
   ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
    ${channelSession?html`<span>No canal${this.microphone?'':' · apenas ouvindo'}</span>`:this.voice.active?html`<span>Na chamada${this.microphone?'':' · apenas ouvindo'}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
@@ -241,7 +250,7 @@ export class CallPage extends LightElement {
    <section class="call-stage" aria-label="Tela compartilhada">
     <div class=${`call-preview${this.fullscreen.mode==='expanded'?' is-expanded':''}`} role=${this.fullscreen.mode?'dialog':nothing} aria-modal=${this.fullscreen.mode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
-     ${!screen&&!remote?html`<div class="call-empty"><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
+     ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
      ${screen||remote?html`<button class="call-fullscreen" type="button" @click=${(event:Event)=>void this.fullscreen.toggle(event.currentTarget as HTMLButtonElement,this.screenSource())}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d=${this.fullscreen.mode?'M4 9h5V4m6 0v5h5M4 15h5v5m6 0v-5h5':'M9 4H4v5m11-5h5v5M4 15v5h5m6 0h5v-5'} /></svg>
       <span>${this.fullscreen.mode==='expanded'?'Sair do modo expandido':this.fullscreen.mode?'Sair da tela cheia':this.fullscreen.supported?'Tela cheia':'Ampliar tela'}</span>
