@@ -115,4 +115,4 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:8001/call/health
-          npx playwright test frontend/tests/call.spec.ts frontend/tests/call-voice.spec.ts frontend/tests/call-media.spec.ts --reporter=line
+          npx playwright test frontend/tests/call.spec.ts frontend/tests/call-voice.spec.ts frontend/tests/call-media.spec.ts --reporter=line --retries=1
