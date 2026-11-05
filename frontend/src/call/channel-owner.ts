@@ -27,10 +27,10 @@ export class CallChannelOwner extends LightElement {
   let request:ChannelAdmin;
   if(action==='create'||action==='rename'){
    if(!name){this.error='Informe o nome da sala.';return}
-   if(action==='create'&&password.length<10){this.error='Informe uma senha com pelo menos 10 caracteres.';passwordInput?.focus();return}
+   if(action==='create'&&password.length<5){this.error='Informe uma senha com pelo menos 5 caracteres.';passwordInput?.focus();return}
    request=action==='create'?{type:'channel_admin',admin,action,name,password}:{type:'channel_admin',admin,action,name};
   }else if(action==='password'){
-   if(password.length<10){this.error='Informe uma senha com pelo menos 10 caracteres.';passwordInput?.focus();return}
+   if(password.length<5){this.error='Informe uma senha com pelo menos 5 caracteres.';passwordInput?.focus();return}
    request={type:'channel_admin',admin,action,password};
   }else if(action==='kick'||action==='block'||action==='unblock'){
    request={type:'channel_admin',admin,action,target};
@@ -63,7 +63,7 @@ export class CallChannelOwner extends LightElement {
     <label>Nome da sala<input name="name" maxlength="40" .value=${channel?.name??''}></label>
     ${channel?html`<button type="submit" value="rename" ?disabled=${this.busy}>Renomear sala</button>`:nothing}
     <label>${channel?'Nova senha da sala':'Senha da sala'}<input name="password" type="password" autocomplete="new-password" maxlength="128"></label>
-    <p class="call-note">Mínimo de 10 caracteres. Use uma senha diferente da credencial do proprietário.
+    <p class="call-note">Mínimo de 5 caracteres. Use uma senha diferente da credencial do proprietário.
      ${channel?'Salvar a senha encerra as sessões atuais. O link continua válido.':''}</p>
     <button type="submit" value=${channel?'password':'create'} ?disabled=${this.busy}>${channel?(channel.requiresPassword?'Alterar senha':'Definir senha'):'Criar sala permanente'}</button>`:nothing}
    ${channel?html`
