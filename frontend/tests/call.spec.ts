@@ -10,7 +10,7 @@ test.use({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:loc
 
 async function open(page:Page){await page.goto(`${origin}/#/call`);await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible()}
 async function create(page:Page){
- await open(page);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
+ await open(page);await page.getByRole('button',{name:'Criar uma sala',exact:true}).click();await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
  await expect(page.locator('.call-connection')).toHaveText('Conectado');
  await page.getByRole('button',{name:'Copiar convite',exact:true}).click();
