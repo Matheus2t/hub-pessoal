@@ -199,7 +199,7 @@ export class CallPage extends LightElement {
    <details><summary>Sou o proprietário</summary><label>Credencial do proprietário<input name="admin" type="password" autocomplete="off" maxlength="256"></label><button type="submit" value="create" ?disabled=${this.call.state==='connecting'}>Criar sala privada</button></details>
   </form>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
    ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
-   <button type="button" @click=${this.teardown}>Sair da sala</button></div>`}`;
+   <button type="button" @click=${this.teardown}>Sair da sala</button></div>`;
   return html`
   ${channelRoute?html`<header><div><a href="#/call">Voltar ao 2T Call</a><h1>${channelSession?.name??this.channel?.name??'Sala Permanente'}</h1><p>Canal de voz · até cinco pessoas.</p></div></header>
    ${this.channelLoading?html`<p role="status">Carregando sala. O sinalizador pode levar até 90 segundos para iniciar.</p>`:nothing}
