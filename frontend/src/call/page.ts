@@ -26,6 +26,7 @@ export class CallPage extends LightElement {
  @state() private channelLoading=false;
  @state() private channelError='';
  @state() private speakers=new Set<string>();
+ @state() private privateMode:'create'|'join'='create';
  private channelQuery?:AbortController;
  private speakerTimer?:number;
  private channelParticipant?:string;
@@ -55,7 +56,27 @@ export class CallPage extends LightElement {
   this.stopSpeakers();this.channelParticipant=undefined;
   this.fullscreen.close();this.voice.stop(true);this.release();this.call.leave();this.lastMedia='';
  };
- private routeChanged=()=>{this.teardown();this.channel=undefined;this.lobby=undefined;this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;this.loadChannel();this.requestUpdate()};
+ private routeChanged=()=>{
+  // A mounted Call page is owned by the application shell, not its current route.
+  // Navigating to Ações, Learn or Calculadoras must not stop an ongoing call.
+  if(this.call.session){this.fullscreen.close();this.requestUpdate();return}
+  this.teardown();this.channel=undefined;this.lobby=undefined;
+  this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;
+  this.loadChannel();this.requestUpdate();
+ };
+ toggleDockMicrophone(){if(this.call.session)void this.toggleMicrophone()}
+ leaveFromDock(){this.teardown();this.requestUpdate()}
+ private announceCall(){
+  const session=this.call.session;
+  this.dispatchEvent(new CustomEvent('call-session-change',{
+   bubbles:true,composed:true,
+   detail:session?{active:true,mode:session.mode==='channel'?'channel':'private',
+    name:session.name??'Chamada privada',room:session.room,microphone:!!this.microphone,
+    participants:this.call.people.filter(p=>p.connected).length,state:this.call.state}
+    :{active:false}
+  }));
+ }
+
  private async loadChannel(){
   const room=parseChannel(location.href);
   if(this.channelQuery||!room&&location.hash!=='#/call')return;
@@ -118,6 +139,7 @@ export class CallPage extends LightElement {
    this.publishMedia();
   }
   this.updateSpeakers();
+  this.announceCall();
   this.requestUpdate();
  }
  private publishMedia(){
@@ -161,13 +183,11 @@ export class CallPage extends LightElement {
   const name=String(data.get('name')??'').trim();this.roomError='';this.copied=false;
   if(!name){this.roomError='Informe seu nome.';return}
   if((event.submitter as HTMLButtonElement)?.value==='create'){
-   const admin=String(data.get('admin')??'');if(!admin){this.roomError='Informe a credencial do proprietário.';return}
-   this.call.start({type:'create',name,admin});
+   this.call.start({type:'create',name});
   }else{
    const invite=parseInvite(String(data.get('invite')??''));if(!invite){this.roomError='Cole um convite válido deste site.';return}
    this.call.start({type:'join',name,...invite});
   }
-  const password=form.elements.namedItem('admin') as HTMLInputElement|null;if(password)password.value='';
  }
  private async copyInvite(){
   const session=this.call.session;if(!session?.invite)return;
@@ -180,7 +200,7 @@ export class CallPage extends LightElement {
   catch{this.roomError='Não foi possível copiar o diagnóstico. Confira a permissão da área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
- private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia()}
+ private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
  private release=()=>{this.stopMicrophone();this.capture.release();this.error=''};
  private message(error:unknown,screen:boolean){
   const name=error instanceof DOMException?error.name:'';
@@ -201,7 +221,7 @@ export class CallPage extends LightElement {
    if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
    if(!stream.getAudioTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No audio','NotFoundError')}
    this.microphone=stream;
-   this.voice.setMicrophone(stream);this.publishMedia();
+   this.voice.setMicrophone(stream);this.publishMedia();this.announceCall();
    stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
@@ -226,20 +246,27 @@ export class CallPage extends LightElement {
   </div>`:nothing}`;
  }
  render(){const self=this.call.session?.participant,screen=this.capture.screen,shared=this.call.screen;
-  const channelRoute=location.hash.startsWith('#/call/sala/'),channelId=parseChannel(location.href);
   const channelSession=this.call.session?.mode==='channel'?this.call.session:undefined;
+  const channelRoute=location.hash.startsWith('#/call/sala/')||!!channelSession,channelId=parseChannel(location.href)??channelSession?.room;
   const channelBusy=this.call.state==='connecting'||this.call.state==='reconnecting';
   const isLanding=!channelRoute&&!this.call.session&&!parseInvite(location.href);
-  if(location.hash==='#/call/gerenciar')return html`<call-channel-owner></call-channel-owner>`;
+  if(location.hash==='#/call/gerenciar'&&!this.call.session)return html`<call-channel-owner></call-channel-owner>`;
   const remote=!!shared?.active&&shared.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
-  const privateEntry = !this.call.session?html`<form class="call-entry" @submit=${this.openRoom}>
-   <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" required></label>
-   <label class="call-invite">Link de convite<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o link recebido"></label>
-   <button type="submit" value="join" ?disabled=${this.call.state==='connecting'}>Entrar por convite</button>
-   <details><summary>Sou o proprietário</summary><label>Credencial do proprietário<input name="admin" type="password" autocomplete="off" maxlength="256"></label><button type="submit" value="create" ?disabled=${this.call.state==='connecting'}>Criar sala privada</button></details>
-  </form>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
+  const entryMode=parseInvite(location.href)?'join':this.privateMode;
+  const privateEntry = !this.call.session?html`<div class="call-private-entry">
+   <div class="call-entry-switch" role="group" aria-label="Tipo de chamada privada">
+    <button type="button" aria-pressed=${entryMode==='create'} @click=${()=>this.privateMode='create'}>Criar uma sala</button>
+    <button type="button" aria-pressed=${entryMode==='join'} @click=${()=>this.privateMode='join'}>Usar convite</button>
+   </div>
+   <form class="call-entry" @submit=${this.openRoom}>
+    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" placeholder="Seu nome ou apelido" required></label>
+    ${entryMode==='join'?html`<label class="call-invite">Link recebido<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o convite aqui" required></label>`:nothing}
+    <button class="call-primary-action" type="submit" value=${entryMode} ?disabled=${this.call.state==='connecting'}>${entryMode==='create'?'Criar sala privada':'Entrar por convite'}</button>
+   </form>
+   <p class="call-entry-hint">${entryMode==='create'?'Sem cadastro. Compartilhe o convite para chamar seus amigos.':'O anfitrião aprova a entrada dos convidados.'}</p>
+  </div>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
    ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
    <button type="button" @click=${this.teardown}>Sair da sala</button></div>`;
   return html`
@@ -257,26 +284,26 @@ export class CallPage extends LightElement {
     <button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button>
    </section>`:nothing}
    ${channelSession?html`<div class="call-room-actions"><button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button><button type="button" @click=${this.leaveChannel}>Sair do canal</button></div>`:nothing}
-  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1><p>Voz, vídeo e compartilhamento de tela em um só lugar.</p></div><span class="call-badge">ATÉ 5 PESSOAS</span></header>
+  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1><p>Um espaço direto para conversar, mostrar a tela e ficar junto.</p></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
 
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
-   <section class="call-channel-panel" aria-label="Sala Permanente">
-    <span class="call-panel-label">01 / ACESSO POR SENHA</span>
-    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Entre com a senha da sala, mesmo sem o proprietário conectado.</p></div>
+   <section class="call-channel-panel" aria-label="Sala Permanente"><div class="call-card-symbol" aria-hidden="true">01 <span>●</span></div>
+    <span class="call-panel-label">CANAL PERMANENTE · 01</span>
+    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Seu ponto de encontro. Disponível mesmo quando ninguém está online.</p></div>
     ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
-    ${this.lobby?.room?html`<a class="button call-lobby-enter" href=${channelLink(this.lobby.room)}>Entrar na sala</a>`:
+    ${this.lobby?.room?html`<a class="button call-lobby-enter call-primary-action" href=${channelLink(this.lobby.room)}>Entrar na sala <span aria-hidden="true">→</span></a>`:
      html`<p class="call-note" role="status">${this.channelLoading?'Consultando a sala…':this.lobbyError||
       (this.lobby?.room===null&&this.lobby.setupRequired?'A entrada por aqui fica disponível depois que o proprietário definir a senha.':'Nenhuma sala permanente configurada.')}</p>`}
     ${this.lobbyError?html`<button type="button" @click=${this.loadChannel}>Atualizar sala permanente</button>`:nothing}
     <a class="call-manage-link" href="#/call/gerenciar">Gerenciar sala permanente <span aria-hidden="true">↗</span></a>
    </section>
-   <section class="call-private-panel" aria-label="Chamada Privada">
-    <span class="call-panel-label">02 / ACESSO POR CONVITE</span>
-    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Uma sala temporária para conversar apenas com quem você convidar.</p></div>
+   <section class="call-private-panel" aria-label="Chamada Privada"><div class="call-card-symbol" aria-hidden="true">02 <span>↗</span></div>
+    <span class="call-panel-label">SALA TEMPORÁRIA · 02</span>
+    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Crie um espaço só para você e quem receber o convite.</p></div>
     ${privateEntry}
    </section>
   </div>`:privateEntry}`}
-  ${!channelRoute||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
+  ${this.call.session||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
   ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
    ${channelSession?html`<span>No canal${this.microphone?'':' · apenas ouvindo'}</span>`:this.voice.active?html`<span>Na chamada${this.microphone?'':' · apenas ouvindo'}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
    ${this.voice.blocked?html`<button type="button" @click=${()=>this.voice.unlockAudio()}>Liberar áudio</button>`:nothing}
@@ -292,7 +319,7 @@ export class CallPage extends LightElement {
   <div class="call-remote-audio" aria-hidden="true"></div>
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
-  <div class="call-layout" ?data-channel=${!!channelSession} ?hidden=${channelRoute&&!channelSession}>
+  <div class="call-layout" ?data-channel=${!!channelSession} ?hidden=${!this.call.session}>
    <section class="call-stage" aria-label="Tela compartilhada">
     <div class=${`call-preview call-viewer${screenMode==='expanded'?' is-expanded':''}`} role=${screenMode?'dialog':nothing} aria-modal=${screenMode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
@@ -308,10 +335,10 @@ export class CallPage extends LightElement {
       ${this.viewerControls(p.id,p.name)}
      </div>
      ${this.voice.active&&p.connected&&p.id!==self?this.listeningControls(p.id,p.name):nothing}</li>`})}
-    ${channelSession?nothing:Array.from({length:5-this.call.people.length},(_,n)=>html`<li class="call-vacant"><span class="call-avatar" aria-hidden="true">${this.call.people.length+n+1}</span><div><strong>Vaga disponível</strong><small>Sem participante</small></div></li>`)}
+    ${nothing}
    </ol></aside>
   </div>
-  <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${channelRoute&&!channelSession}>
+  <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${!this.call.session}>
    <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
    <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button type="button" aria-pressed=${!!screen} ?disabled=${this.voice.active&&(this.call.state!=='connected'||!!shared&&shared.owner!==self)} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':screen?'Parar compartilhamento':'Compartilhar tela'}</button>

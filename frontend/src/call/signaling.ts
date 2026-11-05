@@ -7,7 +7,7 @@ export const callErrors:Record<string,string>={
  channel_kicked:'O proprietário removeu você da sala.',channel_blocked:'O proprietário bloqueou este navegador.',
  channel_rotated:'O proprietário revogou este link. Peça o novo endereço.',channel_block_limit:'Limite de bloqueios atingido. Desbloqueie um navegador para continuar.',
  channel_password_required:'Informe a senha da sala para entrar.',channel_bad_password:'Senha da sala incorreta.',
- channel_password_policy:'Use pelo menos 10 caracteres e uma senha diferente da credencial do proprietário.',
+ channel_password_policy:'Use pelo menos 5 caracteres e uma senha diferente da credencial do proprietário.',
  channel_password_changed:'O proprietário alterou a senha. Informe a nova senha para voltar.',
  unauthorized:'Credencial inválida.',invalid_invite:'Convite inválido ou expirado.',room_full:'A sala já tem cinco vagas ocupadas ou reservadas.',
  capacity:'Limite de salas ou conexões atingido.',rate_limited:'Muitas tentativas. Aguarde um minuto.',invalid_message:'Mensagem inválida.',

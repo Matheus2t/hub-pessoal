@@ -10,7 +10,7 @@ test.use({browserName:engine,channel:engine==='chromium'?process.env.PW_CHANNEL|
 test.skip(!key,'Use the loopback fixtures documented for stage 5.');test.setTimeout(60000);
 
 async function form(page:Page,url=origin){
- await page.goto(url+'/#/call');await page.getByLabel('Seu nome',{exact:true}).fill('Owner');await page.getByText('Sou o proprietário',{exact:true}).click();await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key!);
+ await page.goto(url+'/#/call');await page.getByLabel('Seu nome',{exact:true}).fill('Owner');
 }
 async function create(page:Page,url=origin){await form(page,url);await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();await expect(page.locator('.call-connection')).toHaveText('Conectado');return page.evaluate(()=>{const session=(document.querySelector('call-page') as any).call.session;return `${location.origin}/#/call/${session.room}?invite=${session.invite}`})}
 async function join(page:Page,owner:Page,invite:string){await page.goto(invite);await page.getByLabel('Seu nome',{exact:true}).fill('Guest');await page.getByRole('button',{name:'Entrar por convite',exact:true}).click();await owner.getByRole('button',{name:'Aceitar Guest',exact:true}).click();await expect(page.locator('.call-connection')).toHaveText('Conectado')}
@@ -114,5 +114,5 @@ test('unavailable health times out without sending owner secrets or opening a so
  });
  await form(page);await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();await expect.poll(()=>attempts).toBeGreaterThan(0);
  await page.clock.runFor(90001);await expect(page.locator('.call-connection')).toHaveText('Conexão encerrada');await expect(page.getByRole('alert')).toContainText('indisponível');expect(sockets).toEqual([]);
- await expect(page.getByLabel('Credencial do proprietário',{exact:true})).toHaveValue('');
+ await expect(page.locator('input[name=admin]')).toHaveCount(0);
 });

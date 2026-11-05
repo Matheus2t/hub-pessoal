@@ -401,7 +401,7 @@ class Rooms:
 
     async def new_channel_password(self, message: ChannelAdmin):
         password = message.password.get_secret_value()
-        if (len(password) < 10 or not password.strip() or
+        if (len(password) < 5 or not password.strip() or
                 secrets.compare_digest(digest(password), digest(message.admin.get_secret_value()))):
             raise Rejected("channel_password_policy")
         return await hash_password(password)
@@ -557,8 +557,7 @@ class Rooms:
             invite = None
             now = self.clock()
             if isinstance(message, Create):
-                self.limit("create", address, 5)
-                self.authorize_owner(message.admin)
+                self.limit("create", address, 5)  # Bounded public rooms, protected by the invite and host token.
                 if sum(room.channel_name is None for room in self.rooms.values()) >= self.settings.max_rooms:
                     raise Rejected("capacity")
                 invite = secrets.token_urlsafe(32)

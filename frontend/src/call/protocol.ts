@@ -21,7 +21,7 @@ export interface RtcConfig {type:'rtc_config';iceServers:RTCIceServer[];turnExpi
 export type Signal = ({type:'offer'|'answer';target:string;sdp:string;roles:MediaRoles}|{type:'ice';target:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
 export type RemoteSignal = ({type:'offer'|'answer';from:string;sdp:string;roles:MediaRoles}|{type:'ice';from:string;candidate:RTCIceCandidateInit|null}) & {epoch:number;targetEpoch:number};
 export type ClientMessage =
- |{type:'create';name:string;admin:string}|{type:'join';name:string;room:string;invite:string}|ChannelJoin
+ |{type:'create';name:string;admin?:string}|{type:'join';name:string;room:string;invite:string}|ChannelJoin
  |{type:'resume';room:string;participant:string;credential:string}
  |{type:'ping'|'leave'|'close'|'rtc_config'}|{type:'media';active:boolean;microphone:boolean;camera?:boolean}|{type:'admit'|'reject';target:string}|Signal|ScreenControl;
 export type ServerMessage = Session|ChannelStatus|{type:'channel_reentry';proof:string}

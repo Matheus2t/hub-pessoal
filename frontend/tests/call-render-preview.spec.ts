@@ -32,16 +32,23 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  expect(config).toEqual({value:signal,status:200});
  const csp=await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
  expect(csp).toContain('wss://twot-call.onrender.com');expect(csp).toContain('https://twot-call.onrender.com');
- await page.getByLabel('Seu nome',{exact:true}).fill('Security smoke');
- await page.getByText('Sou o proprietário',{exact:true}).click();
- // Public invalid marker, not an authentication secret. No successful room is created.
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill('test-only-invalid-render-credential');
- await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
- await expect(page.getByRole('alert')).toContainText('Credencial inválida.',{timeout:95000});
- expect(sockets).toEqual([signal]);expect(renderCredentialHeaders.length).toBeGreaterThan(0);
+ // V4 lets every visitor create a private room. This smoke deliberately
+ // does NOT create one on the live backend and never sends a real credential.
+ await expect(page.locator('input[name="admin"]')).toHaveCount(0);
+ await expect(page.locator('.call-layout')).toBeHidden();
+ if(publicUrl){
+  const health=await page.evaluate(async()=>fetch('https://twot-call.onrender.com/call/health').then(r=>r.status));
+  expect(health).toBe(200);
+  await page.evaluate(signal=>new Promise<void>((resolve,reject)=>{
+   const ws=new WebSocket(signal),abort=setTimeout(()=>{ws.close();reject(new Error('WSS timeout'))},9000);
+   ws.onopen=()=>{clearTimeout(abort);ws.close();resolve()};
+   ws.onerror=()=>{clearTimeout(abort);reject(new Error('WSS connection failed'))};
+  }),signal);
+  expect(sockets).toEqual([signal]);
+  expect(renderCredentialHeaders.length).toBeGreaterThan(0);
+ }
  expect(renderCredentialHeaders.some(Boolean)).toBe(false);
  expect(insecure).toEqual([]);expect(errors).toEqual([]);
- await expect(page.getByLabel('Credencial do proprietário',{exact:true})).toHaveValue('');
  for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -49,7 +56,8 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
   if((width===1366&&theme==='dark')||(width===320&&theme==='light'))await page.screenshot({path:test.info().outputPath(`preview-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
  }
  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início',exact:true}).click();
- await expect(page.locator('call-page')).toHaveCount(0);
+ await expect(page.locator('call-page')).toHaveCount(1);
+ await expect(page.locator('call-page')).toBeHidden();
  await expect(page.locator('home-page .home-call[href="#/call"]')).toBeVisible();
  await page.locator('home-page .home-call').click();
  await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();

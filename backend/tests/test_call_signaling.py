@@ -68,8 +68,9 @@ def latest_presence(socket, expected, connected=None):
 
 def test_owner_authorization_and_no_public_listing(service):
     _, _, client, connect = service
-    unauthorized = connect({"type": "create", "name": "Guest", "admin": "wrong"})
-    assert until(unauthorized, "error")["code"] == "unauthorized"
+    public_owner = connect({"type": "create", "name": "Guest"})
+    public_session = until(public_owner, "session")
+    assert public_session["host"] and public_session["approved"]
     owner, session = host(connect)
     assert len(session["invite"]) == len(session["credential"]) == 43
     assert session["invite"] != session["credential"]

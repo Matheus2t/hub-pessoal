@@ -30,7 +30,6 @@ async function tab(browser:Browser){
 }
 async function owner(page:Page){
  await page.goto(`${origin}/#/call`);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
- await page.getByText('Sou o proprietário',{exact:true}).click();await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key!);
  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();await expect(page.locator('.call-connection')).toHaveText('Conectado');
  await page.getByRole('button',{name:'Copiar convite',exact:true}).click();return page.evaluate(()=>navigator.clipboard.readText());
 }
@@ -54,7 +53,11 @@ async function energy(page:Page,id:string){
 }
 async function audioEvidence(page:Page,count:number){
  await connected(page,count);
- if(await page.getByRole('button',{name:'Liberar áudio',exact:true}).isVisible())await page.getByRole('button',{name:'Liberar áudio',exact:true}).click();
+ const unlock=page.getByRole('button',{name:'Liberar áudio',exact:true});
+ if(await unlock.isVisible()){
+  try{await unlock.click({timeout:1200})}
+  catch(error){if(await unlock.isVisible())throw error}
+ }
  await expect.poll(()=>page.evaluate(async()=>{
   const mesh=(document.querySelector('call-page') as any).voice;let received=0;
   for(const p of mesh.peers.values()){
@@ -92,6 +95,7 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   expect(sockets.every(url=>url===(process.env.CALL_TEST_SIGNAL_URL||origin.replace('https:','wss:').replace('http:','ws:')+'/call/ws'))).toBe(true);
   await host.getByText('Verificar conexão',{exact:true}).click();
   await host.getByRole('button',{name:'Copiar diagnóstico',exact:true}).click();
+  await expect(host.getByRole('button',{name:'Diagnóstico copiado',exact:true})).toBeVisible({timeout:12000});
   const diagnostic=JSON.parse(await host.evaluate(()=>navigator.clipboard.readText()));
   expect(diagnostic.peers).toHaveLength(4);expect(diagnostic.peers.every((p:any)=>p.path==='direct'&&p.received>0)).toBe(true);
   const text=JSON.stringify(diagnostic);expect(text).not.toContain('Anfitrião');expect(text).not.toContain('Pessoa');
@@ -192,7 +196,9 @@ test('listen only, denied microphone, late capture cleanup and route exit',async
   await retained(b.page);await b.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await cleaned(b.page);
   await b.page.evaluate(async()=>{const stream=await(window as any).__nativeMic({audio:true});(window as any).__lateStream=stream;(window as any).__lateMic(stream)});
   await expect.poll(()=>b.page.evaluate(()=>(window as any).__lateStream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended'))).toBe(true);
-  await retained(a.page);await a.page.evaluate(()=>location.hash='#/');await cleaned(a.page);
+  await retained(a.page);await a.page.evaluate(()=>location.hash='#/');
+  await expect(a.page.locator('call-page')).toBeHidden();await expect(a.page.locator('.call-dock')).toBeVisible();
+  await a.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await cleaned(a.page);
   expect(await a.page.locator('.call-remote-audio audio').count()).toBe(0);
  }finally{await a.context.close();await b.context.close()}
 });

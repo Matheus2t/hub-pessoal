@@ -401,3 +401,50 @@ test('individual listening levels isolate voice and screen audio and survive a r
   await expect.poll(()=>listener.evaluate(()=>(window as any).__listeningContext.state)).toBe('closed');
  }finally{await Promise.all(pages.map(page=>page.context().close()));await fixture.stop()}
 });
+
+
+test('V4 lobby hides inactive meeting controls and keeps a private call alive across site routes',async({browser},info)=>{
+ const fixture=await server(info.outputPath('v4.sqlite3'));
+ const page=await visitor(browser);
+ try{
+  await fixture.start();
+  await page.goto(fixture.origin+'/#/call');
+  await expect(page.getByRole('heading',{name:'Sala Permanente',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Criar sala privada',exact:true})).toBeVisible();
+  await expect(page.locator('.call-layout')).toBeHidden();
+  await expect(page.locator('.call-controls')).toBeHidden();
+  await expect(page.locator('input[name="admin"]')).toHaveCount(0);
+  await page.getByLabel('Seu nome',{exact:true}).fill('Teste V4');
+  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
+  await expect(page.locator('.call-connection')).toHaveText('Conectado');
+  await page.evaluate(()=>{location.hash='#/acoes'});
+  await expect(page.locator('call-page')).toBeHidden();
+  await expect(page.getByRole('link',{name:'Voltar à chamada'})).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>(document.querySelector('call-page') as any).call.state)).toBe('connected');
+  await page.getByRole('button',{name:'Ativar microfone',exact:true}).last().click();
+ await expect(page.getByRole('button',{name:'Mutar microfone',exact:true})).toBeVisible();
+  await page.getByRole('link',{name:'Voltar à chamada'}).click();
+  await expect(page.locator('.call-connection')).toHaveText('Conectado');
+  await expect(page.locator('.call-layout')).toBeVisible();
+  await page.getByRole('button',{name:'Sair da sala',exact:true}).click();
+  await expect(page.locator('.call-layout')).toBeHidden();
+ }finally{await page.context().close();await fixture.stop()}
+});
+
+test('V4 channel accepts an administrator-defined five-character password',async({browser},info)=>{
+ const fixture=await server(info.outputPath('short-password.sqlite3'));
+ const page=await visitor(browser);
+ try{
+  await fixture.start();
+  await page.goto(fixture.origin+'/#/call/gerenciar');
+  await admin(page,'Consultar sala');
+  await page.getByLabel('Nome da sala',{exact:true}).fill('Sala Curta');
+  await page.getByLabel('Senha da sala',{exact:true}).fill('abcde');
+  await admin(page,'Criar sala permanente');
+  const link=(await page.getByRole('link',{name:'Abrir sala',exact:true}).getAttribute('href'))!;
+  await page.goto(link);
+  await expect(page.getByLabel('Senha da sala',{exact:true})).toBeVisible();
+  await join(page,'Visitante V4','abcde');
+  await expect(page.locator('.call-connection')).toHaveText('Conectado');
+ }finally{await page.context().close();await fixture.stop()}
+});

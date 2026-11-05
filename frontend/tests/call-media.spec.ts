@@ -45,8 +45,8 @@ async function tab(browser:Browser,mobile=false){
  return {context,page};
 }
 async function owner(page:Page){
- await page.goto(`${origin}/#/call`);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');await page.getByText('Sou o proprietário',{exact:true}).click();
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key!);await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
+ await page.goto(`${origin}/#/call`);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
+ await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
  await expect(page.locator('.call-connection')).toHaveText('Conectado');await page.getByRole('button',{name:'Copiar convite',exact:true}).click();return page.evaluate(()=>navigator.clipboard.readText());
 }
 async function guest(page:Page,host:Page,invite:string,name:string){
@@ -155,7 +155,7 @@ test('screen, independent audio and camera reach five real peers including late 
   for(const page of pages)await page.evaluate(()=>{const mesh=(document.querySelector('call-page') as any).voice;(window as any).__stable=[...mesh.peers.values()].map((p:any)=>({pc:p.pc,mids:p.pc.getTransceivers().map((t:RTCRtpTransceiver)=>t.mid)}))});
   const before=await evidence(second,hostId,'screenAudio');await host.getByRole('button',{name:'Desativar microfone',exact:true}).click();
   await expect.poll(async()=> (await evidence(second,hostId,'screenAudio')).energy).toBeGreaterThan(before.energy);
-  expect(await host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.transceivers.microphone.sender.track===null&&p.transceivers.screenAudio.sender.track!==null))).toBe(true);
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>p.transceivers.microphone.sender.track===null&&p.transceivers.screenAudio.sender.track!==null))).toBe(true);
   await host.getByRole('button',{name:'Ativar microfone',exact:true}).click();await media(second,hostId,'microphone');
   // Each receiver has a decoded frame and an advancing remote video, not just a DOM placeholder.
   for(const p of pages.slice(1))for(const role of['screenVideo','screenAudio','camera'])await media(p,hostId,role);
@@ -233,7 +233,10 @@ test('simultaneous screen requests, silent screen, ended audio and disconnect re
   await b.page.evaluate(()=>{(window as any).__delayDisplay=false;(window as any).__noScreenAudio=false});
   await b.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await b.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();
   await media(a.page,await id(b.page),'screenVideo');await media(a.page,await id(b.page),'camera');
-  await b.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});await closedSources(b.page);
+  await b.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});
+  await expect(b.page.locator('call-page')).toBeHidden();await expect(b.page.locator('.call-dock')).toBeVisible();
+  await expect.poll(()=>b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(1);
+  await b.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(b.page);
   expect(await b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(0);
   await expect(a.page.locator('.call-caption')).toHaveText('Nenhuma tela compartilhada');
   await a.page.getByRole('button',{name:'Encerrar sala',exact:true}).click();await closedSources(a.page);
@@ -243,10 +246,9 @@ test('simultaneous screen requests, silent screen, ended audio and disconnect re
 test('permission refusal, cancelled and late captures, local preview and route cleanup',async({browser})=>{
  const a=await tab(browser),b=await tab(browser),pages=[a.page,b.page];
  try{
-  await a.page.goto(`${origin}/#/call`);await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
-  await expect(a.page.locator('.call-caption')).toContainText('Prévia local');
+  await a.page.goto(`${origin}/#/call`);await expect(a.page.locator('.call-layout')).toBeHidden();
+  await expect(a.page.locator('.call-controls')).toBeHidden();
   expect(await a.page.evaluate(()=>(document.querySelector('call-page') as any).voice.peers.size)).toBe(0);
-  await a.page.getByRole('button',{name:'Parar compartilhamento',exact:true}).click();await closedSources(a.page);
   const invite=await owner(a.page);await guest(b.page,a.page,invite,'Convidado');await enter(a.page);await enter(b.page);await media(b.page,await id(a.page),'microphone');
   await a.page.evaluate(()=>{(window as any).__denyDisplay=true;(window as any).__denyCamera=true});
   await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await expect(a.page.getByRole('alert')).toContainText('cancelado');
@@ -257,6 +259,8 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await a.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();await expect.poll(()=>a.page.evaluate(()=>typeof(window as any).__resolveCamera)).toBe('function');
   await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
   await a.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});
+  await expect(a.page.locator('call-page')).toBeHidden();await expect(a.page.locator('.call-dock')).toBeVisible();
+  await a.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
   await a.page.evaluate(()=>{(window as any).__resolveCamera();(window as any).__resolveDisplay()});await closedSources(a.page);
   expect(await a.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(0);
   await expect(b.page.locator('.call-connection')).toHaveText('Conexão encerrada');await closedSources(b.page);
