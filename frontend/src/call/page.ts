@@ -229,7 +229,7 @@ export class CallPage extends LightElement {
     <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Uma sala temporária para conversar apenas com quem você convidar.</p></div>
     ${privateEntry}
    </section>
-  </div>`:privateEntry}
+  </div>`:privateEntry}`}
   ${!channelRoute||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
   ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
    ${channelSession?html`<span>No canal${this.microphone?'':' · apenas ouvindo'}</span>`:this.voice.active?html`<span>Na chamada${this.microphone?'':' · apenas ouvindo'}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
