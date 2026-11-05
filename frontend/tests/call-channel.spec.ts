@@ -86,9 +86,10 @@ async function visitor(browser:Browser,mobile=false){
 }
 
 async function admin(page:Page,name:string){
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key);
+ const credential=page.getByLabel('Credencial do proprietário',{exact:true});
+ if(await credential.isVisible())await credential.fill(key);
  await page.getByRole('button',{name,exact:true}).click();
- await expect(page.getByLabel('Credencial do proprietário',{exact:true})).toHaveValue('');
+ await expect(page.getByText('Proprietário autorizado nesta visita.',{exact:false})).toBeVisible();
 }
 async function makeRoom(page:Page,origin:string){
  await page.goto(origin+'/#/call');
@@ -421,7 +422,8 @@ test('V4 lobby hides inactive meeting controls and keeps a private call alive ac
   await expect(page.locator('call-page')).toBeHidden();
   await expect(page.getByRole('link',{name:'Voltar à chamada'})).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>(document.querySelector('call-page') as any).call.state)).toBe('connected');
-  await page.getByRole('button',{name:'Ativar microfone',exact:true}).last().click().catch(()=>{});
+  await page.getByRole('button',{name:'Ativar microfone',exact:true}).last().click();
+ await expect(page.getByRole('button',{name:'Mutar microfone',exact:true})).toBeVisible();
   await page.getByRole('link',{name:'Voltar à chamada'}).click();
   await expect(page.locator('.call-connection')).toHaveText('Conectado');
   await expect(page.locator('.call-layout')).toBeVisible();
