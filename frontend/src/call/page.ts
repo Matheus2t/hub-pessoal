@@ -53,7 +53,7 @@ export class CallPage extends LightElement {
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.channelParticipant=undefined;
-  this.fullscreen.close();this.voice.stop();this.release();this.call.leave();this.lastMedia='';
+  this.fullscreen.close();this.voice.stop(true);this.release();this.call.leave();this.lastMedia='';
  };
  private routeChanged=()=>{this.teardown();this.channel=undefined;this.lobby=undefined;this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;this.loadChannel();this.requestUpdate()};
  private async loadChannel(){
@@ -110,7 +110,7 @@ export class CallPage extends LightElement {
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
-   if(this.voice.active||this.voice.error)this.voice.stop();if(this.call.state==='closed')this.release();this.lastMedia='';
+   this.voice.stop(true);if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
    if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.call.screen);
@@ -140,6 +140,21 @@ export class CallPage extends LightElement {
   if(!this.voice.active||id===this.call.session?.participant)return person.microphone?'Microfone ligado':'Microfone desligado';
   const peer=this.voice.peers.get(id);
   return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
+ }
+ private listeningControls(id:string,name:string){
+  const mixer=this.voice.audioMix,{volume,muted}=mixer.level(id);
+  return html`<div class="call-listening" role="group" aria-label=${`Áudio recebido de ${name}`}>
+   <label><span>Volume <output>${volume}%</output></span>
+    <input type="range" min="0" max="200" step="1" .value=${String(volume)} aria-label=${`Volume de ${name}`} aria-valuetext=${`${volume}%`}
+     @input=${(event:Event)=>mixer.volume(id,(event.currentTarget as HTMLInputElement).valueAsNumber)}>
+   </label>
+   <div class="call-listening-actions">
+    <button type="button" @click=${()=>mixer.mute(id)}>${muted?'Ouvir novamente':'Silenciar'}</button>
+    <button type="button" aria-label=${`Restaurar volume de ${name} a 100%`} ?disabled=${volume===100} @click=${()=>mixer.volume(id,100)}>100%</button>
+   </div>
+   ${muted?html`<small class="call-listening-state">Silenciado para você</small>`:nothing}
+   ${volume>100&&!mixer.canAmplify(id)?html`<small>Ganho acima de 100% indisponível.</small>`:nothing}
+  </div>`;
  }
  private openRoom(event:SubmitEvent){
   event.preventDefault();const form=event.currentTarget as HTMLFormElement,data=new FormData(form);
@@ -291,7 +306,8 @@ export class CallPage extends LightElement {
      <div class=${`call-camera-frame call-viewer${mode==='expanded'?' is-expanded':''}`} data-camera=${p.id} ?hidden=${!this.viewerSource(p.id)} role=${mode?'dialog':nothing} aria-modal=${mode?'true':nothing} aria-label=${`Câmera de ${p.name}`}>
       ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
       ${this.viewerControls(p.id,p.name)}
-     </div></li>`})}
+     </div>
+     ${this.voice.active&&p.connected&&p.id!==self?this.listeningControls(p.id,p.name):nothing}</li>`})}
     ${channelSession?nothing:Array.from({length:5-this.call.people.length},(_,n)=>html`<li class="call-vacant"><span class="call-avatar" aria-hidden="true">${this.call.people.length+n+1}</span><div><strong>Vaga disponível</strong><small>Sem participante</small></div></li>`)}
    </ol></aside>
   </div>

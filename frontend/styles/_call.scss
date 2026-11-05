@@ -329,6 +329,20 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
   .call-vacant { opacity: .66; }
   .call-people li strong { font-size: 13px; font-weight: 600; }
   .call-people li small { font-size: 11px; }
+  .call-people .call-listening {
+    display:grid;
+    gap:3px;
+    margin-top:9px;
+    padding-top:8px;
+    border-top:1px solid var(--line-soft);
+    label { gap:2px; font-size:11px; color:var(--secondary); }
+    label span { display:flex; justify-content:space-between; gap:4px; }
+    output { color:var(--text); font-variant-numeric:tabular-nums; }
+    input[type=range] { min-height:28px; padding:0; border:0; background:transparent; accent-color:var(--text); cursor:pointer; }
+    .call-listening-actions { display:flex; flex-wrap:wrap; gap:5px; }
+    button { min-height:32px; max-width:100%; padding:4px 7px; font-size:11px; line-height:1.2; overflow-wrap:anywhere; }
+    .call-listening-state { color:var(--text); }
+  }
   .call-controls {
     display: inline-flex;
     align-items: center;

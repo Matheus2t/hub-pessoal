@@ -1,4 +1,5 @@
 import type {Participant,RemoteSignal,RtcConfig,Signal,MediaRole,MediaRoles,RoomScreen} from './protocol';
+import {CallAudioMix} from './audio-mix';
 
 type VoiceSignal = {type:'offer'|'answer';sdp:string;roles:MediaRoles}|{type:'ice';candidate:RTCIceCandidateInit|null};
 const roles:MediaRole[]=['microphone','screenAudio','screenVideo','camera'];
@@ -19,16 +20,18 @@ const ufrags=(sdp:string)=>new Set([...sdp.matchAll(/^a=ice-ufrag:(.+)$/gm)].map
 export class VoiceMesh {
  active=false;error='';
  readonly peers=new Map<string,Peer>();
+ readonly audioMix=new CallAudioMix(()=>this.changed());
  private self='';private epoch=0;private people:Participant[]=[];private rtc?:RtcConfig;private ready=false;
  private microphone?:MediaStreamTrack;private refresh?:number;private sampling?:number;private measuring=false;
  private sources:Partial<Record<MediaRole,MediaStreamTrack>>={};private screen:RoomScreen|null=null;
  constructor(private send:(message:Signal)=>boolean,private changed:()=>void,
   private audioRoot:()=>HTMLElement|null,private refreshConfig:()=>void,
   private videoRoot:(role:'screenVideo'|'camera',id:string)=>HTMLElement|null=()=>null){}
- get blocked(){return [...this.peers.values()].some(p=>p.blocked)}
+ get blocked(){return this.audioMix.blocked||[...this.peers.values()].some(p=>p.blocked)}
  start(){
   if(this.active)return;
   if(!window.RTCPeerConnection){this.error='WebRTC indisponível neste navegador.';this.changed();return}
+  this.audioMix.resumePreferences();
   this.active=true;this.error='';this.sampling=window.setInterval(()=>void this.measure(),5000);this.scheduleRefresh();this.changed();
  }
  sync(self:string,people:Participant[],rtc:RtcConfig|undefined,ready:boolean,screen:RoomScreen|null=null){
@@ -45,6 +48,7 @@ export class VoiceMesh {
   if(!this.active)return;
   const own=people.find(p=>p.id===self);
   if(!own?.voice)return; // Wait for server-authorized voice membership and epoch.
+  this.audioMix.retain(new Set(people.map(p=>p.id)));
   if(this.epoch!==own.voiceEpoch){this.clearPeers();this.epoch=own.voiceEpoch}
   const members=new Map(people.filter(p=>p.id!==self&&p.voice).map(p=>[p.id,p]));
   for(const peer of this.peers.values())if(!members.has(peer.id)||members.get(peer.id)!.voiceEpoch!==peer.epoch)this.closePeer(peer);
@@ -174,6 +178,7 @@ export class VoiceMesh {
  mountMedia(){
   for(const peer of this.peers.values())for(const role of roles){const element=peer.elements[role],stream=peer.streams[role];
    const allowed=this.allowed(peer,role)&&!!stream;
+   if(kind(role)==='audio')this.audioMix.mount(peer.id,element as HTMLAudioElement,allowed?stream:undefined);
    if(!allowed){if(element.srcObject){element.pause();element.srcObject=null}peer.blockedElements.delete(element);peer.blocked=peer.blockedElements.size>0;if(kind(role)==='video')element.remove();continue}
    if(element.srcObject!==stream){element.srcObject=stream!;this.playElement(peer,element)}
    if(role==='screenVideo'||role==='camera'){const root=this.videoRoot(role,peer.id);if(root&&element.parentElement!==root)root.append(element)}
@@ -195,7 +200,7 @@ export class VoiceMesh {
   if(!this.current(peer))return;
   for(const element of Object.values(peer.elements))if(element.srcObject)this.playElement(peer,element);
  }
- unlockAudio(){for(const peer of this.peers.values())this.play(peer)}
+ unlockAudio(){this.audioMix.unlock();for(const peer of this.peers.values())this.play(peer)}
  private scheduleRecovery(peer:Peer,delay:number){
   if(peer.timer!==undefined||peer.failed)return;
   peer.timer=window.setTimeout(()=>{peer.timer=undefined;if(peer.pc.connectionState!=='connected'||peer.resignal)this.recover(peer)},delay);
@@ -262,10 +267,11 @@ export class VoiceMesh {
  }
  private closePeer(peer:Peer){
   this.peers.delete(peer.id);window.clearTimeout(peer.timer);
+  this.audioMix.detach(peer.id);
   peer.pc.onnegotiationneeded=peer.pc.onicecandidate=peer.pc.ontrack=peer.pc.onconnectionstatechange=peer.pc.oniceconnectionstatechange=null;
   peer.pc.close();for(const stream of Object.values(peer.streams))stream.getTracks().forEach(t=>{t.onunmute=null;t.stop()});
   for(const element of Object.values(peer.elements)){element.pause();element.srcObject=null;element.remove()}peer.streams={};peer.candidates=[];
  }
  private clearPeers(){for(const peer of [...this.peers.values()])this.closePeer(peer)}
- stop(){this.active=false;this.clearPeers();this.microphone=undefined;this.sources={};this.screen=null;this.epoch=0;this.error='';window.clearInterval(this.sampling);window.clearTimeout(this.refresh);this.changed()}
+ stop(forgetListening=false){this.active=false;this.clearPeers();this.audioMix.stop(forgetListening);this.microphone=undefined;this.sources={};this.screen=null;this.epoch=0;this.error='';window.clearInterval(this.sampling);window.clearTimeout(this.refresh);this.changed()}
 }
