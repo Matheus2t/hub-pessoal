@@ -11,6 +11,7 @@ const key='test-only-owner-credential-not-for-production';
 const password='test-only-channel-passphrase';
 test.skip(!python||!tls,'Provide local Python and a loopback-only TLS test certificate.');
 test.setTimeout(120000);
+test.use({actionTimeout:9000,navigationTimeout:20000});
 
 async function server(db:string){
  const socket=createServer();socket.listen(0,'127.0.0.1');await once(socket,'listening');
