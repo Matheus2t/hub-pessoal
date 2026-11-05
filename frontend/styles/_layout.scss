@@ -68,3 +68,29 @@
 }
 
 @media(max-width:600px) { .masthead { position:relative; } .teams-menu { position:static; } .teams-menu team-shortcuts { left:16px; right:16px; top:100%; min-width:0; transform:none; } }
+
+/* Compact navigation: the landing cards own the other areas; club crests stay visible. */
+.nav-team-icons { display:flex; gap:6px; align-items:center; padding-left:14px; border-left:1px solid var(--line-soft); }
+.nav-team-icon { width:40px; height:44px; flex:0 0 auto; display:grid; place-items:center; border-radius:8px; }
+.nav-team-icon:hover, .nav-team-icon:focus-visible { background:var(--hover); }
+.nav-team-icon[aria-current="page"] { background:var(--raised); }
+.nav-team-icon .team-crest-frame { display:grid; place-items:center; width:32px; height:32px; }
+.nav-team-icon img { width:28px; height:28px; object-fit:contain; }
+@media(max-width:1000px) {
+  .masthead app-sidebar nav { justify-content:flex-start; flex-wrap:nowrap; gap:0 18px; }
+}
+@media(max-width:600px) {
+  .masthead { padding-block:6px 8px; }
+  .masthead app-sidebar nav { gap:0 13px; }
+  .nav-item { min-height:38px; }
+  .nav-team-icons { gap:3px; padding-left:8px; }
+  .nav-team-icon { width:35px; height:38px; }
+  .nav-team-icon .team-crest-frame { width:30px; height:30px; }
+  .nav-team-icon img { width:26px; height:26px; }
+  .main-content:has(home-page) { min-height:0; padding-top:16px; }
+  .main-content:has(home-page) .page-footer { margin-top:14px; padding-top:12px; }
+}
+@media(max-width:360px) {
+  .masthead app-sidebar nav { gap:0 10px; }
+  .nav-team-icon { width:32px; }
+}
