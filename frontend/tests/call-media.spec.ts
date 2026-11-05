@@ -45,8 +45,8 @@ async function tab(browser:Browser,mobile=false){
  return {context,page};
 }
 async function owner(page:Page){
- await page.goto(`${origin}/#/call`);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');await page.getByText('Sou o proprietário',{exact:true}).click();
- await page.getByLabel('Credencial do proprietário',{exact:true}).fill(key!);await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
+ await page.goto(`${origin}/#/call`);await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
+ await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
  await expect(page.locator('.call-connection')).toHaveText('Conectado');await page.getByRole('button',{name:'Copiar convite',exact:true}).click();return page.evaluate(()=>navigator.clipboard.readText());
 }
 async function guest(page:Page,host:Page,invite:string,name:string){
