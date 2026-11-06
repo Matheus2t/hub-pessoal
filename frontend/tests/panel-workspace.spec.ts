@@ -67,7 +67,12 @@ for(const route of ['calculadora','juros-simples','price','sac','renda-fixa']){
  });
 }
 
-test('actions workspace still provides customization',async({page})=>{
+test('actions workspace uses fixed layout without a panel customizer',async({page})=>{
  await page.goto('/#/acoes');
- await expect(page.locator('market-page panel-workspace').getByRole('button',{name:'Personalizar painel'})).toBeVisible();
+ const w=page.locator('market-page panel-workspace');
+ await expect(w).toHaveAttribute('fixed-layout','');
+ await expect(w.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+ await expect(w.getByRole('group',{name:'Modo de visualização'})).toHaveCount(0);
+ await expect(w.locator('[data-panel=panorama]')).toHaveAttribute('style',/span 12/);
+ await expect(w.locator('[data-panel=directory]')).toHaveAttribute('style',/span 12/);
 });
