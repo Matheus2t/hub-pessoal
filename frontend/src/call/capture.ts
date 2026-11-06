@@ -8,6 +8,13 @@ type CameraChoice={deviceId:string}|{facingMode:Facing};
 const stop=(stream?:MediaStream)=>stream?.getTracks().forEach(t=>{t.onended=null;t.stop()});
 const liveAudio=(stream?:MediaStream)=>!!stream?.getAudioTracks().some(t=>t.readyState==='live');
 const screenLimitMessage='Já existem duas transmissões ativas ou em preparação.';
+export const callCaptureHandle='2t-call-tab';
+
+/** A captured 2T Call tab must never retransmit the call audio back to its peers. */
+function isCallTabCapture(track:MediaStreamTrack){
+ const handle=(track as MediaStreamTrack&{getCaptureHandle?:()=>{origin:string;handle:string}|null}).getCaptureHandle?.();
+ return handle?.origin===location.origin&&handle.handle===callCaptureHandle;
+}
 
 /** Captures belong to this page only. No media is sent until the room grants it. */
 export class CallCapture {
@@ -67,7 +74,7 @@ export class CallCapture {
   const request=++this.screenRequest;this.screenBusy=true;
   // Invoke the native picker in the click's activation, before any network await.
   let capture:Promise<MediaStream>;
-  try{capture=navigator.mediaDevices.getDisplayMedia(screenCaptureConstraints(this.quality))}
+  try{capture=navigator.mediaDevices.getDisplayMedia({...screenCaptureConstraints(this.quality),selfBrowserSurface:'exclude'} as DisplayMediaStreamOptions)}
   catch(error){this.screenBusy=false;this.error=this.failure(error);this.changed();return}
   if(state.remote){
    const nonce=crypto.randomUUID().replaceAll('-','');
@@ -80,6 +87,12 @@ export class CallCapture {
    if(request!==this.screenRequest){stop(stream);return}
    const video=stream.getVideoTracks().find(t=>t.readyState==='live');
    if(!video){stop(stream);throw new DOMException('No video','NotFoundError')}
+   // The browser may still allow capturing another 2T Call tab. Keep its video,
+   // but never rebroadcast the voices played by that tab into the same call.
+   if(isCallTabCapture(video)){
+    for(const audio of stream.getAudioTracks()){stream.removeTrack(audio);audio.stop()}
+    this.error='Áudio da guia 2T Call desativado para evitar eco. O microfone continua funcionando.';
+   }
    this.screen=stream;
    try{video.contentHint=this.content==='game'?'motion':'detail'}catch{/* Optional hint. */}
    video.onended=()=>{if(this.screen===stream)this.stopScreen()};
