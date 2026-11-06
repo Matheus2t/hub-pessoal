@@ -160,5 +160,10 @@ class IceSignal(EpochSignal):
     candidate: Ice | None
 
 
+class WatchSignal(EpochSignal):
+    type: Literal["watch"]
+    enabled: bool
+
+
 Handshake = TypeAdapter(Annotated[Create | Join | Resume | ChannelInfo | ChannelJoin | ChannelAdmin, Field(discriminator="type")])
-Action = TypeAdapter(Annotated[Simple | MediaState | ScreenControl | Admission | SdpSignal | IceSignal, Field(discriminator="type")])
+Action = TypeAdapter(Annotated[Simple | MediaState | ScreenControl | Admission | SdpSignal | IceSignal | WatchSignal, Field(discriminator="type")])
