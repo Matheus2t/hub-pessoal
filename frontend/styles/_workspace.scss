@@ -381,3 +381,19 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
 @media(prefers-reduced-motion:reduce) {
  .fixed-workspace .rf-refined .rf-chevron { transition:none; }
 }
+
+
+/* Accordions stay genuinely closed even if child components declare display:grid. */
+.fixed-workspace .rf-refined .rf-tool-drawer:not([open]) > fixed-income-tools,
+.fixed-workspace .rf-refined .rf-comparison-section:not([open]) > fixed-income-comparison,
+.fixed-workspace .rf-refined .rf-assumptions:not([open]) > .rf-assumptions-content {
+ display:none !important;
+}
+.fixed-workspace .rf-refined .rf-results,
+.fixed-workspace .rf-refined .rf-chart-panel,
+.fixed-workspace .rf-refined .rf-chart,
+.fixed-workspace .rf-refined .rf-utility-panel { min-width:0; max-width:100%; }
+.fixed-workspace .rf-refined .rf-breakdown dl dd { white-space:normal; overflow-wrap:anywhere; text-align:right; }
+.fixed-workspace .rf-refined .rf-pagination { flex-wrap:wrap; }
+.fixed-workspace .rf-refined .rf-chart-panel .rf-chart svg { overflow:hidden; }
+.fixed-workspace .rf-refined .rf-comparison-section > fixed-income-comparison { max-width:100%; overflow-x:clip; }
