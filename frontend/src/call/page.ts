@@ -6,6 +6,7 @@ import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protoco
 import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
+import {CallPreferences} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture} from './capture';
@@ -43,7 +44,9 @@ export class CallPage extends LightElement {
  private pictureInPicture=new ScreenPictureInPicture(()=>this.requestUpdate());
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
   (role,id)=>role==='screenVideo'?this.querySelector('.call-remote-screen'):this.querySelector(`[data-camera="${id}"]`));
- private output=new CallAudioOutput(this.voice,()=>this.requestUpdate());
+ private preferences=new CallPreferences();
+ private restoredPeople=new Set<string>();
+ private output=new CallAudioOutput(this.voice,()=>this.requestUpdate(),id=>this.preferences.selectOutput(id));
  private onDevicesChanged=()=>{void this.output.refresh()};
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
@@ -97,7 +100,7 @@ export class CallPage extends LightElement {
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
-  this.stopSpeakers();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
+  this.stopSpeakers();this.restoredPeople.clear();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
   this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.output.reset();this.release();this.call.leave();this.lastMedia='';
  };
  private routeChanged=()=>{
@@ -140,7 +143,7 @@ export class CallPage extends LightElement {
   if(!room||!name){this.channelError='Informe seu nome.';return}
   const password=form.elements.namedItem('password') as HTMLInputElement|null;
   const secret=password?.value;if(password)password.value='';
-  this.channelError='';this.call.start({type:'channel_join',room,name,device:channelDevice(),password:secret||undefined});
+  this.channelError='';this.preferences.rememberName(name);this.call.start({type:'channel_join',room,name,device:channelDevice(),password:secret||undefined});
  }
  private leaveChannel(){
   const session=this.call.session;
@@ -176,13 +179,14 @@ export class CallPage extends LightElement {
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
-   this.voice.stop(true);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;if(this.call.state==='closed')this.release();this.lastMedia='';
+   this.voice.stop(true);this.restoredPeople.clear();this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
    const viewed=this.viewedScreen;
    if(viewed)this.screenOwner=viewed.owner;
    if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.watchedScreen);
    if(session?.mode==='channel'&&this.call.state==='connected'&&this.call.rtc&&!this.voice.active)this.enterVoice();
+   if(this.voice.active)this.restoreListening();
    this.publishMedia();
   }
   this.updateSpeakers();
@@ -200,9 +204,12 @@ export class CallPage extends LightElement {
   if(this.call.state!=='connected'||!this.call.rtc)return;
   this.capture.release();
   this.voice.setMicrophone(this.microphone);this.voice.start();
-  this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true,this.watchedScreen);this.publishMedia();
+  this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true,this.watchedScreen);
+  this.restoreListening();
+  if(this.preferences.output&&this.output.supported)void this.output.choose(this.preferences.output);
+  this.publishMedia();
  }
- private leaveVoice(){this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
+ private leaveVoice(){this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
@@ -210,11 +217,35 @@ export class CallPage extends LightElement {
   const peer=this.voice.peers.get(id);
   return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
  }
+ private rememberListening(id:string){
+  const person=this.call.people.find(person=>person.id===id);
+  if(!person)return;
+  const normalized=person.name.trim().toLocaleLowerCase('pt-BR');
+  if(this.call.people.filter(other=>other.name.trim().toLocaleLowerCase('pt-BR')===normalized).length!==1)return;
+  const {microphone,screenAudio,muted}=this.voice.audioMix.level(id);
+  this.preferences.rememberListening(person.name,{microphone,screenAudio,muted});
+ }
+ private restoreListening(){
+  const others=this.call.people.filter(person=>person.id!==this.call.session?.participant);
+  for(const id of this.restoredPeople)if(!others.some(person=>person.id===id))this.restoredPeople.delete(id);
+  for(const person of others){
+   if(this.restoredPeople.has(person.id))continue;
+   this.restoredPeople.add(person.id);
+   const normalized=person.name.trim().toLocaleLowerCase('pt-BR');
+   if(others.filter(other=>other.name.trim().toLocaleLowerCase('pt-BR')===normalized).length!==1)continue;
+   const saved=this.preferences.listening(person.name);
+   if(!saved)continue;
+   const mixer=this.voice.audioMix;
+   mixer.volume(person.id,'microphone',saved.microphone);
+   mixer.volume(person.id,'screenAudio',saved.screenAudio);
+   if(saved.muted)mixer.mute(person.id);
+  }
+ }
  private listeningSlider(id:string,source:ListeningSource,label:string){
   const mixer=this.voice.audioMix,volume=mixer.level(id)[source];
   return html`<label><span>${label} <output>${volume}%</output></span>
     <input type="range" min="0" max="200" step="1" .value=${String(volume)} aria-label=${label} aria-valuetext=${`${volume}%`}
-     @input=${(event:Event)=>mixer.volume(id,source,(event.currentTarget as HTMLInputElement).valueAsNumber)}>
+     @input=${(event:Event)=>{mixer.volume(id,source,(event.currentTarget as HTMLInputElement).valueAsNumber);this.rememberListening(id)}}>
    </label>
    ${volume>100&&!mixer.canAmplify(id,source)?html`<small>Ganho acima de 100% indisponível.</small>`:nothing}`;
  }
@@ -225,9 +256,9 @@ export class CallPage extends LightElement {
    ${this.listeningSlider(id,'microphone','Volume da voz')}
    ${sharingAudio?this.listeningSlider(id,'screenAudio','Volume da transmissão'):nothing}
    <div class="call-listening-actions">
-    <button type="button" @click=${()=>mixer.mute(id)}>${muted?'Ouvir novamente':'Silenciar'}</button>
+    <button type="button" @click=${()=>{mixer.mute(id);this.rememberListening(id)}}>${muted?'Ouvir novamente':'Silenciar'}</button>
     <button type="button" aria-label=${`Restaurar volumes de ${name} a 100%`} ?disabled=${atDefault}
-     @click=${()=>{mixer.volume(id,'microphone',100);if(sharingAudio)mixer.volume(id,'screenAudio',100)}}>100%</button>
+     @click=${()=>{mixer.volume(id,'microphone',100);if(sharingAudio)mixer.volume(id,'screenAudio',100);this.rememberListening(id)}}>100%</button>
    </div>
    ${muted?html`<small class="call-listening-state">Silenciado para você</small>`:nothing}
   </div>`;
@@ -236,6 +267,7 @@ export class CallPage extends LightElement {
   event.preventDefault();const form=event.currentTarget as HTMLFormElement,data=new FormData(form);
   const name=String(data.get('name')??'').trim();this.roomError='';this.copied=false;
   if(!name){this.roomError='Informe seu nome.';return}
+  this.preferences.rememberName(name);
   if((event.submitter as HTMLButtonElement)?.value==='create'){
    this.call.start({type:'create',name});
   }else{
@@ -361,7 +393,7 @@ export class CallPage extends LightElement {
     <button type="button" aria-pressed=${entryMode==='join'} @click=${()=>this.privateMode='join'}>Usar convite</button>
    </div>
    <form class="call-entry" @submit=${this.openRoom}>
-    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" placeholder="Seu nome ou apelido" required></label>
+    <label>Seu nome<input name="name" autocomplete="nickname" maxlength="40" value=${this.preferences.nickname} placeholder="Seu nome ou apelido" required></label>
     ${entryMode==='join'?html`<label class="call-invite">Link recebido<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o convite aqui" required></label>`:nothing}
     <button class="call-primary-action" type="submit" value=${entryMode} ?disabled=${this.call.state==='connecting'}>${entryMode==='create'?'Criar sala privada':'Entrar por convite'}</button>
    </form>
@@ -377,7 +409,7 @@ export class CallPage extends LightElement {
    ${this.channel&&!channelSession?html`<section class="call-channel-panel" aria-label="Entrada no canal">
     <h2>${this.channel.online}/5 participantes</h2>
     ${!this.channel.online?html`<p>Ninguém conectado. Entre quando quiser.</p>`:nothing}
-    <form @submit=${this.joinChannel}><label>Seu nome ou apelido<input name="name" autocomplete="nickname" maxlength="40" required></label>
+    <form @submit=${this.joinChannel}><label>Seu nome ou apelido<input name="name" autocomplete="nickname" maxlength="40" value=${this.preferences.nickname} required></label>
      ${this.channel.requiresPassword?html`<label>Senha da sala<input name="password" type="password" autocomplete="current-password" maxlength="128" required></label>`:nothing}
      <button type="submit" ?disabled=${channelBusy}>Entrar no canal</button></form>
     ${channelBusy?html`<button type="button" @click=${this.leaveChannel}>Cancelar entrada</button>`:nothing}
@@ -433,7 +465,7 @@ export class CallPage extends LightElement {
   <div class="call-remote-audio" aria-hidden="true"></div>
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
-  <div class="call-layout" ?data-channel=${!!channelSession} ?hidden=${!this.call.session}>
+  <div class=${`call-layout${this.preferences.layout==='compact'?' is-compact':''}`} ?data-channel=${!!channelSession} ?hidden=${!this.call.session}>
    <section class="call-stage" aria-label="Tela compartilhada">
     ${screens.length>1?html`<div class="call-screen-options" role="group" aria-label="Transmissões disponíveis">
      ${repeat(screens,source=>source.owner,source=>html`<button type="button" aria-pressed=${source.owner===shared?.owner}
@@ -468,6 +500,9 @@ export class CallPage extends LightElement {
    </ol></aside>
   </div>
   <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${!this.call.session}>
+   <button type="button" aria-pressed=${this.preferences.layout==='compact'} @click=${()=>{
+    this.preferences.setLayout(this.preferences.layout==='compact'?'regular':'compact');this.requestUpdate();
+   }}>Visão compacta</button>
    <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.deafened||this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
    ${this.voice.active?this.deafenControl():nothing}
    <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
