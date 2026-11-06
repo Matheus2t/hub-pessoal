@@ -26,7 +26,7 @@ export class FixedIncomePage extends LightElement {
     const {projection:r,error}=this.result(),p=r?.final;
     return html`<article class="rf-page"><header class="ws-page-heading"><h1>Renda Fixa</h1></header>
       <p class="rf-note">Taxas manuais e constantes. Simulação para pessoa física residente no Brasil. Cálculos no seu navegador.</p>
-      <panel-workspace class="rf-results" area="fixed-income-simulator" .panels=${[
+      <panel-workspace fixed-layout class="rf-results" area="fixed-income-simulator" .panels=${[
         {id:'form',title:'Configuração do investimento',required:true,essential:true,size:'small',resizable:false,role:'form'},
         {id:'empty',title:'Resultado',required:true,available:!r,size:'medium',resizable:false},
         {id:'summary',title:'Resultado líquido',essential:true,available:!!r,size:'medium'},

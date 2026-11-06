@@ -163,7 +163,7 @@ export class CompoundCalculator extends LightElement {
   }
   render() {
     return html`<div class="ws-page-heading"><div><h1>Calculadora de juros compostos</h1></div></div>
-      <panel-workspace area="calculator-compound" .panels=${[
+      <panel-workspace fixed-layout area="calculator-compound" .panels=${[
         {id:'form',title:'Simulação',required:true,essential:true,size:'small',resizable:false,role:'form'},
         {id:'empty',title:'Resultados',required:true,available:!this.result,size:'medium',resizable:false},
         {id:'summary',title:'Resumo financeiro',essential:true,available:!!this.result,size:'medium'},

@@ -56,7 +56,7 @@ export class FinanceCalculator extends LightElement {
     const loan = result && 'schedule' in result ? result : undefined;
     const investment = result && 'evolution' in result ? result : undefined;
     return html`<div class="ws-page-heading"><h1>${title}</h1></div>
-      <panel-workspace .area=${`calculator-${this.kind}`} .panels=${[
+      <panel-workspace fixed-layout .area=${`calculator-${this.kind}`} .panels=${[
         {id:'form',title:'Simulação',required:true,essential:true,size:'small',resizable:false,role:'form'},
         {id:'empty',title:'Resultados',required:true,available:!result,size:'medium',resizable:false},
         {id:'summary',title:'Resumo financeiro',essential:true,available:!!result,size:'medium'},
