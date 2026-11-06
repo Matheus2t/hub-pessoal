@@ -1,0 +1,345 @@
+{
+  "source": "CVM DFP 2025, snapshots existentes no projeto 2T",
+  "period": "2025-12-31",
+  "snapshot_manifest_processed_at": "2026-11-02T20:30:18.301420+00:00",
+  "coverage": "56 empresas identificadas no manifest; valores anuais do documento selecionado, 9 sem cobertura",
+  "caveat": "Lucro é do emissor e pode incluir participações não controladoras quando consolidado. ROE = lucro anual / patrimônio líquido médio do documento. Não são indicadores de mercado (preço, DY ou P/L).",
+  "companies": {
+    "ITUB4": {
+      "profit": 45849000000,
+      "roe": 21.01430011916766,
+      "scope": "con",
+      "document": 154741
+    },
+    "PETR4": {
+      "profit": 110605000000,
+      "roe": 28.175992642984788,
+      "scope": "con",
+      "document": 155122
+    },
+    "VALE3": {
+      "profit": 11811000000,
+      "roe": 5.866691833521257,
+      "scope": "con",
+      "document": 155313
+    },
+    "WEGE3": {
+      "profit": 6775958000,
+      "roe": 32.51530084481523,
+      "scope": "con",
+      "document": 154872
+    },
+    "TOTS3": {
+      "profit": 920742000,
+      "roe": 17.654668801671395,
+      "scope": "con",
+      "document": 154722
+    },
+    "ABEV3": {
+      "profit": 15988433000,
+      "roe": 16.9768872173198,
+      "scope": "con",
+      "document": 154733
+    },
+    "B3SA3": {
+      "profit": 4586872000,
+      "roe": 25.591005104870117,
+      "scope": "con",
+      "document": 154935
+    },
+    "RENT3": {
+      "profit": 1870470000,
+      "roe": 7.210515702580905,
+      "scope": "con",
+      "document": 154953
+    },
+    "LREN3": {
+      "profit": 1457566000,
+      "roe": 13.73168845674681,
+      "scope": "con",
+      "document": 155117
+    },
+    "SUZB3": {
+      "profit": 13437687000,
+      "roe": 35.19204730248167,
+      "scope": "con",
+      "document": 154674
+    },
+    "EGIE3": {
+      "profit": 2857919000,
+      "roe": 21.820430556477596,
+      "scope": "con",
+      "document": 155137
+    },
+    "CPFE3": {
+      "profit": 5742553000,
+      "roe": 25.353693452679362,
+      "scope": "con",
+      "document": 155108
+    },
+    "VIVT3": {
+      "profit": 6177543000,
+      "roe": 8.901216357337683,
+      "scope": "con",
+      "document": 154821
+    },
+    "VBBR3": {
+      "profit": 1979000000,
+      "roe": 9.62408208918932,
+      "scope": "con",
+      "document": 155274
+    },
+    "PRIO3": {
+      "profit": 2251479000,
+      "roe": 8.709097250423579,
+      "scope": "con",
+      "document": 155241
+    },
+    "CPLE3": {
+      "profit": 2687939000,
+      "roe": 11.032214077913045,
+      "scope": "con",
+      "document": 154946
+    },
+    "EQTL3": {
+      "profit": 2503931000,
+      "roe": 8.602278020884906,
+      "scope": "con",
+      "document": 156081
+    },
+    "CMIG3": {
+      "profit": 4899617000,
+      "roe": 17.5096438327947,
+      "scope": "con",
+      "document": 155515
+    },
+    "GGBR3": {
+      "profit": 1418438000,
+      "roe": 2.533552167266406,
+      "scope": "con",
+      "document": 154830
+    },
+    "MGLU3": {
+      "profit": 204603000,
+      "roe": 1.8108630007524795,
+      "scope": "con",
+      "document": 155314
+    },
+    "ASAI3": {
+      "profit": 497000000,
+      "roe": 9.196040336756406,
+      "scope": "ind",
+      "document": 154718
+    },
+    "FLRY3": {
+      "profit": 596671000,
+      "roe": 11.39653058384798,
+      "scope": "con",
+      "document": 155089
+    },
+    "HYPE3": {
+      "profit": 1190132000,
+      "roe": 9.665578435123935,
+      "scope": "con",
+      "document": 155321
+    },
+    "DXCO3": {
+      "profit": 63065000,
+      "roe": 0.8757120671498207,
+      "scope": "con",
+      "document": 155065
+    },
+    "CYRE3": {
+      "profit": 2395829000,
+      "roe": 22.374136267281308,
+      "scope": "con",
+      "document": 155491
+    },
+    "TIMS3": {
+      "profit": 4311984000,
+      "roe": 17.11715171761549,
+      "scope": "ind",
+      "document": 154688
+    },
+    "RDOR3": {
+      "profit": 4843623000,
+      "roe": 20.046882480593332,
+      "scope": "con",
+      "document": 154910
+    },
+    "DASA3": {
+      "profit": -1135024000,
+      "roe": -15.308524651564777,
+      "scope": "con",
+      "document": 155752
+    },
+    "EMBJ3": {
+      "profit": 1992037000,
+      "roe": 9.557375549281005,
+      "scope": "con",
+      "document": 155126
+    },
+    "BMOB3": {
+      "profit": 161262000,
+      "roe": 15.047336096549587,
+      "scope": "con",
+      "document": 155508
+    },
+    "ALLD3": {
+      "profit": 332712000,
+      "roe": 21.186759612500694,
+      "scope": "con",
+      "document": 155691
+    },
+    "CURY3": {
+      "profit": 1081220000,
+      "roe": 72.77039621509405,
+      "scope": "con",
+      "document": 155237
+    },
+    "DIRR3": {
+      "profit": 979692000,
+      "roe": 43.121176469034765,
+      "scope": "con",
+      "document": 155189
+    },
+    "RAIL3": {
+      "profit": 865125000,
+      "roe": 5.969756751690516,
+      "scope": "con",
+      "document": 155068
+    },
+    "MOTV3": {
+      "profit": 3503497000,
+      "roe": 23.137211043409863,
+      "scope": "con",
+      "document": 154655
+    },
+    "SBSP3": {
+      "profit": 8462059000,
+      "roe": 21.33403928627623,
+      "scope": "con",
+      "document": 155830
+    },
+    "CSMG3": {
+      "profit": 1415744000,
+      "roe": 17.02993745177888,
+      "scope": "con",
+      "document": 154917
+    },
+    "SAPR3": {
+      "profit": 2079568000,
+      "roe": 17.94549717800212,
+      "scope": "ind",
+      "document": 154938
+    },
+    "RAPT4": {
+      "profit": -59791000,
+      "roe": -1.2919968948511684,
+      "scope": "con",
+      "document": 155317
+    },
+    "POMO4": {
+      "profit": 1235508000,
+      "roe": 30.97339952481021,
+      "scope": "con",
+      "document": 154922
+    },
+    "FRAS3": {
+      "profit": 283166000,
+      "roe": 11.965689168272073,
+      "scope": "con",
+      "document": 155265
+    },
+    "LEVE3": {
+      "profit": 608756000,
+      "roe": 74.49344953585073,
+      "scope": "con",
+      "document": 155377
+    },
+    "ROMI3": {
+      "profit": 86170000,
+      "roe": 6.955105387966869,
+      "scope": "con",
+      "document": 154585
+    },
+    "KEPL3": {
+      "profit": 156270000,
+      "roe": 20.629539568003423,
+      "scope": "con",
+      "document": 154901
+    },
+    "VULC3": {
+      "profit": 1165314000,
+      "roe": 51.36161971613713,
+      "scope": "con",
+      "document": 155033
+    },
+    "GRND3": {
+      "profit": 644808000,
+      "roe": 17.92401955606357,
+      "scope": "con",
+      "document": 155103
+    },
+    "MDIA3": {
+      "profit": 659817000,
+      "roe": 8.127774487785095,
+      "scope": "con",
+      "document": 154936
+    },
+    "SLCE3": {
+      "profit": 565213000,
+      "roe": 11.582260900819746,
+      "scope": "con",
+      "document": 155268
+    },
+    "TEND3": {
+      "profit": 484431000,
+      "roe": 44.82942265452969,
+      "scope": "con",
+      "document": 155118
+    },
+    "MRVE3": {
+      "profit": -1042704000,
+      "roe": -15.305050338993748,
+      "scope": "con",
+      "document": 155167
+    },
+    "EZTC3": {
+      "profit": 547595000,
+      "roe": 10.948590241170095,
+      "scope": "con",
+      "document": 155329
+    },
+    "BPAC3": {
+      "profit": 16663803000,
+      "roe": 22.80651436970413,
+      "scope": "con",
+      "document": 155648
+    },
+    "CMIN3": {
+      "profit": 1649159000,
+      "roe": 19.45919279156565,
+      "scope": "con",
+      "document": 155318
+    },
+    "CSNA3": {
+      "profit": -1506726000,
+      "roe": -9.659903782171423,
+      "scope": "con",
+      "document": 155288
+    },
+    "CEAB3": {
+      "profit": 587087000,
+      "roe": 16.736749138769568,
+      "scope": "con",
+      "document": 154859
+    },
+    "KLBN3": {
+      "profit": 1678211000,
+      "roe": 14.568878147741884,
+      "scope": "con",
+      "document": 154693
+    }
+  }
+}

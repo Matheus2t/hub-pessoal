@@ -18,6 +18,7 @@ for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart wit
  await page.setViewportSize({width,height:1080});
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  await page.goto('/#/acoes');await expect(page.locator('.stock-item')).toHaveCount(65);
+  await page.locator('.market-directory-details > summary').click();
  await expect(page.locator('tv-advanced-chart')).toBeVisible();await page.evaluate(()=>document.fonts.ready);
  if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
  for(const theme of ['dark','light']){
@@ -57,14 +58,22 @@ for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart wit
  }
 });
 
-test('scroll protection is released on route change and preserves panel preferences',async({page})=>{
+test('scroll protection resets on route change with fixed market panels',async({page})=>{
  await isolatedProvider(page);await page.goto('/#/acoes');
- const w=page.locator('market-page panel-workspace');await w.getByRole('button',{name:'Personalizar painel',exact:true}).click();
- await w.getByRole('checkbox',{name:'Panorama do mercado',exact:true}).uncheck();await w.getByRole('button',{name:'Concluir',exact:true}).click();
- await page.evaluate(()=>scrollTo(0,1500));await expect(page.locator('market-page')).toHaveClass(/is-page-scrolling/);
- await page.evaluate(()=>location.hash='#/');await expect(page.locator('market-page')).toHaveCount(0);
- await page.evaluate(()=>scrollTo(0,0));expect(await page.locator('.is-page-scrolling').count()).toBe(0);
- await page.goto('/#/acoes');await expect(page.locator('market-page [slot=panorama]')).toBeHidden();await expect(page.locator('.stock-item')).toHaveCount(65);
+ const w=page.locator('market-page panel-workspace');
+ await expect(w).toHaveAttribute('fixed-layout','');
+ await expect(w.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+ await page.locator('.market-directory-details > summary').click();
+ await page.evaluate(()=>scrollTo(0,1500));
+ await expect(page.locator('market-page')).toHaveClass(/is-page-scrolling/);
+ await page.evaluate(()=>location.hash='#/');
+ await expect(page.locator('market-page')).toHaveCount(0);
+ await page.evaluate(()=>scrollTo(0,0));
+ expect(await page.locator('.is-page-scrolling').count()).toBe(0);
+ await page.goto('/#/acoes');
+ await expect(page.locator('market-page [slot=panorama]')).toBeVisible();
+ await expect(page.locator('.market-directory-details')).not.toHaveAttribute('open','');
+ await expect(page.locator('.stock-item')).toHaveCount(65);
 });
 
 test('downward page gesture reaches the catalog across loaded widgets',async({page})=>{
@@ -72,11 +81,15 @@ test('downward page gesture reaches the catalog across loaded widgets',async({pa
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  for(const width of [1366,390]){
   await page.setViewportSize({width,height:1080});await page.goto('/#/acoes');
-  await expect(page.locator('.stock-item')).toHaveCount(65);await page.evaluate(()=>document.fonts.ready);
+  await expect(page.locator('.stock-item')).toHaveCount(65);await page.locator('.market-directory-details > summary').click();await page.evaluate(()=>document.fonts.ready);
   if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
   await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(350);
+  await expect(page.locator('.stock-item').first()).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight-innerHeight)).toBeGreaterThan(2500);
   const before=await page.locator('[slot=directory]').evaluate(e=>e.getBoundingClientRect().y+scrollY);
-  await page.mouse.move(width*.36,180);
+  const links=await page.locator('market-page .ws-analysis-links').boundingBox();
+  expect(links).not.toBeNull();
+  await page.mouse.move(links!.x+10,links!.y+10);
   let previous=0;
   for(let i=0;i<25;i++){
    await page.mouse.wheel(0,120);await page.waitForTimeout(50);
@@ -95,6 +108,7 @@ test('ticker widget intrinsic height changes cannot jolt the stock directory',as
  await page.setViewportSize({width:1366,height:900});
  await page.goto('/#/acoes');
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
+ await page.locator('.market-directory-details > summary').click();
  const ticker=page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers');
  await expect(ticker).toBeVisible({timeout:30000});
  if(process.env.MARKET_SCROLL_LIVE==='1'){
@@ -131,6 +145,7 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
  const quotes=page.locator('market-page panel-workspace[area="actions-overview"] [slot="quotes"]');
  await expect(quotes).toBeVisible();
  await expect(quotes).toHaveCSS('overflow-y','clip');
+ await page.locator('.market-directory-details > summary').click();
  await page.locator('market-page .stock-item').first().waitFor();
  await quotes.scrollIntoViewIfNeeded();
  await page.waitForTimeout(180);
@@ -174,6 +189,9 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
  await isolatedProvider(page);
  await page.setViewportSize({width:390,height:900});
  await page.goto('/#/acoes');
+ await page.locator('.market-directory-details > summary').click();
+ await expect(page.locator('.stock-item').first()).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight-innerHeight)).toBeGreaterThan(1500);
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  await frame.scrollIntoViewIfNeeded();

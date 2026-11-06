@@ -139,3 +139,34 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  .fixed-workspace .rf-breakdown dl,.fixed-workspace fixed-income-tools { grid-template-columns: 1fr; }
  .fixed-workspace .rf-breakdown dl div { flex-wrap: wrap; }
 }
+
+/* This stylesheet is also loaded inside the panel-workspace shadow root.
+   When the panorama opens, give it its own full-width row instead of
+   enlarging only the right column and leaving a large empty area by IBOV. */
+@media (min-width: 901px) {
+  :host([area="actions-overview"][panorama-expanded]) .ws-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas: "chart quotes" "panorama panorama" "directory directory";
+    align-items: start;
+  }
+  :host([area="actions-overview"][panorama-expanded]) .ws-cell[data-panel="chart"] {
+    grid-area: chart;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  :host([area="actions-overview"][panorama-expanded]) .ws-cell[data-panel="quotes"] {
+    grid-area: quotes;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  :host([area="actions-overview"][panorama-expanded]) .ws-cell[data-panel="panorama"] {
+    grid-area: panorama;
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+  :host([area="actions-overview"][panorama-expanded]) .ws-cell[data-panel="directory"] {
+    grid-area: directory;
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+}
