@@ -304,7 +304,7 @@ test('two simultaneous screens switch video and local audio without replacing th
   await guest(b.page,a.page,invite,'Bia');await guest(viewer,a.page,invite,'Caio');
   for(const page of pages)await enter(page);
   await connected(viewer,2);
-  const first=await id(a.page),second=await id(b.page);
+  const first=await id(a.page),second=await id(b.page),watcher=await id(viewer);
   for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
   await shareButton(a.page).click();await shareButton(b.page).click();
   await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).call.screens.length)).toBe(2);
@@ -312,7 +312,16 @@ test('two simultaneous screens switch video and local audio without replacing th
   await expect(viewer.getByRole('alert')).toContainText('Já existem duas transmissões');
   expect(await viewer.evaluate(()=>(window as any).__screens.length)).toBe(0);
   await a.page.evaluate(()=>(window as any).__resolveDisplay());
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   return peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0]?.active;
+  },watcher)).toBe(false);
+  await expect(viewer.getByRole('button',{name:'Assistir',exact:true})).toBeVisible();
   await media(viewer,first,'screenVideo');
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   return peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0]?.active;
+  },watcher)).toBe(true);
   await b.page.evaluate(()=>(window as any).__resolveDisplay());
   await expect(options.getByRole('button')).toHaveCount(2);
   const choose=(name:string)=>options.getByRole('button',{name,exact:true});
@@ -377,13 +386,13 @@ test('two simultaneous screens switch video and local audio without replacing th
   await full.click();
 
   const deafen=viewer.getByRole('button',{name:'Ensurdecer',exact:true});
-  await deafen.click();await choose('Anfitrião').click();
+  await deafen.click();await choose('Anfitrião').click();await viewer.getByRole('button',{name:'Assistir',exact:true}).click();
   await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;
    return voice.audioMix.master.gain.value===0&&[...voice.peers.values()].every(peer=>peer.audio.muted&&peer.elements.screenAudio.muted);
   })).toBe(true);
-  await deafen.click();await choose('Bia').click();
+  await deafen.click();await choose('Bia').click();await viewer.getByRole('button',{name:'Assistir',exact:true}).click();
   await expect.poll(sources).toMatchObject({video:second,audio:[second],gain:[.5]});
   expect(await peers.evaluate(original=>[...(document.querySelector('call-page') as any).voice.peers.values()].every(peer=>original.includes(peer.pc)))).toBe(true);
   await peers.dispose();
@@ -399,6 +408,8 @@ test('two simultaneous screens switch video and local audio without replacing th
   await b.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();await media(viewer,second,'camera');
   await b.page.evaluate(()=>(document.querySelector('call-page') as any).call.socket.close());
   await expect(viewer.locator('.call-caption')).toContainText('Anfitrião');
+  await expect(viewer.getByRole('button',{name:'Assistir',exact:true})).toBeVisible();
+  await viewer.getByRole('button',{name:'Assistir',exact:true}).click();
   await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
   await expect(b.page.locator('.call-connection')).toHaveText('Conectado');
   await expect(b.page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeVisible();
