@@ -265,7 +265,7 @@ export class CallPage extends LightElement {
     ${entryMode==='join'?html`<label class="call-invite">Link recebido<input name="invite" type="text" .value=${parseInvite(location.href)?location.href:''} autocomplete="off" spellcheck="false" placeholder="Cole o convite aqui" required></label>`:nothing}
     <button class="call-primary-action" type="submit" value=${entryMode} ?disabled=${this.call.state==='connecting'}>${entryMode==='create'?'Criar sala privada':'Entrar por convite'}</button>
    </form>
-   <p class="call-entry-hint">${entryMode==='create'?'Sem cadastro. Compartilhe o convite para chamar seus amigos.':'O anfitrião aprova a entrada dos convidados.'}</p>
+   ${entryMode==='join'?html`<p class="call-entry-hint">O anfitrião aprova a entrada dos convidados.</p>`:nothing}
   </div>`:html`<div class="call-room-actions"><span>Sala temporária · até 5 pessoas</span>
    ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
    <button type="button" @click=${this.teardown}>Sair da sala</button></div>`;
@@ -284,12 +284,12 @@ export class CallPage extends LightElement {
     <button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button>
    </section>`:nothing}
    ${channelSession?html`<div class="call-room-actions"><button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button><button type="button" @click=${this.leaveChannel}>Sair do canal</button></div>`:nothing}
-  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1><p>Um espaço direto para conversar, mostrar a tela e ficar junto.</p></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
+  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
 
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
-   <section class="call-channel-panel" aria-label="Sala Permanente"><div class="call-card-symbol" aria-hidden="true">01 <span>●</span></div>
-    <span class="call-panel-label">CANAL PERMANENTE · 01</span>
-    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Seu ponto de encontro. Disponível mesmo quando ninguém está online.</p></div>
+   <section class="call-channel-panel" aria-label="Sala Permanente">
+    
+    <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Acesso pelo link do canal.</p></div>
     ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
     ${this.lobby?.room?html`<a class="button call-lobby-enter call-primary-action" href=${channelLink(this.lobby.room)}>Entrar na sala <span aria-hidden="true">→</span></a>`:
      html`<p class="call-note" role="status">${this.channelLoading?'Consultando a sala…':this.lobbyError||
@@ -297,9 +297,9 @@ export class CallPage extends LightElement {
     ${this.lobbyError?html`<button type="button" @click=${this.loadChannel}>Atualizar sala permanente</button>`:nothing}
     <a class="call-manage-link" href="#/call/gerenciar">Gerenciar sala permanente <span aria-hidden="true">↗</span></a>
    </section>
-   <section class="call-private-panel" aria-label="Chamada Privada"><div class="call-card-symbol" aria-hidden="true">02 <span>↗</span></div>
-    <span class="call-panel-label">SALA TEMPORÁRIA · 02</span>
-    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Crie um espaço só para você e quem receber o convite.</p></div>
+   <section class="call-private-panel" aria-label="Chamada Privada">
+    
+    <div class="call-panel-copy"><h2>Chamada Privada</h2><p class="call-note">Entrada por convite.</p></div>
     ${privateEntry}
    </section>
   </div>`:privateEntry}`}
@@ -352,5 +352,5 @@ export class CallPage extends LightElement {
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
   ${this.capture.error?html`<p class="call-error" role="alert">${this.capture.error}</p>`:nothing}
-  ${!channelRoute||channelSession?html`<p class="call-note">${channelSession?'Microfone e câmera começam desligados.':this.voice.active?'Microfone, câmera e tela ligados são enviados aos participantes aprovados.':'Fora da chamada, as prévias ficam apenas neste navegador.'} Não há gravação. O áudio da tela depende do navegador e da superfície escolhida.</p>`:nothing}`}
+  `}
 }
