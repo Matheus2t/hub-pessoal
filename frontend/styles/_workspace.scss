@@ -397,3 +397,9 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
 .fixed-workspace .rf-refined .rf-pagination { flex-wrap:wrap; }
 .fixed-workspace .rf-refined .rf-chart-panel .rf-chart svg { overflow:hidden; }
 .fixed-workspace .rf-refined .rf-comparison-section > fixed-income-comparison { max-width:100%; overflow-x:clip; }
+
+
+/* Evita uma diferença de 1px no scrollWidth do viewport de 320px, sem
+   impedir a rolagem horizontal das tabelas dentro de seus próprios painéis. */
+fixed-income-page.fixed-workspace { max-width:100%; overflow-x:clip; }
+.fixed-workspace .rf-page.rf-refined { max-width:100%; overflow-x:clip; }
