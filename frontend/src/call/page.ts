@@ -8,6 +8,7 @@ import './channel-owner';
 import {VoiceMesh} from './voice';
 import {CallCapture} from './capture';
 import {ScreenFullscreen} from './fullscreen';
+import {ScreenPictureInPicture} from './picture-in-picture';
 import {repeat} from 'lit/directives/repeat.js';
 
 /** Private WebRTC room. Capture and transport have independent lifecycles. */
@@ -31,13 +32,18 @@ export class CallPage extends LightElement {
  private speakerTimer?:number;
  private channelParticipant?:string;
  private fullscreen=new ScreenFullscreen(()=>this.requestUpdate());
+ private pictureInPicture=new ScreenPictureInPicture(()=>this.requestUpdate());
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
   (role,id)=>role==='screenVideo'?this.querySelector('.call-remote-screen'):this.querySelector(`[data-camera="${id}"]`));
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,screen:this.call.screen}),message=>this.call.send(message),()=>this.captureChanged());
  private captureChanged(){this.voice.setScreen(this.capture.transmitting?this.capture.screen:undefined);this.voice.setCamera(this.capture.camera);this.publishMedia();this.requestUpdate()}
- protected updated(){this.voice.mountMedia();this.fullscreen.sync(this.viewerSource)}
+ protected updated(){
+  this.voice.mountMedia();
+  this.fullscreen.sync(this.viewerSource);
+  this.pictureInPicture.sync(this.querySelector('.call-remote-screen:not([hidden])'));
+ }
  private viewerSource=(viewer:string):MediaStream|string|undefined=>{
   if(viewer==='screen')return this.screenSource();
   if(!this.voice.active)return;
@@ -54,7 +60,7 @@ export class CallPage extends LightElement {
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.channelParticipant=undefined;
-  this.fullscreen.close();this.voice.stop(true);this.release();this.call.leave();this.lastMedia='';
+  this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.release();this.call.leave();this.lastMedia='';
  };
  private routeChanged=()=>{
   // A mounted Call page is owned by the application shell, not its current route.
@@ -155,7 +161,7 @@ export class CallPage extends LightElement {
   this.voice.setMicrophone(this.microphone);this.voice.start();
   this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true);this.publishMedia();
  }
- private leaveVoice(){this.voice.stop();this.release();this.publishMedia()}
+ private leaveVoice(){this.pictureInPicture.sync(null);this.voice.stop();this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
@@ -323,6 +329,14 @@ export class CallPage extends LightElement {
    <section class="call-stage" aria-label="Tela compartilhada">
     <div class=${`call-preview call-viewer${screenMode==='expanded'?' is-expanded':''}`} role=${screenMode?'dialog':nothing} aria-modal=${screenMode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
+     ${remote&&!screenMode&&this.pictureInPicture.available?html`
+      <button class="call-viewer-toggle call-pip" type="button" aria-pressed=${this.pictureInPicture.active}
+       ?disabled=${this.pictureInPicture.busy} @click=${()=>void this.pictureInPicture.toggle()}>
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 11h6v5h-6z"/></svg>
+       <span>Janela flutuante</span>
+      </button>
+      ${this.pictureInPicture.error?html`<div class="call-viewer-media"><span class="call-viewer-error" role="status">${this.pictureInPicture.error}</span></div>`:nothing}
+     `:nothing}
      ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${shared?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
      ${this.viewerControls('screen')}
     </div><p class="call-caption" role="status">${screenCaption}</p>
