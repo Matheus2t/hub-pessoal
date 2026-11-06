@@ -304,6 +304,9 @@ test('two simultaneous screens switch video and local audio without replacing th
   await guest(b.page,a.page,invite,'Bia');await guest(viewer,a.page,invite,'Caio');
   for(const page of pages)await enter(page);
   await connected(viewer,2);
+  await viewer.getByRole('button',{name:'Visão compacta',exact:true}).click();
+  await expect(viewer.locator('.call-layout')).toHaveClass(/is-compact/);
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.nickname)).toBe('Caio');
   const first=await id(a.page),second=await id(b.page),watcher=await id(viewer);
   for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
   await shareButton(a.page).click();await shareButton(b.page).click();
@@ -351,9 +354,15 @@ test('two simultaneous screens switch video and local audio without replacing th
   await slider('Anfitrião').press('End');
   await slider('Bia').evaluate((element:HTMLInputElement)=>{element.value='50';element.dispatchEvent(new Event('input',{bubbles:true}))});
   await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  await expect.poll(()=>viewer.evaluate(()=>{
+   const stored=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
+   return Object.fromEntries(stored.levels);
+  })).toMatchObject({'anfitrião':{microphone:100,screenAudio:200,muted:false},
+                       'bia':{microphone:100,screenAudio:50,muted:false}});
   await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).voice.audioMix.context?.__sink)).toBe('speakers');
   await output.getByRole('button',{name:'Escolher dispositivo'}).click();
   await expect(outputChoice).toHaveValue('headphones');
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.output)).toBe('headphones');
   await expect.poll(()=>viewer.evaluate(id=>{
    const {voice}=(document.querySelector('call-page') as any),peer=voice.peers.get(id);
    return [peer.elements.microphone.__sink,peer.elements.screenAudio.__sink,voice.audioMix.context?.__sink];
@@ -430,12 +439,20 @@ test('two simultaneous screens switch video and local audio without replacing th
    navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
   });
   await expect(outputChoice).toHaveValue('');
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.output)).toBe('');
   await expect(output.getByRole('status')).toContainText('Dispositivo desconectado');
   await expect.poll(()=>viewer.evaluate(()=>{
    const {voice}=(document.querySelector('call-page') as any);
    return [voice.audioMix.context?.__sink,...[...voice.peers.values()].map(peer=>peer.elements.microphone.__sink)];
   })).toEqual(['','','']);
   await viewer.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(viewer);
+  await viewer.reload();
+  await expect(viewer.getByLabel('Seu nome',{exact:true})).toHaveValue('Caio');
+  expect(await viewer.evaluate(()=>{
+   const prefs=(document.querySelector('call-page') as any).preferences;
+   const saved=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
+   return {layout:prefs.layout,fields:Object.keys(saved).sort()};
+  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','version']});
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;
   })).toBe(true);
