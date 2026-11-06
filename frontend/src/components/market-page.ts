@@ -56,9 +56,14 @@ export class MarketPage extends LightElement {
       if(c.signal.aborted)return;this.hasFinancial=!!m.companies[this.symbol];this.hasDistributions=d.some(x=>x.companies.includes(this.symbol));this.coverage='known';
     }catch{if(!c.signal.aborted)this.coverage='failed'}
   }
-  private directoryToggle(event:Event){
-    this.directoryOpen=(event.currentTarget as HTMLDetailsElement).open;
+  private directoryToggle(event:MouseEvent){
+    event.preventDefault();
+    this.directoryOpen=!this.directoryOpen;
     if(this.directoryOpen&&!this.directoryData&&!this.directoryLoading)void this.loadDirectory();
+  }
+  private panoramaToggle(event:MouseEvent){
+    event.preventDefault();
+    this.panorama=!this.panorama;
   }
   private async loadDirectory(){
     this.directoryController?.abort();
@@ -140,10 +145,10 @@ export class MarketPage extends LightElement {
         <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
         <section slot="distributions" class="workspace-panel market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?'Fechar proventos':'Dividendos e JCP'}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:html`
         <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe></section>
-        <section slot="panorama" class="workspace-panel"><details class="market-panorama" ?open=${this.panorama} @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<div class="market-panorama-expanded"><div class="market-panorama-chart"><market-embed kind="market-overview"></market-embed></div><aside class="market-panorama-context"><p class="market-panorama-eyebrow">VISÃO DO MERCADO</p><h3>Índice e empresas brasileiras</h3><p>Explore o desempenho no widget do TradingView. A seleção de índices, setores e períodos é feita diretamente no gráfico.</p><h4>Empresas acompanhadas</h4><nav aria-label="Empresas em destaque">${featuredStocks.map(item=>html`<a href=${`#/acoes/${item.symbol}`}> <strong>${item.symbol}</strong><span>${item.name}</span><span aria-hidden="true">↗</span></a>`)}</nav><p class="market-panorama-note">Cotações e variações são apresentadas pela fonte externa. Não calculamos preços nem rankings próprios nesta área.</p></aside></div>`:nothing}</details></section>
+        <section slot="panorama" class="workspace-panel"><details class="market-panorama" ?open=${this.panorama}><summary @click=${this.panoramaToggle}>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<div class="market-panorama-expanded"><div class="market-panorama-chart"><market-embed kind="market-overview"></market-embed></div><aside class="market-panorama-context"><p class="market-panorama-eyebrow">VISÃO DO MERCADO</p><h3>Índice e empresas brasileiras</h3><p>Explore o desempenho no widget do TradingView. A seleção de índices, setores e períodos é feita diretamente no gráfico.</p><h4>Empresas acompanhadas</h4><nav aria-label="Empresas em destaque">${featuredStocks.map(item=>html`<a href=${`#/acoes/${item.symbol}`}> <strong>${item.symbol}</strong><span>${item.name}</span><span aria-hidden="true">↗</span></a>`)}</nav><p class="market-panorama-note">Cotações e variações são apresentadas pela fonte externa. Não calculamos preços nem rankings próprios nesta área.</p></aside></div>`:nothing}</details></section>
         <section slot="directory" class="workspace-panel market-directory-panel">
-         <details class="market-directory-details" ?open=${this.directoryOpen} @toggle=${this.directoryToggle}>
-           <summary class="market-directory-summary"><span class="market-directory-name">Empresas</span><span class="market-directory-count">${matches.length} ${matches.length===1?'empresa':'empresas'}</span><span class="market-directory-chevron" aria-hidden="true"></span></summary>
+         <details class="market-directory-details" ?open=${this.directoryOpen}>
+           <summary class="market-directory-summary" @click=${this.directoryToggle}><span class="market-directory-name">Empresas</span><span class="market-directory-count">${matches.length} ${matches.length===1?'empresa':'empresas'}</span><span class="market-directory-chevron" aria-hidden="true"></span></summary>
            <div class="market-directory-content">
              <form class="market-search" @submit=${this.search}>
        <label for="stock-search">Buscar ação</label><div><input id="stock-search" type="search" role="combobox" aria-autocomplete="list" aria-controls="stock-suggestions" aria-expanded=${Boolean(this.query&&this.expanded&&suggestions.length)} aria-activedescendant=${this.expanded&&this.active>=0?`stock-option-${this.active}`:nothing} @keydown=${this.keydown} @focus=${()=>{this.expanded=true}} placeholder="Buscar por código ou empresa" .value=${this.query} @input=${(event:Event)=>{this.query=(event.target as HTMLInputElement).value.toLocaleUpperCase('pt-BR');this.error='';this.active=-1;this.expanded=true}} autocomplete="off" aria-describedby=${this.error?'market-search-error':nothing}>
