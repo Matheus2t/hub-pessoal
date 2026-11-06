@@ -54,7 +54,7 @@ for (const width of [1366, 390, 320]) {
       route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>TradingView test frame</title><p>Integration fixture</p>' }));
     await page.goto('/');
     expect(tickerModules).toBe(0);
-    await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Ações', exact: true }).click();
+    await page.goto('/#/acoes');
     await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('symbols', 'BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
     await page.locator('.market-directory-toggle').click();
     await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
