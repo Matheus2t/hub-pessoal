@@ -21,6 +21,14 @@ for(const width of [1920,1366,768,390,320])test(`market overview fixed layout, d
  await directory.locator('summary').click();
  await expect(directory).toHaveAttribute('open','');
  await expect(page.getByLabel('Buscar ação',{exact:true})).toBeVisible();
+ await expect(page.locator('.stock-item').first()).toBeVisible();
+ const geometry=await page.evaluate(()=>{
+  const d=document.querySelector('market-page .market-directory-details') as HTMLDetailsElement;
+  const row=d.querySelector('.stock-item') as HTMLElement;
+  return {open:d.open,detailHeight:d.getBoundingClientRect().height,rowHeight:row.getBoundingClientRect().height,scrollHeight:document.documentElement.scrollHeight,viewport:innerHeight};
+ });
+ console.log('MARKET DIRECTORY GEOMETRY', width, JSON.stringify(geometry));
+ expect(geometry.detailHeight).toBeGreaterThan(1000);
  await expect(page.locator('.stock-item')).toHaveCount(65);
  await expect(page.locator('.stock-item').filter({hasText:'PETR4'}).locator('.stock-profit')).toContainText('R$');
  await expect(page.locator('.stock-item').filter({hasText:'PETR4'}).locator('.stock-roe')).toContainText('%');
