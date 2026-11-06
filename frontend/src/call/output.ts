@@ -15,7 +15,7 @@ export class CallAudioOutput {
   const Audio=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
   return window.isSecureContext&&!!navigator.mediaDevices?.enumerateDevices&&
    typeof HTMLMediaElement.prototype.setSinkId==='function'&&!!Audio&&
-   typeof Audio.prototype.setSinkId==='function';
+   typeof (Audio.prototype as AudioContext & {setSinkId?:(id:string)=>Promise<void>}).setSinkId==='function';
  }
  get canPrompt(){return this.supported&&typeof (navigator.mediaDevices as OutputDevices).selectAudioOutput==='function'}
  get choices(){return this.devices.filter(device=>device.deviceId&&device.deviceId!=='default')}
