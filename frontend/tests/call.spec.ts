@@ -94,11 +94,25 @@ test('owner credential, malformed invite, route exit and responsive themes',asyn
  await expect(page.locator('.call-diagnostics')).toHaveCount(0);
  await expect(page.locator('call-page')).not.toContainText('Sem TURN: algumas redes podem impedir o áudio');
  await expect(page.locator('.call-layout')).not.toHaveAttribute('data-sharing');
+ // On desktop, people are the primary voice-channel column.
+ const desktopOrder=await page.locator('.call-layout').evaluate(layout=>{
+  const people=layout.querySelector('.call-people')!.getBoundingClientRect();
+  const stage=layout.querySelector('.call-stage')!.getBoundingClientRect();
+  return {peopleLeft:people.left,stageLeft:stage.left};
+ });
+ expect(desktopOrder.peopleLeft).toBeLessThan(desktopOrder.stageLeft);
 
  for(const width of[1366,390,320])for(const theme of['light','dark']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   await page.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  if(width<=390){
+   const order=await page.locator('.call-layout').evaluate(layout=>({
+    people:layout.querySelector('.call-people')!.getBoundingClientRect().top,
+    stage:layout.querySelector('.call-stage')!.getBoundingClientRect().top
+   }));
+   expect(order.people).toBeLessThan(order.stage);
+  }
   await page.screenshot({path:testInfo.outputPath(`call-${width}-${theme}.png`),fullPage:true});
  }
  await page.evaluate(()=>location.hash='#/');
