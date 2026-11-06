@@ -248,17 +248,43 @@ test('screen, independent audio and camera reach five real peers including late 
   },{timeout:15000});
   const extra=await add();await extra.goto(invite);await extra.getByLabel('Seu nome',{exact:true}).fill('Sexto');await extra.getByRole('button',{name:'Entrar por convite',exact:true}).click();await expect(extra.getByRole('alert')).toContainText('cinco vagas');
   const framesBeforePressure=(await evidence(second,hostId,'screenVideo')).frames;
-  // Inject encoder pressure into real stats to exercise adaptation without saturating the host CPU.
-  await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;
-   for(const peer of mesh.peers.values()){peer.originalStats=peer.pc.getStats.bind(peer.pc);peer.pc.getStats=async()=>{const original=await peer.originalStats(),report=new Map();original.forEach((s:any,id:string)=>report.set(id,{...s,...(s.type==='outbound-rtp'&&s.kind==='video'?{qualityLimitationReason:(window as any).__pressure?'cpu':'none'}:{})}));return report}}
-   (window as any).__pressure=true;await mesh.measure();
+  // Synthetic encoder pressure exercises progressive quality without saturating CI.
+  await host.evaluate(async()=>{
+   const mesh=(document.querySelector('call-page') as any).voice;
+   for(const peer of mesh.peers.values()){
+    peer.originalStats=peer.pc.getStats.bind(peer.pc);
+    peer.pc.getStats=async()=>{
+     const original=await peer.originalStats(),report=new Map();
+     original.forEach((s:any,id:string)=>report.set(id,{
+      ...s,...(s.type==='outbound-rtp'&&s.kind==='video'?{qualityLimitationReason:(window as any).__pressure?'cpu':'none'}:{})
+     }));
+     return report;
+    };
+   }
+   (window as any).__pressure=true;
+   for(let n=0;n<2;n++)await mesh.measure();
   });
-  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({limited:p.limited,fps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate})))).toEqual(Array.from({length:4},()=>({limited:true,fps:15})));
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({
+   cameraLimited:p.limited,tier:p.screenTier,
+   cameraFps:p.transceivers.camera.sender.getParameters().encodings[0].maxFramerate,
+   screenFps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate,
+   scale:p.transceivers.screenVideo.sender.getParameters().encodings[0].scaleResolutionDownBy
+  })))).toEqual(Array.from({length:4},()=>({cameraLimited:true,tier:1,cameraFps:15,screenFps:60,scale:1})));
+  // Even under sustained pressure the app steps down to 720p, not 540p/480p.
+  await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;
+   for(let n=0;n<4;n++)await mesh.measure()});
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({
+   tier:p.screenTier,screenFps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate,
+   scale:p.transceivers.screenVideo.sender.getParameters().encodings[0].scaleResolutionDownBy
+  })))).toEqual(Array.from({length:4},()=>({tier:3,screenFps:33,scale:1.5})));
   await media(second,hostId,'screenVideo');
   await expect.poll(async()=>(await evidence(second,hostId,'screenVideo')).frames).toBeGreaterThan(framesBeforePressure);
   const reducedFrames=(await evidence(second,hostId,'screenVideo')).frames;
-  await host.evaluate(async()=>{(window as any).__pressure=false;const mesh=(document.querySelector('call-page') as any).voice;for(let n=0;n<3;n++)await mesh.measure()});
-  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>!p.limited&&p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate===30))).toBe(true);
+  await host.evaluate(async()=>{(window as any).__pressure=false;const mesh=(document.querySelector('call-page') as any).voice;
+   for(let n=0;n<9;n++)await mesh.measure()});
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>
+   !p.limited&&p.screenTier===0&&p.transceivers.camera.sender.getParameters().encodings[0].maxFramerate===24&&
+   p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate===60))).toBe(true);
   await expect.poll(async()=>(await evidence(second,hostId,'screenVideo')).frames).toBeGreaterThan(reducedFrames);
   await host.evaluate(()=>{for(const peer of(document.querySelector('call-page') as any).voice.peers.values()){peer.pc.getStats=peer.originalStats;delete peer.originalStats}});
   await host.getByRole('button',{name:'Desativar câmera',exact:true}).click();
