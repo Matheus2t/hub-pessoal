@@ -1,4 +1,4 @@
-import type {Participant,RemoteSignal,RtcConfig,Signal,MediaRole,MediaRoles,RoomScreen} from './protocol';
+import type {Participant,RemoteSignal,RemoteWatch,RtcConfig,Signal,WatchSignal,MediaRole,MediaRoles,RoomScreen} from './protocol';
 import {CallAudioMix} from './audio-mix';
 
 type VoiceSignal = {type:'offer'|'answer';sdp:string;roles:MediaRoles}|{type:'ice';candidate:RTCIceCandidateInit|null};
@@ -10,6 +10,7 @@ interface Peer {
  transceivers:Partial<Record<MediaRole,RTCRtpTransceiver>>;remoteRoles?:MediaRoles;
  streams:Partial<Record<MediaRole,MediaStream>>;elements:Record<MediaRole,HTMLMediaElement>;
  outbound:Partial<Record<MediaRole,{bytes:number;time:number}>>;uploadKbps:number;limited:boolean;clearSamples:number;
+ screenWatching?:boolean;watchSent?:boolean;
  blockedElements:Set<HTMLMediaElement>;videoStats:Partial<Record<MediaRole,{fps?:number;width?:number;height?:number;frames:number;encoderMsPerFrame?:number;limitation:string}>>;
  polite:boolean;makingOffer:boolean;settingAnswer:boolean;ignored:Set<string>;candidates:(RTCIceCandidateInit|null)[];
  queue:Promise<void>;attempts:number;timer?:number;resignal:boolean;blocked:boolean;failed:boolean;stats?:VoiceStats;phase?:string;failure?:string;
@@ -25,7 +26,7 @@ export class VoiceMesh {
  private microphone?:MediaStreamTrack;private refresh?:number;private sampling?:number;private measuring=false;
  private sources:Partial<Record<MediaRole,MediaStreamTrack>>={};private screen:RoomScreen|null=null;
  private outputSink='';
- constructor(private send:(message:Signal)=>boolean,private changed:()=>void,
+ constructor(private send:(message:Signal|WatchSignal)=>boolean,private changed:()=>void,
   private audioRoot:()=>HTMLElement|null,private refreshConfig:()=>void,
   private videoRoot:(role:'screenVideo'|'camera',id:string)=>HTMLElement|null=()=>null){}
  get blocked(){return this.audioMix.blocked||[...this.peers.values()].some(p=>p.blocked)}
@@ -70,7 +71,10 @@ export class VoiceMesh {
   const members=new Map(people.filter(p=>p.id!==self&&p.voice).map(p=>[p.id,p]));
   for(const peer of this.peers.values())if(!members.has(peer.id)||members.get(peer.id)!.voiceEpoch!==peer.epoch)this.closePeer(peer);
   for(const member of members.values())if(member.connected&&ready&&!this.peers.has(member.id)&&this.peers.size<4)this.createPeer(member);
-  if(ready)for(const peer of this.peers.values())if(peer.resignal||(resumed&&['failed','disconnected'].includes(peer.pc.iceConnectionState)))this.recover(peer);
+  if(ready)for(const peer of this.peers.values()){
+   this.notifyWatch(peer);
+   if(peer.resignal||(resumed&&['failed','disconnected'].includes(peer.pc.iceConnectionState)))this.recover(peer);
+  }
   this.mountMedia();
  }
  private current(peer:Peer){return this.active&&this.peers.get(peer.id)===peer&&peer.pc.signalingState!=='closed'}
@@ -127,9 +131,14 @@ export class VoiceMesh {
   };
   this.scheduleRecovery(peer,12000);this.changed();
  }
- receive(message:RemoteSignal){
+ receive(message:RemoteSignal|RemoteWatch){
   const peer=this.peers.get(message.from);
   if(!peer||!this.current(peer)||message.epoch!==peer.epoch||message.targetEpoch!==this.epoch)return;
+  if(message.type==='watch'){
+   peer.screenWatching=message.enabled;
+   this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
+   return;
+  }
   this.enqueue(peer,async()=>{
    const pc=peer.pc;
    if(message.type==='offer'||message.type==='answer'){
@@ -203,6 +212,13 @@ export class VoiceMesh {
    if(peer){this.unmountMedia(peer,'screenAudio');this.unmountMedia(peer,'screenVideo')}
   }
   this.screen=screen??null;
+  for(const peer of this.peers.values())this.notifyWatch(peer);
+ }
+ private notifyWatch(peer:Peer){
+  if(!this.active||!this.ready||!this.current(peer))return;
+  const enabled=this.screen?.owner===peer.id&&this.screen.active;
+  if(peer.watchSent===enabled)return;
+  if(this.send({type:'watch',target:peer.id,enabled,epoch:this.epoch,targetEpoch:peer.epoch}))peer.watchSent=enabled;
  }
  private unmountMedia(peer:Peer,role:MediaRole){
   const element=peer.elements[role];
@@ -223,7 +239,7 @@ export class VoiceMesh {
   if(kind(role)!=='video')return;
   const sender=peer.transceivers[role]?.sender;if(!sender?.track)return;
   try{const parameters=sender.getParameters();if(!parameters.encodings?.length)return;
-   for(const encoding of parameters.encodings){encoding.maxBitrate=(role==='screenVideo'?2000000:600000)*(peer.limited?.5:1);encoding.maxFramerate=peer.limited?15:role==='screenVideo'?30:24;encoding.scaleResolutionDownBy=peer.limited?2:1}
+   for(const encoding of parameters.encodings){encoding.maxBitrate=(role==='screenVideo'?2000000:600000)*(peer.limited?.5:1);encoding.maxFramerate=peer.limited?15:role==='screenVideo'?30:24;encoding.scaleResolutionDownBy=peer.limited?2:1;if(role==='screenVideo')encoding.active=peer.screenWatching!==false}
    await sender.setParameters(parameters);
   }catch{/* Native congestion control remains available if encoding limits are unsupported. */}
  }
