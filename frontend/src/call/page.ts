@@ -51,7 +51,7 @@ export class CallPage extends LightElement {
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,
-  screens:this.call.screens,screenLimit:this.call.screenLimit}),message=>this.call.send(message),()=>this.captureChanged());
+  screens:this.call.screens,screenLimit:this.call.screenLimit}),message=>this.call.send(message),()=>this.captureChanged(),()=>this.voice.refreshScreenEncoding());
  private setScreenQuality(quality:ScreenQuality){
   if(this.capture.quality===quality)return;
   this.capture.setQuality(quality);
