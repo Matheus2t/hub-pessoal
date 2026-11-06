@@ -430,7 +430,7 @@ export class CallPage extends LightElement {
    </section>
   </div>`:privateEntry}`}
   ${this.call.session?html`<div class="call-session-heading" aria-label="Canal de voz">
-   <div class="call-session-title"><span class="call-session-eyebrow">CANAL DE VOZ</span><h2>${channelSession?.name??'Sala privada'}</h2></div>
+   <div class="call-session-title"><span class="call-session-eyebrow">CANAL DE VOZ</span><h2>${channelSession?'Sala permanente':'Sala privada'}</h2></div>
    <div class="call-session-count"><span class="call-presence-dot" aria-hidden="true"></span>${this.call.people.filter(p=>p.connected).length} de 5 participantes</div>
   </div>`:nothing}
   ${this.call.session||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
