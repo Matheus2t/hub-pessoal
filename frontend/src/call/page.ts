@@ -352,4 +352,5 @@ export class CallPage extends LightElement {
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
   ${this.capture.error?html`<p class="call-error" role="alert">${this.capture.error}</p>`:nothing}
+  `}
 }
