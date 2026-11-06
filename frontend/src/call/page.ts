@@ -9,6 +9,7 @@ import {VoiceMesh} from './voice';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture} from './capture';
+import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
 import {repeat} from 'lit/directives/repeat.js';
@@ -21,6 +22,7 @@ export class CallPage extends LightElement {
  @state() private micBusy=false;
  @state() private error='';
  private micRequest=0;
+ private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.voice.setMicrophone(stream)}});
  @state() private roomError='';
  @state() private copied=false;
  @state() private diagnosticCopied=false;
@@ -252,7 +254,7 @@ export class CallPage extends LightElement {
   catch{this.roomError='Não foi possível copiar o diagnóstico. Confira a permissão da área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
- private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
+ private stopMicrophone(){this.micRequest++;this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
  private get deafened(){return this.voice.audioMix.deafened}
  private toggleDeafen(){
   if(!this.voice.active)return;
@@ -280,14 +282,46 @@ export class CallPage extends LightElement {
   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='O microfone exige um navegador compatível e HTTPS ou localhost.';return}
   const request=++this.micRequest;this.micBusy=true;
   try{
-   const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+   const stream=await navigator.mediaDevices.getUserMedia({audio:this.micProcessing.constraints(),video:false});
    if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
    if(!stream.getAudioTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No audio','NotFoundError')}
-   this.microphone=stream;
-   this.voice.setMicrophone(stream);this.publishMedia();this.announceCall();
-   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
+   const outgoing=await this.micProcessing.attach(stream);
+   if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
+   this.microphone=outgoing;
+   this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
+   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===outgoing){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
+ }
+ private microphoneSettings(){
+  const processor=this.micProcessing,supported=processor.supported;
+  const flag=(key:MicrophoneFlag,label:string)=>supported[key]===false?nothing:html`<label class="call-mic-check">
+   <input type="checkbox" .checked=${processor.flags[key]} @change=${(event:Event)=>void processor.setFlag(key,(event.currentTarget as HTMLInputElement).checked)}/>${label}
+  </label>`;
+  return html`<details class="call-microphone-settings">
+   <summary>Configurações do microfone</summary>
+   <div class="call-microphone-settings-content">
+    <label>Processamento
+     <select aria-label="Processamento do microfone" .value=${processor.mode}
+      @change=${(event:Event)=>void processor.selectMode((event.currentTarget as HTMLSelectElement).value as MicrophoneMode)}>
+      <option value="clean">Voz limpa</option>
+      <option value="natural">Som natural</option>
+      <option value="custom">Personalizado</option>
+     </select>
+    </label>
+    <div class="call-microphone-flags" role="group" aria-label="Filtros do microfone">
+     ${flag('noiseSuppression','Redução de ruídos')}
+     ${flag('echoCancellation','Cancelamento de eco')}
+     ${flag('autoGainControl','Ganho automático')}
+    </div>
+    ${processor.hasGate?html`<label>Sensibilidade de voz <output>${processor.sensitivity===0?'Desativada':`${processor.sensitivity}%`}</output>
+     <input type="range" min="0" max="100" step="5" aria-label="Sensibilidade de voz"
+      .value=${String(processor.sensitivity)}
+      @input=${(event:Event)=>void processor.setSensitivity((event.currentTarget as HTMLInputElement).valueAsNumber)}/>
+    </label>`:nothing}
+    ${processor.error?html`<small role="status">${processor.error}</small>`:nothing}
+   </div>
+  </details>`;
  }
  private get cameraDisabled(){return !this.voice.active||this.call.state!=='connected'}
  private get cameraLabel(){return this.capture.cameraBusy?'Cancelar câmera':this.capture.camera?'Desativar câmera':'Ativar câmera'}
@@ -377,6 +411,7 @@ export class CallPage extends LightElement {
   </div>`:nothing}
   ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
   ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
+  ${this.voice.active?this.microphoneSettings():nothing}
   ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
    <label>Saída de áudio
     <select aria-label="Dispositivo de saída" .value=${live(this.output.sinkId)} ?disabled=${this.output.busy}
