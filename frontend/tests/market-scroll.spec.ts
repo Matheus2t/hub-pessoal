@@ -104,6 +104,7 @@ test('ticker widget intrinsic height changes cannot jolt the stock directory',as
  await page.setViewportSize({width:1366,height:900});
  await page.goto('/#/acoes');
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
+ await page.locator('.market-directory-details > summary').click();
  const ticker=page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers');
  await expect(ticker).toBeVisible({timeout:30000});
  if(process.env.MARKET_SCROLL_LIVE==='1'){
@@ -141,6 +142,7 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
  await expect(quotes).toBeVisible();
  await expect(quotes).toHaveCSS('overflow-y','clip');
  await page.locator('market-page .stock-item').first().waitFor();
+ await page.locator('.market-directory-details > summary').click();
  await quotes.scrollIntoViewIfNeeded();
  await page.waitForTimeout(180);
  const rect=await quotes.boundingBox();expect(rect).not.toBeNull();
@@ -183,6 +185,7 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
  await isolatedProvider(page);
  await page.setViewportSize({width:390,height:900});
  await page.goto('/#/acoes');
+ await page.locator('.market-directory-details > summary').click();
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  await frame.scrollIntoViewIfNeeded();
