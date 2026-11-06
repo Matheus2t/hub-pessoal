@@ -30,3 +30,44 @@ test('corrupt or unwritable storage does not block tools; navigation closes the 
  await w.getByRole('button',{name:'Essencial',exact:true}).click();await expect(w.getByRole('status')).toContainText('Não foi possível salvar');await expect(w.locator('[data-panel=table]')).toBeHidden();
  await w.getByRole('button',{name:'Personalizar painel',exact:true}).click();await page.evaluate(()=>location.hash='#/calculadoras');await expect(w.getByRole('dialog')).not.toBeVisible();
 });
+
+test('fixed calculator layout ignores old preferences and does not offer customization',async({page})=>{
+ await page.goto('/#/');
+ await page.evaluate(()=>localStorage.setItem('2t:panels:v1:calculator-fixed-probe',JSON.stringify({
+   version:1,mode:'custom',panels:[
+     {id:'form',visible:true,size:'small'},
+     {id:'chart',visible:false,size:'small'},
+     {id:'table',visible:false,size:'small'}
+   ]
+ })));
+ const w=await mount(page,'calculator-fixed-probe');
+ await w.evaluate(el=>el.setAttribute('fixed-layout',''));
+ await expect(w.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+ await expect(w.getByRole('group',{name:'Modo de visualização'})).toHaveCount(0);
+ await expect(w.getByRole('dialog')).toHaveCount(0);
+ await expect(w.locator('[data-panel=form]')).toBeVisible();
+ await expect(w.locator('[data-panel=chart]')).toBeVisible();
+ await expect(w.locator('[data-panel=table]')).toBeVisible();
+ await expect(w.locator('[data-panel=chart]')).toHaveAttribute('style',/span 8/);
+ await expect(w.locator('[data-panel=table]')).toHaveAttribute('style',/span 12/);
+ await expect(page.getByLabel('Valor preservado')).toHaveValue('123');
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('2t:panels:v1:calculator-fixed-probe')!).mode)).toBe('custom');
+});
+
+for(const route of ['calculadora','juros-simples','price','sac','renda-fixa']){
+ test(`calculator ${route} has a complete fixed layout`,async({page})=>{
+   await page.goto('/#/'+route);
+   const workspace=page.locator('panel-workspace');
+   await expect(workspace).toHaveCount(1);
+   await expect(workspace).toHaveAttribute('fixed-layout','');
+   await expect(workspace.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+   await expect(workspace.getByRole('group',{name:'Modo de visualização'})).toHaveCount(0);
+   await expect(workspace.locator('[data-panel=form]')).toBeVisible();
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ });
+}
+
+test('actions workspace still provides customization',async({page})=>{
+ await page.goto('/#/acoes');
+ await expect(page.locator('market-page panel-workspace').getByRole('button',{name:'Personalizar painel'})).toBeVisible();
+});
