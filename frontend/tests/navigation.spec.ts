@@ -43,6 +43,7 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await navigation.getByRole('link',{name:'Início',exact:true}).click();
  await page.locator('home-page').getByRole('link',{name:/Mercado de Ações/}).click();
+ await page.locator('.market-directory summary').click();
  await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
 });
 test('legacy routes and calculator breadcrumbs',async({page})=>{
