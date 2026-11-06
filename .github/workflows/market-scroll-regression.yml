@@ -11,6 +11,7 @@ on:
       - 'frontend/src/components/financial-comparison.ts'
       - 'frontend/tests/comparison-layout.spec.ts'
       - 'frontend/src/components/market-tools.ts'
+      - 'frontend/tests/contributions-design.spec.ts'
       - 'frontend/tests/rankings-layout.spec.ts'
       - '.github/workflows/market-scroll-regression.yml'
   push:
@@ -61,6 +62,13 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/comparison-layout.spec.ts
+      - name: Test aporte simulator redesign
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: |
+          npx playwright test frontend/tests/contributions-design.spec.ts
+          npx playwright test frontend/tests/platform-v2-tools.spec.ts --grep 'stock contributions'
       - name: Test rankings CVM redesign
         env:
           PW_CHANNEL: chromium
