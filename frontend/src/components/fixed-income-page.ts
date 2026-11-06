@@ -17,6 +17,7 @@ export class FixedIncomePage extends LightElement {
   @state() private draft=newInvestment();
   @state() private redemption='';
   @state() private touched=false;
+  @state() private comparisonOpen=false;
   connectedCallback(){super.connectedCallback();this.classList.add('workspace-v2','fixed-workspace')}
   private result():{projection?:Projection;error?:string} {
     if(!this.touched)return {};
@@ -58,7 +59,7 @@ export class FixedIncomePage extends LightElement {
 `:nothing}</section>
       <section slot="table" class="workspace-panel">${r?html`<fixed-income-evolution .projection=${r}></fixed-income-evolution>`:nothing}</section>
       <section slot="tools" class="workspace-panel rf-utility-panel"><details class="rf-tool-drawer"><summary><span><strong>Cenários e taxa equivalente</strong><small>Salve simulações e compare taxas</small></span><span aria-hidden="true" class="rf-chevron">⌄</span></summary><fixed-income-tools .draft=${this.draft} @open-scenario=${(e:CustomEvent<Investment>)=>{const input=e.detail;this.draft=Object.fromEntries(Object.entries(input).map(([key,value])=>[key,typeof value==='number'?String(value).replace('.',','):value])) as unknown as InvestmentDraft;this.redemption='';this.touched=true}}></fixed-income-tools></details></section>
-      <section slot="comparison" class="workspace-panel rf-utility-panel"><details class="rf-comparison-section"><summary><span><strong>Comparar investimentos</strong><small>Compare até quatro cenários</small></span><span class="rf-chevron" aria-hidden="true">⌄</span></summary><fixed-income-comparison></fixed-income-comparison></details>
+      <section slot="comparison" class="workspace-panel rf-utility-panel"><details class="rf-comparison-section" @toggle=${(e:Event)=>this.comparisonOpen=(e.currentTarget as HTMLDetailsElement).open}><summary><span><strong>Comparar investimentos</strong><small>Compare até quatro cenários</small></span><span class="rf-chevron" aria-hidden="true">⌄</span></summary>${this.comparisonOpen?html`<fixed-income-comparison></fixed-income-comparison>`:nothing}</details>
 </section>
       </panel-workspace>
       <details class="rf-assumptions" aria-label="Premissas da simulação"><summary><span><strong>Regras, condições e fontes</strong><small>Informações técnicas e limitações da simulação</small></span><span class="rf-chevron" aria-hidden="true">⌄</span></summary><div class="rf-assumptions-content"><h2>O que considerar</h2><p>${this.draft.product==='ipca'?'Tesouro IPCA+ sem juros semestrais: projeção de carregamento até o vencimento. A venda antecipada depende do preço de mercado e não é calculada nesta V1.':this.draft.product==='selic'?'Tesouro Selic: projeção simplificada pela composição dos fatores Selic e adicional, não pelo preço de negociação da LFT. Venda antecipada pode divergir da curva.':'CDI: taxa diária equivalente em base 252, com dias úteis aproximados por dias corridos × 252/365. Sem calendário de feriados. LCI e LCA: apenas CDI ou prefixadas, sem indexação a preços.'}</p>
