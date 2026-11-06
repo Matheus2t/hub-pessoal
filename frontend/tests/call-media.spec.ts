@@ -339,8 +339,10 @@ test('two simultaneous screens switch video and local audio without replacing th
   // The displayed resolution/FPS come from RTP receive stats, not preset labels.
   await viewer.evaluate(()=>((document.querySelector('call-page') as any).voice.measure()));
   await expect(viewer.getByLabel('Qualidade real do vídeo')).toContainText(/Recebendo|Medindo/);
-  await expect.poll(()=>viewer.evaluate(()=>((document.querySelector('call-page') as any).voice.receivedScreenQuality(
-   (document.querySelector('call-page') as any).viewedScreen.owner)?.height??0),{timeout:15000}).toBeGreaterThan(0);
+  await expect.poll(()=>viewer.evaluate(()=>{
+   const page=document.querySelector('call-page') as any;
+   return page.voice.receivedScreenQuality(page.viewedScreen.owner)?.height??0;
+  }),{timeout:15000}).toBeGreaterThan(0);
   // Severe congestion must not turn 1440p into a forced 480p half-resolution stream.
   await a.page.evaluate(async watcher=>{
    const voice=(document.querySelector('call-page') as any).voice,peer=voice.peers.get(watcher);
