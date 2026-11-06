@@ -3,6 +3,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 
 const origin=process.env.CALL_TEST_URL||'http://127.0.0.1:8001',key=process.env.CALL_TEST_ADMIN_KEY;
+const previewAssets=process.env.CALL_MEDIA_TEST_ASSETS;
 const tone=resolve('.vercel/call-stage4-tone.wav');
 test.skip(!key,'Start the private single-process Call service and set CALL_TEST_ADMIN_KEY.');
 test.setTimeout(120000);
@@ -16,6 +17,8 @@ test.beforeAll(()=>{
 });
 async function tab(browser:Browser,mobile=false){
  const context=await browser.newContext({permissions:['microphone','camera','clipboard-read','clipboard-write'],ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1',...(mobile?{viewport:{width:390,height:844},isMobile:true,hasTouch:true}:{})}),page=await context.newPage();
+ if(previewAssets)await page.route(url=>url.hostname==='127.0.0.1'&&['/bundle.js','/styles.css'].includes(url.pathname),route=>
+  route.fulfill({path:resolve(previewAssets,new URL(route.request().url()).pathname.slice(1))}));
  await page.addInitScript(()=>{
   const w=window as any,native=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);w.__captures=[];w.__screens=[];w.__cameraTimers=[];
   // Count message types only. Never retain credentials, SDP, candidates or frame payloads.
@@ -73,6 +76,68 @@ async function finish(pages:Page[],contexts:BrowserContext[]){
  for(const page of pages)if(!page.isClosed())await page.evaluate(()=>{for(const s of(window as any).__screens??[]){clearInterval(s.timer);void s.audio?.close()}for(const timer of(window as any).__cameraTimers??[])clearInterval(timer)}).catch(()=>{});
  await Promise.all(contexts.map(c=>c.close()));
 }
+
+test('native Picture-in-Picture follows the remote share across tabs and releases it on exit',async({browser})=>{
+ const host=await tab(browser),receiver=await tab(browser),unsupported=await tab(browser,true);
+ const page=receiver.page;
+ const button=page.getByRole('button',{name:'Janela flutuante',exact:true});
+ const share=host.page.getByRole('button',{name:'Compartilhar tela',exact:true});
+ const stop=host.page.getByRole('button',{name:'Parar compartilhamento',exact:true});
+ const pip=()=>page.evaluate(()=>document.pictureInPictureElement?.getAttribute('data-role')??null);
+ await unsupported.page.addInitScript(()=>Object.defineProperty(document,'pictureInPictureEnabled',{value:false}));
+ try{
+  const invite=await owner(host.page);await enter(host.page);
+  for(const [viewer,name] of [[page,'Desktop'],[unsupported.page,'Celular']] as const){
+   await guest(viewer,host.page,invite,name);await enter(viewer);
+  }
+  await expect(button).toHaveCount(0);
+  await share.click();
+  const hostId=await id(host.page);
+  await media(page,hostId,'screenVideo');await media(page,hostId,'screenAudio');await media(page,hostId,'microphone');
+  await media(unsupported.page,hostId,'screenVideo');
+  await expect(unsupported.page.getByRole('button',{name:'Janela flutuante',exact:true})).toHaveCount(0);
+  await expect(host.page.getByRole('button',{name:'Janela flutuante',exact:true})).toHaveCount(0);
+
+  const sameMedia=await page.evaluateHandle(hostId=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(hostId);
+   const {screenVideo:video,screenAudio:audio,microphone}=peer.elements;
+   return {peer,video,stream:video.srcObject,audio,microphone};
+  },hostId);
+  await button.click();await expect.poll(pip).toBe('screenVideo');
+  await expect(button).toHaveAttribute('aria-pressed','true');
+  const before=await evidence(page,hostId,'screenVideo'),audioBefore=await evidence(page,hostId,'screenAudio');
+  const otherTab=await receiver.context.newPage();
+  await otherTab.bringToFront();
+  await expect.poll(pip).toBe('screenVideo');
+  await expect.poll(async()=>(await evidence(page,hostId,'screenVideo')).frames).toBeGreaterThan(before.frames);
+  await expect.poll(async()=>(await evidence(page,hostId,'screenAudio')).energy).toBeGreaterThan(audioBefore.energy);
+  await page.bringToFront();await otherTab.close();
+  await page.evaluate(()=>document.exitPictureInPicture());
+  await expect(button).toHaveAttribute('aria-pressed','false');
+  expect(await sameMedia.evaluate(({peer,video,stream,audio,microphone})=>{
+   const root=document.querySelector('.call-remote-screen');
+   const outputs=[...document.querySelectorAll<HTMLAudioElement>('.call-remote-audio [data-role="screenAudio"]')].filter(el=>el.srcObject);
+   return {video:root?.firstElementChild===video&&video.srcObject===stream,muted:video.muted,
+    peer:peer.pc.connectionState,audio:outputs.length===1&&outputs[0]===audio,microphone:microphone.isConnected};
+  })).toEqual({video:true,muted:true,peer:'connected',audio:true,microphone:true});
+  await sameMedia.dispose();
+  await media(page,hostId,'screenVideo');
+
+  await button.click();await expect.poll(pip).toBe('screenVideo');
+  await button.click();await expect.poll(pip).toBe(null);
+  await button.click();await expect.poll(pip).toBe('screenVideo');
+  await stop.click();
+  await expect.poll(pip).toBe(null);
+  await expect(button).toHaveCount(0);
+  await media(page,hostId,'microphone');
+
+  await share.click();await media(page,hostId,'screenVideo');
+  await button.click();await expect.poll(pip).toBe('screenVideo');
+  await page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
+  await expect.poll(pip).toBe(null);
+  await expect(button).toHaveCount(0);
+ }finally{await finish([host.page,page,unsupported.page],[host.context,receiver.context,unsupported.context])}
+});
 
 test('remote fullscreen preserves the video, stream and peer; stopping the share closes both viewers',async({browser},info)=>{
  const host=await tab(browser),guestDesktop=await tab(browser),guestMobile=await tab(browser,true);

@@ -1,7 +1,7 @@
 import {test,expect,type Page} from '@playwright/test';
 
-// May also validate the public production UI without an owner key or room.
-const origin=process.env.CALL_PUBLIC_URL||process.env.CALL_TEST_URL||'';
+const origin=process.env.CALL_TEST_URL||'';
+test.skip(!origin,'Start the local Call service and set CALL_TEST_URL.');
 test.use({ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1'});
 test.beforeEach(async({page})=>{
  await page.addInitScript(()=>{
@@ -27,6 +27,10 @@ test.beforeEach(async({page})=>{
  await page.goto(`${origin}/#/call`);
  await expect(page.locator('call-page h1')).toHaveText('2T Call');
  await expect(page.locator('.call-fullscreen')).toHaveCount(0);
+ await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
+ await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
+ await expect(page.locator('.call-connection')).toHaveText('Conectado');
+ await page.getByRole('button',{name:'Entrar na chamada',exact:true}).click();
  await page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
  await expect(page.locator('.call-fullscreen')).toBeVisible();
  await expect.poll(()=>page.locator('.call-preview>video').evaluate((v:HTMLVideoElement)=>v.videoWidth)).toBe(960);
@@ -93,18 +97,27 @@ test('CSS fallback fits desktop and mobile in both themes, traps focus and resto
  expect(await page.evaluate(()=>getComputedStyle(document.documentElement).overflow)).not.toBe('hidden');
 });
 
-test('rejected native request falls back; route teardown restores scroll and removes listeners',async({page})=>{
+test('rejected native request falls back; navigation restores scroll and leaving the call releases media',async({page})=>{
  await page.evaluate(()=>{HTMLElement.prototype.requestFullscreen=()=>Promise.reject(new DOMException('Unavailable','NotAllowedError'));document.body.style.overflow='auto'});
  await page.locator('.call-fullscreen').click();await expect(page.locator('.call-fullscreen')).toHaveText('Sair do modo expandido');await fits(page);
- await page.evaluate(()=>{location.hash='#/'});await expect(page.locator('call-page')).toHaveCount(0);
+ await page.evaluate(()=>{location.hash='#/'});
+ await expect(page.getByRole('button',{name:'Sair da chamada',exact:true})).toBeVisible();
+ await expect(page.locator('.call-preview.is-expanded')).toHaveCount(0);
  expect(await page.evaluate(()=>({body:document.body.style.overflow,root:getComputedStyle(document.documentElement).overflow==='hidden'}))).toEqual({body:'auto',root:false});await noListeners(page);
+ expect(await page.evaluate(()=>(window as any).__track.readyState)).toBe('live');
+ await page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
+ await expect(page.locator('call-page')).toBeHidden();
+ await expect(page.locator('.call-dock')).toHaveCount(0);
  expect(await page.evaluate(()=>(window as any).__track.readyState)).toBe('ended');
 });
 
-test('late fullscreen resolution after route exit cannot retain expansion or media',async({page})=>{
+test('late fullscreen resolution after leaving the call cannot retain expansion or media',async({page})=>{
  await page.evaluate(()=>{HTMLElement.prototype.requestFullscreen=()=>new Promise(resolve=>(window as any).__resolveFullscreen=resolve)});
  await page.locator('.call-fullscreen').click();await expect(page.locator('.call-fullscreen')).toHaveText('Sair da tela cheia');
- await page.evaluate(()=>{location.hash='#/'});await expect(page.locator('call-page')).toHaveCount(0);
+ await page.evaluate(()=>{location.hash='#/'});
+ await page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
+ await expect(page.locator('call-page')).toBeHidden();
+ await expect(page.locator('.call-dock')).toHaveCount(0);
  await page.evaluate(()=>(window as any).__resolveFullscreen());await noListeners(page);
  expect(await page.evaluate(()=>document.fullscreenElement)).toBe(null);expect(await page.evaluate(()=>getComputedStyle(document.documentElement).overflow)).not.toBe('hidden');
  expect(await page.evaluate(()=>(window as any).__track.readyState)).toBe('ended');
