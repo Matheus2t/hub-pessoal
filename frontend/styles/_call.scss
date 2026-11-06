@@ -57,6 +57,9 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
  .call-viewer-toggle:hover:not(:disabled),.call-viewer[aria-modal=true] .call-viewer-toggle,
  .call-viewer-media button:hover:not(:disabled),.call-viewer-media button[aria-pressed=true] { background:#252525; color:#fff; border-color:#eee; }
  .call-viewer-toggle:focus-visible,.call-viewer-media button:focus-visible { outline-color:#fff; }
+ .call-watch-actions { display:flex; justify-content:flex-start; padding:8px 12px; border-bottom:1px solid var(--line-soft); }
+ .call-watch-actions button { min-height:38px; padding:6px 14px; }
+ .call-watch-actions button[aria-pressed=true] { border-color:var(--text); }
  .call-screen-options {
   display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;
   button { min-height:34px; max-width:100%; padding:5px 10px; overflow-wrap:anywhere; }
