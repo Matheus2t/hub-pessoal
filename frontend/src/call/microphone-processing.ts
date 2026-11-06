@@ -15,7 +15,7 @@ export class CallMicrophoneProcessing {
  private context?:AudioContext;
  private gate?:GainNode;
  private analyser?:AnalyserNode;
- private samples?:Float32Array;
+ private samples?:Float32Array<ArrayBuffer>;
  private timer?:number;
  private openUntil=0;
  private generation=0;
