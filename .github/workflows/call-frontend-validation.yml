@@ -5,6 +5,7 @@ on:
     paths:
       - 'frontend/src/call/**'
       - 'frontend/styles/_call.scss'
+      - 'frontend/tests/call-landing-minimal.spec.ts'
       - 'frontend/src/components/app-shell.ts'
       - 'backend/app/call_*.py'
       - 'backend/tests/test_call_*.py'
@@ -16,6 +17,7 @@ on:
     paths:
       - 'frontend/src/call/**'
       - 'frontend/styles/_call.scss'
+      - 'frontend/tests/call-landing-minimal.spec.ts'
       - 'frontend/src/components/app-shell.ts'
       - 'backend/app/call_*.py'
       - 'backend/tests/test_call_*.py'
@@ -70,6 +72,13 @@ jobs:
       - run: python -m pip install -r deploy/call/requirements.txt pytest==8.3.4 cryptography
       - run: npm run build
       - run: google-chrome --version # preinstalled browser on Ubuntu Actions runner
+      - name: Verify minimalist Call landing
+        env:
+          PW_CHANNEL: chrome
+          BASE_URL: http://127.0.0.1:8123
+        run: |
+          python3 -m http.server 8123 --directory dist >/tmp/2t-call-lobby.log 2>&1 &
+          npx playwright test frontend/tests/call-landing-minimal.spec.ts --reporter=line
       - run: python -m backend.tests.call_tls_harness /tmp/twot-call-v4-cert
       - name: Full V4 local WSS + WebRTC browser regression
         env:
