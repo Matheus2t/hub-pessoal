@@ -69,7 +69,9 @@ async function evidence(page:Page,from:string,role:string){
 async function media(page:Page,from:string,role:string){
  if(role==='screenVideo'||role==='screenAudio'){
   const button=page.getByRole('button',{name:'Assistir',exact:true});
-  if(await button.isVisible().catch(()=>false)){
+  const watching=page.getByRole('button',{name:'Parar de assistir',exact:true});
+  await expect.poll(async()=>await button.isVisible()||await watching.isVisible(),{timeout:15000}).toBe(true);
+  if(await button.isVisible()){
    const selected=await page.evaluate(()=>(document.querySelector('call-page') as any).viewedScreen?.owner);
    if(selected===from)await button.click();
   }
