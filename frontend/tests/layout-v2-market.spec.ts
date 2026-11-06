@@ -11,11 +11,11 @@ for(const width of [1920,1366,768,390,320])test(`market terminal fixed and direc
  await expect(page.locator('tv-advanced-chart')).toHaveAttribute('symbol','BMFBOVESPA:IBOV');
  await expect(page.locator('.market-search')).toHaveCount(0);
  await expect(w.locator('[data-panel=panorama]')).toHaveAttribute('style',/span 12/);
- await page.locator('.market-directory summary').click();
+ await page.locator('.market-directory-toggle').click();
  await expect(page.locator('.stock-item')).toHaveCount(65);
  await expect(page.getByLabel('Buscar ação',{exact:true})).toBeVisible();
  await page.reload();
- await expect(page.locator('.market-directory')).not.toHaveAttribute('open','');
+ await expect(page.locator('.market-directory-toggle')).toHaveAttribute('aria-expanded','false');
  await expect(page.locator('iframe.market-quotes-frame')).toBeVisible();
  for(const theme of ['dark','light']){
   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
