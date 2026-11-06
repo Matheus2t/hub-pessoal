@@ -24,10 +24,27 @@ export class VoiceMesh {
  private self='';private epoch=0;private people:Participant[]=[];private rtc?:RtcConfig;private ready=false;
  private microphone?:MediaStreamTrack;private refresh?:number;private sampling?:number;private measuring=false;
  private sources:Partial<Record<MediaRole,MediaStreamTrack>>={};private screen:RoomScreen|null=null;
+ private outputSink='';
  constructor(private send:(message:Signal)=>boolean,private changed:()=>void,
   private audioRoot:()=>HTMLElement|null,private refreshConfig:()=>void,
   private videoRoot:(role:'screenVideo'|'camera',id:string)=>HTMLElement|null=()=>null){}
  get blocked(){return this.audioMix.blocked||[...this.peers.values()].some(p=>p.blocked)}
+ /** Select the destination for microphone audio and shared audio, including Web Audio. */
+ async setAudioOutput(sinkId:string){
+  if(this.outputSink===sinkId)return;
+  const previous=this.outputSink;
+  const elements=()=>[...this.peers.values()].flatMap(peer=>
+   [peer.elements.microphone,peer.elements.screenAudio] as HTMLAudioElement[]);
+  this.outputSink=sinkId;
+  try{
+   await this.audioMix.setOutputSink(sinkId);
+   await Promise.all(elements().map(element=>element.setSinkId(sinkId)));
+  }catch(error){
+   this.outputSink=previous;
+   await Promise.allSettled([...elements().map(element=>element.setSinkId(previous)),this.audioMix.setOutputSink(previous)]);
+   throw error;
+  }
+ }
  start(){
   if(this.active)return;
   if(!window.RTCPeerConnection){this.error='WebRTC indisponível neste navegador.';this.changed();return}
@@ -73,7 +90,11 @@ export class VoiceMesh {
   const elements={} as Record<MediaRole,HTMLMediaElement>;
   for(const role of roles){const element=role==='microphone'?audio:document.createElement(kind(role)==='audio'?'audio':'video');
    element.autoplay=true;element.setAttribute('playsinline','');element.dataset.role=role;element.dataset.participant=person.id;
-   element.muted=kind(role)==='video';elements[role]=element;if(kind(role)==='audio'&&role!=='microphone')this.audioRoot()?.append(element);
+   element.muted=kind(role)==='video';elements[role]=element;
+    if(kind(role)==='audio'){
+     if(this.outputSink)void (element as HTMLAudioElement).setSinkId(this.outputSink).catch(()=>this.changed());
+     if(role!=='microphone')this.audioRoot()?.append(element);
+    }
   }
   const peer:Peer={id:person.id,epoch:person.voiceEpoch,pc,audio,elements,transceivers:{},streams:{},outbound:{},uploadKbps:0,limited:false,clearSamples:0,blockedElements:new Set(),videoStats:{},polite:this.self>person.id,makingOffer:false,
    settingAnswer:false,ignored:new Set(),candidates:[],queue:Promise.resolve(),attempts:0,resignal:false,blocked:false,failed:false};
@@ -287,5 +308,5 @@ export class VoiceMesh {
   for(const element of Object.values(peer.elements)){element.pause();element.srcObject=null;element.remove()}peer.streams={};peer.candidates=[];
  }
  private clearPeers(){for(const peer of [...this.peers.values()])this.closePeer(peer)}
- stop(forgetListening=false){this.active=false;this.clearPeers();this.audioMix.stop(forgetListening);this.microphone=undefined;this.sources={};this.screen=null;this.epoch=0;this.error='';window.clearInterval(this.sampling);window.clearTimeout(this.refresh);this.changed()}
+ stop(forgetListening=false){if(forgetListening)this.outputSink='';this.active=false;this.clearPeers();this.audioMix.stop(forgetListening);this.microphone=undefined;this.sources={};this.screen=null;this.epoch=0;this.error='';window.clearInterval(this.sampling);window.clearTimeout(this.refresh);this.changed()}
 }
