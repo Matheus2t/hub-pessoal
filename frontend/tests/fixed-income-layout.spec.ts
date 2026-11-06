@@ -13,6 +13,7 @@ for(const width of [1366,768,390,320]) test('Renda Fixa tem fluxo simples e resp
  await expect(root.locator('.rf-empty-balance')).toContainText('—');
  await expect(root.locator('.rf-assumptions')).not.toHaveAttribute('open','');
  await expect(root.locator('.rf-tool-drawer')).not.toHaveAttribute('open','');
+ await expect(root.locator('fixed-income-tools')).not.toBeVisible();
  await expect(root.locator('.rf-comparison-section')).not.toHaveAttribute('open','');
  const fields=root.locator('fixed-income-fields').first();
  await fields.getByLabel('Valor aplicado').fill('10000');
@@ -41,7 +42,12 @@ for(const width of [1366,768,390,320]) test('Renda Fixa tem fluxo simples e resp
  await expect(root.getByRole('heading',{name:'O que considerar'})).toBeVisible();
  for(const theme of ['dark','light']){
   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const overflow=await page.evaluate(()=>({
+   width:innerWidth,document:document.documentElement.scrollWidth,
+   nodes:[...document.querySelectorAll('*')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.right>innerWidth+2}).slice(0,12).map(e=>({tag:e.tagName,class:e.className?.toString().slice(0,90),right:Math.round(e.getBoundingClientRect().right)}))
+  }));
+  if(overflow.document>overflow.width)console.log('RF_OVERFLOW',width,theme,JSON.stringify(overflow));
+  expect(overflow.document<=overflow.width).toBe(true);
   await page.screenshot({path:info.outputPath('renda-fixa-'+theme+'.png'),animations:'disabled'});
  }
  expect(errors).toEqual([]);
