@@ -139,3 +139,245 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  .fixed-workspace .rf-breakdown dl,.fixed-workspace fixed-income-tools { grid-template-columns: 1fr; }
  .fixed-workspace .rf-breakdown dl div { flex-wrap: wrap; }
 }
+
+
+/* Renda Fixa: layout fixo em duas colunas. Aplicado apenas ao workspace do simulador.
+   Usa :host porque a grade é interna ao Shadow DOM de panel-workspace. */
+:host([area="fixed-income-simulator"]) .ws-grid { gap: 14px; align-items: start; }
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="form"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="empty"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="summary"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="tools"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="comparison"] {
+  grid-column: span 6 !important;
+  grid-row: auto !important;
+}
+@media (max-width:900px) {
+ :host([area="fixed-income-simulator"]) .ws-cell {
+   grid-column: 1 / -1 !important;
+   grid-row: auto !important;
+ }
+}
+
+/* 2T / Renda Fixa: o conteúdo essencial primeiro, detalhes técnicos sob demanda. */
+.fixed-workspace .rf-page.rf-refined { min-width:0; }
+.fixed-workspace .rf-refined .rf-hero { padding: 5px 0 28px; }
+.fixed-workspace .rf-refined .rf-eyebrow {
+ display:block; font-size:11px; font-weight:650; letter-spacing:.11em;
+ line-height:1.5; color:var(--muted); text-transform:uppercase;
+}
+.fixed-workspace .rf-refined .rf-hero h1 {
+ font-size:clamp(30px,3.6vw,43px); letter-spacing:-.05em;
+ font-weight:650; line-height:1.1; margin:9px 0 11px;
+}
+.fixed-workspace .rf-refined .rf-hero p {
+ color:var(--secondary); font-size:14px; line-height:1.65;
+ max-width:720px; margin:0;
+}
+.fixed-workspace .rf-refined .rf-results .workspace-panel {
+ padding:26px; border:1px solid var(--line); border-radius:10px;
+ background:var(--panel); height:auto; min-height:100%;
+}
+.fixed-workspace .rf-refined .rf-section-header {
+ display:flex; justify-content:space-between; align-items:start; gap:15px;
+ padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid var(--line-soft);
+}
+.fixed-workspace .rf-refined .rf-section-header h2 {
+ font-size:20px; font-weight:620; letter-spacing:-.035em; margin:6px 0 0;
+ line-height:1.22;
+}
+.fixed-workspace .rf-refined .rf-reset {
+ padding:9px 13px; border:1px solid var(--line); border-radius:6px;
+ color:var(--secondary); background:transparent; font-size:12px;
+}
+.fixed-workspace .rf-refined .rf-reset:hover { background:var(--hover); color:var(--text); }
+.fixed-workspace .rf-refined .rf-simulation .rf-fields { gap:19px 16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.fixed-workspace .rf-refined .rf-simulation .rf-field { font-size:12px; color:var(--secondary); font-weight:570; gap:8px; }
+.fixed-workspace .rf-refined .rf-simulation .rf-field > span { align-items:baseline; }
+.fixed-workspace .rf-refined .rf-simulation .rf-field > span small { font-size:10px; font-weight:500; color:var(--muted); }
+.fixed-workspace .rf-refined .rf-simulation .rf-field > small { display:none; }
+.fixed-workspace .rf-refined .rf-simulation .rf-field input,
+.fixed-workspace .rf-refined .rf-simulation .rf-field select {
+ min-height:49px; font:550 13px var(--font-body);
+ border:1px solid var(--line); border-radius:6px; background:var(--raised);
+ color:var(--text); padding:11px 13px;
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-field :is(input,select):focus-visible {
+ outline:2px solid var(--text); outline-offset:2px;
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-cost-inputs {
+ margin-top:23px; border-top:1px solid var(--line-soft); padding-top:15px;
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-cost-inputs > summary {
+ font-size:12px; color:var(--secondary); padding:9px 0;
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-cost-inputs[open] > summary { color:var(--text); }
+.fixed-workspace .rf-refined .rf-simulation-actions {
+ display:flex; padding-top:20px; margin-top:18px; border-top:1px solid var(--line-soft);
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-primary-action {
+ min-height:49px; display:flex; align-items:center; justify-content:space-between;
+ gap:15px; padding:12px 17px; width:100%; border-radius:6px;
+ background:var(--accent-strong); border:1px solid var(--accent-strong);
+ color:var(--on-accent); font-size:13px; font-weight:650;
+}
+.fixed-workspace .rf-refined .rf-simulation .rf-primary-action:hover {
+ background:var(--accent-hover); border-color:var(--accent-hover);
+}
+.fixed-workspace .rf-refined .rf-primary-action span { font-size:18px; font-weight:400; }
+.fixed-workspace .rf-refined .rf-result-panel { display:flex; flex-direction:column; min-width:0; }
+.fixed-workspace .rf-refined .rf-result-panel .rf-section-header { margin-bottom:14px; }
+.fixed-workspace .rf-refined .rf-result-meta {
+ color:var(--secondary); font-size:12px; line-height:1.65;
+ margin:0 0 16px;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics {
+ display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:0 20px; margin:0; align-items:start;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics > div {
+ padding:18px 0; background:none; border-bottom:1px solid var(--line-soft);
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics > .rf-primary {
+ grid-column:1/-1; padding:6px 0 23px; background:none;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics dt {
+ color:var(--secondary); font-size:12px; line-height:1.4;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics dd {
+ margin-top:9px; line-height:1.18; font-weight:620;
+ font-size:clamp(17px,2vw,24px); letter-spacing:-.035em;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-metrics .rf-primary dd {
+ font-size:clamp(31px,3.6vw,46px); font-weight:650; letter-spacing:-.05em;
+}
+.fixed-workspace .rf-refined .rf-result-panel .rf-rescue {
+ margin:18px 0 0; color:var(--secondary); font-size:12px;
+ line-height:1.7; padding:13px 15px; background:var(--raised);
+ border:1px solid var(--line-soft); border-radius:6px;
+}
+.fixed-workspace .rf-refined .rf-result-empty .rf-empty-balance {
+ display:grid; gap:10px; padding:20px 0 13px;
+}
+.fixed-workspace .rf-refined .rf-empty-balance span,
+.fixed-workspace .rf-refined .rf-empty-metrics span {
+ color:var(--secondary); font-size:12px;
+}
+.fixed-workspace .rf-refined .rf-empty-balance strong {
+ font-weight:500; font-size:clamp(40px,4.2vw,58px); letter-spacing:-.06em; color:var(--muted);
+}
+.fixed-workspace .rf-refined .rf-result-empty .rf-empty { margin:0; padding:0 0 27px; max-width:360px; }
+.fixed-workspace .rf-refined .rf-empty-metrics {
+ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px;
+ border-top:1px solid var(--line-soft); margin-top:auto;
+}
+.fixed-workspace .rf-refined .rf-empty-metrics > div { display:grid; gap:10px; padding:19px 0 0; }
+.fixed-workspace .rf-refined .rf-empty-metrics strong { font-size:22px; font-weight:500; color:var(--muted); }
+.fixed-workspace .rf-refined .rf-chart-panel { padding:26px; }
+.fixed-workspace .rf-refined .rf-chart-heading h2 {
+ margin:6px 0 18px; font-size:20px; letter-spacing:-.035em; font-weight:620;
+}
+.fixed-workspace .rf-refined .rf-chart-panel fixed-income-chart .rf-chart figcaption {
+ color:var(--secondary); font-size:12px; font-weight:500; margin-bottom:13px;
+}
+.fixed-workspace .rf-refined .rf-chart-panel .rf-chart-caption {
+ font-size:11px; line-height:1.65; color:var(--secondary); margin:17px 0 0;
+}
+.fixed-workspace .rf-refined .rf-chart-panel .rf-chart { padding:0; margin:0; border:0; }
+.fixed-workspace .rf-refined .rf-chart-panel .rf-chart-legend { gap:9px 20px; padding-top:12px; border-top:1px solid var(--line-soft); }
+.fixed-workspace .rf-refined .rf-results [slot=taxes],
+.fixed-workspace .rf-refined .rf-results [slot=table] { padding:0; min-height:0; overflow:hidden; }
+.fixed-workspace .rf-refined .rf-breakdown,
+.fixed-workspace .rf-refined .rf-evolution {
+ margin:0; padding:0; border:0; background:transparent;
+}
+.fixed-workspace .rf-refined .rf-breakdown > summary,
+.fixed-workspace .rf-refined .rf-evolution > summary {
+ min-height:62px; padding:20px 24px; cursor:pointer;
+ font-size:14px; font-weight:600;
+}
+.fixed-workspace .rf-refined .rf-breakdown[open] dl { padding:0 24px 24px; margin-top:0; }
+.fixed-workspace .rf-refined .rf-evolution[open] > :not(summary) { margin-left:24px; margin-right:24px; }
+.fixed-workspace .rf-refined .rf-utility-panel {
+ padding:0 !important; overflow:hidden;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer,
+.fixed-workspace .rf-refined .rf-comparison-section {
+ border:0; margin:0; padding:0; background:transparent;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer > summary,
+.fixed-workspace .rf-refined .rf-comparison-section > summary {
+ display:flex; align-items:center; justify-content:space-between; gap:15px;
+ padding:22px 24px; cursor:pointer; list-style:none; min-height:86px;
+ font-size:14px; font-weight:600; text-align:left;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer > summary::-webkit-details-marker,
+.fixed-workspace .rf-refined .rf-comparison-section > summary::-webkit-details-marker,
+.fixed-workspace .rf-refined .rf-assumptions > summary::-webkit-details-marker { display:none; }
+.fixed-workspace .rf-refined .rf-tool-drawer > summary span:first-child,
+.fixed-workspace .rf-refined .rf-comparison-section > summary span:first-child,
+.fixed-workspace .rf-refined .rf-assumptions > summary span:first-child { display:grid; gap:7px; min-width:0; }
+.fixed-workspace .rf-refined .rf-tool-drawer > summary strong,
+.fixed-workspace .rf-refined .rf-comparison-section > summary strong,
+.fixed-workspace .rf-refined .rf-assumptions > summary strong { font-size:14px; font-weight:620; }
+.fixed-workspace .rf-refined .rf-tool-drawer summary small,
+.fixed-workspace .rf-refined .rf-comparison-section summary small,
+.fixed-workspace .rf-refined .rf-assumptions summary small { color:var(--secondary); font-size:12px; font-weight:400; line-height:1.5; }
+.fixed-workspace .rf-refined .rf-chevron { flex:0 0 auto; font-size:22px; color:var(--secondary); transition:transform .16s ease; }
+.fixed-workspace .rf-refined .rf-tool-drawer[open] > summary .rf-chevron,
+.fixed-workspace .rf-refined .rf-comparison-section[open] > summary .rf-chevron,
+.fixed-workspace .rf-refined .rf-assumptions[open] > summary .rf-chevron { transform:rotate(180deg); }
+.fixed-workspace .rf-refined .rf-tool-drawer > fixed-income-tools,
+.fixed-workspace .rf-refined .rf-comparison-section > fixed-income-comparison {
+ display:block; margin:0; border-top:1px solid var(--line-soft); padding:22px 24px;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer > fixed-income-tools {
+ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer > fixed-income-tools > .rf-panel {
+ min-width:0; border:0; padding:0; margin:0; background:transparent;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer fixed-income-tools .rf-note {
+ font-size:11px; color:var(--secondary); margin:9px 0 14px; line-height:1.6;
+}
+.fixed-workspace .rf-refined .rf-tool-drawer .learn-grade { display:flex; flex-wrap:wrap; gap:8px; align-items:end; }
+.fixed-workspace .rf-refined .rf-tool-drawer .learn-grade label { flex:1; min-width:min(160px,100%); }
+.fixed-workspace .rf-refined .rf-tool-drawer .rf-panel button { min-height:39px; }
+.fixed-workspace .rf-refined .rf-comparison-section > fixed-income-comparison .workspace-panel { padding:16px; }
+.fixed-workspace .rf-refined .rf-assumptions {
+ max-width:none; margin-top:15px; padding:0; background:var(--panel);
+ border:1px solid var(--line-soft); border-radius:9px;
+}
+.fixed-workspace .rf-refined .rf-assumptions > summary {
+ display:flex; align-items:center; justify-content:space-between; gap:14px;
+ padding:18px 24px; cursor:pointer; list-style:none;
+}
+.fixed-workspace .rf-refined .rf-assumptions-content { border-top:1px solid var(--line-soft); padding:22px 24px; }
+.fixed-workspace .rf-refined .rf-assumptions-content h2 { font-size:17px; }
+.fixed-workspace .rf-refined .rf-assumptions-content p { font-size:12px; }
+.fixed-workspace .rf-refined .rf-sources { margin-top:15px; }
+@media(max-width:950px) {
+ .fixed-workspace .rf-refined .rf-tool-drawer > fixed-income-tools { grid-template-columns:1fr; }
+}
+@media(max-width:600px) {
+ .fixed-workspace .rf-refined .rf-hero { padding-bottom:22px; }
+ .fixed-workspace .rf-refined .rf-hero p { font-size:13px; }
+ .fixed-workspace .rf-refined .rf-results .workspace-panel { padding:19px 16px; }
+ .fixed-workspace .rf-refined .rf-simulation .rf-fields { grid-template-columns:1fr; gap:16px; }
+ .fixed-workspace .rf-refined .rf-result-panel .rf-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .fixed-workspace .rf-refined .rf-result-panel .rf-metrics dd { font-size:18px; }
+ .fixed-workspace .rf-refined .rf-result-panel .rf-metrics .rf-primary dd { font-size:32px; }
+ .fixed-workspace .rf-refined .rf-breakdown > summary,
+ .fixed-workspace .rf-refined .rf-evolution > summary { padding:18px 16px; }
+ .fixed-workspace .rf-refined .rf-breakdown[open] dl { padding:0 16px 16px; grid-template-columns:1fr; }
+ .fixed-workspace .rf-refined .rf-evolution[open] > :not(summary) { margin-left:16px; margin-right:16px; }
+ .fixed-workspace .rf-refined .rf-tool-drawer > summary,
+ .fixed-workspace .rf-refined .rf-comparison-section > summary { padding:20px 16px; }
+ .fixed-workspace .rf-refined .rf-tool-drawer > fixed-income-tools,
+ .fixed-workspace .rf-refined .rf-comparison-section > fixed-income-comparison { padding:18px 14px; }
+ .fixed-workspace .rf-refined .rf-assumptions > summary { padding:18px 16px; }
+ .fixed-workspace .rf-refined .rf-assumptions-content { padding:17px 16px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .fixed-workspace .rf-refined .rf-chevron { transition:none; }
+}
