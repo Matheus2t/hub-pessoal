@@ -17,7 +17,7 @@ for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart wit
  test.setTimeout(60000);
  await page.setViewportSize({width,height:1080});
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
- await page.goto('/#/acoes');await expect(page.locator('.stock-item')).toHaveCount(65);
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();await expect(page.locator('.stock-item')).toHaveCount(65);
  await expect(page.locator('tv-advanced-chart')).toBeVisible();await page.evaluate(()=>document.fonts.ready);
  if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
  for(const theme of ['dark','light']){
@@ -57,21 +57,29 @@ for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart wit
  }
 });
 
-test('scroll protection is released on route change and preserves panel preferences',async({page})=>{
+test('scroll protection is released on route change with fixed market layout',async({page})=>{
  await isolatedProvider(page);await page.goto('/#/acoes');
- const w=page.locator('market-page panel-workspace');await w.getByRole('button',{name:'Personalizar painel',exact:true}).click();
- await w.getByRole('checkbox',{name:'Panorama do mercado',exact:true}).uncheck();await w.getByRole('button',{name:'Concluir',exact:true}).click();
- await page.evaluate(()=>scrollTo(0,1500));await expect(page.locator('market-page')).toHaveClass(/is-page-scrolling/);
- await page.evaluate(()=>location.hash='#/');await expect(page.locator('market-page')).toHaveCount(0);
- await page.evaluate(()=>scrollTo(0,0));expect(await page.locator('.is-page-scrolling').count()).toBe(0);
- await page.goto('/#/acoes');await expect(page.locator('market-page [slot=panorama]')).toBeHidden();await expect(page.locator('.stock-item')).toHaveCount(65);
+ const w=page.locator('market-page panel-workspace');
+ await expect(w).toHaveAttribute('fixed-layout','');
+ await expect(w.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+ await page.locator('.market-directory summary').click();
+ await page.evaluate(()=>scrollTo(0,900));
+ await expect(page.locator('market-page')).toHaveClass(/is-page-scrolling/);
+ await page.evaluate(()=>location.hash='#/');
+ await expect(page.locator('market-page')).toHaveCount(0);
+ await page.evaluate(()=>scrollTo(0,0));
+ expect(await page.locator('.is-page-scrolling').count()).toBe(0);
+ await page.goto('/#/acoes');
+ await expect(page.locator('market-page [slot=panorama]')).toBeVisible();
+ await page.locator('.market-directory summary').click();
+ await expect(page.locator('.stock-item')).toHaveCount(65);
 });
 
 test('downward page gesture reaches the catalog across loaded widgets',async({page})=>{
  test.setTimeout(90000);
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  for(const width of [1366,390]){
-  await page.setViewportSize({width,height:1080});await page.goto('/#/acoes');
+  await page.setViewportSize({width,height:1080});await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
   await expect(page.locator('.stock-item')).toHaveCount(65);await page.evaluate(()=>document.fonts.ready);
   if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
   await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(350);
@@ -93,7 +101,7 @@ test('downward page gesture reaches the catalog across loaded widgets',async({pa
 test('ticker widget intrinsic height changes cannot jolt the stock directory',async({page})=>{
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
  await page.setViewportSize({width:1366,height:900});
- await page.goto('/#/acoes');
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
  const ticker=page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers');
  await expect(ticker).toBeVisible({timeout:30000});
@@ -114,6 +122,7 @@ test('ticker widget intrinsic height changes cannot jolt the stock directory',as
   expect(Math.abs(now.offset-initial.offset),`directory after ${height}px widget`).toBeLessThan(2);
  }
  await page.reload();
+ await page.locator('.market-directory summary').click();
  await expect(page.locator('market-page .stock-item')).toHaveCount(65);
 });
 
@@ -127,7 +136,7 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
   const height=tag==='tv-tickers'?950:500;
   return route.fulfill({contentType:'text/javascript',body:`if(!customElements.get('${tag}'))customElements.define('${tag}',class extends HTMLElement{connectedCallback(){this.style.cssText='display:block;height:${height}px';this.textContent='External widget fixture';}})`});
  });
- await page.goto('/#/acoes');
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
  const quotes=page.locator('market-page panel-workspace[area="actions-overview"] [slot="quotes"]');
  await expect(quotes).toBeVisible();
  await expect(quotes).toHaveCSS('overflow-y','clip');
@@ -153,7 +162,7 @@ test('Ações default uses isolated live ticker with stable geometry and links',
   contentType:'text/javascript',
   body:"if(!customElements.get('tv-advanced-chart'))customElements.define('tv-advanced-chart',class extends HTMLElement{connectedCallback(){this.style.display='block';this.style.height='500px'}})"
  }));
- await page.goto('/#/acoes');
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  const ticker=page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers');
@@ -173,7 +182,7 @@ test('Ações default uses isolated live ticker with stable geometry and links',
 test('wheel inside quotes iframe scrolls the parent page without losing clicks',async({page})=>{
  await isolatedProvider(page);
  await page.setViewportSize({width:390,height:900});
- await page.goto('/#/acoes');
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  await frame.scrollIntoViewIfNeeded();
@@ -191,7 +200,7 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
 
 test('Ações omits avisos textuais sem remover os gráficos',async({page})=>{
  await isolatedProvider(page);
- await page.goto('/#/acoes');
+ await page.goto('/#/acoes');await page.locator('.market-directory summary').click();
  await expect(page.locator('market-page [slot=chart] tv-advanced-chart')).toBeVisible();
  await expect(page.locator('market-page iframe.market-quotes-frame')).toBeVisible();
  await expect(page.locator('market-page .tv-availability')).toHaveCount(0);
