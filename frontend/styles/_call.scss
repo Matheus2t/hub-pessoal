@@ -773,3 +773,315 @@ call-page[hidden] { display:none !important; }
     border-radius: 7px;
   }
 }
+
+
+/* Voice-channel session: participants first until a stream is available.
+   No changes to video, media routing, fullscreen, or screen capture. */
+.call-page:has(.call-session-heading) {
+  > header {
+    padding: 4px 0 10px;
+    margin: 0 0 8px;
+    border-bottom: 0;
+    align-items: center;
+    h1 { font-size: 23px; line-height: 1.25; letter-spacing: -.025em; margin: 4px 0 0; }
+    p, .call-kicker { display: none; }
+    .call-badge { font-size: 12px; font-weight: 550; color: var(--secondary); }
+  }
+  .call-session-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 12px 24px;
+    flex-wrap: wrap;
+    margin: 4px 0 14px;
+    padding: 8px 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .call-session-title { min-width: 0; }
+  .call-session-eyebrow, .call-people-kicker, .call-controls-label {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 650;
+    line-height: 1.5;
+    letter-spacing: .11em;
+  }
+  .call-session-title h2 {
+    font-size: clamp(24px, 2.5vw, 31px);
+    font-weight: 620;
+    letter-spacing: -.035em;
+    line-height: 1.25;
+    margin: 5px 0 0;
+  }
+  .call-session-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--secondary);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .call-presence-dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text);
+  }
+  .call-connection {
+    margin: 0 0 8px;
+    min-height: 29px;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    background: var(--panel);
+  }
+  .call-room-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 12px;
+    padding: 0;
+    color: var(--secondary);
+    font-size: 12px;
+    > span { margin-right: auto; }
+    button {
+      min-height: 35px;
+      padding: 7px 10px;
+      font-size: 12px;
+      border-radius: 5px;
+      background: var(--panel);
+    }
+  }
+  .call-voice-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px 14px;
+    padding: 8px 0;
+    margin: 0 0 10px;
+    color: var(--secondary);
+    font-size: 13px;
+    border: 0;
+    background: transparent;
+    > span { color: var(--secondary); }
+    button {
+      min-height: 34px;
+      padding: 6px 11px;
+      font-size: 12px;
+      border-radius: 5px;
+    }
+  }
+  .call-controls:not([hidden]) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    padding: 11px 12px;
+    margin: 3px 0 15px;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: var(--panel);
+    box-shadow: none;
+  }
+  .call-controls-label {
+    flex: 0 0 100%;
+    margin: 0 0 2px;
+    order: -1;
+  }
+  .call-controls button {
+    min-height: 39px;
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--bg);
+    font-size: 12px;
+    font-weight: 550;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .call-controls button:hover:not(:disabled) {
+    background: var(--raised);
+    border-color: var(--secondary);
+  }
+  .call-controls button[aria-pressed="true"] {
+    background: var(--raised);
+    border-color: var(--text);
+    color: var(--text);
+  }
+  .call-controls .call-control-secondary { order: 2; color: var(--secondary); }
+  .call-controls .call-control-secondary:first-of-type { margin-left: auto; }
+  .call-controls .call-control-screen[aria-pressed="true"] {
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .call-layout:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(295px, .85fr);
+    align-items: start;
+    gap: 14px;
+    margin: 0 0 15px;
+  }
+  .call-layout:not([hidden]) .call-people {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: stretch;
+  }
+  .call-layout:not([hidden]) .call-stage {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+  }
+  .call-layout:not([hidden])[data-sharing] {
+    grid-template-columns: minmax(0, 1.7fr) minmax(265px, .76fr);
+  }
+  .call-layout:not([hidden])[data-sharing] .call-stage { grid-column: 1; }
+  .call-layout:not([hidden])[data-sharing] .call-people { grid-column: 2; }
+
+  .call-stage, .call-people {
+    min-width: 0;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: var(--panel);
+    box-shadow: none;
+    overflow: hidden;
+  }
+  .call-stage-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 17px 18px 15px;
+    border-bottom: 1px solid var(--line-soft);
+    h2 { font-size: 14px; font-weight: 620; letter-spacing: -.01em; margin: 0; }
+    span { color: var(--secondary); font-size: 11px; }
+  }
+  .call-layout:not([data-sharing]) .call-preview:not(:fullscreen, .is-expanded) {
+    height: clamp(170px, 22vw, 245px);
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+  .call-empty { gap: 7px; padding: 22px 16px; }
+  .call-empty-icon { display: none; }
+  .call-empty h2 { font-size: 14px; font-weight: 600; }
+  .call-empty p { max-width: 32ch; font-size: 12px; }
+  .call-caption { font-size: 11px; padding: 10px 14px; }
+  .call-watch-actions { padding: 9px 12px; }
+  .call-screen-options { padding: 10px 12px 2px; margin: 0; }
+
+  .call-people { padding: 0 18px 6px; }
+  .call-people-heading {
+    padding: 19px 1px 15px;
+    margin-bottom: 1px;
+    border-bottom: 1px solid var(--line);
+  }
+  .call-people h2 {
+    padding: 0;
+    margin: 5px 0 0;
+    border: 0;
+    font-size: 16px;
+    font-weight: 620;
+    letter-spacing: -.02em;
+  }
+  .call-people ol {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .call-people li,
+  .call-people li:has(.call-person) {
+    min-width: 0;
+    min-height: 64px;
+    padding: 13px 2px;
+    gap: 10px;
+    display: block;
+    border: 0;
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: 0;
+    background: transparent;
+  }
+  .call-people li:last-child { border-bottom: 0; }
+  .call-people li:has(.call-speaking) .call-avatar { border-color: var(--text); }
+  .call-person { display: flex; align-items: center; gap: 12px; }
+  .call-avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 650;
+  }
+  .call-people li strong { font-size: 14px; font-weight: 620; line-height: 1.35; }
+  .call-people li small { font-size: 11px; margin-top: 2px; }
+  .call-people .call-voice-state { color: var(--secondary); }
+  .call-people .call-speaking { display: inline-block; font-weight: 650; color: var(--text); }
+  .call-people .call-camera-status:not(.is-active) { display: none; }
+  .call-people .call-camera-frame { margin-top: 12px; border-radius: 5px; }
+  .call-people li .call-listening { margin: 12px 0 0 50px; }
+
+  .call-devices {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(230px,.8fr);
+    gap: 12px 20px;
+    padding: 14px 18px;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: var(--panel);
+    margin: 0 0 16px;
+  }
+  .call-devices[hidden] { display: none; }
+  .call-devices .call-microphone-settings,
+  .call-devices .call-audio-output { margin: 0; border: 0; min-width: 0; }
+  .call-devices .call-microphone-settings summary {
+    padding: 10px 0;
+    font-size: 12px;
+    color: var(--secondary);
+  }
+  .call-devices .call-audio-output { align-items: end; }
+  .call-devices .call-audio-output label { min-width: 0; width: 100%; font-size: 12px; }
+  .call-devices .call-audio-output select { min-height: 38px; font-size: 12px; }
+  .call-devices .call-microphone-settings-content { grid-template-columns: 1fr; }
+}
+@media(max-width: 1020px) {
+  .call-page:has(.call-session-heading) {
+    .call-layout:not([hidden]),
+    .call-layout:not([hidden])[data-sharing] { grid-template-columns: minmax(0,1fr); }
+    .call-layout:not([hidden]) .call-people { grid-column: 1; grid-row: 1; }
+    .call-layout:not([hidden]) .call-stage { grid-column: 1; grid-row: 2; }
+    .call-layout:not([hidden])[data-sharing] .call-stage { grid-column: 1; grid-row: 1; }
+    .call-layout:not([hidden])[data-sharing] .call-people { grid-column: 1; grid-row: 2; }
+    .call-people li { flex-direction: row; }
+    .call-people .call-person { display: flex; }
+    .call-people ol { grid-template-columns: minmax(0,1fr); }
+  }
+}
+@media(max-width: 620px) {
+  .call-page:has(.call-session-heading) {
+    > header h1 { font-size: 20px; }
+    .call-session-heading { align-items: start; gap: 8px; }
+    .call-session-title h2 { font-size: 24px; }
+    .call-session-count { width: 100%; }
+    .call-controls:not([hidden]) { padding: 10px; gap: 7px; }
+    .call-controls button { flex: 1 1 calc(50% - 7px); padding: 8px; min-width: 0; font-size: 12px; }
+    .call-controls .call-control-secondary:first-of-type { margin-left: 0; }
+    .call-people { padding: 0 13px 6px; }
+    .call-people-heading { padding: 15px 1px; }
+    .call-person { gap: 9px; }
+    .call-people li .call-listening { margin-left: 0; }
+    .call-stage-heading { padding: 13px; }
+    .call-devices { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+    .call-voice-controls { gap: 8px; }
+  }
+}
