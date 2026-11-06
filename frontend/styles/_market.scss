@@ -415,3 +415,232 @@ market-rankings .rk-status { border:1px dashed var(--line); border-radius:8px; p
  market-rankings .rk-table .rk-value { grid-column:3; grid-row:1; font-size:15px; }
  market-rankings .rk-table .rk-source { grid-column:2/-1; grid-row:2; text-align:left; }
 }
+
+/* 2T Ações V4: dedicated overview styling, never inherited by calculators or teams. */
+market-page.market-terminal .market-directory-panel { padding: 0; }
+market-page.market-terminal .market-directory-details { margin: 0; }
+market-page.market-terminal .market-directory-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 20px 22px;
+  min-height: 72px;
+}
+market-page.market-terminal .market-directory-summary::-webkit-details-marker { display: none; }
+market-page.market-terminal .market-directory-summary:hover { background: var(--raised); }
+market-page.market-terminal .market-directory-name {
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--text);
+}
+market-page.market-terminal .market-directory-count {
+  margin-left: auto;
+  color: var(--secondary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+market-page.market-terminal .market-directory-chevron {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  margin-left: 10px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: var(--secondary);
+  transform: rotate(45deg);
+  transition: transform 140ms ease;
+}
+market-page.market-terminal .market-directory-details[open] .market-directory-chevron { transform: rotate(225deg); }
+market-page.market-terminal .market-directory-content {
+  padding: 22px;
+  border-top: 1px solid var(--line-soft);
+}
+market-page.market-terminal .market-directory-content .market-search { margin: 0; }
+market-page.market-terminal .market-directory-content .market-filters { margin: 14px 0 20px; }
+market-page.market-terminal .market-directory-content .market-search input {
+  background: var(--bg);
+  border-color: var(--line);
+}
+market-page.market-terminal .market-directory-content .market-result-count {
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 12px;
+}
+market-page.market-terminal .stock-directory .stock-directory-heading,
+market-page.market-terminal .stock-directory .stock-item {
+  display: grid;
+  grid-template-columns: minmax(72px,.6fr) minmax(140px,1.45fr) minmax(145px,1.25fr) minmax(106px,.9fr) minmax(83px,.65fr) minmax(95px,.8fr);
+  gap: 8px 14px;
+  align-items: center;
+  padding: 15px 12px;
+}
+market-page.market-terminal .stock-directory .stock-directory-heading {
+  color: var(--secondary);
+  font-weight: 500;
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+}
+market-page.market-terminal .stock-directory .stock-item {
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: transparent;
+  border-radius: 0;
+  line-height: 1.4;
+}
+market-page.market-terminal .stock-directory .stock-item:hover,
+market-page.market-terminal .stock-directory .stock-item:focus-visible {
+  background: var(--raised);
+}
+market-page.market-terminal .stock-directory .stock-symbol { color: var(--text); font-size: 13px; }
+market-page.market-terminal .stock-directory .stock-name {
+  color: var(--text);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+market-page.market-terminal .stock-directory .stock-sector { color: var(--secondary); font-size: 12px; }
+market-page.market-terminal .stock-directory .stock-profit,
+market-page.market-terminal .stock-directory .stock-roe {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+market-page.market-terminal .stock-directory .stock-scope {
+  color: var(--muted);
+  font-size: 11px;
+}
+market-page.market-terminal .market-directory-source {
+  margin-top: 18px;
+  max-width: 1030px;
+  color: var(--secondary);
+  font-size: 12px;
+  line-height: 1.65;
+}
+market-page.market-terminal .market-directory-source a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+market-page.market-terminal .market-data-retry {
+  padding: 4px 8px;
+  color: var(--text);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 12px;
+}
+market-page.market-terminal .market-panorama { margin: 0; }
+market-page.market-terminal .market-panorama > summary {
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+market-page.market-terminal .market-panorama-expanded {
+  display: grid;
+  grid-template-columns: minmax(0,1.8fr) minmax(240px,1fr);
+  gap: 20px;
+  padding: 12px 0 4px;
+}
+market-page.market-terminal .market-panorama-chart { min-width: 0; }
+market-page.market-terminal .market-panorama-chart .market-embed-mount { height: 505px; }
+market-page.market-terminal .market-panorama-context {
+  min-width: 0;
+  border-left: 1px solid var(--line-soft);
+  padding: 12px 0 12px 20px;
+}
+market-page.market-terminal .market-panorama-eyebrow {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: .11em;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+market-page.market-terminal .market-panorama-context h3 {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -.02em;
+  margin: 0 0 12px;
+}
+market-page.market-terminal .market-panorama-context h4 {
+  font-size: 12px;
+  color: var(--text);
+  margin: 24px 0 12px;
+}
+market-page.market-terminal .market-panorama-context > p:not(.market-panorama-eyebrow) {
+  color: var(--secondary);
+  font-size: 12px;
+  line-height: 1.7;
+}
+market-page.market-terminal .market-panorama-context nav { display: grid; gap: 0; }
+market-page.market-terminal .market-panorama-context nav a {
+  display: grid;
+  grid-template-columns: 57px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 12px;
+}
+market-page.market-terminal .market-panorama-context nav a strong { font-weight: 650; }
+market-page.market-terminal .market-panorama-context nav a span { color: var(--secondary); }
+market-page.market-terminal .market-panorama-context nav a:hover,
+market-page.market-terminal .market-panorama-context nav a:focus-visible { color: var(--text); }
+market-page.market-terminal .market-panorama-context .market-panorama-note { margin-top: 18px; }
+@media (max-width: 1100px) {
+  market-page.market-terminal .stock-directory .stock-directory-heading,
+  market-page.market-terminal .stock-directory .stock-item {
+    grid-template-columns: 76px minmax(100px,1.2fr) minmax(105px,.9fr) minmax(92px,.8fr) 78px;
+  }
+  market-page.market-terminal .stock-directory .stock-scope { display: none; }
+  market-page.market-terminal .stock-directory .stock-directory-heading span:last-child { display: none; }
+}
+@media (max-width: 850px) {
+  market-page.market-terminal .market-panorama-expanded {
+    grid-template-columns: minmax(0,1fr);
+    gap: 16px;
+  }
+  market-page.market-terminal .market-panorama-context {
+    border-left: 0;
+    border-top: 1px solid var(--line-soft);
+    padding: 18px 0 4px;
+  }
+  market-page.market-terminal .stock-directory .stock-directory-heading,
+  market-page.market-terminal .stock-directory .stock-item {
+    grid-template-columns: 78px minmax(125px,1.2fr) minmax(115px,1fr) minmax(100px,.8fr) 80px;
+  }
+}
+@media (max-width: 700px) {
+  market-page.market-terminal .market-directory-summary { padding: 16px; min-height: 60px; }
+  market-page.market-terminal .market-directory-content { padding: 14px; }
+  market-page.market-terminal .market-directory-content .market-search > div { flex-direction: column; }
+  market-page.market-terminal .market-directory-count { font-size: 12px; }
+  market-page.market-terminal .market-panorama-chart .market-embed-mount { height: 470px; }
+  market-page.market-terminal .stock-directory .stock-directory-heading { display: none; }
+  market-page.market-terminal .stock-directory .stock-item {
+    grid-template-columns: 66px minmax(0,1fr) minmax(85px,auto);
+    grid-template-rows: auto auto auto;
+    gap: 5px 8px;
+    padding: 13px 4px;
+  }
+  market-page.market-terminal .stock-directory .stock-symbol { grid-column: 1; grid-row: 1; }
+  market-page.market-terminal .stock-directory .stock-name { grid-column: 2; grid-row: 1; }
+  market-page.market-terminal .stock-directory .stock-sector { grid-column: 2; grid-row: 2 / span 2; }
+  market-page.market-terminal .stock-directory .stock-profit { grid-column: 3; grid-row: 1 / span 2; text-align: right; align-self: end; }
+  market-page.market-terminal .stock-directory .stock-roe { grid-column: 3; grid-row: 3; text-align: right; }
+  market-page.market-terminal .stock-directory .stock-profit::before {
+    content: "Lucro 2025";
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  market-page.market-terminal .stock-directory .stock-roe::before {
+    content: "ROE ";
+    color: var(--muted);
+  }
+  market-page.market-terminal .stock-directory .stock-scope { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  market-page.market-terminal .market-directory-chevron { transition: none; }
+}
