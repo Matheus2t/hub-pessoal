@@ -1,6 +1,6 @@
 import type {Participant,RemoteSignal,RemoteWatch,RtcConfig,Signal,WatchSignal,MediaRole,MediaRoles,RoomScreen} from './protocol';
 import {CallAudioMix} from './audio-mix';
-import {defaultScreenQuality,screenEncoding,type ScreenQuality,type ScreenContent} from './screen-quality';
+import {defaultScreenQuality,screenEncoding,screenPresets,type ScreenQuality,type ScreenContent} from './screen-quality';
 
 type VoiceSignal = {type:'offer'|'answer';sdp:string;roles:MediaRoles}|{type:'ice';candidate:RTCIceCandidateInit|null};
 const roles:MediaRole[]=['microphone','screenAudio','screenVideo','camera'];
@@ -38,6 +38,9 @@ export class VoiceMesh {
   private audioRoot:()=>HTMLElement|null,private refreshConfig:()=>void,
   private videoRoot:(role:'screenVideo'|'camera',id:string)=>HTMLElement|null=()=>null){}
  get blocked(){return this.audioMix.blocked||[...this.peers.values()].some(p=>p.blocked)}
+ refreshScreenEncoding(){
+  for(const peer of this.peers.values())this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
+ }
  configureScreen(quality:ScreenQuality,content:ScreenContent){
   if(this.screenQuality===quality&&this.screenContent===content)return;
   this.screenQuality=quality;this.screenContent=content;
@@ -280,10 +283,14 @@ export class VoiceMesh {
    if(!parameters.encodings?.length)return;
    if(role==='screenVideo'){
     const settings=screenEncoding(this.screenQuality,this.screenContent,peer.screenTier);
+    const source=sender.track.getSettings(),target=screenPresets[this.screenQuality];
+    // Never encode above the selected width/height, even if a browser ignores
+    // applyConstraints on a 4K or ultrawide display-capture track.
+    const sourceScale=Math.max(1,(source.width??0)/target.width,(source.height??0)/target.height);
     for(const encoding of parameters.encodings){
      encoding.maxBitrate=settings.maxBitrate;
      encoding.maxFramerate=settings.maxFramerate;
-     encoding.scaleResolutionDownBy=settings.scaleResolutionDownBy;
+     encoding.scaleResolutionDownBy=Math.max(settings.scaleResolutionDownBy,sourceScale);
      encoding.active=peer.screenWatching!==false;
     }
     // Prefer clarity over forced FPS when the physical link is congested.
