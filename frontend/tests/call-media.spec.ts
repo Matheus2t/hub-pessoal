@@ -395,3 +395,94 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await expect(b.page.locator('.call-connection')).toHaveText('Conexão encerrada');await closedSources(b.page);
  }finally{await finish(pages,[a.context,b.context])}
 });
+
+test('speaker output changes route HTML and Web Audio, survive navigation and recover on disconnect',async({browser})=>{
+ const host=await tab(browser),receiver=await tab(browser),unsupported=await tab(browser);
+ const page=receiver.page;
+ await page.addInitScript(()=>{
+  const w=window as any;
+  const device=(deviceId:string,label:string)=>({deviceId,label,kind:'audiooutput',groupId:''});
+  w.__speakerDevices=[device('default','Padrão'),device('speakers','Caixas de som'),device('headphones','Headset')];
+  w.__sinkCalls=[];
+  Object.defineProperty(navigator.mediaDevices,'enumerateDevices',{configurable:true,value:async()=>w.__speakerDevices});
+  Object.defineProperty(navigator.mediaDevices,'selectAudioOutput',{configurable:true,value:()=>{
+   w.__pickerCalled=true;return Promise.resolve(w.__speakerDevices.find((d:any)=>d.deviceId==='headphones'));
+  }});
+  Object.defineProperty(HTMLMediaElement.prototype,'setSinkId',{configurable:true,value:async function(id:string){
+   if(id==='invalid')throw new DOMException('Device not found','NotFoundError');
+   (this as any).__sink=id;w.__sinkCalls.push({source:'html',id});
+  }});
+  Object.defineProperty(AudioContext.prototype,'setSinkId',{configurable:true,value:async function(id:string){
+   if(id==='invalid')throw new DOMException('Device not found','NotFoundError');
+   (this as any).__sink=id;w.__sinkCalls.push({source:'web-audio',id});
+  }});
+ });
+ await unsupported.page.addInitScript(()=>{
+  Object.defineProperty(AudioContext.prototype,'setSinkId',{configurable:true,value:undefined});
+ });
+ try{
+  const invite=await owner(host.page);
+  await guest(page,host.page,invite,'Bia');
+  await guest(unsupported.page,host.page,invite,'Sem suporte');
+  for(const who of [host.page,page,unsupported.page])await enter(who);
+  const hostId=await id(host.page);
+  await media(page,hostId,'microphone');
+  await host.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  await media(page,hostId,'screenAudio');
+  const output=page.getByRole('group',{name:'Saída de áudio',exact:true});
+  const select=output.getByRole('combobox',{name:'Dispositivo de saída'});
+  await expect(select).toBeVisible();
+  await expect(unsupported.page.getByRole('group',{name:'Saída de áudio',exact:true})).toHaveCount(0);
+  const state=()=>page.evaluate(person=>{
+   const {voice}=document.querySelector('call-page') as any,peer=voice.peers.get(person);
+   return {microphone:peer.elements.microphone.__sink??'',screen:peer.elements.screenAudio.__sink??'',
+    graph:voice.audioMix.context?.__sink??'',
+    micMuted:peer.elements.microphone.muted,screenMuted:peer.elements.screenAudio.muted,
+    deafened:voice.audioMix.deafened,master:voice.audioMix.master?.gain.value??1,
+    volume:voice.audioMix.level(person).microphone,
+    connections:voice.peers.size};
+  },hostId);
+  await select.selectOption('speakers');
+  await expect.poll(state).toMatchObject({microphone:'speakers',screen:'speakers'});
+  await page.getByRole('group',{name:'Áudio recebido de Anfitrião'}).getByRole('slider',{name:'Volume da voz'})
+   .evaluate((element:HTMLInputElement)=>{element.value='150';element.dispatchEvent(new Event('input',{bubbles:true}))});
+  await expect.poll(state).toMatchObject({microphone:'speakers',screen:'speakers',graph:'speakers',volume:150,micMuted:true,connections:2});
+  await output.getByRole('button',{name:'Escolher dispositivo'}).click();
+  await expect(select).toHaveValue('headphones');
+  await expect.poll(state).toMatchObject({microphone:'headphones',screen:'headphones',graph:'headphones',volume:150});
+  expect(await page.evaluate(()=>(window as any).__pickerCalled)).toBe(true);
+  await page.evaluate(()=>{location.hash='#/acoes'});
+  await expect(page.locator('.call-dock')).toBeVisible();
+  await page.evaluate(()=>{location.hash='#/call'});
+  await expect(select).toHaveValue('headphones');
+  await expect.poll(state).toMatchObject({microphone:'headphones',screen:'headphones',graph:'headphones'});
+  await page.getByRole('button',{name:'Ensurdecer',exact:true}).click();
+  await select.selectOption('speakers');
+  await expect.poll(state).toMatchObject({microphone:'speakers',screen:'speakers',graph:'speakers',deafened:true,master:0});
+  await page.getByRole('button',{name:'Voltar a ouvir',exact:true}).click();
+  await expect.poll(state).toMatchObject({deafened:false,volume:150});
+  await page.evaluate(()=>{
+   const w=window as any;
+   w.__speakerDevices.push({deviceId:'invalid',label:'Saída inválida',kind:'audiooutput',groupId:''});
+   navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
+  });
+  await expect(select.locator('option[value="invalid"]')).toHaveCount(1);
+  await select.selectOption('invalid');
+  await expect(output.getByRole('status')).toContainText('Dispositivo de áudio não encontrado');
+  await expect(select).toHaveValue('speakers');
+  await expect.poll(state).toMatchObject({microphone:'speakers',screen:'speakers',graph:'speakers'});
+  await select.selectOption('headphones');
+  await page.evaluate(()=>{
+   const w=window as any;
+   w.__speakerDevices=w.__speakerDevices.filter((device:any)=>device.deviceId!=='headphones');
+   navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
+  });
+  await expect(select).toHaveValue('');
+  await expect(output.getByRole('status')).toContainText('Dispositivo desconectado');
+  await expect.poll(state).toMatchObject({microphone:'',screen:'',graph:'',volume:150});
+  await page.getByRole('button',{name:'Sair da chamada',exact:true}).click();
+  expect(await page.evaluate(()=>{const {voice}=document.querySelector('call-page') as any;
+   return voice.peers.size===0&&voice.audioMix.inputs.size===0&&voice.audioMix.context===undefined;
+  })).toBe(true);
+ }finally{await finish([host.page,page,unsupported.page],[host.context,receiver.context,unsupported.context])}
+});
