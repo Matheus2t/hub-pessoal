@@ -15,7 +15,7 @@ export class CallMicrophoneProcessing {
  private context?:AudioContext;
  private gate?:GainNode;
  private analyser?:AnalyserNode;
- private samples?:Float32Array<ArrayBuffer>;
+ private samples?:Float32Array;
  private timer?:number;
  private openUntil=0;
  private generation=0;
@@ -84,7 +84,7 @@ export class CallMicrophoneProcessing {
   const Audio=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
   if(!Audio)return false;
   const version=this.generation;
-  let context:AudioContext;
+  let context:AudioContext|undefined;
   try{
    context=new Audio();
    await context.resume();
@@ -102,7 +102,7 @@ export class CallMicrophoneProcessing {
    return true;
   }catch{
    this.error='Controle de sensibilidade indisponível neste navegador.';
-   if(context!)void context.close().catch(()=>{});
+   if(context)void context.close().catch(()=>{});
    this.changed();
    return false;
   }
