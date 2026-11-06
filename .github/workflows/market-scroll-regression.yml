@@ -31,6 +31,11 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Serve built site
         run: python3 -m http.server 8123 --directory dist >/tmp/2t-site.log 2>&1 &
+      - name: Check expanded company list and panorama before scroll
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market overview fixed layout, directory and panorama 1366'
       - name: Test widget layout and page scrolling
         env:
           PW_CHANNEL: chromium
