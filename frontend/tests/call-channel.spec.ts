@@ -305,49 +305,66 @@ test('individual listening levels isolate voice and screen audio and survive a r
   const bia=await session(sender),caio=await session(observer);
   await sender.getByRole('button',{name:'Ativar microfone',exact:true}).click();
   await sender.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  const group=listener.getByRole('group',{name:'Áudio recebido de Bia'});
+  const voiceSlider=group.getByRole('slider',{name:'Volume da voz',exact:true});
+  const screenSlider=group.getByRole('slider',{name:'Volume da transmissão',exact:true});
+  await expect(voiceSlider).toHaveValue('100');
+  await expect(screenSlider).toHaveCount(0);
   await sender.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
   await observer.getByRole('button',{name:'Ativar microfone',exact:true}).click();
   for(const role of ['microphone','screenAudio','screenVideo','camera'])await media(listener,bia,role);
   await media(listener,caio,'microphone');await media(observer,bia,'microphone');
-  const group=listener.getByRole('group',{name:'Áudio recebido de Bia'}),slider=group.getByRole('slider');
-  await expect(slider).toHaveValue('100');
+  await expect(screenSlider).toHaveValue('100');
+  await expect(listener.getByRole('group',{name:'Áudio recebido de Caio'}).getByRole('slider')).toHaveCount(1);
   await expect(listener.getByRole('group',{name:'Áudio recebido de Alice'})).toHaveCount(0);
   expect(await listener.evaluate(()=>!!(document.querySelector('call-page') as any).voice.audioMix.context)).toBe(false);
 
   const evidence=()=>listener.evaluate(({bia,caio})=>{
    const voice=(document.querySelector('call-page') as any).voice,mix=voice.audioMix;
-   const peer=voice.peers.get(bia),other=voice.peers.get(caio),bus=mix.buses.get(bia);
-   const inputs=[...mix.inputs.get(bia).values()] as {source?:AudioNode}[];
-   return {gain:bus?Math.round(bus.gain.gain.value*100)/100:null,voiceMuted:peer.audio.muted,screenMuted:peer.elements.screenAudio.muted,
-    routed:inputs.filter(input=>!!input.source).length,otherMuted:other.audio.muted,otherVolume:other.audio.volume,
-    otherRouted:mix.buses.has(caio)};
+   const inputs=mix.inputs.get(bia),other=mix.inputs.get(caio)?.get('microphone');
+   const source=(role:string)=>{
+    const input=inputs?.get(role),element=input?.element;
+    const gain:GainNode|undefined=input?.bus?.gain;
+    return input?{gain:gain?Math.round(gain.gain.value*100)/100:element.muted?0:element.volume,
+     routed:!!input.source,muted:element.muted}:null;
+   };
+   return {voice:source('microphone'),screen:source('screenAudio'),
+    other:{volume:other?.element.volume,muted:other?.element.muted,routed:!!other?.source}};
   },{bia,caio});
-  await slider.press('Home');await expect(slider).toHaveValue('0');
-  await expect.poll(evidence).toMatchObject({gain:null,voiceMuted:true,screenMuted:true,routed:0,otherMuted:false,otherVolume:1,otherRouted:false});
-  await slider.press('End');
-  await expect.poll(evidence).toMatchObject({gain:2,voiceMuted:true,screenMuted:true,routed:2,otherMuted:false,otherVolume:1,otherRouted:false});
+  const setLevel=(slider:typeof voiceSlider,volume:number)=>slider.evaluate((element:HTMLInputElement,volume)=>{
+   element.value=String(volume);element.dispatchEvent(new Event('input',{bubbles:true}));
+  },volume);
+  const other={volume:1,muted:false,routed:false};
+  await setLevel(screenSlider,150);
+  await expect.poll(evidence).toEqual({voice:{gain:1,routed:false,muted:false},screen:{gain:1.5,routed:true,muted:true},other});
+  for(const [slider,role,fixed] of [[voiceSlider,'voice','screen'],[screenSlider,'screen','voice']] as const){
+   for(const volume of [0,50,100,150,200]){
+    if(volume===0)await slider.press('Home');
+    else if(volume===200)await slider.press('End');
+    else await setLevel(slider,volume);
+    await expect(slider).toHaveAttribute('aria-valuetext',`${volume}%`);
+    await expect.poll(evidence).toMatchObject({[role]:{gain:volume/100,muted:volume!==100},
+     [fixed]:{gain:1.5,routed:true,muted:true},other});
+   }
+   await setLevel(slider,150);
+  }
+  await setLevel(voiceSlider,200);await setLevel(screenSlider,200);
+  await expect.poll(evidence).toMatchObject({voice:{gain:2,routed:true},screen:{gain:2,routed:true},other});
   await listener.evaluate(id=>{
    const w=window as any,voice=(document.querySelector('call-page') as any).voice,mix=voice.audioMix;
-   const bus=mix.buses.get(id);
    w.__listeningContext=mix.context;w.__listeningPeer=voice.peers.get(id).pc;
-   w.__listeningAnalyser=mix.context.createAnalyser();bus.ceiling.connect(w.__listeningAnalyser);
+   w.__listeningAnalyser=mix.context.createAnalyser();mix.output.connect(w.__listeningAnalyser);
   },bia);
   const peak=()=>listener.evaluate(()=>{
    const analyser=(window as any).__listeningAnalyser as AnalyserNode,data=new Float32Array(analyser.fftSize);
    analyser.getFloatTimeDomainData(data);return data.reduce((peak,sample)=>Math.max(peak,Math.abs(sample)),0);
   });
   await expect.poll(peak).toBeGreaterThan(.03);expect(await peak()).toBeLessThan(.96);
-  const setLevel=(volume:number)=>slider.evaluate((element:HTMLInputElement,volume)=>{element.value=String(volume);element.dispatchEvent(new Event('input',{bubbles:true}))},volume);
-  await setLevel(50);await expect(group.locator('output')).toHaveText('50%');await expect.poll(evidence).toMatchObject({gain:.5});
-  await group.getByRole('button',{name:'Restaurar volume de Bia a 100%'}).tap();
-  await expect(group.locator('output')).toHaveText('100%');
-  await expect.poll(evidence).toMatchObject({gain:null,routed:0,voiceMuted:false,screenMuted:false});
-  await setLevel(150);await expect(group.locator('output')).toHaveText('150%');await expect.poll(evidence).toMatchObject({gain:1.5});
-  await listener.evaluate(id=>{
-   const w=window as any,mix=(document.querySelector('call-page') as any).voice.audioMix;
-   mix.buses.get(id).ceiling.connect(w.__listeningAnalyser);
-  },bia);
-  await expect.poll(peak).toBeGreaterThan(.03);
+  await group.getByRole('button',{name:'Restaurar volumes de Bia a 100%'}).tap();
+  await expect(group.locator('output')).toHaveText(['100%','100%']);
+  await expect.poll(evidence).toEqual({voice:{gain:1,routed:false,muted:false},screen:{gain:1,routed:false,muted:false},other});
+  await setLevel(voiceSlider,150);await setLevel(screenSlider,50);
+  await expect.poll(evidence).toMatchObject({voice:{gain:1.5},screen:{gain:.5}});
   const observerEnergy=()=>observer.evaluate(async id=>{
    const peer=(document.querySelector('call-page') as any).voice.peers.get(id);
    const report=await peer.transceivers.microphone.receiver.getStats() as RTCStatsReport;
@@ -355,8 +372,9 @@ test('individual listening levels isolate voice and screen audio and survive a r
   },bia);
   const energyBeforeMute=await observerEnergy();
   await group.getByRole('button',{name:'Silenciar',exact:true}).tap();
-  await expect(group).toContainText('Silenciado para você');await expect(slider).toHaveValue('150');
-  await expect.poll(evidence).toMatchObject({gain:0,voiceMuted:true,screenMuted:true,routed:2,otherMuted:false,otherRouted:false});
+  await expect(group).toContainText('Silenciado para você');
+  await expect(voiceSlider).toHaveValue('150');await expect(screenSlider).toHaveValue('50');
+  await expect.poll(evidence).toMatchObject({voice:{gain:0,muted:true},screen:{gain:0,muted:true},other});
   await expect.poll(peak).toBeLessThan(.001);
   await expect.poll(observerEnergy).toBeGreaterThan(energyBeforeMute);
   await media(observer,bia,'microphone');await media(observer,bia,'screenAudio');
@@ -364,8 +382,10 @@ test('individual listening levels isolate voice and screen audio and survive a r
 
   await listener.evaluate(()=>{(document.querySelector('call-page') as any).call.socket.close()});
   await expect(listener.locator('.call-connection')).toHaveText('Reconectando…');await ready(listener);
-  await expect(group.getByRole('button',{name:'Ouvir novamente'})).toBeVisible();await expect(slider).toHaveValue('150');
-  await group.getByRole('button',{name:'Ouvir novamente'}).tap();await expect.poll(evidence).toMatchObject({gain:1.5,routed:2,otherMuted:false});
+  await expect(group.getByRole('button',{name:'Ouvir novamente'})).toBeVisible();
+  await expect(voiceSlider).toHaveValue('150');await expect(screenSlider).toHaveValue('50');
+  await group.getByRole('button',{name:'Ouvir novamente'}).tap();
+  await expect.poll(evidence).toMatchObject({voice:{gain:1.5,routed:true},screen:{gain:.5,routed:true},other});
   expect(await listener.evaluate(id=>{
    const w=window as any,voice=(document.querySelector('call-page') as any).voice;
    return voice.peers.get(id).pc===w.__listeningPeer&&voice.audioMix.context===w.__listeningContext;
@@ -373,7 +393,23 @@ test('individual listening levels isolate voice and screen audio and survive a r
   await sender.getByRole('button',{name:'Desativar microfone',exact:true}).click();
   await sender.getByRole('button',{name:'Ativar microfone',exact:true}).click();
   await media(observer,bia,'microphone');await media(listener,bia,'camera');await media(listener,bia,'screenVideo');
-  await expect.poll(evidence).toMatchObject({gain:1.5,routed:2});
+  await expect.poll(evidence).toMatchObject({voice:{gain:1.5,routed:true},screen:{gain:.5,routed:true}});
+  const graphs=await listener.evaluateHandle(id=>{
+   const inputs=(document.querySelector('call-page') as any).voice.audioMix.inputs.get(id);
+   const microphone=inputs.get('microphone');
+   return {microphone,micSource:microphone.source,micBus:microphone.bus,screen:inputs.get('screenAudio')};
+  },bia);
+  await sender.getByRole('button',{name:'Parar compartilhamento',exact:true}).click();
+  await expect(screenSlider).toHaveCount(0);
+  await expect.poll(evidence).toMatchObject({voice:{gain:1.5,routed:true},screen:null});
+  expect(await graphs.evaluate(({microphone,micSource,micBus,screen})=>
+   microphone.source===micSource&&microphone.bus===micBus&&!screen.source&&!screen.bus)).toBe(true);
+  await graphs.dispose();
+  await media(listener,bia,'microphone');
+  await sender.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  await expect(screenSlider).toHaveValue('50');
+  await media(listener,bia,'screenAudio');
+  await expect.poll(evidence).toMatchObject({voice:{gain:1.5},screen:{gain:.5,routed:true}});
   await listener.setViewportSize({width:320,height:844});
   expect(await listener.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await group.screenshot({path:info.outputPath('individual-volume-mobile.png')});
@@ -383,7 +419,8 @@ test('individual listening levels isolate voice and screen audio and survive a r
    for(const name of ['AudioContext','webkitAudioContext'])Object.defineProperty(window,name,{configurable:true,value:undefined});
   });
   const fallback=observer.getByRole('group',{name:'Áudio recebido de Bia'});
-  await fallback.getByRole('slider').press('End');await expect(fallback).toContainText('Ganho acima de 100% indisponível.');
+  await fallback.getByRole('slider',{name:'Volume da voz'}).press('End');
+  await expect(fallback).toContainText('Ganho acima de 100% indisponível.');
   expect(await observer.evaluate(id=>{
    const voice=(document.querySelector('call-page') as any).voice;
    return voice.peers.get(id).audio.volume===1&&!voice.peers.get(id).audio.muted&&!voice.audioMix.context;
@@ -393,7 +430,7 @@ test('individual listening levels isolate voice and screen audio and survive a r
   await expect(group).toHaveCount(0);
   expect(await listener.evaluate(id=>{
    const mix=(document.querySelector('call-page') as any).voice.audioMix;
-   return !mix.inputs.has(id)&&!mix.buses.has(id)&&!mix.levels.has(id);
+   return !mix.inputs.has(id)&&!mix.levels.has(id);
   },bia)).toBe(true);
   const late=await tab();await open(late,link);await join(late,'Dani');await ready(late);
   await expect(listener.getByRole('group',{name:'Áudio recebido de Dani'}).getByRole('slider')).toHaveValue('100');
