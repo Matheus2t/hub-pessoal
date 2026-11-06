@@ -19,6 +19,7 @@ export class CallMicrophoneProcessing {
  private timer?:number;
  private openUntil=0;
  private generation=0;
+ private starting?:Promise<boolean>;
 
  constructor(private changed:()=>void,private streamChanged:(stream:MediaStream)=>void){}
 
@@ -79,6 +80,11 @@ export class CallMicrophoneProcessing {
  }
 
  private async startGate(){
+  if(this.starting)return this.starting;
+  const promise=this.createGate();this.starting=promise;
+  try{return await promise}finally{if(this.starting===promise)this.starting=undefined}
+ }
+ private async createGate(){
   const source=this.source;
   if(!source||this.context||!this.hasGate)return false;
   const Audio=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
@@ -88,7 +94,7 @@ export class CallMicrophoneProcessing {
   try{
    context=new Audio();
    await context.resume();
-   if(this.generation!==version||this.source!==source){void context.close();return false}
+   if(this.generation!==version||this.source!==source||this.sensitivity===0){void context.close();return false}
    if(context.state!=='running')throw new Error('Suspended');
    const input=context.createMediaStreamSource(source);
    const analyser=context.createAnalyser(),gain=context.createGain(),destination=context.createMediaStreamDestination();
@@ -124,11 +130,11 @@ export class CallMicrophoneProcessing {
   if(rms>=threshold)this.openUntil=now+260;
   const open=now<this.openUntil;
   const target=open?1:0;
-  if(Math.abs(gate.gain.value-target)>.015)gate.gain.setTargetAtTime(target,context.currentTime,open?.012:.06);
+  if(Math.abs(gate.gain.value-target)>.015)gate.gain.setTargetAtTime(target,context.currentTime,open ? .012 : .06);
  }
 
  stop(){
-  this.generation++;
+  this.generation++;this.starting=undefined;
   if(this.timer!==undefined)window.clearInterval(this.timer);
   this.timer=undefined;
   this.outgoing?.getTracks().forEach(track=>{track.onended=null;track.stop()});
