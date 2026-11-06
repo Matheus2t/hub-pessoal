@@ -219,6 +219,10 @@ export class VoiceMesh {
  private setSource(role:MediaRole,track?:MediaStreamTrack){
   if(this.sources[role]===track)return;
   this.sources[role]=track;
+  if(role==='screenVideo')for(const peer of this.peers.values()){
+   peer.screenTier=0;peer.screenPressure=0;peer.screenRecovery=0;
+   peer.screenSent=undefined;
+  }
   for(const peer of this.peers.values())if(peer.transceivers[role])this.enqueue(peer,async()=>{await peer.transceivers[role]!.sender.replaceTrack(this.sources[role]??null);await this.limitVideo(peer,role)});
  }
  private async attachSources(peer:Peer){for(const role of roles){const sender=peer.transceivers[role]?.sender;if(sender){await sender.replaceTrack(this.sources[role]??null);await this.limitVideo(peer,role)}}}
@@ -337,15 +341,46 @@ export class VoiceMesh {
    const report=await peer.pc.getStats();if(!this.current(peer))return;
    const stats:VoiceStats={received:0,lost:0,relay:false,path:'unknown'};
    let limited=false,upload=0;
+   let screenConstrained:boolean|undefined;
    let selected:any;
-   report.forEach(s=>{
-    if(s.type==='inbound-rtp'&&s.kind==='audio'){stats.received+=s.packetsReceived??0;stats.lost+=s.packetsLost??0;if(s.jitter!==undefined)stats.jitterMs=s.jitter*1000}
-    if(s.type==='transport'&&s.selectedCandidatePairId)selected=report.get(s.selectedCandidatePairId);
-    if(s.type==='outbound-rtp'&&!s.isRemote){const role=roles.find(r=>peer.transceivers[r]?.mid===s.mid);if(!role)return;
-     const previous=peer.outbound[role];if(previous&&s.timestamp>previous.time)upload+=Math.max(0,(s.bytesSent-previous.bytes)*8/(s.timestamp-previous.time));
-     peer.outbound[role]={bytes:s.bytesSent,time:s.timestamp};if(['cpu','bandwidth'].includes(s.qualityLimitationReason))limited=true;
-     if(kind(role)==='video')peer.videoStats[role]={fps:s.framesPerSecond,width:s.frameWidth,height:s.frameHeight,frames:s.framesEncoded??0,
-      encoderMsPerFrame:s.framesEncoded?s.totalEncodeTime*1000/s.framesEncoded:undefined,limitation:s.qualityLimitationReason??'unknown'};
+   report.forEach(sample=>{
+    if(sample.type==='inbound-rtp'&&sample.kind==='audio'){
+     stats.received+=sample.packetsReceived??0;
+     stats.lost+=sample.packetsLost??0;
+     if(sample.jitter!==undefined)stats.jitterMs=sample.jitter*1000;
+    }
+    if(sample.type==='inbound-rtp'&&sample.kind==='video'&&sample.mid===peer.transceivers.screenVideo?.mid){
+     const previous=peer.inboundScreen;
+     const delta=previous&&sample.timestamp>previous.time?sample.timestamp-previous.time:0;
+     const kbps=delta?Math.max(0,(sample.bytesReceived-previous!.bytes)*8/delta):undefined;
+     const fps=Number.isFinite(sample.framesPerSecond)?sample.framesPerSecond:
+      delta&&previous?.frames!==undefined&&sample.framesDecoded!==undefined?
+       (sample.framesDecoded-previous.frames)*1000/delta:undefined;
+     peer.inboundScreen={bytes:sample.bytesReceived??0,time:sample.timestamp,frames:sample.framesDecoded};
+     if(sample.frameWidth>0&&sample.frameHeight>0&&fps!==undefined){
+      peer.screenReceived={width:sample.frameWidth,height:sample.frameHeight,fps, ...(kbps!==undefined?{kbps}:{}),sampledAt:Date.now()};
+     }
+    }
+    if(sample.type==='transport'&&sample.selectedCandidatePairId)selected=report.get(sample.selectedCandidatePairId);
+    if(sample.type==='outbound-rtp'&&!sample.isRemote){
+     const role=roles.find(r=>peer.transceivers[r]?.mid===sample.mid);if(!role)return;
+     const previous=peer.outbound[role],delta=previous&&sample.timestamp>previous.time?sample.timestamp-previous.time:0;
+     const kbps=delta?Math.max(0,(sample.bytesSent-previous!.bytes)*8/delta):undefined;
+     if(kbps!==undefined)upload+=kbps;
+     const fps=Number.isFinite(sample.framesPerSecond)?sample.framesPerSecond:
+      delta&&previous?.frames!==undefined&&sample.framesEncoded!==undefined?
+       (sample.framesEncoded-previous.frames)*1000/delta:undefined;
+     peer.outbound[role]={bytes:sample.bytesSent??0,time:sample.timestamp,frames:sample.framesEncoded};
+     if(role==='camera'&&['cpu','bandwidth'].includes(sample.qualityLimitationReason))limited=true;
+     if(role==='screenVideo'&&peer.screenWatching!==false&&peer.transceivers.screenVideo?.sender.track){
+      screenConstrained=['cpu','bandwidth'].includes(sample.qualityLimitationReason);
+      if(sample.frameWidth>0&&sample.frameHeight>0&&fps!==undefined){
+       peer.screenSent={width:sample.frameWidth,height:sample.frameHeight,fps,...(kbps!==undefined?{kbps}:{}),
+        limitation:sample.qualityLimitationReason??'unknown',sampledAt:Date.now()};
+      }
+     }
+     if(kind(role)==='video')peer.videoStats[role]={fps:sample.framesPerSecond,width:sample.frameWidth,height:sample.frameHeight,frames:sample.framesEncoded??0,
+      encoderMsPerFrame:sample.framesEncoded?sample.totalEncodeTime*1000/sample.framesEncoded:undefined,limitation:sample.qualityLimitationReason??'unknown'};
     }
    });
    if(!selected)report.forEach(s=>{if(s.type==='candidate-pair'&&s.state==='succeeded'&&s.nominated)selected=s});
@@ -355,8 +390,28 @@ export class VoiceMesh {
     stats.path=stats.relay?'relay':'direct';
    }
    peer.stats=stats;
-   peer.uploadKbps=Math.round(upload);peer.clearSamples=limited?0:peer.clearSamples+1;
-   if(limited&&!peer.limited||!limited&&peer.limited&&peer.clearSamples>=3){peer.limited=limited;this.enqueue(peer,async()=>{await this.limitVideo(peer,'screenVideo');await this.limitVideo(peer,'camera')})}
+   peer.uploadKbps=Math.round(upload);
+   peer.clearSamples=limited?0:peer.clearSamples+1;
+   if(limited&&!peer.limited||!limited&&peer.limited&&peer.clearSamples>=3){
+    peer.limited=limited;this.enqueue(peer,()=>this.limitVideo(peer,'camera'));
+   }
+   // Two consecutive pressure samples before stepping down; three clear samples
+   // before stepping up. Each step is gentler than the old unconditional 50% scale.
+   if(screenConstrained!==undefined){
+    if(screenConstrained){
+     peer.screenPressure++;peer.screenRecovery=0;
+     if(peer.screenPressure>=2&&peer.screenTier<3){
+      peer.screenTier++;peer.screenPressure=0;
+      this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
+     }
+    }else{
+     peer.screenPressure=0;peer.screenRecovery++;
+     if(peer.screenRecovery>=3&&peer.screenTier>0){
+      peer.screenTier--;peer.screenRecovery=0;
+      this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
+     }
+    }
+   }
   }));this.changed()}catch{/* Stats are diagnostic; a closed peer must not stop other audio. */}
   finally{this.measuring=false}
  }
@@ -365,7 +420,7 @@ export class VoiceMesh {
   return {version:2,at:new Date().toISOString(),active:this.active,relayConfigured:this.rtc?.relayAvailable??false,uploadKbps:[...this.peers.values()].reduce((sum,p)=>sum+p.uploadKbps,0),
    peers:[...this.peers.values()].map((p,n)=>({connection:n+1,state:p.pc.connectionState,ice:p.pc.iceConnectionState,
     path:p.stats?.path??'unknown',received:p.stats?.received??0,lost:p.stats?.lost??0,
-    jitterMs:p.stats?.jitterMs,rttMs:p.stats?.rttMs,uploadKbps:p.uploadKbps,reducedQuality:p.limited,video:p.videoStats,attempts:p.attempts,failed:p.failed}))};
+    jitterMs:p.stats?.jitterMs,rttMs:p.stats?.rttMs,uploadKbps:p.uploadKbps,reducedQuality:p.limited||p.screenTier>0,screenTier:p.screenTier,screenReceive:p.screenReceived,video:p.videoStats,attempts:p.attempts,failed:p.failed}))};
  }
  private closePeer(peer:Peer){
   this.peers.delete(peer.id);window.clearTimeout(peer.timer);
