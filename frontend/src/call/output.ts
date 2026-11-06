@@ -9,7 +9,7 @@ export class CallAudioOutput {
  busy=false;
  error='';
  private version=0;
- constructor(private voice:VoiceMesh,private changed:()=>void){}
+ constructor(private voice:VoiceMesh,private changed:()=>void,private selected:(id:string)=>void=()=>{}){}
 
  get supported(){
   const Audio=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
@@ -39,7 +39,7 @@ export class CallAudioOutput {
   try{
    await this.voice.setAudioOutput(id);
    if(version!==this.version){await this.voice.setAudioOutput('');return}
-   this.sinkId=id;
+   this.sinkId=id;this.selected(id);
   }catch(error){if(version===this.version)this.error=this.message(error)}
   finally{if(version===this.version){this.busy=false;this.changed()}}
  }
@@ -55,7 +55,7 @@ export class CallAudioOutput {
    const device=await selection;
    await this.voice.setAudioOutput(device.deviceId);
    if(version!==this.version){await this.voice.setAudioOutput('');return}
-   this.sinkId=device.deviceId;
+   this.sinkId=device.deviceId;this.selected(device.deviceId);
    await this.refresh();
   }catch(error){if(version===this.version)this.error=this.message(error)}
   finally{if(version===this.version){this.busy=false;this.changed()}}

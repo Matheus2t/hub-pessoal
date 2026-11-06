@@ -23,6 +23,11 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
  .call-person { overflow-wrap:anywhere; }
  li .call-speaking { color:var(--text); font-weight:650; }
  .call-layout { display:grid; grid-template-columns:minmax(0,3fr) minmax(180px,1fr); gap:16px; }
+ .call-layout.is-compact { grid-template-columns:minmax(0,2.5fr) minmax(210px,1fr); gap:10px; }
+ .call-layout.is-compact .call-people { padding:10px; }
+ .call-layout.is-compact .call-people li { padding:7px; min-height:52px; gap:8px; }
+ .call-layout.is-compact .call-stage .call-caption { padding:8px 12px; }
+ @media(max-width:720px){.call-layout.is-compact { grid-template-columns:minmax(0,1fr); gap:8px; }}
  .call-stage,.call-people { min-width:0; border:1px solid var(--line-soft); border-radius:8px; background:var(--panel); }
  .call-stage { overflow:hidden; align-self:start; }
  .call-preview { position:relative; width:100%; min-width:0; aspect-ratio:16/9; min-height:190px; display:grid; grid-template-columns:minmax(0,1fr); place-items:center; background:var(--raised); }
