@@ -304,6 +304,9 @@ test('two simultaneous screens switch video and local audio without replacing th
   await guest(b.page,a.page,invite,'Bia');await guest(viewer,a.page,invite,'Caio');
   for(const page of pages)await enter(page);
   await connected(viewer,2);
+  await viewer.getByRole('button',{name:'Visão compacta',exact:true}).click();
+  await expect(viewer.locator('.call-layout')).toHaveClass(/is-compact/);
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.nickname)).toBe('Caio');
   const first=await id(a.page),second=await id(b.page),watcher=await id(viewer);
   for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
   await shareButton(a.page).click();await shareButton(b.page).click();
@@ -351,9 +354,15 @@ test('two simultaneous screens switch video and local audio without replacing th
   await slider('Anfitrião').press('End');
   await slider('Bia').evaluate((element:HTMLInputElement)=>{element.value='50';element.dispatchEvent(new Event('input',{bubbles:true}))});
   await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  await expect.poll(()=>viewer.evaluate(()=>{
+   const stored=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
+   return Object.fromEntries(stored.levels);
+  })).toMatchObject({'anfitrião':{microphone:100,screenAudio:200,muted:false},
+                       'bia':{microphone:100,screenAudio:50,muted:false}});
   await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).voice.audioMix.context?.__sink)).toBe('speakers');
   await output.getByRole('button',{name:'Escolher dispositivo'}).click();
   await expect(outputChoice).toHaveValue('headphones');
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.output)).toBe('headphones');
   await expect.poll(()=>viewer.evaluate(id=>{
    const {voice}=(document.querySelector('call-page') as any),peer=voice.peers.get(id);
    return [peer.elements.microphone.__sink,peer.elements.screenAudio.__sink,voice.audioMix.context?.__sink];
@@ -430,12 +439,20 @@ test('two simultaneous screens switch video and local audio without replacing th
    navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
   });
   await expect(outputChoice).toHaveValue('');
+  await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.output)).toBe('');
   await expect(output.getByRole('status')).toContainText('Dispositivo desconectado');
   await expect.poll(()=>viewer.evaluate(()=>{
    const {voice}=(document.querySelector('call-page') as any);
    return [voice.audioMix.context?.__sink,...[...voice.peers.values()].map(peer=>peer.elements.microphone.__sink)];
   })).toEqual(['','','']);
   await viewer.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(viewer);
+  await viewer.reload();
+  await expect(viewer.getByLabel('Seu nome',{exact:true})).toHaveValue('Caio');
+  expect(await viewer.evaluate(()=>{
+   const prefs=(document.querySelector('call-page') as any).preferences;
+   const saved=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
+   return {layout:prefs.layout,fields:Object.keys(saved).sort()};
+  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','version']});
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;
   })).toBe(true);
@@ -451,6 +468,26 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await expect(a.page.locator('.call-controls')).toBeHidden();
   expect(await a.page.evaluate(()=>(document.querySelector('call-page') as any).voice.peers.size)).toBe(0);
   const invite=await owner(a.page);await guest(b.page,a.page,invite,'Convidado');await enter(a.page);await enter(b.page);await media(b.page,await id(a.page),'microphone');
+  const settings=a.page.locator('.call-microphone-settings');
+  await settings.locator('summary').click();
+  const mode=settings.getByRole('combobox',{name:'Processamento do microfone'});
+  await mode.selectOption('natural');
+  await expect.poll(()=>a.page.evaluate(()=>{
+   const processor=(document.querySelector('call-page') as any).micProcessing;
+   return [processor.flags.echoCancellation,processor.flags.noiseSuppression,processor.flags.autoGainControl];
+  })).toEqual([false,false,false]);
+  await settings.getByRole('checkbox',{name:'Redução de ruídos'}).check();
+  await expect(mode).toHaveValue('custom');
+  const gate=settings.getByRole('slider',{name:'Sensibilidade de voz'});
+  await gate.evaluate((input:HTMLInputElement)=>{input.value='55';input.dispatchEvent(new Event('input',{bubbles:true}))});
+  await expect.poll(()=>a.page.evaluate(()=>{
+   const page=document.querySelector('call-page') as any;
+   return page.micProcessing.sensitivity===55&&!!page.micProcessing.context&&
+    page.microphone?.getAudioTracks()[0]===page.micProcessing.stream?.getAudioTracks()[0];
+  }),{timeout:12000}).toBe(true);
+  await media(b.page,await id(a.page),'microphone');
+  await gate.evaluate((input:HTMLInputElement)=>{input.value='0';input.dispatchEvent(new Event('input',{bubbles:true}))});
+  await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).micProcessing.sensitivity)).toBe(0);
   await a.page.evaluate(()=>{(window as any).__denyDisplay=true;(window as any).__denyCamera=true});
   await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await expect(a.page.getByRole('alert')).toContainText('cancelado');
   await a.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();await expect(a.page.getByRole('alert')).toContainText('Permita');
