@@ -132,7 +132,7 @@ export class MarketPage extends LightElement {
     ];
     return html`<header class="ws-page-heading"><div><p class="ws-context">${stock?'Ações / '+stock.sector:'Mercado brasileiro'}</p><h1>${stock?stock.symbol:'Mercado de Ações'}</h1>${stock?html`<h2 class="ws-company-name">${stock.name}</h2><p>Classificação setorial editorial</p><a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`:nothing}</div></header>
       ${this.renderAnalysisLinks()}
-      <panel-workspace fixed-layout area=${stock?'actions-company':'actions-overview'} .panels=${panels}>
+      <panel-workspace fixed-layout ?panorama-expanded=${!stock&&this.panorama} area=${stock?'actions-company':'actions-overview'} .panels=${panels}>
        <section slot="chart" class="workspace-panel ws-main-chart"><header class="ws-panel-heading"><h2>${stock?'Gráfico · '+stock.symbol:'Ibovespa'}</h2>${stock?html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${()=>{this.advanced=false}}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${()=>{this.advanced=true}}>Avançado</button></div>`:nothing}</header>
         ${!stock||this.advanced?html`<market-embed kind="advanced-chart" .symbol=${stock?.symbol||'IBOV'}></market-embed>`:html`<tradingview-widget kind="overview" .symbol=${stock.symbol}></tradingview-widget>`}
        </section>
