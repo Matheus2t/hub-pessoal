@@ -6,6 +6,7 @@ import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protoco
 import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
+import type {ListeningSource} from './audio-mix';
 import {CallCapture} from './capture';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
@@ -169,19 +170,26 @@ export class CallPage extends LightElement {
   const peer=this.voice.peers.get(id);
   return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
  }
- private listeningControls(id:string,name:string){
-  const mixer=this.voice.audioMix,{volume,muted}=mixer.level(id);
-  return html`<div class="call-listening" role="group" aria-label=${`Áudio recebido de ${name}`}>
-   <label><span>Volume <output>${volume}%</output></span>
-    <input type="range" min="0" max="200" step="1" .value=${String(volume)} aria-label=${`Volume de ${name}`} aria-valuetext=${`${volume}%`}
-     @input=${(event:Event)=>mixer.volume(id,(event.currentTarget as HTMLInputElement).valueAsNumber)}>
+ private listeningSlider(id:string,source:ListeningSource,label:string){
+  const mixer=this.voice.audioMix,volume=mixer.level(id)[source];
+  return html`<label><span>${label} <output>${volume}%</output></span>
+    <input type="range" min="0" max="200" step="1" .value=${String(volume)} aria-label=${label} aria-valuetext=${`${volume}%`}
+     @input=${(event:Event)=>mixer.volume(id,source,(event.currentTarget as HTMLInputElement).valueAsNumber)}>
    </label>
+   ${volume>100&&!mixer.canAmplify(id,source)?html`<small>Ganho acima de 100% indisponível.</small>`:nothing}`;
+ }
+ private listeningControls(id:string,name:string,sharingAudio:boolean){
+  const mixer=this.voice.audioMix,{microphone,screenAudio,muted}=mixer.level(id);
+  const atDefault=microphone===100&&(!sharingAudio||screenAudio===100);
+  return html`<div class="call-listening" role="group" aria-label=${`Áudio recebido de ${name}`}>
+   ${this.listeningSlider(id,'microphone','Volume da voz')}
+   ${sharingAudio?this.listeningSlider(id,'screenAudio','Volume da transmissão'):nothing}
    <div class="call-listening-actions">
     <button type="button" @click=${()=>mixer.mute(id)}>${muted?'Ouvir novamente':'Silenciar'}</button>
-    <button type="button" aria-label=${`Restaurar volume de ${name} a 100%`} ?disabled=${volume===100} @click=${()=>mixer.volume(id,100)}>100%</button>
+    <button type="button" aria-label=${`Restaurar volumes de ${name} a 100%`} ?disabled=${atDefault}
+     @click=${()=>{mixer.volume(id,'microphone',100);if(sharingAudio)mixer.volume(id,'screenAudio',100)}}>100%</button>
    </div>
    ${muted?html`<small class="call-listening-state">Silenciado para você</small>`:nothing}
-   ${volume>100&&!mixer.canAmplify(id)?html`<small>Ganho acima de 100% indisponível.</small>`:nothing}
   </div>`;
  }
  private openRoom(event:SubmitEvent){
@@ -348,7 +356,7 @@ export class CallPage extends LightElement {
       ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
       ${this.viewerControls(p.id,p.name)}
      </div>
-     ${this.voice.active&&p.connected&&p.id!==self?this.listeningControls(p.id,p.name):nothing}</li>`})}
+     ${this.voice.active&&p.connected&&p.id!==self?this.listeningControls(p.id,p.name,!!shared?.active&&shared.owner===p.id&&shared.audio):nothing}</li>`})}
     ${nothing}
    </ol></aside>
   </div>

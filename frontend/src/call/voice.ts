@@ -178,7 +178,7 @@ export class VoiceMesh {
  mountMedia(){
   for(const peer of this.peers.values())for(const role of roles){const element=peer.elements[role],stream=peer.streams[role];
    const allowed=this.allowed(peer,role)&&!!stream;
-   if(kind(role)==='audio')this.audioMix.mount(peer.id,element as HTMLAudioElement,allowed?stream:undefined);
+   if(role==='microphone'||role==='screenAudio')this.audioMix.mount(peer.id,role,element as HTMLAudioElement,allowed?stream:undefined);
    if(!allowed){if(element.srcObject){element.pause();element.srcObject=null}peer.blockedElements.delete(element);peer.blocked=peer.blockedElements.size>0;if(kind(role)==='video')element.remove();continue}
    if(element.srcObject!==stream){element.srcObject=stream!;this.playElement(peer,element)}
    if(role==='screenVideo'||role==='camera'){const root=this.videoRoot(role,peer.id);if(root&&element.parentElement!==root)root.append(element)}

@@ -343,7 +343,7 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
     border-top:1px solid var(--line-soft);
     label { gap:2px; font-size:11px; color:var(--secondary); }
     label span { display:flex; justify-content:space-between; gap:4px; }
-    output { color:var(--text); font-variant-numeric:tabular-nums; }
+    output { color:var(--text); font-variant-numeric:tabular-nums; white-space:nowrap; }
     input[type=range] { min-height:28px; padding:0; border:0; background:transparent; accent-color:var(--text); cursor:pointer; }
     .call-listening-actions { display:flex; flex-wrap:wrap; gap:5px; }
     button { min-height:32px; max-width:100%; padding:4px 7px; font-size:11px; line-height:1.2; overflow-wrap:anywhere; }
