@@ -26,14 +26,17 @@ export class CallAudioMix {
  private inputs=new Map<string,Map<ListeningSource,AudioInput>>();
  private context?:AudioContext;
  private output?:WaveShaperNode;
+ private master?:GainNode;
  private unavailable=false;
+ private silenced=false;
 
  constructor(private changed:()=>void){}
 
  level(id:string):Readonly<ListeningLevel>{return this.levels.get(id)??defaultLevel}
  canAmplify(id:string,role:ListeningSource){return !this.unavailable&&!this.inputs.get(id)?.get(role)?.failed}
+ get deafened(){return this.silenced}
  get blocked(){
-  return !!this.context&&this.context.state!=='running'&&[...this.inputs].some(([id,inputs])=>{
+  return !this.silenced&&!!this.context&&this.context.state!=='running'&&[...this.inputs].some(([id,inputs])=>{
    const level=this.level(id);
    return !level.muted&&[...inputs].some(([role,input])=>!input.failed&&level[role]>0&&(level[role]!==100||input.bus));
   });
@@ -46,6 +49,20 @@ export class CallAudioMix {
   if(!level.muted&&level[role]>0&&level[role]!==100)this.unlock(true);
   const input=this.inputs.get(id)?.get(role);
   if(input)this.apply(input,level.muted?0:level[role]/100);
+  this.changed();
+ }
+ setDeafened(deafened:boolean){
+  if(this.silenced===deafened)return;
+  this.silenced=deafened;
+  if(deafened){
+   // Cut the final output, including audio buffered by the compressors.
+   if(this.master)this.master.gain.value=0;
+   for(const inputs of this.inputs.values())for(const input of inputs.values())input.element.muted=true;
+  }else{
+   if(this.inputs.size)this.resumePreferences();
+   for(const id of this.inputs.keys())this.applyParticipant(id);
+   if(this.master)this.master.gain.value=1;
+  }
   this.changed();
  }
  mute(id:string){
@@ -100,10 +117,11 @@ export class CallAudioMix {
 
  private createBus(context:AudioContext){
   if(!this.output){
-   const output=context.createWaveShaper();
+   const output=context.createWaveShaper(),master=context.createGain();
    output.curve=peakCurve;
-   output.connect(context.destination);
-   this.output=output;
+   master.gain.value=this.silenced?0:1;
+   output.connect(master);master.connect(context.destination);
+   this.output=output;this.master=master;
   }
   const gain=context.createGain(),compressor=context.createDynamicsCompressor();
   compressor.threshold.value=-6;compressor.knee.value=6;compressor.ratio.value=20;
@@ -134,7 +152,7 @@ export class CallAudioMix {
   }
   // A suspended graph is silent. Keep its HTML copy muted until it resumes.
   try{element.volume=Math.min(1,level)}catch{/* Native volume is optional on mobile. */}
-  element.muted=!!input.source||level===0;
+  element.muted=this.silenced||!!input.source||level===0;
  }
 
  private disconnect(input:AudioInput){
@@ -152,8 +170,9 @@ export class CallAudioMix {
  stop(forget:boolean){
   for(const id of this.inputs.keys())this.detach(id);
   this.output?.disconnect();this.output=undefined;
+  this.master?.disconnect();this.master=undefined;
   const context=this.context;this.context=undefined;this.unavailable=false;
   if(context){context.onstatechange=null;void context.close().catch(()=>{})}
-  if(forget)this.levels.clear();
+  if(forget){this.levels.clear();this.silenced=false}
  }
 }
