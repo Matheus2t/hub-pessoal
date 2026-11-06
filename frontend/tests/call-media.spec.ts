@@ -67,6 +67,13 @@ async function evidence(page:Page,from:string,role:string){
  },{from,role});
 }
 async function media(page:Page,from:string,role:string){
+ if(role==='screenVideo'||role==='screenAudio'){
+  const button=page.getByRole('button',{name:'Assistir',exact:true});
+  if(await button.isVisible().catch(()=>false)){
+   const selected=await page.evaluate(()=>(document.querySelector('call-page') as any).viewedScreen?.owner);
+   if(selected===from)await button.click();
+  }
+ }
  if(await page.getByRole('button',{name:'Liberar áudio',exact:true}).isVisible())await page.getByRole('button',{name:'Liberar áudio',exact:true}).click();
  await expect.poll(async()=>{const s=await evidence(page,from,role);return s.packets>0&&s.playing&&(role==='microphone'||role==='screenAudio'?s.energy>0:s.frames>0)?'playing':JSON.stringify({role,...s})},{timeout:20000}).toBe('playing');
 }
@@ -93,6 +100,8 @@ test('native Picture-in-Picture follows the remote share across tabs and release
   await expect(button).toHaveCount(0);
   await share.click();
   const hostId=await id(host.page);
+  await expect(page.getByRole('button',{name:'Assistir',exact:true})).toBeVisible();
+  await expect(page.locator('.call-remote-screen video')).toHaveCount(0);
   await media(page,hostId,'screenVideo');await media(page,hostId,'screenAudio');await media(page,hostId,'microphone');
   await media(unsupported.page,hostId,'screenVideo');
   await expect(unsupported.page.getByRole('button',{name:'Janela flutuante',exact:true})).toHaveCount(0);
