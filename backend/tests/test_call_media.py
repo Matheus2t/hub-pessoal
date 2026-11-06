@@ -214,3 +214,33 @@ def test_twenty_concurrent_claims_have_only_one_winner_per_available_slot(parall
         assert sum(m["type"] == "screen_denied" for m in messages) == 20 - winners
         assert len(room.screens) == room.screen_generation == winners
     asyncio.run(scenario())
+
+
+def test_watch_signal_relays_only_to_approved_voice_peer(service):
+    _, _, _, connect = service
+    owner, session = host(connect)
+    guest_socket, joined = guest(connect, session)
+    admit(owner, guest_socket, joined)
+    activate(owner, session["participant"])
+    activate(guest_socket, joined["participant"])
+    payload = {"type": "watch", "target": session["participant"], "epoch": 1,
+               "targetEpoch": 1, "enabled": False}
+    guest_socket.send_json(payload)
+    notice = until(owner, "watch")
+    assert notice == {"type": "watch", "from": joined["participant"],
+                      "epoch": 1, "targetEpoch": 1, "enabled": False}
+    guest_socket.send_json({**payload, "enabled": True})
+    assert until(owner, "watch")["enabled"] is True
+    guest_socket.send_json({**payload, "targetEpoch": 2})
+    assert until(guest_socket, "error")["code"] == "stale_voice"
+    for invalid in [{"enabled": "no"}, {"enabled": 1}, {"target": joined["participant"]}]:
+        try:
+            Action.validate_python({**payload, **invalid})
+        except ValidationError:
+            pass
+        else:
+            if invalid.get("target") == joined["participant"]:
+                guest_socket.send_json({**payload, **invalid})
+                assert until(guest_socket, "error")["code"] == "invalid_target"
+            else:
+                raise AssertionError("Invalid subscription must be rejected")
