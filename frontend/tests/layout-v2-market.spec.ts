@@ -32,6 +32,8 @@ for(const width of [1920,1366,768,390,320])test(`market overview fixed layout, d
  await expect(page.locator('.stock-item')).toHaveCount(65);
  await expect(page.locator('.stock-item').filter({hasText:'PETR4'}).locator('.stock-profit')).toContainText('R$');
  await expect(page.locator('.stock-item').filter({hasText:'PETR4'}).locator('.stock-roe')).toContainText('%');
+ await expect(directory).toHaveAttribute('open','');
+ await expect(page.locator('.stock-item').first()).toBeVisible();
  await expect(page.locator('.market-directory-source')).toContainText('2025');
  const pan=page.locator('.market-panorama');
  await pan.locator('summary').click();
