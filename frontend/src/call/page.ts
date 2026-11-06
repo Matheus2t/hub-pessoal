@@ -9,7 +9,7 @@ import {VoiceMesh} from './voice';
 import {CallPreferences} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
-import {CallCapture} from './capture';
+import {CallCapture,callCaptureHandle} from './capture';
 import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent} from './screen-quality';
 import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
 import {ScreenFullscreen} from './fullscreen';
@@ -108,7 +108,9 @@ export class CallPage extends LightElement {
   this.voice.selectScreen(this.watchedScreen);
   this.requestUpdate();
  }
- connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
+ connectedCallback(){super.connectedCallback();this.classList.add('call-page');
+  // Lets another 2T Call tab recognize and discard captured call playback audio.
+  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
