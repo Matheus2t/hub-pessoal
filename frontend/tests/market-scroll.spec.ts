@@ -84,8 +84,12 @@ test('downward page gesture reaches the catalog across loaded widgets',async({pa
   await expect(page.locator('.stock-item')).toHaveCount(65);await page.locator('.market-directory-details > summary').click();await page.evaluate(()=>document.fonts.ready);
   if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
   await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(350);
+  await expect(page.locator('.stock-item').first()).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight-innerHeight)).toBeGreaterThan(2500);
   const before=await page.locator('[slot=directory]').evaluate(e=>e.getBoundingClientRect().y+scrollY);
-  await page.mouse.move(width*.36,180);
+  const links=await page.locator('market-page .ws-analysis-links').boundingBox();
+  expect(links).not.toBeNull();
+  await page.mouse.move(links!.x+10,links!.y+10);
   let previous=0;
   for(let i=0;i<25;i++){
    await page.mouse.wheel(0,120);await page.waitForTimeout(50);
@@ -141,8 +145,8 @@ for(const width of [1366,390])test(`featured tickers never capture the document 
  const quotes=page.locator('market-page panel-workspace[area="actions-overview"] [slot="quotes"]');
  await expect(quotes).toBeVisible();
  await expect(quotes).toHaveCSS('overflow-y','clip');
- await page.locator('market-page .stock-item').first().waitFor();
  await page.locator('.market-directory-details > summary').click();
+ await page.locator('market-page .stock-item').first().waitFor();
  await quotes.scrollIntoViewIfNeeded();
  await page.waitForTimeout(180);
  const rect=await quotes.boundingBox();expect(rect).not.toBeNull();
@@ -186,6 +190,8 @@ test('wheel inside quotes iframe scrolls the parent page without losing clicks',
  await page.setViewportSize({width:390,height:900});
  await page.goto('/#/acoes');
  await page.locator('.market-directory-details > summary').click();
+ await expect(page.locator('.stock-item').first()).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight-innerHeight)).toBeGreaterThan(1500);
  const frame=page.locator('iframe.market-quotes-frame');
  await expect(frame).toBeVisible();
  await frame.scrollIntoViewIfNeeded();
