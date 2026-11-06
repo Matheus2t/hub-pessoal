@@ -600,8 +600,8 @@ call-page[hidden] { display:none !important; }
     .call-join-grid .call-primary-action { justify-content:center; }
   }
   .call-dock { left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));width:auto;gap:7px;padding:10px;flex-wrap:wrap; }
-  .call-dock-info { flex-basis:calc(100% - 34px); }
-  .call-dock button,.call-dock a { flex:1; }
+  .call-dock .call-dock-info { flex-basis:calc(100% - 34px); }
+  .call-dock button,.call-dock a { flex:1; padding-inline:6px; }
 }
 
 
