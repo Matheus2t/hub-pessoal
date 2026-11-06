@@ -11,8 +11,8 @@ from test_call_signaling import KEY, activate, admit, guest, host, service, unti
 ROLES = {"microphone": "0", "screenAudio": "1", "screenVideo": "2", "camera": "3"}
 
 
-def claim(socket, request="a" * 32):
-    socket.send_json({"type": "screen", "action": "claim", "request": request})
+def claim(socket, request="a" * 32, **extra):
+    socket.send_json({"type": "screen", "action": "claim", "request": request, **extra})
     return until(socket, "screen_granted")
 
 
@@ -40,7 +40,7 @@ def test_screen_requires_approval_and_voice(service):
     assert until(visitor, "screen_denied")["code"] == "voice_required"
 
 
-def test_one_screen_stale_controls_camera_and_late_arrival(service):
+def test_legacy_screen_stale_controls_camera_and_late_arrival(service):
     app, _, _, connect = service
     owner, session = host(connect)
     visitor, joined = guest(connect, session)
@@ -59,7 +59,7 @@ def test_one_screen_stale_controls_camera_and_late_arrival(service):
     room = app.state.rooms.rooms[session["room"]]
     screen(owner, lambda s: s and s["active"])
     assert room.people[session["participant"]].voice_epoch == 1
-    assert room.screen.audio  # mic/camera do not change the screen's audio.
+    assert room.screens[session["participant"]].audio  # Mic/camera do not change the screen's audio.
     late, late_session = guest(connect, session, "Late")
     admit(owner, late, late_session)
     assert screen(late, lambda s: s and s["active"]) == current
@@ -69,7 +69,55 @@ def test_one_screen_stale_controls_camera_and_late_arrival(service):
     assert newer["generation"] == 2
     control(owner, grant, "release")
     assert until(owner, "screen_denied")["code"] == "stale_screen"
-    assert room.screen.owner == joined["participant"]
+    assert list(room.screens) == [joined["participant"]]
+
+
+def test_parallel_leases_keep_legacy_projection_and_independent_cleanup(service):
+    app, clock, _, connect = service
+    owner, session = host(connect)
+    first, first_session = guest(connect, session, "First")
+    viewer, viewer_session = guest(connect, session, "Viewer")
+    for socket, participant in [(first, first_session), (viewer, viewer_session)]:
+        admit(owner, socket, participant)
+        activate(socket, participant["participant"])
+    activate(owner, session["participant"])
+    primary = claim(owner)
+    control(owner, primary, audio=True)
+    assert screen(viewer, lambda share: share and share["active"])["owner"] == session["participant"]
+
+    secondary = claim(first, parallel=True)
+    control(first, secondary)
+    for _ in range(30):
+        presence = until(viewer, "presence")
+        if len(presence["screens"]) == 2 and all(share["active"] for share in presence["screens"]):
+            break
+    else:
+        pytest.fail("Two active shares did not reach the viewer")
+    assert presence["screen"] == presence["screens"][0]
+    assert [share["audio"] for share in presence["screens"]] == [True, False]
+    assert screen(first, lambda share: share and share["owner"] == first_session["participant"] and share["active"])["generation"] == secondary["generation"]
+    for socket, code in [(viewer, "screen_limit"), (first, "screen_busy")]:
+        socket.send_json({"type": "screen", "action": "claim", "request": "b" * 32, "parallel": True})
+        assert until(socket, "screen_denied")["code"] == code
+    control(viewer, secondary, "release")
+    assert until(viewer, "screen_denied")["code"] == "stale_screen"
+
+    first.close()
+    for _ in range(30):
+        presence = until(viewer, "presence")
+        if [share["owner"] for share in presence["screens"]] == [session["participant"]]:
+            break
+    else:
+        pytest.fail("Disconnect did not release only the departing share")
+    replacement = claim(viewer, "c" * 32, parallel=True)
+    clock[0] += 46
+    viewer.send_json({"type": "ping"})
+    until(viewer, "pong")
+    control(viewer, replacement)
+    assert until(viewer, "screen_denied")["code"] == "stale_screen"
+    remaining = app.state.rooms.rooms[session["room"]].screens
+    assert list(remaining) == [session["participant"]]
+    assert remaining[session["participant"]].active
 
 
 @pytest.mark.parametrize("ending", ["leave", "disconnect", "voice", "replace", "expire"])
@@ -139,7 +187,8 @@ def test_typed_media_messages_fail_closed(payload):
         Action.validate_python(payload)
 
 
-def test_twenty_concurrent_claims_have_exactly_one_winner():
+@pytest.mark.parametrize(("parallel", "winners"), [(False, 1), (True, 2)])
+def test_twenty_concurrent_claims_have_only_one_winner_per_available_slot(parallel, winners):
     async def scenario():
         rooms = Rooms(CallSettings(admin_key=KEY))
         connections = [Connection() for _ in range(5)]
@@ -154,12 +203,14 @@ def test_twenty_concurrent_claims_have_exactly_one_winner():
             person.approved = person.voice = True
             while not person.connection.queue.empty():
                 person.connection.queue.get_nowait()
-        await asyncio.gather(*(rooms.action(room_id, people[n % 5], connections[n % 5], Action.validate_python({"type": "screen", "action": "claim", "request": f"{n:032x}"})) for n in range(20)))
+        await asyncio.gather(*(rooms.action(room_id, people[n % 5], connections[n % 5], Action.validate_python({
+            "type": "screen", "action": "claim", "request": f"{n:032x}", "parallel": parallel,
+        })) for n in range(20)))
         messages = []
         for connection in connections:
             while not connection.queue.empty():
                 messages.append(connection.queue.get_nowait())
-        assert sum(m["type"] == "screen_granted" for m in messages) == 1
-        assert sum(m["type"] == "screen_denied" for m in messages) == 19
-        assert room.screen and room.screen_generation == 1
+        assert sum(m["type"] == "screen_granted" for m in messages) == winners
+        assert sum(m["type"] == "screen_denied" for m in messages) == 20 - winners
+        assert len(room.screens) == room.screen_generation == winners
     asyncio.run(scenario())
