@@ -5,13 +5,18 @@ on:
       - 'frontend/src/components/compound-calculator.ts'
       - 'frontend/src/components/finance-calculator.ts'
       - 'frontend/tests/calculator-notices.spec.ts'
+      - 'frontend/src/components/fixed-income-page.ts'
+      - 'frontend/styles/_workspace.scss'
+      - 'frontend/tests/fixed-income-layout.spec.ts'
+      - 'frontend/tests/platform-v2-tools.spec.ts'
+      - 'frontend/tests/fixed-income.spec.ts'
       - '.github/workflows/calculator-copy-regression.yml'
 permissions:
   contents: read
 jobs:
   copy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install frontend dependencies
@@ -27,3 +32,10 @@ jobs:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
         run: npx playwright test frontend/tests/calculator-notices.spec.ts
+      - name: Test Renda Fixa layout and calculations
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: |
+          npx playwright test frontend/tests/fixed-income-layout.spec.ts frontend/tests/fixed-income.spec.ts frontend/tests/layout-v2-fixed.spec.ts
+          npx playwright test frontend/tests/platform-v2-tools.spec.ts --grep 'fixed scenarios can be saved'
