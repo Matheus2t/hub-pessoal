@@ -7,6 +7,13 @@ on:
       - 'frontend/styles/_call.scss'
       - 'frontend/tests/call-landing-minimal.spec.ts'
       - 'frontend/src/components/app-shell.ts'
+      - 'frontend/src/main.ts'
+      - 'frontend/index.html'
+      - 'frontend/public/manifest.webmanifest'
+      - 'frontend/public/service-worker.js'
+      - 'frontend/tests/call-pwa.spec.ts'
+      - 'package.json'
+      - 'vercel.json'
       - 'backend/app/call_*.py'
       - 'backend/tests/test_call_*.py'
       - '.github/workflows/call-frontend-validation.yml'
@@ -19,6 +26,13 @@ on:
       - 'frontend/styles/_call.scss'
       - 'frontend/tests/call-landing-minimal.spec.ts'
       - 'frontend/src/components/app-shell.ts'
+      - 'frontend/src/main.ts'
+      - 'frontend/index.html'
+      - 'frontend/public/manifest.webmanifest'
+      - 'frontend/public/service-worker.js'
+      - 'frontend/tests/call-pwa.spec.ts'
+      - 'package.json'
+      - 'vercel.json'
       - 'backend/app/call_*.py'
       - 'backend/tests/test_call_*.py'
       - '.github/workflows/call-frontend-validation.yml'
@@ -78,7 +92,7 @@ jobs:
           BASE_URL: http://127.0.0.1:8123
         run: |
           python3 -m http.server 8123 --directory dist >/tmp/2t-call-lobby.log 2>&1 &
-          npx playwright test frontend/tests/call-landing-minimal.spec.ts --reporter=line
+          npx playwright test frontend/tests/call-landing-minimal.spec.ts frontend/tests/call-pwa.spec.ts --reporter=line
       - run: python -m backend.tests.call_tls_harness /tmp/twot-call-v4-cert
       - name: Full V4 local WSS + WebRTC browser regression
         env:
