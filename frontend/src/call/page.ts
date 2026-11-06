@@ -6,6 +6,7 @@ import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protoco
 import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
+import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture} from './capture';
 import {ScreenFullscreen} from './fullscreen';
@@ -37,6 +38,8 @@ export class CallPage extends LightElement {
  private pictureInPicture=new ScreenPictureInPicture(()=>this.requestUpdate());
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
   (role,id)=>role==='screenVideo'?this.querySelector('.call-remote-screen'):this.querySelector(`[data-camera="${id}"]`));
+ private output=new CallAudioOutput(this.voice,()=>this.requestUpdate());
+ private onDevicesChanged=()=>{void this.output.refresh()};
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,
@@ -72,12 +75,12 @@ export class CallPage extends LightElement {
   this.voice.selectScreen(this.viewedScreen);
   this.requestUpdate();
  }
- connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);this.loadChannel()}
- disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);this.teardown();super.disconnectedCallback()}
+ connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
+ disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.channelParticipant=undefined;this.screenOwner=undefined;
-  this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.release();this.call.leave();this.lastMedia='';
+  this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.output.reset();this.release();this.call.leave();this.lastMedia='';
  };
  private routeChanged=()=>{
   // A mounted Call page is owned by the application shell, not its current route.
@@ -358,6 +361,19 @@ export class CallPage extends LightElement {
   </div>`:nothing}
   ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
   ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
+  ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
+   <label>Saída de áudio
+    <select aria-label="Dispositivo de saída" .value=${this.output.sinkId} ?disabled=${this.output.busy}
+     @change=${(event:Event)=>void this.output.choose((event.currentTarget as HTMLSelectElement).value)}>
+     <option value="">Padrão do sistema</option>
+     ${this.output.choices.map((device,index)=>html`<option value=${device.deviceId}>${device.label||"Saída "+(index+1)}</option>`)}
+     ${this.output.sinkId&&!this.output.choices.some(device=>device.deviceId===this.output.sinkId)?
+       html`<option value=${this.output.sinkId}>Dispositivo selecionado</option>`:nothing}
+    </select>
+   </label>
+   ${this.output.canPrompt?html`<button type="button" ?disabled=${this.output.busy} @click=${()=>void this.output.prompt()}>Escolher dispositivo</button>`:nothing}
+   ${this.output.error?html`<small role="status">${this.output.error}</small>`:nothing}
+  </div>`:nothing}
   ${this.voice.active?html`<details class="call-diagnostics"><summary @click=${()=>void this.voice.measure()}>Verificar conexão</summary>
    ${this.voice.diagnostics().peers.map((p,n)=>html`<p>Conexão ${n+1} · ${p.path==='relay'?'Via relay':p.path==='direct'?'Direta':'Aguardando conexão'} · ${p.received} pacotes recebidos</p>`)}
    <button type="button" @click=${this.copyDiagnostic}>${this.diagnosticCopied?'Diagnóstico copiado':'Copiar diagnóstico'}</button>
