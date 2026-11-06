@@ -12,6 +12,7 @@ import {CallCapture} from './capture';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
 import {repeat} from 'lit/directives/repeat.js';
+import {live} from 'lit/directives/live.js';
 
 /** Private WebRTC room. Capture and transport have independent lifecycles. */
 @customElement('call-page')
@@ -363,7 +364,7 @@ export class CallPage extends LightElement {
   ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
   ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
    <label>Saída de áudio
-    <select aria-label="Dispositivo de saída" .value=${this.output.sinkId} ?disabled=${this.output.busy}
+    <select aria-label="Dispositivo de saída" .value=${live(this.output.sinkId)} ?disabled=${this.output.busy}
      @change=${(event:Event)=>void this.output.choose((event.currentTarget as HTMLSelectElement).value)}>
      <option value="">Padrão do sistema</option>
      ${this.output.choices.map((device,index)=>html`<option value=${device.deviceId}>${device.label||"Saída "+(index+1)}</option>`)}
