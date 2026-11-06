@@ -1,0 +1,38 @@
+name: Times calendar regression
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/components/sports-calendar.ts'
+      - 'frontend/styles/_sports.scss'
+      - 'frontend/tests/sports-calendar-redesign.spec.ts'
+      - '.github/workflows/sports-calendar-regression.yml'
+permissions:
+  contents: read
+jobs:
+  sports-calendar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Validate TypeScript and build
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Serve built site
+        run: python3 -m http.server 8123 --directory dist >/tmp/2t-sports-calendar.log 2>&1 &
+      - name: Test calendar, existing agenda and club regression
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: npx playwright test frontend/tests/sports-calendar-redesign.spec.ts frontend/tests/platform-v2-sports.spec.ts frontend/tests/layout-v2-freeze.spec.ts
+      - name: Upload screenshot report if a test fails
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sports-calendar-failure
+          path: test-results/
+          if-no-files-found: ignore
