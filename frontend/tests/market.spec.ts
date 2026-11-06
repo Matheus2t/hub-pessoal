@@ -56,6 +56,7 @@ for (const width of [1366, 390, 320]) {
     expect(tickerModules).toBe(0);
     await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Ações', exact: true }).click();
     await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toHaveAttribute('symbols', 'BMFBOVESPA:ITUB4,BMFBOVESPA:PETR4,BMFBOVESPA:VALE3,BMFBOVESPA:MGLU3');
+    await page.locator('.market-directory summary').click();
     await expect(page.locator('.stock-item')).toHaveCount(stocks.length);
     await page.getByLabel('Setor', { exact: true }).selectOption('Saúde');
     await expect(page.locator('.stock-item')).toHaveCount(4);
@@ -91,6 +92,7 @@ for (const width of [1366, 390, 320]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`market-${width}.png`), fullPage: true, animations: 'disabled' });
     await page.getByRole('link', { name: '← Voltar à lista de ações' }).click();
+    if (!(await page.locator('.market-directory').evaluate(el => (el as HTMLDetailsElement).open))) await page.locator('.market-directory summary').click();
     await expect(page.frameLocator('iframe.market-quotes-frame').locator('tv-tickers')).toBeAttached();
     expect(tickerModules).toBeGreaterThanOrEqual(1);
     await page.getByLabel('Buscar ação', { exact: true }).fill('ABCD3');
