@@ -25,7 +25,7 @@ export class FixedIncomeComparison extends LightElement {
   render() {
     const {results,error}=this.result();
     return html`<section class="rf-comparison" aria-label="Comparar investimentos"><p class="rf-note">Mesmo valor, início e horizonte. Taxas hipotéticas constantes. De dois a quatro cenários, sem recomendação de investimento.</p>
-      <panel-workspace area="fixed-income-comparison" .panels=${[
+      <panel-workspace fixed-layout area="fixed-income-comparison" .panels=${[
         {id:'inputs',title:'Condições dos cenários',required:true,essential:true,size:'large',resizable:false},
         {id:'summary',title:'Resultado comparativo',essential:true,available:!!results,size:'large'},
         {id:'chart',title:'Gráfico comparativo',essential:true,available:!!results,size:'large'},
