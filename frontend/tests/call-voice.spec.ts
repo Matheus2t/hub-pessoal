@@ -93,10 +93,13 @@ test('native audio mesh grows from two to five; mute, websocket resume, leave an
   writeFileSync(testInfo.outputPath('webrtc-stats-2-3-4-5.json'),JSON.stringify(stats,null,2));
   await testInfo.attach('webrtc-stats-2-3-4-5.json',{path:testInfo.outputPath('webrtc-stats-2-3-4-5.json'),contentType:'application/json'});
   expect(sockets.every(url=>url===(process.env.CALL_TEST_SIGNAL_URL||origin.replace('https:','wss:').replace('http:','ws:')+'/call/ws'))).toBe(true);
-  await host.getByText('Verificar conexão',{exact:true}).click();
-  await host.getByRole('button',{name:'Copiar diagnóstico',exact:true}).click();
-  await expect(host.getByRole('button',{name:'Diagnóstico copiado',exact:true})).toBeVisible({timeout:12000});
-  const diagnostic=JSON.parse(await host.evaluate(()=>navigator.clipboard.readText()));
+  await expect(host.getByText('Verificar conexão',{exact:true})).toHaveCount(0);
+  await expect(host.getByRole('button',{name:'Copiar diagnóstico',exact:true})).toHaveCount(0);
+  const diagnostic=await host.evaluate(async()=>{
+   const page=document.querySelector('call-page') as any;
+   await page.voice.measure();
+   return page.voice.diagnostics();
+  });
   expect(diagnostic.peers).toHaveLength(4);expect(diagnostic.peers.every((p:any)=>p.path==='direct'&&p.received>0)).toBe(true);
   const text=JSON.stringify(diagnostic);expect(text).not.toContain('Anfitrião');expect(text).not.toContain('Pessoa');
   expect(text).not.toMatch(/candidate:|sdp|credential|invite|iceServers|\b\d{1,3}(?:\.\d{1,3}){3}\b/);

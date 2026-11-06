@@ -88,6 +88,13 @@ test('owner credential, malformed invite, route exit and responsive themes',asyn
  await page.setViewportSize({width:1366,height:950});
  const invite=await create(page);
  expect(invite).toContain('#/call/');
+ await expect(page.locator('.call-session-heading')).toContainText('CANAL DE VOZ');
+ await expect(page.locator('.call-people-heading')).toContainText('Participantes · 1/5');
+ await expect(page.locator('.call-stage-heading')).toContainText('Compartilhamento de tela');
+ await expect(page.locator('.call-diagnostics')).toHaveCount(0);
+ await expect(page.locator('call-page')).not.toContainText('Sem TURN: algumas redes podem impedir o áudio');
+ await expect(page.locator('.call-layout')).not.toHaveAttribute('data-sharing');
+
  for(const width of[1366,390,320])for(const theme of['light','dark']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   await page.evaluate(async()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));

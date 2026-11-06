@@ -26,7 +26,6 @@ export class CallPage extends LightElement {
  private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.voice.setMicrophone(stream)}});
  @state() private roomError='';
  @state() private copied=false;
- @state() private diagnosticCopied=false;
  @state() private channel?:Extract<ChannelStatus,{room:string}>;
  @state() private lobby?:ChannelStatus;
  @state() private lobbyError='';
@@ -280,11 +279,6 @@ export class CallPage extends LightElement {
   const url=new URL(location.href);url.hash=`/call/${session.room}?invite=${session.invite}`;
   try{await navigator.clipboard.writeText(url.href);this.copied=true;this.roomError=''}catch{this.roomError='Não foi possível copiar. Permita o acesso à área de transferência.'}
  }
- private async copyDiagnostic(){
-  await this.voice.measure();
-  try{await navigator.clipboard.writeText(JSON.stringify(this.voice.diagnostics(),null,2));this.diagnosticCopied=true}
-  catch{this.roomError='Não foi possível copiar o diagnóstico. Confira a permissão da área de transferência.'}
- }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
  private stopMicrophone(){this.micRequest++;this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
  private get deafened(){return this.voice.audioMix.deafened}
@@ -435,6 +429,10 @@ export class CallPage extends LightElement {
     ${privateEntry}
    </section>
   </div>`:privateEntry}`}
+  ${this.call.session?html`<div class="call-session-heading" aria-label="Canal de voz">
+   <div class="call-session-title"><span class="call-session-eyebrow">CANAL DE VOZ</span><h2>${channelSession?.name??'Sala privada'}</h2></div>
+   <div class="call-session-count"><span class="call-presence-dot" aria-hidden="true"></span>${this.call.people.filter(p=>p.connected).length} de 5 participantes</div>
+  </div>`:nothing}
   ${this.call.session||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
   ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
    ${channelSession?html`<span>No canal${listeningStatus}</span>`:this.voice.active?html`<span>Na chamada${listeningStatus}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
@@ -442,31 +440,28 @@ export class CallPage extends LightElement {
    ${this.voice.error?html`<button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.voice.retry()}>Reconectar áudio</button>`:nothing}
   </div>`:nothing}
   ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
-  ${this.call.rtc?html`<p class="call-note">${this.call.rtc.relayAvailable?'TURN configurado; a conectividade ainda depende da rede.':'Sem TURN: algumas redes podem impedir o áudio, mesmo com STUN.'}</p>`:nothing}
-  ${this.voice.active?this.microphoneSettings():nothing}
-  ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
-   <label>Saída de áudio
-    <select aria-label="Dispositivo de saída" .value=${live(this.output.sinkId)} ?disabled=${this.output.busy}
-     @change=${(event:Event)=>void this.output.choose((event.currentTarget as HTMLSelectElement).value)}>
-     <option value="">Padrão do sistema</option>
-     ${this.output.choices.map((device,index)=>html`<option value=${device.deviceId}>${device.label||"Saída "+(index+1)}</option>`)}
-     ${this.output.sinkId&&!this.output.choices.some(device=>device.deviceId===this.output.sinkId)?
-       html`<option value=${this.output.sinkId}>Dispositivo selecionado</option>`:nothing}
-    </select>
-   </label>
-   ${this.output.canPrompt?html`<button type="button" ?disabled=${this.output.busy} @click=${()=>void this.output.prompt()}>Escolher dispositivo</button>`:nothing}
-   ${this.output.error?html`<small role="status">${this.output.error}</small>`:nothing}
-  </div>`:nothing}
-  ${this.voice.active?html`<details class="call-diagnostics"><summary @click=${()=>void this.voice.measure()}>Verificar conexão</summary>
-   ${this.voice.diagnostics().peers.map((p,n)=>html`<p>Conexão ${n+1} · ${p.path==='relay'?'Via relay':p.path==='direct'?'Direta':'Aguardando conexão'} · ${p.received} pacotes recebidos</p>`)}
-   <button type="button" @click=${this.copyDiagnostic}>${this.diagnosticCopied?'Diagnóstico copiado':'Copiar diagnóstico'}</button>
-   <p>O relatório não inclui nomes, endereços IP ou convites.</p>
-  </details>`:nothing}
   <div class="call-remote-audio" aria-hidden="true"></div>
   ${this.roomError||this.call.error?html`<p class="call-error" role="alert">${this.roomError||this.call.error}</p>`:nothing}
   ${this.call.requests.length?html`<section class="call-requests" aria-label="Solicitações de entrada"><h2>Aguardando aprovação</h2>${this.call.requests.map(p=>html`<div><span>${p.name}</span><button type="button" @click=${()=>this.call.send({type:'admit',target:p.id})} ?disabled=${this.call.state!=='connected'}>Aceitar ${p.name}</button><button type="button" @click=${()=>this.call.send({type:'reject',target:p.id})} ?disabled=${this.call.state!=='connected'}>Recusar ${p.name}</button></div>`)}</section>`:nothing}
-  <div class=${`call-layout${this.preferences.layout==='compact'?' is-compact':''}`} ?data-channel=${!!channelSession} ?hidden=${!this.call.session}>
-   <section class="call-stage" aria-label="Tela compartilhada">
+  <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${!this.call.session}>
+   <span class="call-controls-label">CONTROLES</span>
+   <button class="call-control-secondary" type="button" aria-pressed=${this.preferences.layout==='compact'} @click=${()=>{
+    this.preferences.setLayout(this.preferences.layout==='compact'?'regular':'compact');this.requestUpdate();
+   }}>Visão compacta</button>
+   <button class="call-control-microphone" type="button" aria-pressed=${!!this.microphone} ?disabled=${this.deafened||this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
+   ${this.voice.active?this.deafenControl():nothing}
+   <button class="call-control-camera" type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
+   <button class="call-control-screen" type="button" aria-pressed=${!!this.capture.screen} ?disabled=${this.voice.active&&this.call.state!=='connected'} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':this.capture.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
+   <button class="call-control-secondary" type="button" ?disabled=${!this.microphone&&!this.capture.screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
+   ${this.capture.canFlip?html`<button class="call-control-secondary" type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}
+   ${this.capture.camera&&this.capture.cameras.length>1?html`<label class="call-camera-select">Câmera ativa
+    <select aria-label="Câmera ativa" .value=${this.capture.cameraDevice} ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @change=${(event:Event)=>this.capture.selectCamera((event.currentTarget as HTMLSelectElement).value)}>
+     ${!this.capture.cameraDevice?html`<option value="" disabled>Câmera atual</option>`:nothing}
+     ${this.capture.cameras.map((camera,index)=>html`<option value=${camera.deviceId} ?selected=${camera.deviceId===this.capture.cameraDevice}>${camera.label||`Câmera ${index+1}`}</option>`)}
+    </select></label>`:nothing}
+  </div>
+  <div class=${`call-layout${this.preferences.layout==='compact'?' is-compact':''}`} ?data-channel=${!!channelSession} ?data-sharing=${!!screen||!!shared?.active} ?hidden=${!this.call.session}>
+   <section class="call-stage" aria-label="Tela compartilhada"><div class="call-stage-heading"><h2>Compartilhamento de tela</h2><span>${!!screen||!!shared?.active?'Transmissão disponível':'Nenhuma transmissão'}</span></div>
     ${screens.length>1?html`<div class="call-screen-options" role="group" aria-label="Transmissões disponíveis">
      ${repeat(screens,source=>source.owner,source=>html`<button type="button" aria-pressed=${source.owner===shared?.owner}
       @click=${()=>this.selectScreen(source.owner)}>${this.call.people.find(p=>p.id===source.owner)?.name??'Participante'}${source.owner===self?' · você':''}</button>`)}
@@ -488,9 +483,9 @@ export class CallPage extends LightElement {
      ${this.viewerControls('screen')}
     </div><p class="call-caption" role="status">${screenCaption}</p>
    </section>
-   <aside class="call-people"><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2><ol aria-label="Participantes da sala">
+   <aside class="call-people"><div class="call-people-heading"><span class="call-people-kicker">NA SALA</span><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2></div><ol aria-label="Participantes da sala">
     ${repeat(this.call.people,p=>p.id,p=>{const mode=this.fullscreen.modeFor(p.id),share=screens.find(source=>source.owner===p.id);return html`<li data-participant=${p.id} class=${share?'call-sharing':''}>
-     <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small>${this.speakers.has(p.id)?html`<small class="call-speaking">Falando</small>`:nothing}<small>${p.camera?'Câmera ligada':'Câmera desligada'}${share?' · compartilhando':''}</small></div></div>
+     <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small>${this.speakers.has(p.id)?html`<small class="call-speaking">Falando</small>`:nothing}<small class=${p.camera||share?'call-camera-status is-active':'call-camera-status'}>${p.camera?'Câmera ligada':'Câmera desligada'}${share?' · compartilhando':''}</small></div></div>
      <div class=${`call-camera-frame call-viewer${mode==='expanded'?' is-expanded':''}`} data-camera=${p.id} ?hidden=${!this.viewerSource(p.id)} role=${mode?'dialog':nothing} aria-modal=${mode?'true':nothing} aria-label=${`Câmera de ${p.name}`}>
       ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
       ${this.viewerControls(p.id,p.name)}
@@ -499,21 +494,21 @@ export class CallPage extends LightElement {
     ${nothing}
    </ol></aside>
   </div>
-  <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${!this.call.session}>
-   <button type="button" aria-pressed=${this.preferences.layout==='compact'} @click=${()=>{
-    this.preferences.setLayout(this.preferences.layout==='compact'?'regular':'compact');this.requestUpdate();
-   }}>Visão compacta</button>
-   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.deafened||this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
-   ${this.voice.active?this.deafenControl():nothing}
-   <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
-   <button type="button" aria-pressed=${!!this.capture.screen} ?disabled=${this.voice.active&&this.call.state!=='connected'} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':this.capture.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
-   <button type="button" ?disabled=${!this.microphone&&!this.capture.screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
-   ${this.capture.canFlip?html`<button type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}
-   ${this.capture.camera&&this.capture.cameras.length>1?html`<label class="call-camera-select">Câmera ativa
-    <select aria-label="Câmera ativa" .value=${this.capture.cameraDevice} ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @change=${(event:Event)=>this.capture.selectCamera((event.currentTarget as HTMLSelectElement).value)}>
-     ${!this.capture.cameraDevice?html`<option value="" disabled>Câmera atual</option>`:nothing}
-     ${this.capture.cameras.map((camera,index)=>html`<option value=${camera.deviceId} ?selected=${camera.deviceId===this.capture.cameraDevice}>${camera.label||`Câmera ${index+1}`}</option>`)}
-    </select></label>`:nothing}
+  <div class="call-devices" ?hidden=${!this.voice.active}>
+  ${this.voice.active?this.microphoneSettings():nothing}
+  ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
+   <label>Saída de áudio
+    <select aria-label="Dispositivo de saída" .value=${live(this.output.sinkId)} ?disabled=${this.output.busy}
+     @change=${(event:Event)=>void this.output.choose((event.currentTarget as HTMLSelectElement).value)}>
+     <option value="">Padrão do sistema</option>
+     ${this.output.choices.map((device,index)=>html`<option value=${device.deviceId}>${device.label||"Saída "+(index+1)}</option>`)}
+     ${this.output.sinkId&&!this.output.choices.some(device=>device.deviceId===this.output.sinkId)?
+       html`<option value=${this.output.sinkId}>Dispositivo selecionado</option>`:nothing}
+    </select>
+   </label>
+   ${this.output.canPrompt?html`<button type="button" ?disabled=${this.output.busy} @click=${()=>void this.output.prompt()}>Escolher dispositivo</button>`:nothing}
+   ${this.output.error?html`<small role="status">${this.output.error}</small>`:nothing}
+  </div>`:nothing}
   </div>
   ${this.error?html`<p class="call-error" role="alert">${this.error}</p>`:nothing}
   ${this.capture.error?html`<p class="call-error" role="alert">${this.capture.error}</p>`:nothing}
