@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 
-test('old calculator preferences cannot hide panels, while actions customization remains independent',async({page})=>{
+test('old calculator preferences cannot hide panels, while actions stay fixed',async({page})=>{
  await page.goto('/#/');
  await page.evaluate(()=>localStorage.setItem('2t:panels:v1:calculator-compound',JSON.stringify({
   version:1,mode:'custom',panels:[
@@ -26,9 +26,9 @@ test('old calculator preferences cannot hide panels, while actions customization
  }
  await page.goto('/#/acoes');
  const stocks=page.locator('market-page panel-workspace');
- await expect(stocks.getByRole('button',{name:'Personalizar painel'})).toBeVisible();
- await stocks.getByRole('button',{name:'Personalizar painel'}).click();
- await expect(stocks.getByRole('dialog',{name:'Personalizar painel'})).toBeVisible();
+ await expect(stocks).toHaveAttribute('fixed-layout','');
+ await expect(stocks.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);
+ await expect(stocks.locator('[data-panel=panorama]')).toBeVisible();
  await page.evaluate(()=>location.hash='#/');
- await expect(stocks.getByRole('dialog',{name:'Personalizar painel'})).toBeHidden();
+ await expect(stocks).toHaveCount(0);
 });
