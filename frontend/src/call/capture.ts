@@ -17,7 +17,8 @@ export class CallCapture {
  cameras:MediaDeviceInfo[]=[];
  private screenRequest=0;private cameraRequest=0;private attempt?:Attempt;
  private cancelled=new Set<string>();
- constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void){}
+ constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void,
+  private qualitySettled:()=>void=()=>{}){}
  get transmitting(){
   const {self,screens}=this.state(),generation=this.attempt?.generation;
   return !!this.screen&&screens.some(screen=>screen.owner===self&&screen.active&&screen.generation===generation);
@@ -42,8 +43,9 @@ export class CallCapture {
   catch{
    if(this.screen?.getVideoTracks()[0]===track&&this.quality===quality){
     this.error='O navegador não aplicou todos os limites de resolução/FPS. Confira a qualidade real recebida.';
-    this.changed();
    }
+  }finally{
+   if(this.screen?.getVideoTracks()[0]===track){this.qualitySettled();this.changed()}
   }
  }
  private remember(request:string){this.cancelled.add(request);while(this.cancelled.size>16)this.cancelled.delete(this.cancelled.values().next().value!)}
