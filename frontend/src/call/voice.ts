@@ -1,15 +1,21 @@
 import type {Participant,RemoteSignal,RemoteWatch,RtcConfig,Signal,WatchSignal,MediaRole,MediaRoles,RoomScreen} from './protocol';
 import {CallAudioMix} from './audio-mix';
+import {defaultScreenQuality,screenEncoding,type ScreenQuality,type ScreenContent} from './screen-quality';
 
 type VoiceSignal = {type:'offer'|'answer';sdp:string;roles:MediaRoles}|{type:'ice';candidate:RTCIceCandidateInit|null};
 const roles:MediaRole[]=['microphone','screenAudio','screenVideo','camera'];
 const kind=(role:MediaRole)=>role==='microphone'||role==='screenAudio'?'audio':'video';
 export interface VoiceStats {received:number;lost:number;jitterMs?:number;rttMs?:number;relay:boolean;path:'unknown'|'direct'|'relay'}
+export interface ScreenTransportQuality {width:number;height:number;fps:number;kbps?:number;sampledAt:number;limitation?:string}
 interface Peer {
  id:string;epoch:number;pc:RTCPeerConnection;sender?:RTCRtpSender;audio:HTMLAudioElement;
  transceivers:Partial<Record<MediaRole,RTCRtpTransceiver>>;remoteRoles?:MediaRoles;
  streams:Partial<Record<MediaRole,MediaStream>>;elements:Record<MediaRole,HTMLMediaElement>;
- outbound:Partial<Record<MediaRole,{bytes:number;time:number}>>;uploadKbps:number;limited:boolean;clearSamples:number;
+ outbound:Partial<Record<MediaRole,{bytes:number;time:number;frames?:number}>>;
+ inboundScreen?:{bytes:number;time:number;frames?:number};
+ screenSent?:ScreenTransportQuality;screenReceived?:ScreenTransportQuality;
+ screenTier:number;screenPressure:number;screenRecovery:number;
+ uploadKbps:number;limited:boolean;clearSamples:number;
  screenWatching?:boolean;watchSent?:boolean;
  blockedElements:Set<HTMLMediaElement>;videoStats:Partial<Record<MediaRole,{fps?:number;width?:number;height?:number;frames:number;encoderMsPerFrame?:number;limitation:string}>>;
  polite:boolean;makingOffer:boolean;settingAnswer:boolean;ignored:Set<string>;candidates:(RTCIceCandidateInit|null)[];
@@ -26,10 +32,34 @@ export class VoiceMesh {
  private microphone?:MediaStreamTrack;private refresh?:number;private sampling?:number;private measuring=false;
  private sources:Partial<Record<MediaRole,MediaStreamTrack>>={};private screen:RoomScreen|null=null;
  private outputSink='';
+ screenQuality:ScreenQuality=defaultScreenQuality;
+ screenContent:ScreenContent='screen';
  constructor(private send:(message:Signal|WatchSignal)=>boolean,private changed:()=>void,
   private audioRoot:()=>HTMLElement|null,private refreshConfig:()=>void,
   private videoRoot:(role:'screenVideo'|'camera',id:string)=>HTMLElement|null=()=>null){}
  get blocked(){return this.audioMix.blocked||[...this.peers.values()].some(p=>p.blocked)}
+ configureScreen(quality:ScreenQuality,content:ScreenContent){
+  if(this.screenQuality===quality&&this.screenContent===content)return;
+  this.screenQuality=quality;this.screenContent=content;
+  for(const peer of this.peers.values()){
+   peer.screenTier=0;peer.screenPressure=0;peer.screenRecovery=0;
+   this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
+  }
+  this.changed();
+ }
+ /** Real measured RTP receive quality; not the requested capture settings. */
+ receivedScreenQuality(id:string){
+  const stats=this.peers.get(id)?.screenReceived;
+  return stats&&Date.now()-stats.sampledAt<13000?stats:undefined;
+ }
+ /** Actual encoded RTP quality for the lowest-quality active spectator. */
+ sentScreenQuality(){
+  const active=[...this.peers.values()].filter(p=>p.screenWatching!==false&&p.pc.connectionState==='connected');
+  const measured=active.map(p=>p.screenSent).filter((p):p is ScreenTransportQuality=>!!p&&Date.now()-p.sampledAt<13000);
+  if(!measured.length)return {viewers:active.length,quality:undefined};
+  const quality=measured.sort((a,b)=>a.width*a.height-b.width*b.height||a.fps-b.fps)[0];
+  return {viewers:active.length,quality};
+ }
  /** Select the destination for microphone audio and shared audio, including Web Audio. */
  async setAudioOutput(sinkId:string){
   if(this.outputSink===sinkId)return;
@@ -100,7 +130,7 @@ export class VoiceMesh {
      if(role!=='microphone')this.audioRoot()?.append(element);
     }
   }
-  const peer:Peer={id:person.id,epoch:person.voiceEpoch,pc,audio,elements,transceivers:{},streams:{},outbound:{},uploadKbps:0,limited:false,clearSamples:0,blockedElements:new Set(),videoStats:{},polite:this.self>person.id,makingOffer:false,
+  const peer:Peer={id:person.id,epoch:person.voiceEpoch,pc,audio,elements,transceivers:{},streams:{},outbound:{},screenTier:0,screenPressure:0,screenRecovery:0,uploadKbps:0,limited:false,clearSamples:0,blockedElements:new Set(),videoStats:{},polite:this.self>person.id,makingOffer:false,
    settingAnswer:false,ignored:new Set(),candidates:[],queue:Promise.resolve(),attempts:0,resignal:false,blocked:false,failed:false};
   this.peers.set(person.id,peer);
   // Only the initial offerer allocates a transceiver. The answerer reuses the one
@@ -135,6 +165,9 @@ export class VoiceMesh {
   const peer=this.peers.get(message.from);
   if(!peer||!this.current(peer)||message.epoch!==peer.epoch||message.targetEpoch!==this.epoch)return;
   if(message.type==='watch'){
+   if(peer.screenWatching!==message.enabled&&message.enabled){
+    peer.screenTier=0;peer.screenPressure=0;peer.screenRecovery=0;
+   }
    peer.screenWatching=message.enabled;
    this.enqueue(peer,()=>this.limitVideo(peer,'screenVideo'));
    return;
@@ -238,10 +271,28 @@ export class VoiceMesh {
  private async limitVideo(peer:Peer,role:MediaRole){
   if(kind(role)!=='video')return;
   const sender=peer.transceivers[role]?.sender;if(!sender?.track)return;
-  try{const parameters=sender.getParameters();if(!parameters.encodings?.length)return;
-   for(const encoding of parameters.encodings){encoding.maxBitrate=(role==='screenVideo'?2000000:600000)*(peer.limited?.5:1);encoding.maxFramerate=peer.limited?15:role==='screenVideo'?30:24;encoding.scaleResolutionDownBy=peer.limited?2:1;if(role==='screenVideo')encoding.active=peer.screenWatching!==false}
+  try{
+   const parameters=sender.getParameters();
+   if(!parameters.encodings?.length)return;
+   if(role==='screenVideo'){
+    const settings=screenEncoding(this.screenQuality,this.screenContent,peer.screenTier);
+    for(const encoding of parameters.encodings){
+     encoding.maxBitrate=settings.maxBitrate;
+     encoding.maxFramerate=settings.maxFramerate;
+     encoding.scaleResolutionDownBy=settings.scaleResolutionDownBy;
+     encoding.active=peer.screenWatching!==false;
+    }
+    // Prefer clarity over forced FPS when the physical link is congested.
+    parameters.degradationPreference='maintain-resolution';
+   }else{
+    for(const encoding of parameters.encodings){
+     encoding.maxBitrate=peer.limited?300000:600000;
+     encoding.maxFramerate=peer.limited?15:24;
+     encoding.scaleResolutionDownBy=peer.limited?2:1;
+    }
+   }
    await sender.setParameters(parameters);
-  }catch{/* Native congestion control remains available if encoding limits are unsupported. */}
+  }catch{/* Keep native congestion control on browsers lacking these encoder knobs. */}
  }
  private playElement(peer:Peer,element:HTMLMediaElement){
   void element.play().then(()=>{if(this.current(peer)){const before=peer.blocked;peer.blockedElements.delete(element);peer.blocked=peer.blockedElements.size>0;if(before!==peer.blocked)this.changed()}})
