@@ -70,7 +70,7 @@ test('calendar shows real month grid, selected fixtures and month navigation',as
  await expect(page.locator('.sports-calendar-title h2')).toHaveText('novembro de 2026');
  await page.getByRole('button',{name:'Hoje',exact:true}).click();
  await expect(page.locator('.sports-calendar-title h2')).toHaveText('novembro de 2026');
- await page.getByRole('button',{name:'6 de novembro de 2026, 0 jogos'}).click();
+ await page.getByRole('button',{name:'6 de novembro de 2026, 0 jogos',exact:true}).click();
  await expect(page.locator('.sports-calendar-no-matches')).toContainText('Sem jogos neste dia');
  await page.getByRole('group',{name:'Filtrar equipe'}).getByRole('button',{name:'Todos',exact:true}).click();
  await page.getByRole('group',{name:'Visualização da agenda'}).getByRole('button',{name:'Últimos resultados',exact:true}).click();
