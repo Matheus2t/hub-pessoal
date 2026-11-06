@@ -35,6 +35,8 @@ export class CallPage extends LightElement {
  private speakerTimer?:number;
  private channelParticipant?:string;
  private screenOwner?:string;
+ private watchOwner?:string;
+ private watchGeneration?:number;
  private fullscreen=new ScreenFullscreen(()=>this.requestUpdate());
  private pictureInPicture=new ScreenPictureInPicture(()=>this.requestUpdate());
  private voice=new VoiceMesh(message=>this.call.send(message),()=>this.requestUpdate(),()=>this.querySelector('.call-remote-audio'),()=>{this.call.send({type:'rtc_config'})},
@@ -58,7 +60,7 @@ export class CallPage extends LightElement {
   if(this.call.people.some(person=>person.id===viewer&&person.camera))return viewer;
  };
  private screenSource():MediaStream|string|undefined{
-  const screen=this.viewedScreen,preview=this.localPreview;
+  const screen=this.watchedScreen,preview=this.localPreview;
   if(preview?.getVideoTracks().some(t=>t.readyState==='live'))return preview;
   if(screen&&screen.owner!==this.call.session?.participant)return `${screen.owner}:${screen.generation}`;
  }
@@ -67,20 +69,33 @@ export class CallPage extends LightElement {
   const screens=this.activeScreens;
   return screens.find(screen=>screen.owner===this.screenOwner)??screens[0];
  }
+ private get watchedScreen(){
+  const screen=this.viewedScreen;
+  return screen?.owner===this.watchOwner&&screen?.generation===this.watchGeneration?screen:undefined;
+ }
+ private toggleWatch(){
+  const screen=this.viewedScreen;
+  if(!screen||screen.owner===this.call.session?.participant)return;
+  if(this.watchedScreen){this.watchOwner=undefined;this.watchGeneration=undefined}
+  else{this.watchOwner=screen.owner;this.watchGeneration=screen.generation}
+  this.voice.selectScreen(this.watchedScreen);
+  this.requestUpdate();
+ }
  private get localPreview(){
   const viewed=this.viewedScreen;
   return !viewed||viewed.owner===this.call.session?.participant?this.capture.screen:undefined;
  }
  private selectScreen(owner:string){
+  if(this.screenOwner!==owner){this.watchOwner=undefined;this.watchGeneration=undefined}
   this.screenOwner=owner;
-  this.voice.selectScreen(this.viewedScreen);
+  this.voice.selectScreen(this.watchedScreen);
   this.requestUpdate();
  }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
  disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
-  this.stopSpeakers();this.channelParticipant=undefined;this.screenOwner=undefined;
+  this.stopSpeakers();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
   this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.output.reset();this.release();this.call.leave();this.lastMedia='';
  };
  private routeChanged=()=>{
@@ -159,12 +174,12 @@ export class CallPage extends LightElement {
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
-   this.voice.stop(true);this.screenOwner=undefined;if(this.call.state==='closed')this.release();this.lastMedia='';
+   this.voice.stop(true);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
    const viewed=this.viewedScreen;
    if(viewed)this.screenOwner=viewed.owner;
-   if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',viewed);
+   if(this.call.session)this.voice.sync(this.call.session.participant,this.call.people,this.call.rtc,this.call.state==='connected',this.watchedScreen);
    if(session?.mode==='channel'&&this.call.state==='connected'&&this.call.rtc&&!this.voice.active)this.enterVoice();
    this.publishMedia();
   }
@@ -183,9 +198,9 @@ export class CallPage extends LightElement {
   if(this.call.state!=='connected'||!this.call.rtc)return;
   this.capture.release();
   this.voice.setMicrophone(this.microphone);this.voice.start();
-  this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true,this.viewedScreen);this.publishMedia();
+  this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true,this.watchedScreen);this.publishMedia();
  }
- private leaveVoice(){this.pictureInPicture.sync(null);this.screenOwner=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
+ private leaveVoice(){this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
@@ -300,11 +315,11 @@ export class CallPage extends LightElement {
   const channelBusy=this.call.state==='connecting'||this.call.state==='reconnecting';
   const isLanding=!channelRoute&&!this.call.session&&!parseInvite(location.href);
   if(location.hash==='#/call/gerenciar'&&!this.call.session)return html`<call-channel-owner></call-channel-owner>`;
-  const remote=!!shared?.active&&shared.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
+  const remote=!!this.watchedScreen?.active&&shared?.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
   const listeningStatus=this.deafened?' · Ensurdecido':this.microphone?'':' · apenas ouvindo';
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const selecting=this.call.screens.some(screen=>!screen.active);
-  const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:selecting?'Selecionando tela…':'Nenhuma tela compartilhada';
+  const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:shared?.active&&shared.owner!==self&&this.voice.active?`${sharer?.name??'Participante'} está transmitindo · selecione Assistir`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:selecting?'Selecionando tela…':'Nenhuma tela compartilhada';
   const entryMode=parseInvite(location.href)?'join':this.privateMode;
   const privateEntry = !this.call.session?html`<div class="call-private-entry">
    <div class="call-entry-switch" role="group" aria-label="Tipo de chamada privada">
@@ -389,6 +404,9 @@ export class CallPage extends LightElement {
      ${repeat(screens,source=>source.owner,source=>html`<button type="button" aria-pressed=${source.owner===shared?.owner}
       @click=${()=>this.selectScreen(source.owner)}>${this.call.people.find(p=>p.id===source.owner)?.name??'Participante'}${source.owner===self?' · você':''}</button>`)}
     </div>`:nothing}
+    ${this.voice.active&&shared?.active&&shared.owner!==self?html`<div class="call-watch-actions" role="group" aria-label="Assistir transmissão">
+     <button type="button" aria-pressed=${remote} @click=${this.toggleWatch}>${remote?'Parar de assistir':'Assistir'}</button>
+    </div>`:nothing}
     <div class=${`call-preview call-viewer${screenMode==='expanded'?' is-expanded':''}`} role=${screenMode?'dialog':nothing} aria-modal=${screenMode?'true':nothing} aria-label="Visualizador da tela compartilhada"><video autoplay playsinline muted .muted=${true} .srcObject=${screen??null} ?hidden=${!screen} aria-label="Prévia local da tela"></video>
      <div class="call-remote-screen" ?hidden=${!remote} aria-label="Tela recebida"></div>
      ${remote&&!screenMode&&this.pictureInPicture.available?html`
@@ -399,7 +417,7 @@ export class CallPage extends LightElement {
       </button>
       ${this.pictureInPicture.error?html`<div class="call-viewer-media"><span class="call-viewer-error" role="status">${this.pictureInPicture.error}</span></div>`:nothing}
      `:nothing}
-     ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${selecting?'Selecionando tela':'Nenhuma tela compartilhada'}</h2><p>${this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
+     ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${selecting?'Selecionando tela':shared?.active?'Transmissão disponível':'Nenhuma tela compartilhada'}</h2><p>${shared?.active?'Clique em Assistir para acompanhar a transmissão.':this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
      ${this.viewerControls('screen')}
     </div><p class="call-caption" role="status">${screenCaption}</p>
    </section>

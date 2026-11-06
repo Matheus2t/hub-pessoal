@@ -1,4 +1,4 @@
-import type {AdmissionRequest,ClientMessage,Participant,ServerMessage,Session,Signal,RtcConfig,RoomScreen,ScreenControl,ScreenEvent,ChannelJoin} from './protocol';
+import type {AdmissionRequest,ClientMessage,Participant,ServerMessage,Session,Signal,WatchSignal,RtcConfig,RoomScreen,ScreenControl,ScreenEvent,ChannelJoin} from './protocol';
 import {callEndpoint,wakeSignaler} from './endpoint';
 
 export const callErrors:Record<string,string>={
@@ -111,7 +111,7 @@ export class CallSignaling {
   this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.attempts=0;
   this.open(join,true);
  }
- send(message:{type:'close'|'rtc_config'}|Extract<ClientMessage,{type:'admit'|'reject'|'media'}>|Signal|ScreenControl){
+ send(message:{type:'close'|'rtc_config'}|Extract<ClientMessage,{type:'admit'|'reject'|'media'}>|Signal|WatchSignal|ScreenControl){
   if(this.state!=='connected'||this.socket?.readyState!==WebSocket.OPEN)return false;
   this.socket.send(JSON.stringify(message));return true;
  }
