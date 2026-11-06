@@ -51,8 +51,8 @@ export class MarketPage extends LightElement {
       if(c.signal.aborted)return;this.hasFinancial=!!m.companies[this.symbol];this.hasDistributions=d.some(x=>x.companies.includes(this.symbol));this.coverage='known';
     }catch{if(!c.signal.aborted)this.coverage='failed'}
   }
-  private async toggleDirectory(event: Event) {
-    this.directoryOpen = (event.currentTarget as HTMLDetailsElement).open;
+  private async toggleDirectory() {
+    this.directoryOpen = !this.directoryOpen;
     if (!this.directoryOpen || this.directoryStatus !== 'idle') return;
     this.directoryStatus = 'loading';
     try {
@@ -132,12 +132,12 @@ export class MarketPage extends LightElement {
         <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe></section>
         <section slot="panorama" class="workspace-panel"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
         <section slot="directory" class="workspace-panel market-directory-panel">
-         <details class="market-directory" ?open=${this.directoryOpen} @toggle=${this.toggleDirectory}>
-           <summary class="market-directory-toggle">
+         <div class="market-directory">
+           <button type="button" class="market-directory-toggle" aria-expanded=${this.directoryOpen} aria-controls="market-directory-content" @click=${this.toggleDirectory}>
              <span class="market-directory-heading"><strong>Empresas</strong><small>${matches.length} ${matches.length===1?'ação':'ações'} no catálogo</small></span>
              <span class="market-directory-action">${this.directoryOpen?'Recolher lista':'Explorar empresas'}</span>
-           </summary>
-           ${this.directoryOpen?html`<div class="market-directory-content">
+           </button>
+           ${this.directoryOpen?html`<div id="market-directory-content" class="market-directory-content">
              <form class="market-search" @submit=${this.search}>
        <label for="stock-search">Buscar ação</label><div><input id="stock-search" type="search" role="combobox" aria-autocomplete="list" aria-controls="stock-suggestions" aria-expanded=${Boolean(this.query&&this.expanded&&suggestions.length)} aria-activedescendant=${this.expanded&&this.active>=0?`stock-option-${this.active}`:nothing} @keydown=${this.keydown} @focus=${()=>{this.expanded=true}} placeholder="Buscar por código ou empresa" .value=${this.query} @input=${(event:Event)=>{this.query=(event.target as HTMLInputElement).value.toLocaleUpperCase('pt-BR');this.error='';this.active=-1;this.expanded=true}} autocomplete="off" aria-describedby=${this.error?'market-search-error':nothing}>
         <button class="button secondary" type="button" @click=${()=>{this.query='';this.error='';this.active=-1;this.expanded=false;this.querySelector<HTMLInputElement>('#stock-search')?.focus()}}>Limpar</button><button class="button primary">Buscar</button></div></form>
@@ -158,7 +158,7 @@ export class MarketPage extends LightElement {
              </div>
              <p class="market-directory-source">Fonte: CVM/DFP. Lucro líquido e ROE do último exercício anual disponível, por empresa e não por classe de ação. Alguns emissores utilizam demonstrações individuais; os detalhes metodológicos estão nas páginas das empresas. Valores contábeis não são cotações.</p>
            </div>`:nothing}
-         </details>
+         </div>
         </section>`}
       </panel-workspace>`;
   }
