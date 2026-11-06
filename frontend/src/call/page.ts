@@ -477,7 +477,7 @@ export class CallPage extends LightElement {
     <label>Qualidade do vídeo
      <select aria-label="Qualidade da transmissão" .value=${this.capture.quality}
       @change=${(event:Event)=>this.setScreenQuality((event.currentTarget as HTMLSelectElement).value as ScreenQuality)}>
-      ${screenQualityOptions.map(key=>html`<option value=${key}>${screenPresets[key].label}</option>`)}
+      ${screenQualityOptions.map(key=>html`<option value=${key} ?selected=${key===this.capture.quality}>${screenPresets[key].label}</option>`)}
      </select>
     </label>
     <label>Conteúdo
