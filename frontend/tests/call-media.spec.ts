@@ -459,7 +459,7 @@ test('speaker output changes route HTML and Web Audio, survive navigation and re
   await page.getByRole('button',{name:'Ensurdecer',exact:true}).click();
   await select.selectOption('speakers');
   await expect.poll(state).toMatchObject({microphone:'speakers',screen:'speakers',graph:'speakers',deafened:true,master:0});
-  await page.getByRole('button',{name:'Voltar a ouvir',exact:true}).click();
+  await page.getByRole('button',{name:'Ensurdecer',exact:true}).click();
   await expect.poll(state).toMatchObject({deafened:false,volume:150});
   await page.evaluate(()=>{
    const w=window as any;
