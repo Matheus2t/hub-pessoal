@@ -47,7 +47,7 @@ jobs:
           BASE_URL: http://127.0.0.1:8123
         run: |
           npx playwright test frontend/tests/market.spec.ts --grep 'TradingView adapter'
-          npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market terminal'
+          npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market overview'
       - name: Test financial comparison redesign
         env:
           PW_CHANNEL: chromium
