@@ -10,6 +10,7 @@ import {CallPreferences} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture} from './capture';
+import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent} from './screen-quality';
 import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
@@ -51,6 +52,18 @@ export class CallPage extends LightElement {
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,
   screens:this.call.screens,screenLimit:this.call.screenLimit}),message=>this.call.send(message),()=>this.captureChanged());
+ private setScreenQuality(quality:ScreenQuality){
+  if(this.capture.quality===quality)return;
+  this.capture.setQuality(quality);
+  this.voice.configureScreen(quality,this.capture.content);
+  this.requestUpdate();
+ }
+ private setScreenContent(content:ScreenContent){
+  if(this.capture.content===content)return;
+  this.capture.setContent(content);
+  this.voice.configureScreen(this.capture.quality,content);
+  this.requestUpdate();
+ }
  private captureChanged(){this.voice.setScreen(this.capture.transmitting?this.capture.screen:undefined);this.voice.setCamera(this.capture.camera);this.publishMedia();this.requestUpdate()}
  protected updated(){
   this.voice.mountMedia();
@@ -379,6 +392,14 @@ export class CallPage extends LightElement {
   const listeningStatus=this.deafened?' · Ensurdecido':this.microphone?'':' · apenas ouvindo';
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const selecting=this.call.screens.some(screen=>!screen.active);
+  const sending=screen&&this.capture.transmitting?this.voice.sentScreenQuality():undefined;
+  const measured=remote&&shared?this.voice.receivedScreenQuality(shared.owner):sending?.quality;
+  const mediaStats=remote||sending?
+   measured?
+    `${remote?'Recebendo':'Enviando'} · ${measured.width}×${measured.height} · ${Math.round(measured.fps)} FPS${measured.kbps!==undefined?` · ${(measured.kbps/1000).toFixed(1).replace('.',',')} Mbps`:''}`:
+    sending?.viewers===0?'Sem espectadores · qualidade será medida ao assistir':
+    'Medindo resolução e FPS reais…':
+   '';
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:shared?.active&&shared.owner!==self&&this.voice.active?`${sharer?.name??'Participante'} está transmitindo · selecione Assistir`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:selecting?'Selecionando tela…':'Nenhuma tela compartilhada';
   const entryMode=parseInvite(location.href)?'join':this.privateMode;
   const privateEntry = !this.call.session?html`<div class="call-private-entry">
@@ -452,6 +473,21 @@ export class CallPage extends LightElement {
    ${this.voice.active?this.deafenControl():nothing}
    <button class="call-control-camera" type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button class="call-control-screen" type="button" aria-pressed=${!!this.capture.screen} ?disabled=${this.voice.active&&this.call.state!=='connected'} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':this.capture.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
+   ${this.voice.active?html`<div class="call-share-quality" role="group" aria-label="Qualidade de compartilhamento">
+    <label>Qualidade do vídeo
+     <select aria-label="Qualidade da transmissão" .value=${this.capture.quality}
+      @change=${(event:Event)=>this.setScreenQuality((event.currentTarget as HTMLSelectElement).value as ScreenQuality)}>
+      ${screenQualityOptions.map(key=>html`<option value=${key}>${screenPresets[key].label}</option>`)}
+     </select>
+    </label>
+    <label>Conteúdo
+     <select aria-label="Tipo de transmissão" .value=${this.capture.content}
+      @change=${(event:Event)=>this.setScreenContent((event.currentTarget as HTMLSelectElement).value as ScreenContent)}>
+      <option value="screen">Tela e textos</option>
+      <option value="game">Jogos e movimento</option>
+     </select>
+    </label>
+   </div>`:nothing}
    <button class="call-control-secondary" type="button" ?disabled=${!this.microphone&&!this.capture.screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
    ${this.capture.canFlip?html`<button class="call-control-secondary" type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}
    ${this.capture.camera&&this.capture.cameras.length>1?html`<label class="call-camera-select">Câmera ativa
@@ -482,6 +518,7 @@ export class CallPage extends LightElement {
      ${!screen&&!remote?html`<div class="call-empty"><span class="call-empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="36" height="26" rx="3"></rect><path d="M18 41h12M24 34v7M17 21h14"></path></svg></span><h2>${selecting?'Selecionando tela':shared?.active?'Transmissão disponível':'Nenhuma tela compartilhada'}</h2><p>${shared?.active?'Clique em Assistir para acompanhar a transmissão.':this.voice.active?'Compartilhe uma tela, janela ou aba.':'Entre na chamada para compartilhar com a sala.'}</p></div>`:nothing}
      ${this.viewerControls('screen')}
     </div><p class="call-caption" role="status">${screenCaption}</p>
+    ${mediaStats?html`<p class="call-video-stats" aria-label="Qualidade real do vídeo">${mediaStats}</p>`:nothing}
    </section>
    <aside class="call-people"><div class="call-people-heading"><span class="call-people-kicker">NA SALA</span><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2></div><ol aria-label="Participantes da sala">
     ${repeat(this.call.people,p=>p.id,p=>{const mode=this.fullscreen.modeFor(p.id),share=screens.find(source=>source.owner===p.id);return html`<li data-participant=${p.id} class=${share?'call-sharing':''}>
