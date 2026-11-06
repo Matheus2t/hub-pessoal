@@ -6,6 +6,7 @@ on:
       - 'frontend/src/components/market-page.ts'
       - 'frontend/src/components/tradingview-widget.ts'
       - 'frontend/tests/market-scroll.spec.ts'
+      - 'frontend/tests/market-directory.spec.ts'
       - 'frontend/tests/market-nav.spec.ts'
       - 'frontend/src/components/financial-comparison.ts'
       - 'frontend/tests/comparison-layout.spec.ts'
@@ -48,6 +49,13 @@ jobs:
         run: |
           npx playwright test frontend/tests/market.spec.ts --grep 'TradingView adapter'
           npx playwright test frontend/tests/layout-v2-market.spec.ts --grep 'market terminal'
+      - name: Test expandable Ações catalog and fixed layout
+        env:
+          PW_CHANNEL: chromium
+          BASE_URL: http://127.0.0.1:8123
+        run: |
+          npx playwright test frontend/tests/market-directory.spec.ts
+          npx playwright test frontend/tests/panel-workspace.spec.ts --grep 'actions workspace'
       - name: Test financial comparison redesign
         env:
           PW_CHANNEL: chromium
