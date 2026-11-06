@@ -38,6 +38,32 @@ for(const width of [1366,768,390,320]) test('Renda Fixa tem fluxo simples e resp
  await expect(root.getByRole('heading',{name:'Cenários salvos'})).toBeVisible();
  await root.locator('.rf-comparison-section > summary').click();
  await expect(root.locator('fixed-income-comparison')).toBeVisible();
+ await expect(root.locator('.rf-tool-scenarios')).toBeVisible();
+ await expect(root.locator('.rf-tool-equivalent')).toBeVisible();
+ await expect(root.locator('.rf-utility-comparison .rf-scenarios .rf-scenario')).toHaveCount(2);
+ const toolBox=await w.locator('.ws-grid > .ws-cell[data-panel=tools]').boundingBox();
+ const comparisonBox=await w.locator('.ws-grid > .ws-cell[data-panel=comparison]').boundingBox();
+ const savedBox=await root.locator('.rf-tool-scenarios').boundingBox();
+ const equivalentBox=await root.locator('.rf-tool-equivalent').boundingBox();
+ expect(toolBox).not.toBeNull();
+ expect(comparisonBox).not.toBeNull();
+ expect(savedBox).not.toBeNull();
+ expect(equivalentBox).not.toBeNull();
+ expect(Math.abs(toolBox!.x-comparisonBox!.x)).toBeLessThan(3);
+ expect(Math.abs(toolBox!.width-comparisonBox!.width)).toBeLessThan(3);
+ expect(comparisonBox!.y).toBeGreaterThanOrEqual(toolBox!.y+toolBox!.height-2);
+ if(width>900){
+  expect(equivalentBox!.x).toBeGreaterThan(savedBox!.x+savedBox!.width-3);
+  expect(Math.abs(savedBox!.y-equivalentBox!.y)).toBeLessThan(3);
+ }else{
+  expect(equivalentBox!.y).toBeGreaterThanOrEqual(savedBox!.y+savedBox!.height-2);
+ }
+ await root.locator('.rf-tool-equivalent select').selectOption('lci');
+ await root.getByRole('button',{name:'Calcular taxa equivalente'}).click();
+ await expect(root.locator('.rf-equivalence-result strong')).toContainText('% do CDI');
+ await expect(root.locator('.rf-equivalence-result details')).not.toHaveAttribute('open','');
+ await root.locator('.rf-equivalence-result details summary').click();
+ await expect(root.locator('.rf-equivalence-result details p')).toContainText('Líquidos:');
  await root.locator('.rf-assumptions > summary').click();
  await expect(root.getByRole('heading',{name:'O que considerar'})).toBeVisible();
  for(const theme of ['dark','light']){

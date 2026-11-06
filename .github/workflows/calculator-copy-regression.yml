@@ -6,6 +6,7 @@ on:
       - 'frontend/src/components/finance-calculator.ts'
       - 'frontend/tests/calculator-notices.spec.ts'
       - 'frontend/src/components/fixed-income-page.ts'
+      - 'frontend/src/components/fixed-income-tools.ts'
       - 'frontend/styles/_workspace.scss'
       - 'frontend/tests/fixed-income-layout.spec.ts'
       - 'frontend/tests/platform-v2-tools.spec.ts'
