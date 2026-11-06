@@ -4,10 +4,12 @@ test.use({launchOptions:{executablePath:process.env.MARKET_SCROLL_BROWSER_PATH}}
 
 async function openDirectory(page:import('@playwright/test').Page) {
  const toggle=page.locator('.market-directory-toggle');
- await toggle.scrollIntoViewIfNeeded();
- // The embedded chart above has its own layout lifecycle; finish scrolling first.
- await page.waitForTimeout(400);
- await toggle.click();
+ if (await toggle.getAttribute('aria-expanded') !== 'true') {
+  await toggle.scrollIntoViewIfNeeded();
+  // Embedded charts above have their own lifecycle; finish scrolling before clicking.
+  await page.waitForTimeout(300);
+  await toggle.click();
+ }
  await expect(toggle).toHaveAttribute('aria-expanded','true');
 }
 
