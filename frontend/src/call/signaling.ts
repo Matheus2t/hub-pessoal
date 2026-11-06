@@ -23,7 +23,8 @@ export type ConnectionState='idle'|'connecting'|'waiting'|'connected'|'reconnect
 export class CallSignaling {
  state:ConnectionState='idle';error='';notice='';session?:Session;people:Participant[]=[];requests:AdmissionRequest[]=[];
  rtc?:RtcConfig;
- screen:RoomScreen|null=null;
+ screens:RoomScreen[]=[];
+ screenLimit=1;
  private socket?:WebSocket;private heartbeat?:number;private retry?:number;private watchdog?:number;private attempts=0;
  private stopped=false;private credential='';private generation=0;
  private endpoint?:URL;private waking?:AbortController;private wakeTimeout?:number;
@@ -73,7 +74,11 @@ export class CallSignaling {
     if(message.mode!=='channel'&&location.hash!=='#/call')history.replaceState(null,'','#/call');
    }else if(message.type==='channel_reentry'&&this.session?.mode==='channel')this.channelProof=message.proof;
    else if(message.type==='rtc_config'){this.rtc=message;if(message.relayAvailable&&this.error===callErrors.turn_unavailable)this.error=''}
-   else if(message.type==='presence'){this.people=message.participants;this.screen=message.screen}
+   else if(message.type==='presence'){
+    this.people=message.participants;
+    this.screenLimit=message.screens?2:1;
+    this.screens=message.screens??(message.screen?[message.screen]:[]);
+   }
    else if(message.type==='screen_granted'||message.type==='screen_denied')this.screenEvent(message);
    else if(message.type==='requests')this.requests=message.participants;
    else if(message.type==='approved'){this.state='connected';if(this.session)this.session.approved=true}
@@ -92,7 +97,7 @@ export class CallSignaling {
    finished=true;window.clearInterval(this.heartbeat);window.clearTimeout(this.watchdog);
    socket.onopen=socket.onmessage=socket.onclose=null;socket.close();
    if(this.session&&this.credential&&this.attempts<5){
-    this.state='reconnecting';this.screen=null;this.changed();
+    this.state='reconnecting';this.screens=[];this.changed();
     this.retry=window.setTimeout(()=>this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential}),Math.min(500*2**this.attempts++,4000));
    }else if(this.channelJoin&&this.session)this.rejoinChannel();
    else this.fail(this.error||'Sinalizador indisponível. Confira a conexão e tente novamente.');
@@ -112,5 +117,5 @@ export class CallSignaling {
  }
  private fail(error:string){this.dispose();this.channelJoin=undefined;this.state='closed';this.error=error;this.people=[];this.requests=[];this.session=undefined;this.changed()}
  leave(){if(this.socket?.readyState===WebSocket.OPEN)this.socket.send(JSON.stringify({type:'leave'}));this.dispose();this.channelJoin=undefined;this.session=undefined;this.people=[];this.requests=[];this.error='';this.state='idle';this.changed()}
- dispose(){this.stopped=true;this.generation++;this.waking?.abort();this.waking=undefined;window.clearTimeout(this.wakeTimeout);this.notice='';window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.channelProof=undefined;this.rtc=undefined;this.screen=null}
+ dispose(){this.stopped=true;this.generation++;this.waking?.abort();this.waking=undefined;window.clearTimeout(this.wakeTimeout);this.notice='';window.clearInterval(this.heartbeat);window.clearTimeout(this.retry);window.clearTimeout(this.watchdog);this.socket?.close();this.socket=undefined;this.credential='';this.channelProof=undefined;this.rtc=undefined;this.screens=[];this.screenLimit=1}
 }

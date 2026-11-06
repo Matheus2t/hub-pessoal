@@ -100,6 +100,7 @@ class ScreenControl(Message):
     request: Identifier
     generation: Annotated[int, Field(ge=1)] | None = None
     audio: bool = False
+    parallel: bool = False
 
     @model_validator(mode="after")
     def valid_control(self):
@@ -109,6 +110,8 @@ class ScreenControl(Message):
             raise ValueError("The server assigns the generation")
         if self.action != "start" and self.audio:
             raise ValueError("Audio state belongs to an active screen")
+        if self.action != "claim" and self.parallel:
+            raise ValueError("Parallel support is declared when claiming a screen")
         return self
 
 

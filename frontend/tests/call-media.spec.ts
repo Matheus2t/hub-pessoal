@@ -17,7 +17,7 @@ test.beforeAll(()=>{
 });
 async function tab(browser:Browser,mobile=false){
  const context=await browser.newContext({permissions:['microphone','camera','clipboard-read','clipboard-write'],ignoreHTTPSErrors:process.env.CALL_TEST_LOCAL_TLS==='1',...(mobile?{viewport:{width:390,height:844},isMobile:true,hasTouch:true}:{})}),page=await context.newPage();
- if(previewAssets)await page.route(url=>url.hostname==='127.0.0.1'&&['/bundle.js','/styles.css'].includes(url.pathname),route=>
+ if(previewAssets)await page.route(url=>url.origin===new URL(origin).origin&&['/bundle.js','/styles.css'].includes(url.pathname),route=>
   route.fulfill({path:resolve(previewAssets,new URL(route.request().url()).pathname.slice(1))}));
  await page.addInitScript(()=>{
   const w=window as any,native=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);w.__captures=[];w.__screens=[];w.__cameraTimers=[];
@@ -264,48 +264,112 @@ test('screen, independent audio and camera reach five real peers including late 
   await host.getByRole('button',{name:'Encerrar sala',exact:true}).click();for(const p of pages.slice(0,5))await closedSources(p);
   expect(errors).toEqual([]);
  }catch(error){
-  writeFileSync(info.outputPath('media-failure.json'),JSON.stringify(await Promise.all(pages.map(p=>p.evaluate(()=>{const page=(document.querySelector('call-page') as any);return {error:page.capture.error,voice:page.voice.error,roomError:page.call.error,signals:(window as any).__signalTypes,peakSignals:(window as any).__peakSignals,screen:page.call.screen,capture:!!page.capture.screen,transmitting:page.capture.transmitting,
+  writeFileSync(info.outputPath('media-failure.json'),JSON.stringify(await Promise.all(pages.map(p=>p.evaluate(()=>{const page=(document.querySelector('call-page') as any);return {error:page.capture.error,voice:page.voice.error,roomError:page.call.error,signals:(window as any).__signalTypes,peakSignals:(window as any).__peakSignals,screens:page.call.screens,capture:!!page.capture.screen,transmitting:page.capture.transmitting,
    peers:[...page.voice.peers.values()].map((p:any)=>({phase:p.phase,failure:p.failure,state:p.pc.connectionState,roles:p.remoteRoles,senders:Object.entries(p.transceivers).map(([role,t]:[string,any])=>({role,mid:t.mid,track:t.sender.track?.kind,state:t.sender.track?.readyState,direction:t.currentDirection})),elements:Object.entries(p.elements).map(([role,e]:[string,any])=>({role,stream:!!e.srcObject,paused:e.paused,width:e.videoWidth,time:e.currentTime,attached:e.isConnected}))}))}}))),null,2));throw error;
  }finally{await finish(pages,contexts)}
 });
 
-test('simultaneous screen requests, silent screen, ended audio and disconnect release',async({browser})=>{
- const a=await tab(browser),b=await tab(browser),pages=[a.page,b.page];
+test('two simultaneous screens switch video and local audio without replacing the WebRTC peers',async({browser})=>{
+ const a=await tab(browser),b=await tab(browser),c=await tab(browser,true),pages=[a.page,b.page,c.page];
+ const viewer=c.page,options=viewer.getByRole('group',{name:'Transmissões disponíveis'});
+ const shareButton=(page:Page)=>page.getByRole('button',{name:'Compartilhar tela',exact:true});
  try{
-  const invite=await owner(a.page);await guest(b.page,a.page,invite,'Convidado');await enter(a.page);await enter(b.page);await connected(a.page,1);
-  for(const page of pages)await page.evaluate(()=>{(window as any).__delayDisplay=true});
-  // Invoke both handlers before either claim can update the other's UI.
-  await Promise.all(pages.map(p=>p.evaluate(()=>(document.querySelector('call-page') as any).capture.toggleScreen())));
-  await expect.poll(async()=> (await Promise.all(pages.map(p=>p.evaluate(()=>(document.querySelector('call-page') as any).capture.error)))).filter(Boolean).length).toBe(1);
-  for(const p of pages)await p.evaluate(()=>(window as any).__resolveDisplay());
-  const winner=await a.page.evaluate(()=>(document.querySelector('call-page') as any).capture.error)?b.page:a.page,loser=winner===a.page?b.page:a.page;
-  const winnerId=await id(winner);await media(loser,winnerId,'screenVideo');await media(loser,winnerId,'screenAudio');
-  await expect.poll(()=>loser.evaluate(()=>(window as any).__screens[0].stream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended'))).toBe(true);
-  await expect(loser.getByRole('button',{name:'Compartilhar tela',exact:true})).toBeDisabled();
-  await winner.evaluate(()=>{const t=(document.querySelector('call-page') as any).capture.screen.getAudioTracks()[0];t.stop();t.dispatchEvent(new Event('ended'))});
-  await expect(loser.locator('.call-caption')).toContainText('sem áudio compartilhado');await media(loser,winnerId,'screenVideo');await media(loser,winnerId,'microphone');
-  await winner.getByRole('button',{name:'Parar compartilhamento',exact:true}).click();
-  await winner.evaluate(()=>{(window as any).__delayDisplay=false;(window as any).__noScreenAudio=true});
-  await winner.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await media(loser,winnerId,'screenVideo');
-  await expect(loser.locator('.call-caption')).toContainText('sem áudio compartilhado');
-  await winner.getByRole('button',{name:'Ativar câmera',exact:true}).click();await media(loser,winnerId,'camera');
-  await winner.evaluate(()=>(document.querySelector('call-page') as any).call.socket.close());
-  await expect(loser.locator('.call-caption')).toHaveText('Nenhuma tela compartilhada');
-  await expect(winner.locator('.call-connection')).toHaveText('Conectado');
-  await expect(winner.getByRole('button',{name:'Ativar câmera',exact:true})).toBeVisible();
-  expect(await winner.evaluate(()=>(window as any).__screens.every((s:any)=>s.stream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended')))).toBe(true);
-  await media(loser,winnerId,'microphone');
-  await b.page.evaluate(()=>{(window as any).__delayDisplay=false;(window as any).__noScreenAudio=false});
-  await b.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await b.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();
-  await media(a.page,await id(b.page),'screenVideo');await media(a.page,await id(b.page),'camera');
-  await b.page.evaluate(()=>{(window as any).__oldCall=document.querySelector('call-page');location.hash='#/'});
-  await expect(b.page.locator('call-page')).toBeHidden();await expect(b.page.locator('.call-dock')).toBeVisible();
-  await expect.poll(()=>b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(1);
-  await b.page.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(b.page);
-  expect(await b.page.evaluate(()=>(window as any).__oldCall.voice.peers.size)).toBe(0);
-  await expect(a.page.locator('.call-caption')).toHaveText('Nenhuma tela compartilhada');
+  const invite=await owner(a.page);
+  await guest(b.page,a.page,invite,'Bia');await guest(viewer,a.page,invite,'Caio');
+  for(const page of pages)await enter(page);
+  await connected(viewer,2);
+  const first=await id(a.page),second=await id(b.page);
+  for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
+  await shareButton(a.page).click();await shareButton(b.page).click();
+  await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).call.screens.length)).toBe(2);
+  await shareButton(viewer).click();
+  await expect(viewer.getByRole('alert')).toContainText('Já existem duas transmissões');
+  expect(await viewer.evaluate(()=>(window as any).__screens.length)).toBe(0);
+  await a.page.evaluate(()=>(window as any).__resolveDisplay());
+  await media(viewer,first,'screenVideo');
+  await b.page.evaluate(()=>(window as any).__resolveDisplay());
+  await expect(options.getByRole('button')).toHaveCount(2);
+  const choose=(name:string)=>options.getByRole('button',{name,exact:true});
+  await expect(choose('Anfitrião')).toHaveAttribute('aria-pressed','true');
+  await expect(options).toBeVisible();
+  await viewer.setViewportSize({width:320,height:844});
+  expect(await viewer.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await media(viewer,first,'screenAudio');
+  for(const person of [first,second])await media(viewer,person,'microphone');
+  const sources=()=>viewer.evaluate(()=>{
+   const {voice}=document.querySelector('call-page') as any;
+   return {video:document.querySelector('.call-remote-screen video')?.getAttribute('data-participant'),
+    audio:[...voice.peers.values()].flatMap(peer=>peer.elements.screenAudio.srcObject?[peer.id]:[]),
+    gain:[...voice.audioMix.inputs.values()].flatMap(inputs=>{
+     const bus=inputs.get('screenAudio')?.bus;return bus?[Math.round(bus.gain.gain.value*100)/100]:[];
+    })};
+  });
+  const slider=(name:string,source='Volume da transmissão')=>viewer.getByRole('group',{name:`Áudio recebido de ${name}`}).getByRole('slider',{name:source});
+  await slider('Anfitrião').press('End');
+  await slider('Bia').evaluate((element:HTMLInputElement)=>{element.value='50';element.dispatchEvent(new Event('input',{bubbles:true}))});
+  await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  const peers=await viewer.evaluateHandle(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map(peer=>peer.pc));
+  const pip=viewer.getByRole('button',{name:'Janela flutuante',exact:true});
+  await pip.click();
+  await expect.poll(()=>viewer.evaluate(()=>document.pictureInPictureElement?.getAttribute('data-participant'))).toBe(first);
+  await choose('Bia').click();
+  await expect.poll(()=>viewer.evaluate(()=>!!document.pictureInPictureElement)).toBe(false);
+  await media(viewer,second,'screenVideo');
+  await expect.poll(sources).toMatchObject({video:second,audio:[second],gain:[.5]});
+  const screenOutput=await viewer.evaluateHandle(person=>{
+   const mix=(document.querySelector('call-page') as any).voice.audioMix;
+   const bus=mix.inputs.get(person).get('screenAudio').bus;
+   const analyser=mix.context.createAnalyser();bus.compressor.connect(analyser);
+   return analyser as AnalyserNode;
+  },second);
+  await expect.poll(()=>screenOutput.evaluate(analyser=>{
+   const samples=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(samples);
+   return samples.reduce((peak,sample)=>Math.max(peak,Math.abs(sample)),0);
+  })).toBeGreaterThan(.03);
+  await screenOutput.dispose();
+  await pip.click();
+  await expect.poll(()=>viewer.evaluate(()=>document.pictureInPictureElement?.getAttribute('data-participant'))).toBe(second);
+  await pip.click();
+  const full=viewer.locator('.call-fullscreen');
+  await full.click();
+  await expect.poll(()=>viewer.evaluate(()=>document.fullscreenElement?.querySelector('video[data-role="screenVideo"]')?.getAttribute('data-participant'))).toBe(second);
+  await full.click();
+
+  const deafen=viewer.getByRole('button',{name:'Ensurdecer',exact:true});
+  await deafen.click();await choose('Anfitrião').click();
+  await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  expect(await viewer.evaluate(()=>{
+   const {voice}=document.querySelector('call-page') as any;
+   return voice.audioMix.master.gain.value===0&&[...voice.peers.values()].every(peer=>peer.audio.muted&&peer.elements.screenAudio.muted);
+  })).toBe(true);
+  await deafen.click();await choose('Bia').click();
+  await expect.poll(sources).toMatchObject({video:second,audio:[second],gain:[.5]});
+  expect(await peers.evaluate(original=>[...(document.querySelector('call-page') as any).voice.peers.values()].every(peer=>original.includes(peer.pc)))).toBe(true);
+  await peers.dispose();
+  await viewer.evaluate(()=>(document.querySelector('call-page') as any).call.socket.close());
+  await expect(viewer.locator('.call-connection')).toHaveText('Conectado');
+  await expect(choose('Bia')).toHaveAttribute('aria-pressed','true');
+  await expect.poll(sources).toMatchObject({video:second,audio:[second],gain:[.5]});
+  await expect(slider('Anfitrião')).toHaveValue('200');
+
+  await b.page.evaluate(()=>{const t=(document.querySelector('call-page') as any).capture.screen.getAudioTracks()[0];t.stop();t.dispatchEvent(new Event('ended'))});
+  await expect(viewer.locator('.call-caption')).toContainText('sem áudio compartilhado');
+  await expect.poll(sources).toMatchObject({video:second,audio:[]});
+  await b.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();await media(viewer,second,'camera');
+  await b.page.evaluate(()=>(document.querySelector('call-page') as any).call.socket.close());
+  await expect(viewer.locator('.call-caption')).toContainText('Anfitrião');
+  await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  await expect(b.page.locator('.call-connection')).toHaveText('Conectado');
+  await expect(b.page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeVisible();
+  expect(await b.page.evaluate(()=>(window as any).__screens.every((s:any)=>s.stream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended')))).toBe(true);
+  await media(viewer,second,'microphone');
+  await viewer.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(viewer);
+  expect(await viewer.evaluate(()=>{
+   const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;
+  })).toBe(true);
+  await expect(a.page.getByRole('button',{name:'Parar compartilhamento',exact:true})).toBeVisible();
   await a.page.getByRole('button',{name:'Encerrar sala',exact:true}).click();await closedSources(a.page);
- }finally{await finish(pages,[a.context,b.context])}
+ }finally{await finish(pages,[a.context,b.context,c.context])}
 });
 
 test('permission refusal, cancelled and late captures, local preview and route cleanup',async({browser})=>{

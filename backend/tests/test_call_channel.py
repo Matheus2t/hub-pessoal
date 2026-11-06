@@ -97,7 +97,7 @@ def test_capacity_individual_exit_and_private_permission_boundaries(tmp_path):
         assert until(people[1], "closed")["reason"] == "left"
         assert len(latest_presence(people[0], 4)) == 4
         assert len(latest_presence(people[2], 4)) == 4
-        assert app.state.rooms.rooms[room].screen.active
+        assert app.state.rooms.rooms[room].screens[sessions[0]["participant"]].active
         people[0].send_json({"type": "ping"})
         until(people[0], "pong")
 

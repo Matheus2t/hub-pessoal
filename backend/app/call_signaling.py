@@ -160,7 +160,7 @@ class Room:
     expires: float
     invite_expires: float
     people: dict[str, Participant] = field(default_factory=dict)
-    screen: ScreenShare | None = None
+    screens: dict[str, ScreenShare] = field(default_factory=dict)
     screen_generation: int = 0
     channel_name: str | None = None
     password_hash: str | None = field(default=None, repr=False)
@@ -228,9 +228,10 @@ class Rooms:
                 self.close(room, "expired")
                 continue
             changed = False
-            if room.screen and not room.screen.active and now >= room.screen.deadline:
-                room.screen = None
-                changed = True
+            for share in list(room.screens.values()):
+                if not share.active and now >= share.deadline:
+                    self.release_screen(room, share.owner)
+                    changed = True
             for person in list(room.people.values()):
                 lost = person.disconnected_at is not None and now - person.disconnected_at >= self.settings.reconnect_seconds
                 waiting = not person.approved and now - person.requested_at >= self.settings.approval_seconds
@@ -256,19 +257,22 @@ class Rooms:
                    "voice": p.voice, "microphone": p.microphone, "voiceEpoch": p.voice_epoch,
                    "camera": p.camera}
                   for p in room.people.values() if p.approved]
-        screen = ({"owner": room.screen.owner, "generation": room.screen.generation,
-                   "active": room.screen.active, "audio": room.screen.audio} if room.screen else None)
+        screens = [{"owner": share.owner, "generation": share.generation,
+                    "active": share.active, "audio": share.audio} for share in room.screens.values()]
+        legacy = next((screen for screen in screens if screen["active"]), screens[0] if screens else None)
         for person in room.people.values():
             if person.connection and person.approved:
-                person.connection.send({"type": "presence", "participants": people, "reason": reason, "screen": screen})
+                # Older clients can still manage their own lease or view the first active share.
+                screen = next((screen for screen in screens if screen["owner"] == person.id), legacy)
+                person.connection.send({"type": "presence", "participants": people, "reason": reason,
+                                        "screen": screen, "screens": screens})
         host = room.people.get(room.host)
         if host and host.connection:
             host.connection.send({"type": "requests", "participants": [
                 {"id": p.id, "name": p.name} for p in room.people.values() if not p.approved]})
 
     def release_screen(self, room: Room, owner: str):
-        if room.screen and room.screen.owner == owner:
-            room.screen = None
+        room.screens.pop(owner, None)
 
     def authorize_owner(self, admin):
         key = self.settings.admin_key
@@ -478,26 +482,29 @@ class Rooms:
         if not person.voice:
             denied("voice_required")
             return
-        share = room.screen
+        share = room.screens.get(person.id)
         if message.action == "claim":
-            if share and (share.owner != person.id or share.request != message.request):
+            if share and share.request != message.request:
                 denied("screen_busy")
                 return
             if not share:
+                if len(room.screens) >= 2 or (room.screens and not message.parallel):
+                    denied("screen_limit" if message.parallel else "screen_busy")
+                    return
                 room.screen_generation += 1
-                share = room.screen = ScreenShare(person.id, message.request, room.screen_generation,
-                                                  self.clock() + self.settings.screen_claim_seconds)
+                share = room.screens[person.id] = ScreenShare(person.id, message.request, room.screen_generation,
+                                                              self.clock() + self.settings.screen_claim_seconds)
             connection.send({"type": "screen_granted", "request": message.request, "generation": share.generation})
             self.broadcast(room, "screen_claimed")
             return
-        if (not share or share.owner != person.id or share.request != message.request
+        if (not share or share.request != message.request
                 or message.generation is not None and message.generation != share.generation):
             denied("stale_screen")
             return
         if message.action == "start":
             share.active, share.audio = True, message.audio
         else:
-            room.screen = None
+            self.release_screen(room, person.id)
         self.broadcast(room, "screen_started" if message.action == "start" else "screen_stopped")
 
     def rtc_config(self, room: Room, person: Participant):

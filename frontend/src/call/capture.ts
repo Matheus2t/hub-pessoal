@@ -1,11 +1,12 @@
 import type {RoomScreen,ScreenControl,ScreenEvent} from './protocol';
 
-interface State {self:string;remote:boolean;screen:RoomScreen|null}
+interface State {self:string;remote:boolean;screens:RoomScreen[];screenLimit:number}
 interface Attempt {request:string;generation?:number;seen:boolean;started:boolean;timer:number}
 type Facing='user'|'environment';
 type CameraChoice={deviceId:string}|{facingMode:Facing};
 const stop=(stream?:MediaStream)=>stream?.getTracks().forEach(t=>{t.onended=null;t.stop()});
 const liveAudio=(stream?:MediaStream)=>!!stream?.getAudioTracks().some(t=>t.readyState==='live');
+const screenLimitMessage='Já existem duas transmissões ativas ou em preparação.';
 
 /** Captures belong to this page only. No media is sent until the room grants it. */
 export class CallCapture {
@@ -14,7 +15,10 @@ export class CallCapture {
  private screenRequest=0;private cameraRequest=0;private attempt?:Attempt;
  private cancelled=new Set<string>();
  constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void){}
- get transmitting(){const s=this.state();return !!this.screen&&!!this.attempt&&s.screen?.owner===s.self&&s.screen.active&&s.screen.generation===this.attempt.generation}
+ get transmitting(){
+  const {self,screens}=this.state(),generation=this.attempt?.generation;
+  return !!this.screen&&screens.some(screen=>screen.owner===self&&screen.active&&screen.generation===generation);
+ }
  private remember(request:string){this.cancelled.add(request);while(this.cancelled.size>16)this.cancelled.delete(this.cancelled.values().next().value!)}
  private failure(error:unknown,camera=false){
   const name=error instanceof DOMException?error.name:'';
@@ -27,7 +31,10 @@ export class CallCapture {
   if(this.screen||this.screenBusy){this.stopScreen();return}
   this.error='';const state=this.state();
   if(!isSecureContext||!navigator.mediaDevices?.getDisplayMedia){this.error='Compartilhamento de tela indisponível neste navegador. Use HTTPS ou localhost em um navegador compatível.';this.changed();return}
-  if(state.remote&&state.screen){this.error='Já existe uma tela compartilhada nesta sala.';this.changed();return}
+  if(state.remote&&state.screens.length>=state.screenLimit){
+   this.error=state.screenLimit===2?screenLimitMessage:'Já existe uma tela compartilhada nesta sala.';
+   this.changed();return;
+  }
   const request=++this.screenRequest;this.screenBusy=true;
   // Invoke the native picker in the click's activation, before any network await.
   let capture:Promise<MediaStream>;
@@ -36,7 +43,9 @@ export class CallCapture {
   if(state.remote){
    const nonce=crypto.randomUUID().replaceAll('-','');
    this.attempt={request:nonce,seen:false,started:false,timer:window.setTimeout(()=>{if(this.attempt?.request===nonce){this.stopScreen();this.error='A seleção de tela expirou. Tente novamente.';this.changed()}},50000)};
-   if(!this.send({type:'screen',action:'claim',request:nonce})){this.stopScreen();this.error='Reconecte à sala antes de compartilhar.'}
+   if(!this.send({type:'screen',action:'claim',request:nonce,...(state.screenLimit===2?{parallel:true}:{})})){
+    this.stopScreen();this.error='Reconecte à sala antes de compartilhar.';
+   }
   }
   this.changed();void capture.then(async stream=>{
    if(request!==this.screenRequest){stop(stream);return}
@@ -55,7 +64,11 @@ export class CallCapture {
    if(message.type==='screen_granted'&&this.cancelled.has(message.request))this.send({type:'screen',action:'release',request:message.request,generation:message.generation});
    return;
   }
-  if(message.type==='screen_denied'){this.stopScreen();this.error=message.code==='screen_busy'?'Outra pessoa começou a compartilhar.':'Não foi possível reservar a tela. Tente novamente.';this.changed();return}
+  if(message.type==='screen_denied'){
+   this.stopScreen();
+   this.error=message.code==='screen_limit'?screenLimitMessage:message.code==='screen_busy'?'Já existe uma tela compartilhada.':'Não foi possível reservar a tela. Tente novamente.';
+   this.changed();return;
+  }
   attempt.generation=message.generation;this.startGranted();this.changed();
  }
  private startGranted(update=false){
@@ -67,7 +80,7 @@ export class CallCapture {
   const state=this.state(),attempt=this.attempt;
   if(!state.remote){if(attempt)this.stopScreen();if(this.camera||this.cameraBusy)this.stopCamera();return}
   if(!attempt)return;
-  if(state.screen?.owner===state.self&&state.screen.generation===attempt.generation)attempt.seen=true;
+  if(state.screens.some(screen=>screen.owner===state.self&&screen.generation===attempt.generation))attempt.seen=true;
   else if(attempt.seen){this.stopScreen();return}
  }
  stopScreen(){
