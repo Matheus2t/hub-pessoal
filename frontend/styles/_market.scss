@@ -484,3 +484,13 @@ market-page.market-terminal panel-workspace[area="actions-overview"] [slot="pano
 @media (prefers-reduced-motion: reduce) {
   market-page.market-terminal .market-directory-action::after { transition: none; }
 }
+
+@media (max-width: 480px) {
+  market-page.market-terminal .stock-directory .stock-item {
+    grid-template-columns: 70px minmax(0,1fr);
+    grid-template-areas: "ticker name" ". sector" ". profit" ". roe";
+    gap: 5px 10px;
+  }
+  market-page.market-terminal .stock-directory .stock-metric { white-space: normal; }
+  market-page.market-terminal .stock-directory .stock-metric.is-profit { margin-top: 7px; }
+}
