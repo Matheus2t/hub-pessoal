@@ -273,6 +273,21 @@ test('two simultaneous screens switch video and local audio without replacing th
  const a=await tab(browser),b=await tab(browser),c=await tab(browser,true),pages=[a.page,b.page,c.page];
  const viewer=c.page,options=viewer.getByRole('group',{name:'Transmissões disponíveis'});
  const shareButton=(page:Page)=>page.getByRole('button',{name:'Compartilhar tela',exact:true});
+ await viewer.addInitScript(()=>{
+  const w=window as any;
+  const device=(deviceId:string,label:string)=>({deviceId,label,kind:'audiooutput',groupId:''});
+  w.__speakerDevices=[device('default','Padrão'),device('speakers','Caixas de som'),device('headphones','Headset')];
+  Object.defineProperty(navigator.mediaDevices,'enumerateDevices',{configurable:true,value:async()=>w.__speakerDevices});
+  Object.defineProperty(navigator.mediaDevices,'selectAudioOutput',{configurable:true,value:()=>Promise.resolve(w.__speakerDevices.find((d:any)=>d.deviceId==='headphones'))});
+  Object.defineProperty(HTMLMediaElement.prototype,'setSinkId',{configurable:true,value:async function(id:string){
+   if(id==='invalid')throw new DOMException('Device not found','NotFoundError');
+   (this as any).__sink=id;
+  }});
+  Object.defineProperty(AudioContext.prototype,'setSinkId',{configurable:true,value:async function(id:string){
+   if(id==='invalid')throw new DOMException('Device not found','NotFoundError');
+   (this as any).__sink=id;
+  }});
+ });
  try{
   const invite=await owner(a.page);
   await guest(b.page,a.page,invite,'Bia');await guest(viewer,a.page,invite,'Caio');
@@ -296,6 +311,14 @@ test('two simultaneous screens switch video and local audio without replacing th
   expect(await viewer.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await media(viewer,first,'screenAudio');
   for(const person of [first,second])await media(viewer,person,'microphone');
+  const output=viewer.getByRole('group',{name:'Saída de áudio',exact:true});
+  const outputChoice=output.getByRole('combobox',{name:'Dispositivo de saída'});
+  await expect(outputChoice).toBeVisible();
+  await outputChoice.selectOption('speakers');
+  await expect.poll(()=>viewer.evaluate(id=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(id);
+   return [peer.elements.microphone.__sink,peer.elements.screenAudio.__sink];
+  },first)).toEqual(['speakers','speakers']);
   const sources=()=>viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;
    return {video:document.querySelector('.call-remote-screen video')?.getAttribute('data-participant'),
@@ -308,6 +331,13 @@ test('two simultaneous screens switch video and local audio without replacing th
   await slider('Anfitrião').press('End');
   await slider('Bia').evaluate((element:HTMLInputElement)=>{element.value='50';element.dispatchEvent(new Event('input',{bubbles:true}))});
   await expect.poll(sources).toMatchObject({video:first,audio:[first],gain:[2]});
+  await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).voice.audioMix.context?.__sink)).toBe('speakers');
+  await output.getByRole('button',{name:'Escolher dispositivo'}).click();
+  await expect(outputChoice).toHaveValue('headphones');
+  await expect.poll(()=>viewer.evaluate(id=>{
+   const {voice}=(document.querySelector('call-page') as any),peer=voice.peers.get(id);
+   return [peer.elements.microphone.__sink,peer.elements.screenAudio.__sink,voice.audioMix.context?.__sink];
+  },first)).toEqual(['headphones','headphones','headphones']);
   const peers=await viewer.evaluateHandle(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map(peer=>peer.pc));
   const pip=viewer.getByRole('button',{name:'Janela flutuante',exact:true});
   await pip.click();
@@ -363,6 +393,26 @@ test('two simultaneous screens switch video and local audio without replacing th
   await expect(b.page.getByRole('button',{name:'Ativar câmera',exact:true})).toBeVisible();
   expect(await b.page.evaluate(()=>(window as any).__screens.every((s:any)=>s.stream.getTracks().every((t:MediaStreamTrack)=>t.readyState==='ended')))).toBe(true);
   await media(viewer,second,'microphone');
+  await viewer.evaluate(()=>{
+   const w=window as any;
+   w.__speakerDevices.push({deviceId:'invalid',label:'Saída inválida',kind:'audiooutput',groupId:''});
+   navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
+  });
+  await expect(outputChoice.locator('option[value="invalid"]')).toHaveCount(1);
+  await outputChoice.selectOption('invalid');
+  await expect(output.getByRole('status')).toContainText('Dispositivo de áudio não encontrado');
+  await expect(outputChoice).toHaveValue('headphones');
+  await viewer.evaluate(()=>{
+   const w=window as any;
+   w.__speakerDevices=w.__speakerDevices.filter((device:any)=>device.deviceId!=='headphones');
+   navigator.mediaDevices.dispatchEvent(new Event('devicechange'));
+  });
+  await expect(outputChoice).toHaveValue('');
+  await expect(output.getByRole('status')).toContainText('Dispositivo desconectado');
+  await expect.poll(()=>viewer.evaluate(()=>{
+   const {voice}=(document.querySelector('call-page') as any);
+   return [voice.audioMix.context?.__sink,...[...voice.peers.values()].map(peer=>peer.elements.microphone.__sink)];
+  })).toEqual(['','','']);
   await viewer.getByRole('button',{name:'Sair da chamada',exact:true}).click();await closedSources(viewer);
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;

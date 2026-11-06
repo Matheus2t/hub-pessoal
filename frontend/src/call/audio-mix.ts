@@ -29,11 +29,13 @@ export class CallAudioMix {
  private master?:GainNode;
  private unavailable=false;
  private silenced=false;
+ private sinkId='';
+ private sinkReady=true;
 
  constructor(private changed:()=>void){}
 
  level(id:string):Readonly<ListeningLevel>{return this.levels.get(id)??defaultLevel}
- canAmplify(id:string,role:ListeningSource){return !this.unavailable&&!this.inputs.get(id)?.get(role)?.failed}
+ canAmplify(id:string,role:ListeningSource){return !this.unavailable&&this.sinkReady&&!this.inputs.get(id)?.get(role)?.failed}
  get deafened(){return this.silenced}
  get blocked(){
   return !this.silenced&&!!this.context&&this.context.state!=='running'&&[...this.inputs].some(([id,inputs])=>{
@@ -74,6 +76,16 @@ export class CallAudioMix {
  }
  retain(people:ReadonlySet<string>){for(const id of this.levels.keys())if(!people.has(id))this.levels.delete(id)}
  resumePreferences(){this.unlock([...this.levels.values()].some(level=>this.needsContext(level)))}
+ /** Route amplified Web Audio to the same output used by the native audio elements. */
+ async setOutputSink(sinkId:string){
+  const context=this.context as (AudioContext & {setSinkId?:(id:string)=>Promise<void>})|undefined;
+  if(context){
+   if(!context.setSinkId)throw new Error('Saída de áudio indisponível no mixer.');
+   await context.setSinkId(sinkId);
+  }
+  this.sinkId=sinkId;this.sinkReady=true;
+  for(const id of this.inputs.keys())this.applyParticipant(id);
+ }
  private needsContext(level:Readonly<ListeningLevel>){
   return !level.muted&&[level.microphone,level.screenAudio].some(value=>value>0&&value!==100);
  }
@@ -88,6 +100,17 @@ export class CallAudioMix {
     const Audio=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
     if(!Audio)throw new Error('Web Audio unavailable');
     const context=this.context=new Audio();
+    if(this.sinkId){
+     // Keep native playback on the selected device until the new graph is routed.
+     this.sinkReady=false;
+     const routed=context as AudioContext & {setSinkId?:(id:string)=>Promise<void>};
+     if(routed.setSinkId)void routed.setSinkId(this.sinkId).then(()=>{
+      if(this.context!==context)return;
+      this.sinkReady=true;
+      for(const id of this.inputs.keys())this.applyParticipant(id);
+      this.changed();
+     }).catch(()=>{if(this.context===context)this.changed()});
+    }
     context.onstatechange=()=>{
      if(this.context!==context)return;
      for(const id of this.inputs.keys())this.applyParticipant(id);
@@ -133,7 +156,7 @@ export class CallAudioMix {
  private apply(input:AudioInput,level:number){
   const {element}=input,context=this.context;
   if(level===1&&input.bus)this.disconnect(input);
-  if(context?.state==='running'&&!input.failed&&(input.bus||level>0&&level!==1)){
+  if(context?.state==='running'&&this.sinkReady&&!input.failed&&(input.bus||level>0&&level!==1)){
    try{
     const bus=input.bus??=this.createBus(context);
     const now=context.currentTime,gain=bus.gain.gain;
@@ -173,6 +196,7 @@ export class CallAudioMix {
   this.master?.disconnect();this.master=undefined;
   const context=this.context;this.context=undefined;this.unavailable=false;
   if(context){context.onstatechange=null;void context.close().catch(()=>{})}
-  if(forget){this.levels.clear();this.silenced=false}
+  this.sinkReady=true;
+  if(forget){this.levels.clear();this.silenced=false;this.sinkId=''}
  }
 }

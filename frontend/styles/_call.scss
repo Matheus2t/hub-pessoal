@@ -43,6 +43,11 @@ html:has(.call-page .call-viewer:is(:fullscreen,.is-expanded)) { overflow:hidden
  .call-avatar { display:grid; place-items:center; width:34px; height:34px; flex-shrink:0; border:1px solid var(--line); border-radius:50%; font-size:12px; }
  li strong,li small { display:block; font-size:13px; } li small { color:var(--secondary); font-size:12px; margin-top:3px; }
  .call-controls { display:flex; flex-wrap:wrap; gap:10px; padding:16px 0; margin-top:4px; }
+ .call-audio-output { display:flex; flex-wrap:wrap; align-items:end; gap:8px; margin:10px 0; }
+ .call-audio-output label { min-width:min(100%,240px); }
+ .call-audio-output select { width:100%; min-height:44px; padding:6px 10px; background:var(--raised); color:var(--text); border:1px solid var(--line); border-radius:5px; font:14px var(--font-body); }
+ .call-audio-output select:focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+ .call-audio-output small { flex-basis:100%; color:var(--secondary); font-size:12px; }
  button { min-height:44px; padding:10px 16px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--text); font:500 14px var(--font-body); }
  button:hover:not(:disabled),button[aria-pressed=true] { background:var(--raised); border-color:var(--text); }
  button:disabled { opacity:.5; }
