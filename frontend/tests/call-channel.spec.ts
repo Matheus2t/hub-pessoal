@@ -127,6 +127,13 @@ async function requireWebRTC(page:Page,origin:string){
 }
 async function session(page:Page){return page.evaluate(()=>(document.querySelector('call-page') as any).call.session.participant as string)}
 async function media(page:Page,from:string,role:string){
+ if(role==='screenVideo'||role==='screenAudio'){
+  const button=page.getByRole('button',{name:'Assistir',exact:true});
+  if(await button.isVisible().catch(()=>false)){
+   const selected=await page.evaluate(()=>(document.querySelector('call-page') as any).viewedScreen?.owner);
+   if(selected===from)await button.click();
+  }
+ }
  const unlock=page.getByRole('button',{name:'Liberar áudio',exact:true});
  if(await unlock.isVisible())await unlock.click();
  await expect.poll(()=>page.evaluate(async({from,role})=>{
