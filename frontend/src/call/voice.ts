@@ -34,8 +34,8 @@ export class VoiceMesh {
   this.audioMix.resumePreferences();
   this.active=true;this.error='';this.sampling=window.setInterval(()=>void this.measure(),5000);this.scheduleRefresh();this.changed();
  }
- sync(self:string,people:Participant[],rtc:RtcConfig|undefined,ready:boolean,screen:RoomScreen|null=null){
-  this.screen=screen;
+ sync(self:string,people:Participant[],rtc:RtcConfig|undefined,ready:boolean,screen?:RoomScreen){
+  this.selectScreen(screen);
   const resumed=ready&&!this.ready;this.ready=ready;this.self=self;this.people=people;
   if(rtc&&rtc!==this.rtc){
    const previous=this.rtc;this.rtc=rtc;
@@ -175,12 +175,26 @@ export class VoiceMesh {
   if(role==='camera')return !!this.people.find(p=>p.id===peer.id)?.camera;
   return this.screen?.owner===peer.id&&this.screen.active&&(role==='screenVideo'||this.screen.audio);
  }
+ selectScreen(screen?:RoomScreen){
+  const previous=this.screen;
+  if(previous&&(previous.owner!==screen?.owner||previous.generation!==screen.generation)){
+   const peer=this.peers.get(previous.owner);
+   if(peer){this.unmountMedia(peer,'screenAudio');this.unmountMedia(peer,'screenVideo')}
+  }
+  this.screen=screen??null;
+ }
+ private unmountMedia(peer:Peer,role:MediaRole){
+  const element=peer.elements[role];
+  if(role==='microphone'||role==='screenAudio')this.audioMix.mount(peer.id,role,element as HTMLAudioElement);
+  if(element.srcObject){element.pause();element.srcObject=null}
+  peer.blockedElements.delete(element);peer.blocked=peer.blockedElements.size>0;
+  if(kind(role)==='video')element.remove();
+ }
  mountMedia(){
   for(const peer of this.peers.values())for(const role of roles){const element=peer.elements[role],stream=peer.streams[role];
-   const allowed=this.allowed(peer,role)&&!!stream;
-   if(role==='microphone'||role==='screenAudio')this.audioMix.mount(peer.id,role,element as HTMLAudioElement,allowed?stream:undefined);
-   if(!allowed){if(element.srcObject){element.pause();element.srcObject=null}peer.blockedElements.delete(element);peer.blocked=peer.blockedElements.size>0;if(kind(role)==='video')element.remove();continue}
-   if(element.srcObject!==stream){element.srcObject=stream!;this.playElement(peer,element)}
+   if(!stream||!this.allowed(peer,role)){this.unmountMedia(peer,role);continue}
+   if(role==='microphone'||role==='screenAudio')this.audioMix.mount(peer.id,role,element as HTMLAudioElement,stream);
+   if(element.srcObject!==stream){element.srcObject=stream;this.playElement(peer,element)}
    if(role==='screenVideo'||role==='camera'){const root=this.videoRoot(role,peer.id);if(root&&element.parentElement!==root)root.append(element)}
   }
  }

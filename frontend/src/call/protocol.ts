@@ -3,7 +3,7 @@ export interface Participant {id:string;name:string;host:boolean;connected:boole
 export type MediaRole='microphone'|'screenAudio'|'screenVideo'|'camera';
 export type MediaRoles=Record<MediaRole,string>;
 export interface RoomScreen {owner:string;generation:number;active:boolean;audio:boolean}
-export interface ScreenControl {type:'screen';action:'claim'|'start'|'release';request:string;generation?:number;audio?:boolean}
+export interface ScreenControl {type:'screen';action:'claim'|'start'|'release';request:string;generation?:number;audio?:boolean;parallel?:true}
 export type ScreenEvent={type:'screen_granted';request:string;generation:number}|{type:'screen_denied';request:string;code:string};
 export interface AdmissionRequest {id:string;name:string}
 export interface Session {
@@ -25,7 +25,7 @@ export type ClientMessage =
  |{type:'resume';room:string;participant:string;credential:string}
  |{type:'ping'|'leave'|'close'|'rtc_config'}|{type:'media';active:boolean;microphone:boolean;camera?:boolean}|{type:'admit'|'reject';target:string}|Signal|ScreenControl;
 export type ServerMessage = Session|ChannelStatus|{type:'channel_reentry';proof:string}
- |{type:'presence';participants:Participant[];reason:string;screen:RoomScreen|null}|{type:'requests';participants:AdmissionRequest[]}
+ |{type:'presence';participants:Participant[];reason:string;screen:RoomScreen|null;screens?:RoomScreen[]}|{type:'requests';participants:AdmissionRequest[]}
  |{type:'approved'|'pong'}|{type:'closed';reason:string}|{type:'error';code:string}|RtcConfig|RemoteSignal|ScreenEvent;
 
 export function parseInvite(value:string):{room:string;invite:string}|null {
