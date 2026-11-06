@@ -217,6 +217,7 @@ test('screen, independent audio and camera reach five real peers including late 
  try{
   const host=await add(),invite=await owner(host);await enter(host);const hostId=await id(host),second=await add();await guest(second,host,invite,'Pessoa 1');await enter(second);await media(second,hostId,'microphone');
   await host.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await host.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await expect(host.locator('.call-layout')).toHaveAttribute('data-sharing','');
   for(const role of['screenVideo','screenAudio','camera','microphone'])await media(second,hostId,role);
   expect((await evidence(second,hostId,'screenVideo')).width).toBe(960);expect((await evidence(second,hostId,'camera')).width).toBe(640);
   expect(await host.evaluate(()=>{const page=(document.querySelector('call-page') as any);return [...page.voice.peers.values()].every((p:any)=>
