@@ -17,7 +17,10 @@ for(const width of [1920,1366,768,390,320])test(`scroll crosses loaded chart wit
  test.setTimeout(60000);
  await page.setViewportSize({width,height:1080});
  if(process.env.MARKET_SCROLL_LIVE!=='1')await isolatedProvider(page);
- await page.goto('/#/acoes');await page.locator('.market-directory-toggle').click();await expect(page.locator('.stock-item')).toHaveCount(65);
+ await page.goto('/#/acoes');await page.locator('.market-directory-toggle').click();
+ const directoryDebug=await page.locator('market-page').evaluate(e=>({expanded:e.querySelector('.market-directory-toggle')?.getAttribute('aria-expanded'),rows:e.querySelectorAll('.stock-item').length,open:(e as any).directoryOpen,status:(e as any).directoryStatus,query:(e as any).query,sector:(e as any).sector}));
+ console.log('DIRECTORY_DEBUG',width,JSON.stringify(directoryDebug));
+ await expect(page.locator('.stock-item')).toHaveCount(65);
  await expect(page.locator('tv-advanced-chart')).toBeVisible();await page.evaluate(()=>document.fonts.ready);
  if(process.env.MARKET_SCROLL_LIVE==='1')await page.waitForTimeout(10000);
  for(const theme of ['dark','light']){
