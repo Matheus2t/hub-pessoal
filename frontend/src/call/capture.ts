@@ -1,4 +1,5 @@
 import type {RoomScreen,ScreenControl,ScreenEvent} from './protocol';
+import {defaultScreenQuality,screenCaptureConstraints,screenTrackConstraints,type ScreenQuality,type ScreenContent} from './screen-quality';
 
 interface State {self:string;remote:boolean;screens:RoomScreen[];screenLimit:number}
 interface Attempt {request:string;generation?:number;seen:boolean;started:boolean;timer:number}
@@ -11,13 +12,41 @@ const screenLimitMessage='Já existem duas transmissões ativas ou em preparaç�
 /** Captures belong to this page only. No media is sent until the room grants it. */
 export class CallCapture {
  screen?:MediaStream;camera?:MediaStream;screenBusy=false;cameraBusy=false;error='';
+ quality:ScreenQuality=defaultScreenQuality;
+ content:ScreenContent='screen';
  cameras:MediaDeviceInfo[]=[];
  private screenRequest=0;private cameraRequest=0;private attempt?:Attempt;
  private cancelled=new Set<string>();
- constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void){}
+ constructor(private state:()=>State,private send:(message:ScreenControl)=>boolean,private changed:()=>void,
+  private qualitySettled:()=>void=()=>{}){}
  get transmitting(){
   const {self,screens}=this.state(),generation=this.attempt?.generation;
   return !!this.screen&&screens.some(screen=>screen.owner===self&&screen.active&&screen.generation===generation);
+ }
+ setQuality(quality:ScreenQuality){
+  if(this.quality===quality)return;
+  this.quality=quality;
+  const track=this.screen?.getVideoTracks().find(t=>t.readyState==='live');
+  if(track)void this.constrainScreen(track);
+  this.changed();
+ }
+ setContent(content:ScreenContent){
+  if(this.content===content)return;
+  this.content=content;
+  const track=this.screen?.getVideoTracks()[0];
+  if(track)try{track.contentHint=content==='game'?'motion':'detail'}catch{/* Optional hint. */}
+  this.changed();
+ }
+ private async constrainScreen(track:MediaStreamTrack){
+  const quality=this.quality;
+  try{await track.applyConstraints(screenTrackConstraints(quality))}
+  catch{
+   if(this.screen?.getVideoTracks()[0]===track&&this.quality===quality){
+    this.error='O navegador não aplicou todos os limites de resolução/FPS. Confira a qualidade real recebida.';
+   }
+  }finally{
+   if(this.screen?.getVideoTracks()[0]===track){this.qualitySettled();this.changed()}
+  }
  }
  private remember(request:string){this.cancelled.add(request);while(this.cancelled.size>16)this.cancelled.delete(this.cancelled.values().next().value!)}
  private failure(error:unknown,camera=false){
@@ -38,7 +67,7 @@ export class CallCapture {
   const request=++this.screenRequest;this.screenBusy=true;
   // Invoke the native picker in the click's activation, before any network await.
   let capture:Promise<MediaStream>;
-  try{capture=navigator.mediaDevices.getDisplayMedia({video:{width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}},audio:true})}
+  try{capture=navigator.mediaDevices.getDisplayMedia(screenCaptureConstraints(this.quality))}
   catch(error){this.screenBusy=false;this.error=this.failure(error);this.changed();return}
   if(state.remote){
    const nonce=crypto.randomUUID().replaceAll('-','');
@@ -51,10 +80,12 @@ export class CallCapture {
    if(request!==this.screenRequest){stop(stream);return}
    const video=stream.getVideoTracks().find(t=>t.readyState==='live');
    if(!video){stop(stream);throw new DOMException('No video','NotFoundError')}
-   this.screen=stream;video.contentHint='detail';video.onended=()=>{if(this.screen===stream)this.stopScreen()};
+   this.screen=stream;
+   try{video.contentHint=this.content==='game'?'motion':'detail'}catch{/* Optional hint. */}
+   video.onended=()=>{if(this.screen===stream)this.stopScreen()};
    stream.getAudioTracks().forEach(t=>t.onended=()=>{if(this.screen===stream){this.startGranted(true);this.changed()}});
-   // Best effort: display pickers do not accept max/exact constraints in their request.
-   void video.applyConstraints({width:{max:1920},height:{max:1080},frameRate:{max:30}}).catch(()=>{});
+   // Best effort: cap 1440p/60 after selection; never request a higher mode.
+   void this.constrainScreen(video);
    this.screenBusy=false;this.startGranted();this.changed();
   }).catch(error=>{if(request===this.screenRequest){this.stopScreen();this.error=this.failure(error);this.changed()}});
  }

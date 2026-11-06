@@ -34,7 +34,8 @@ async function tab(browser:Browser,mobile=false){
    }else stream=await native(options);w.__captures.push(stream);
    if(w.__delayCamera&&options?.video)return new Promise(resolve=>w.__resolveCamera=()=>resolve(stream));return stream;
   };
-  navigator.mediaDevices.getDisplayMedia=()=>{
+  navigator.mediaDevices.getDisplayMedia=(options?:DisplayMediaStreamOptions)=>{
+   w.__displayRequest=options;
    if(w.__denyDisplay)return Promise.reject(new DOMException('Cancelled','NotAllowedError'));
    const canvas=document.createElement('canvas');canvas.width=960;canvas.height=540;const draw=canvas.getContext('2d')!;let frame=0;
    const paint=()=>{draw.fillStyle='#222';draw.fillRect(0,0,960,540);draw.fillStyle='#eee';draw.fillRect((frame++*7)%800,60,160,350);draw.font='48px sans-serif';draw.fillText(`2T TEST ${frame}`,40,500)};paint();
@@ -247,17 +248,43 @@ test('screen, independent audio and camera reach five real peers including late 
   },{timeout:15000});
   const extra=await add();await extra.goto(invite);await extra.getByLabel('Seu nome',{exact:true}).fill('Sexto');await extra.getByRole('button',{name:'Entrar por convite',exact:true}).click();await expect(extra.getByRole('alert')).toContainText('cinco vagas');
   const framesBeforePressure=(await evidence(second,hostId,'screenVideo')).frames;
-  // Inject encoder pressure into real stats to exercise adaptation without saturating the host CPU.
-  await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;
-   for(const peer of mesh.peers.values()){peer.originalStats=peer.pc.getStats.bind(peer.pc);peer.pc.getStats=async()=>{const original=await peer.originalStats(),report=new Map();original.forEach((s:any,id:string)=>report.set(id,{...s,...(s.type==='outbound-rtp'&&s.kind==='video'?{qualityLimitationReason:(window as any).__pressure?'cpu':'none'}:{})}));return report}}
-   (window as any).__pressure=true;await mesh.measure();
+  // Synthetic encoder pressure exercises progressive quality without saturating CI.
+  await host.evaluate(async()=>{
+   const mesh=(document.querySelector('call-page') as any).voice;
+   for(const peer of mesh.peers.values()){
+    peer.originalStats=peer.pc.getStats.bind(peer.pc);
+    peer.pc.getStats=async()=>{
+     const original=await peer.originalStats(),report=new Map();
+     original.forEach((s:any,id:string)=>report.set(id,{
+      ...s,...(s.type==='outbound-rtp'&&s.kind==='video'?{qualityLimitationReason:(window as any).__pressure?'cpu':'none'}:{})
+     }));
+     return report;
+    };
+   }
+   (window as any).__pressure=true;
+   for(let n=0;n<2;n++)await mesh.measure();
   });
-  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({limited:p.limited,fps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate})))).toEqual(Array.from({length:4},()=>({limited:true,fps:15})));
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({
+   cameraLimited:p.limited,tier:p.screenTier,
+   cameraFps:p.transceivers.camera.sender.getParameters().encodings[0].maxFramerate,
+   screenFps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate,
+   scale:p.transceivers.screenVideo.sender.getParameters().encodings[0].scaleResolutionDownBy
+  })))).toEqual(Array.from({length:4},()=>({cameraLimited:true,tier:1,cameraFps:15,screenFps:60,scale:1})));
+  // Even under sustained pressure the app steps down to 720p, not 540p/480p.
+  await host.evaluate(async()=>{const mesh=(document.querySelector('call-page') as any).voice;
+   for(let n=0;n<4;n++)await mesh.measure()});
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].map((p:any)=>({
+   tier:p.screenTier,screenFps:p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate,
+   scale:p.transceivers.screenVideo.sender.getParameters().encodings[0].scaleResolutionDownBy
+  })))).toEqual(Array.from({length:4},()=>({tier:3,screenFps:33,scale:1.5})));
   await media(second,hostId,'screenVideo');
   await expect.poll(async()=>(await evidence(second,hostId,'screenVideo')).frames).toBeGreaterThan(framesBeforePressure);
   const reducedFrames=(await evidence(second,hostId,'screenVideo')).frames;
-  await host.evaluate(async()=>{(window as any).__pressure=false;const mesh=(document.querySelector('call-page') as any).voice;for(let n=0;n<3;n++)await mesh.measure()});
-  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>!p.limited&&p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate===30))).toBe(true);
+  await host.evaluate(async()=>{(window as any).__pressure=false;const mesh=(document.querySelector('call-page') as any).voice;
+   for(let n=0;n<9;n++)await mesh.measure()});
+  await expect.poll(()=>host.evaluate(()=>[...(document.querySelector('call-page') as any).voice.peers.values()].every((p:any)=>
+   !p.limited&&p.screenTier===0&&p.transceivers.camera.sender.getParameters().encodings[0].maxFramerate===24&&
+   p.transceivers.screenVideo.sender.getParameters().encodings[0].maxFramerate===60))).toBe(true);
   await expect.poll(async()=>(await evidence(second,hostId,'screenVideo')).frames).toBeGreaterThan(reducedFrames);
   await host.evaluate(()=>{for(const peer of(document.querySelector('call-page') as any).voice.peers.values()){peer.pc.getStats=peer.originalStats;delete peer.originalStats}});
   await host.getByRole('button',{name:'Desativar câmera',exact:true}).click();
@@ -309,8 +336,16 @@ test('two simultaneous screens switch video and local audio without replacing th
   await expect(viewer.locator('.call-layout')).toHaveClass(/is-compact/);
   await expect.poll(()=>viewer.evaluate(()=>JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null')?.nickname)).toBe('Caio');
   const first=await id(a.page),second=await id(b.page),watcher=await id(viewer);
+  const hostQuality=a.page.getByRole('combobox',{name:'Qualidade da transmissão'});
+  const hostContent=a.page.getByRole('combobox',{name:'Tipo de transmissão'});
+  await expect(hostQuality).toHaveValue('high');
+  await hostQuality.selectOption('max');
+  await hostContent.selectOption('game');
   for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
   await shareButton(a.page).click();await shareButton(b.page).click();
+  expect(await a.page.evaluate(()=>(window as any).__displayRequest)).toMatchObject({
+   video:{width:{ideal:2560},height:{ideal:1440},frameRate:{ideal:60}}
+  });
   await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).call.screens.length)).toBe(2);
   await shareButton(viewer).click();
   await expect(viewer.getByRole('alert')).toContainText('Já existem duas transmissões');
@@ -322,6 +357,42 @@ test('two simultaneous screens switch video and local audio without replacing th
   },watcher)).toBe(false);
   await expect(viewer.getByRole('button',{name:'Assistir',exact:true})).toBeVisible();
   await media(viewer,first,'screenVideo');
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   const encoding=peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0];
+   return encoding&&{bitrate:encoding.maxBitrate,fps:encoding.maxFramerate,scale:encoding.scaleResolutionDownBy};
+  },watcher)).toEqual({bitrate:22000000,fps:60,scale:1});
+  // The displayed resolution/FPS come from RTP receive stats, not preset labels.
+  await viewer.evaluate(()=>((document.querySelector('call-page') as any).voice.measure()));
+  await expect(viewer.getByLabel('Qualidade real do vídeo')).toContainText(/Recebendo|Medindo/);
+  await expect.poll(()=>viewer.evaluate(()=>{
+   const page=document.querySelector('call-page') as any;
+   return page.voice.receivedScreenQuality(page.viewedScreen.owner)?.height??0;
+  }),{timeout:15000}).toBeGreaterThan(0);
+  // Severe congestion must not turn 1440p into a forced 480p half-resolution stream.
+  await a.page.evaluate(async watcher=>{
+   const voice=(document.querySelector('call-page') as any).voice,peer=voice.peers.get(watcher);
+   peer.screenTier=3;await voice.limitVideo(peer,'screenVideo');
+  },watcher);
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   return peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0]?.scaleResolutionDownBy;
+  },watcher)).toBeCloseTo(4/3,3);
+  await a.page.evaluate(async watcher=>{
+   const voice=(document.querySelector('call-page') as any).voice,peer=voice.peers.get(watcher);
+   peer.screenTier=0;await voice.limitVideo(peer,'screenVideo');
+  },watcher);
+  await hostQuality.selectOption('normal');
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   const encoding=peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0];
+   return encoding&&{bitrate:encoding.maxBitrate,fps:encoding.maxFramerate,scale:encoding.scaleResolutionDownBy};
+  },watcher)).toEqual({bitrate:5500000,fps:30,scale:1});
+  await hostQuality.selectOption('max');
+  await expect.poll(()=>a.page.evaluate(watcher=>{
+   const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
+   return peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0]?.maxBitrate;
+  },watcher)).toBe(22000000);
   await expect.poll(()=>a.page.evaluate(watcher=>{
    const peer=(document.querySelector('call-page') as any).voice.peers.get(watcher);
    return peer?.transceivers.screenVideo?.sender.getParameters().encodings?.[0]?.active;
