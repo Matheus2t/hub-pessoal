@@ -80,3 +80,11 @@ Campos ausentes permanecem null e são apresentados como Não disponível. Horá
 Cache LRU em memória por instância, 256 entradas e TTL de 1800s para cotação/histórico, com exclusão mútua para requisições simultâneas. Não é cache global: cold starts, múltiplas instâncias e regiões podem repetir consultas e consumir cota. Sem polling nem tentativas automáticas. Erros não viram cotação, dados expirados não são servidos como atuais. Não existe contratação ou upgrade automático. Para alto tráfego, será necessário avaliar controle global de cota antes da liberação pública.
 
 Timeout na fonte, resposta limitada a 2 MB, origem fixa, validação de ticker e allowlist de períodos; erros 400/401/403/404/429/conexão tratados sem repassar payloads ou credenciais. Cache-Control no-store no navegador preserva a decisão de bloqueio por licenciamento. O proxy não aceita URLs arbitrárias e não acessa MySQL.
+
+## Layout do Mercado de Ações (novembro de 2026)
+
+A página `#/acoes` utiliza o layout fixo do `panel-workspace`, sem alternância Essencial/Completo/Personalizado nem personalização persistida. O gráfico avançado do Ibovespa permanece com sua configuração TradingView anterior. Cotações em destaque ocupam a coluna direita da linha principal; o panorama secundário, quando expandido, utiliza a largura total abaixo. Ele continua sob demanda.
+
+O catálogo de 65 ações fica recolhido inicialmente em um `details` nativo. Ao abrir **Empresas**, aparecem busca por ticker/nome, filtro de setor, ordenação e os resultados. A listagem possui, além de identidade e setor, lucro e ROE do último exercício anual disponível. A fonte é o snapshot CVM já auditado e publicado pela 2T: o build gera `/financials/directory-summary.json` a partir dos arquivos locais em `frontend/public/financials`. A versão resumida preserva o exercício e o escopo, não solicita 56 JSONs no navegador, não consulta fontes externas e não adiciona preços de mercado. Ausência de dados é mostrada como indisponibilidade (travessão), nunca zero presumido. Essas métricas pertencem ao emissor e não a cada classe de ação.
+
+Testes de navegação, catálogo recolhível, busca, indicador anual, responsividade e regressão de layout fixo ficam em `frontend/tests/market-directory.spec.ts` e nos testes adaptados da área. Mudanças nos snapshots passam a refletir nos valores do resumo no próximo build.
