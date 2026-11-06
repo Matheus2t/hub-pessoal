@@ -440,6 +440,123 @@ test('individual listening levels isolate voice and screen audio and survive a r
 });
 
 
+test('deafen cuts both playback routes and the microphone through navigation and reconnect',async({browser},info)=>{
+ const fixture=await server(info.outputPath('deafen.sqlite3'));
+ const listener=await visitor(browser,true),sender=await visitor(browser),other=await visitor(browser);
+ try{
+  await fixture.start();await requireWebRTC(sender,fixture.origin);
+  const link=await makeRoom(sender,fixture.origin);
+  for(const [page,name] of [[listener,'Alice'],[sender,'Bia'],[other,'Caio']] as const){
+   await open(page,link);await join(page,name);await ready(page);
+   await page.getByRole('button',{name:'Ativar microfone',exact:true}).click();
+  }
+  const alice=await session(listener),bia=await session(sender),caio=await session(other);
+  await listener.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await sender.getByRole('button',{name:'Ativar câmera',exact:true}).click();
+  await sender.getByRole('button',{name:'Compartilhar tela',exact:true}).click();
+  for(const role of ['microphone','screenAudio','screenVideo','camera'])await media(listener,bia,role);
+  await media(listener,caio,'microphone');await media(sender,alice,'microphone');await media(sender,alice,'camera');
+  const fromBia=listener.getByRole('group',{name:'Áudio recebido de Bia'}),fromCaio=listener.getByRole('group',{name:'Áudio recebido de Caio'});
+  const voice=fromBia.getByRole('slider',{name:'Volume da voz'}),screen=fromBia.getByRole('slider',{name:'Volume da transmissão'});
+  await voice.press('End');await screen.press('End');await screen.press('ArrowLeft');
+  await expect.poll(()=>listener.evaluate(id=>{
+   const mix=(document.querySelector('call-page') as any).voice.audioMix;
+   return [...mix.inputs.get(id).values()].filter(input=>input.source).length;
+  },bia)).toBe(2);
+  await listener.evaluate(({bia,caio})=>{
+   const w=window as any,call=document.querySelector('call-page') as any,mix=call.voice.audioMix;
+   const raw=mix.context.createAnalyser(),final=mix.context.createAnalyser();
+   mix.output.connect(raw);mix.master.connect(final);
+   w.__deafen={raw,final,mic:call.microphone.getAudioTracks()[0],peer:call.voice.peers.get(bia).pc};
+   if(mix.inputs.get(caio).get('microphone').element.muted)throw new Error('Expected a native HTML audio route');
+  },{bia,caio});
+  const peak=(kind:'raw'|'final')=>listener.evaluate(kind=>{
+   const analyser=(window as any).__deafen[kind] as AnalyserNode,data=new Float32Array(analyser.fftSize);
+   analyser.getFloatTimeDomainData(data);return data.reduce((value,sample)=>Math.max(value,Math.abs(sample)),0);
+  },kind);
+  await expect.poll(()=>peak('final')).toBeGreaterThan(.03);
+  const controls=listener.getByRole('group',{name:'Controles locais'});
+  const toggle=controls.getByRole('button',{name:'Ensurdecer',exact:true});
+  const mic=controls.getByRole('button',{name:'Ativar microfone',exact:true});
+  const noOutgoingMic=()=>listener.evaluate(()=>{
+   const call=document.querySelector('call-page') as any;
+   return !call.microphone&&[...call.voice.peers.values()].every(peer=>!peer.transceivers.microphone?.sender.track);
+  });
+  const silent=()=>listener.evaluate(({bia,caio})=>{
+   const call=document.querySelector('call-page') as any,mix=call.voice.audioMix;
+   const biaAudio=mix.inputs.get(bia),caioAudio=mix.inputs.get(caio)?.get('microphone');
+   return mix.master.gain.value===0&&biaAudio?.size===2&&[...biaAudio.values()].every(input=>input.element.muted)&&
+    !!caioAudio?.element.muted;
+  },{bia,caio});
+  await toggle.tap();
+  await expect(toggle).toHaveAttribute('aria-pressed','true');await expect(mic).toBeDisabled();
+  await expect(listener.locator('.call-voice-controls')).toContainText('Ensurdecido');
+  await expect.poll(silent).toBe(true);await expect.poll(noOutgoingMic).toBe(true);
+  await expect.poll(()=>peak('final')).toBeLessThan(.001);await expect.poll(()=>peak('raw')).toBeGreaterThan(.03);
+  expect(await listener.evaluate(id=>{
+   const w=window as any,call=document.querySelector('call-page') as any;
+   return w.__deafen.mic.readyState==='ended'&&call.voice.peers.get(id).pc===w.__deafen.peer;
+  },bia)).toBe(true);
+  await media(listener,bia,'screenVideo');await media(listener,bia,'camera');await media(sender,alice,'camera');
+  await fromCaio.getByRole('button',{name:'Silenciar',exact:true}).tap();
+
+  await listener.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início',exact:true}).tap();
+  const dock=listener.getByRole('status',{name:'Chamada em andamento'});
+  const dockToggle=dock.getByRole('button',{name:'Ensurdecer',exact:true});
+  await expect(dockToggle).toHaveAttribute('aria-pressed','true');
+  await expect(dock.getByRole('button',{name:'Ativar microfone',exact:true})).toBeDisabled();
+  await listener.setViewportSize({width:320,height:844});
+  await expect(dockToggle).toBeInViewport();
+  expect(await listener.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await dock.screenshot({path:info.outputPath('deafened-dock-mobile.png')});
+  await listener.evaluate(()=>{(document.querySelector('call-page') as any).call.socket.close()});
+  await expect(dock).toContainText('Reconectando…');
+  await expect(listener.locator('.call-connection')).toHaveText('Conectado');
+  await expect(dock).toContainText('Ensurdecido');await expect.poll(silent).toBe(true);
+  await expect.poll(()=>peak('final')).toBeLessThan(.001);
+  await dockToggle.tap();await expect(dockToggle).toHaveAttribute('aria-pressed','false');
+  await expect(dock.getByRole('button',{name:'Ativar microfone',exact:true})).toBeEnabled();
+  await expect.poll(()=>peak('final')).toBeGreaterThan(.03);await expect.poll(noOutgoingMic).toBe(true);
+  await dock.getByRole('link',{name:'Voltar à chamada'}).tap();
+  await expect(voice).toHaveValue('200');await expect(screen).toHaveValue('199');
+  await expect(fromCaio.getByRole('button',{name:'Ouvir novamente',exact:true})).toBeVisible();
+  expect(await listener.evaluate(id=>{
+   const mix=(document.querySelector('call-page') as any).voice.audioMix;
+   return mix.inputs.get(id).get('microphone').element.muted;
+  },caio)).toBe(true);
+
+  // A delayed browser permission must not turn the mic on after toggling deafen twice.
+  await listener.evaluate(()=>{
+   const w=window as any,devices=navigator.mediaDevices,original=devices.getUserMedia.bind(devices);
+   devices.getUserMedia=async request=>{
+    devices.getUserMedia=original;const stream=await original(request);
+    w.__lateMic=stream.getAudioTracks()[0];
+    return new Promise(resolve=>{w.__finishMic=()=>resolve(stream)});
+   };
+  });
+  await mic.tap();await expect.poll(()=>listener.evaluate(()=>!!(window as any).__finishMic)).toBe(true);
+  await toggle.tap();await expect(mic).toBeDisabled();
+  await toggle.tap();await expect(mic).toBeEnabled();
+  await listener.evaluate(()=>(window as any).__finishMic());
+  await expect.poll(()=>listener.evaluate(()=>(window as any).__lateMic.readyState)).toBe('ended');
+  await expect.poll(noOutgoingMic).toBe(true);
+  await mic.tap();
+  await expect(controls.getByRole('button',{name:'Desativar microfone',exact:true})).toBeVisible();
+  await media(sender,alice,'microphone');
+  await sender.getByRole('button',{name:'Parar compartilhamento',exact:true}).click();
+  await expect(screen).toHaveCount(0);
+  await controls.getByRole('button',{name:'Compartilhar tela',exact:true}).tap();
+  await media(sender,alice,'screenVideo');await media(sender,alice,'screenAudio');
+  await toggle.tap();
+  await expect.poll(noOutgoingMic).toBe(true);
+  await media(sender,alice,'screenVideo');await media(sender,alice,'screenAudio');
+  await listener.getByRole('button',{name:'Sair do canal',exact:true}).tap();
+  await expect(toggle).toHaveCount(0);
+  await join(listener,'Alice');await ready(listener);
+  await expect(toggle).toHaveAttribute('aria-pressed','false');await expect(mic).toBeEnabled();
+ }finally{await Promise.all([listener,sender,other].map(page=>page.context().close()));await fixture.stop()}
+});
+
 test('V4 lobby hides inactive meeting controls and keeps a private call alive across site routes',async({browser},info)=>{
  const fixture=await server(info.outputPath('v4.sqlite3'));
  const page=await visitor(browser);

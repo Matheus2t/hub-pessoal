@@ -72,13 +72,14 @@ export class CallPage extends LightElement {
   this.loadChannel();this.requestUpdate();
  };
  toggleDockMicrophone(){if(this.call.session)void this.toggleMicrophone()}
+ toggleDockDeafen(){this.toggleDeafen()}
  leaveFromDock(){this.teardown();this.requestUpdate()}
  private announceCall(){
   const session=this.call.session;
   this.dispatchEvent(new CustomEvent('call-session-change',{
    bubbles:true,composed:true,
    detail:session?{active:true,mode:session.mode==='channel'?'channel':'private',
-    name:session.name??'Chamada privada',room:session.room,microphone:!!this.microphone,
+    name:session.name??'Chamada privada',room:session.room,microphone:!!this.microphone,voiceActive:this.voice.active,deafened:this.deafened,
     participants:this.call.people.filter(p=>p.connected).length,state:this.call.state}
     :{active:false}
   }));
@@ -162,7 +163,7 @@ export class CallPage extends LightElement {
   this.voice.setMicrophone(this.microphone);this.voice.start();
   this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true);this.publishMedia();
  }
- private leaveVoice(){this.pictureInPicture.sync(null);this.voice.stop();this.release();this.publishMedia()}
+ private leaveVoice(){this.pictureInPicture.sync(null);this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
@@ -215,6 +216,17 @@ export class CallPage extends LightElement {
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
  private stopMicrophone(){this.micRequest++;this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
+ private get deafened(){return this.voice.audioMix.deafened}
+ private toggleDeafen(){
+  if(!this.voice.active)return;
+  const deafened=!this.deafened;
+  this.voice.audioMix.setDeafened(deafened);
+  if(deafened){this.error='';this.stopMicrophone()}
+  else this.announceCall();
+ }
+ private deafenControl(){
+  return html`<button type="button" aria-pressed=${this.deafened} @click=${this.toggleDeafen}>Ensurdecer</button>`;
+ }
  private release=()=>{this.stopMicrophone();this.capture.release();this.error=''};
  private message(error:unknown,screen:boolean){
   const name=error instanceof DOMException?error.name:'';
@@ -225,7 +237,7 @@ export class CallPage extends LightElement {
   return 'Não foi possível iniciar a captura. Confira as permissões e tente novamente.';
  }
  private async toggleMicrophone(){
-  if(this.micBusy)return;
+  if(this.micBusy||this.deafened)return;
   if(this.microphone){this.stopMicrophone();return}
   this.error='';
   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='O microfone exige um navegador compatível e HTTPS ou localhost.';return}
@@ -254,8 +266,9 @@ export class CallPage extends LightElement {
    ${!name||expanded?html`<span>${label}</span>`:nothing}
   </button>
   ${expanded?html`<div class="call-viewer-media" role="group" aria-label="Controles de mídia em tela cheia">
-   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy||this.call.state==='reconnecting'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Mutar microfone':'Desmutar microfone'}</button>
+   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.deafened||this.micBusy||this.call.state==='reconnecting'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Mutar microfone':'Desmutar microfone'}</button>
    <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
+   ${this.voice.active?this.deafenControl():nothing}
    ${this.error||this.capture.error?html`<span class="call-viewer-error" role="status">${this.error||this.capture.error}</span>`:nothing}
   </div>`:nothing}`;
  }
@@ -266,6 +279,7 @@ export class CallPage extends LightElement {
   const isLanding=!channelRoute&&!this.call.session&&!parseInvite(location.href);
   if(location.hash==='#/call/gerenciar'&&!this.call.session)return html`<call-channel-owner></call-channel-owner>`;
   const remote=!!shared?.active&&shared.owner!==self&&this.voice.active,screenMode=this.fullscreen.modeFor('screen');
+  const listeningStatus=this.deafened?' · Ensurdecido':this.microphone?'':' · apenas ouvindo';
   const sharer=this.call.people.find(p=>p.id===shared?.owner);
   const screenCaption=remote?`${sharer?.name??'Participante'} está compartilhando · ${shared?.audio?'com áudio':'sem áudio compartilhado'}`:screen?`${this.capture.transmitting?'Você está compartilhando':'Prévia local'} · ${screen.getAudioTracks().some(t=>t.readyState==='live')?'com áudio · prévia silenciada':'sem áudio compartilhado'}`:shared?'Selecionando tela…':'Nenhuma tela compartilhada';
   const entryMode=parseInvite(location.href)?'join':this.privateMode;
@@ -319,8 +333,8 @@ export class CallPage extends LightElement {
   </div>`:privateEntry}`}
   ${this.call.session||this.call.state!=='idle'?html`<p class="call-connection" role="status">${this.call.notice||({idle:'Sem sala conectada',connecting:'Conectando…',waiting:'Aguardando aprovação do anfitrião',connected:'Conectado',reconnecting:'Reconectando…',closed:'Conexão encerrada'})[this.call.state]}</p>`:nothing}
   ${this.call.session?.approved?html`<div class="call-voice-controls" role="group" aria-label="Chamada de voz">
-   ${channelSession?html`<span>No canal${this.microphone?'':' · apenas ouvindo'}</span>`:this.voice.active?html`<span>Na chamada${this.microphone?'':' · apenas ouvindo'}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
-   ${this.voice.blocked?html`<button type="button" @click=${()=>this.voice.unlockAudio()}>Liberar áudio</button>`:nothing}
+   ${channelSession?html`<span>No canal${listeningStatus}</span>`:this.voice.active?html`<span>Na chamada${listeningStatus}</span><button type="button" @click=${this.leaveVoice}>Sair da chamada</button>`:html`<button type="button" ?disabled=${this.call.state!=='connected'||!this.call.rtc} @click=${this.enterVoice}>Entrar na chamada</button><span>Entre para ouvir. Ative o microfone quando quiser falar.</span>`}
+   ${!this.deafened&&this.voice.blocked?html`<button type="button" @click=${()=>this.voice.unlockAudio()}>Liberar áudio</button>`:nothing}
    ${this.voice.error?html`<button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.voice.retry()}>Reconectar áudio</button>`:nothing}
   </div>`:nothing}
   ${this.voice.error?html`<p class="call-error" role="alert">${this.voice.error}</p>`:nothing}
@@ -361,7 +375,8 @@ export class CallPage extends LightElement {
    </ol></aside>
   </div>
   <div class="call-controls" role="group" aria-label="Controles locais" ?hidden=${!this.call.session}>
-   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
+   <button type="button" aria-pressed=${!!this.microphone} ?disabled=${this.deafened||this.micBusy||channelRoute&&this.call.state!=='connected'} @click=${this.toggleMicrophone}>${this.micBusy?'Aguardando microfone…':this.microphone?'Desativar microfone':'Ativar microfone'}</button>
+   ${this.voice.active?this.deafenControl():nothing}
    <button type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button type="button" aria-pressed=${!!screen} ?disabled=${this.voice.active&&(this.call.state!=='connected'||!!shared&&shared.owner!==self)} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':screen?'Parar compartilhamento':'Compartilhar tela'}</button>
    <button type="button" ?disabled=${!this.microphone&&!screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>

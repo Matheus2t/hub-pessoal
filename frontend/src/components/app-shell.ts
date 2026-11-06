@@ -22,9 +22,10 @@ import "../learn/host";
 export class AppShell extends LightElement {
   @state() private page = currentPage();
   @state() private route = location.hash;
-  @state() private callDock:{active:boolean;mode:string;name:string;room:string;microphone:boolean;participants:number;state:string}|null=null;
+  @state() private callDock:{active:boolean;mode:string;name:string;room:string;microphone:boolean;voiceActive:boolean;deafened:boolean;participants:number;state:string}|null=null;
   private onCallSession=(event:Event)=>{const detail=(event as CustomEvent).detail;this.callDock=detail?.active?detail:null};
   private dockMic=()=>{const view=this.querySelector("call-page") as HTMLElement&{toggleDockMicrophone?:()=>void}|null;view?.toggleDockMicrophone?.()};
+  private dockDeafen=()=>{const view=this.querySelector("call-page") as HTMLElement&{toggleDockDeafen?:()=>void}|null;view?.toggleDockDeafen?.()};
   private dockLeave=()=>{const view=this.querySelector("call-page") as HTMLElement&{leaveFromDock?:()=>void}|null;view?.leaveFromDock?.()};
   protected updated(changes:Map<PropertyKey,unknown>){if(changes.has('page')&&this.page==='call')void import('../call/page');}
   private pageTitle(){const mode=['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]:undefined;return mode?`${mode} · ${pages[this.page].title}`:pages[this.page].title}
@@ -91,8 +92,9 @@ export class AppShell extends LightElement {
         </main>
         ${this.callDock&&this.page!=='call'?html`<aside class="call-dock" aria-label="Chamada em andamento" role="status">
           <span class="call-dock-indicator" aria-hidden="true"></span>
-          <div class="call-dock-info"><strong>${this.callDock.name}</strong><small>${this.callDock.state==='reconnecting'?'Reconectando…':`${this.callDock.participants}/5 na sala`}</small></div>
-          <button type="button" aria-label=${this.callDock.microphone?'Mutar microfone':'Ativar microfone'} @click=${this.dockMic}>${this.callDock.microphone?'Mutar':'Falar'}</button>
+          <div class="call-dock-info"><strong>${this.callDock.name}</strong><small>${this.callDock.state==='reconnecting'?'Reconectando…':`${this.callDock.participants}/5 na sala`}${this.callDock.deafened?' · Ensurdecido':''}</small></div>
+          <button type="button" aria-label=${this.callDock.microphone?'Mutar microfone':'Ativar microfone'} ?disabled=${this.callDock.deafened} @click=${this.dockMic}>${this.callDock.microphone?'Mutar':'Falar'}</button>
+          ${this.callDock.voiceActive?html`<button type="button" aria-pressed=${this.callDock.deafened} @click=${this.dockDeafen}>Ensurdecer</button>`:''}
           <a href=${this.callDock.mode==='channel'?`#/call/sala/${this.callDock.room}`:'#/call'}>Voltar à chamada</a>
           <button class="call-dock-leave" type="button" @click=${this.dockLeave} aria-label="Sair da chamada">Sair</button>
          </aside>`:''}
