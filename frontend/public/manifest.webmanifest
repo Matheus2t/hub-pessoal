@@ -1,0 +1,21 @@
+{
+  "name": "2T Call",
+  "short_name": "2T Call",
+  "description": "Chamadas privadas de voz, câmera e compartilhamento de tela.",
+  "lang": "pt-BR",
+  "id": "/",
+  "start_url": "/#/call",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0c0c0c",
+  "theme_color": "#0c0c0c",
+  "icons": [
+    {
+      "src": "/2t-mark.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
