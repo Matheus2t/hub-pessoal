@@ -426,8 +426,9 @@ market-page.market-terminal .market-directory-panel { padding: 0; }
 market-page.market-terminal .market-directory-toggle {
   list-style: none; display: flex; align-items: center; justify-content: space-between;
   gap: 18px; padding: 20px 24px; cursor: pointer; min-height: 76px;
+  width: 100%; text-align: left; background: transparent; border: 0;
+  color: var(--text); font: inherit;
 }
-market-page.market-terminal .market-directory-toggle::-webkit-details-marker { display: none; }
 market-page.market-terminal .market-directory-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: -3px; }
 market-page.market-terminal .market-directory-heading { display: grid; gap: 5px; }
 market-page.market-terminal .market-directory-heading strong { font-size: 16px; font-weight: 650; }
@@ -441,7 +442,7 @@ market-page.market-terminal .market-directory-action::after {
   border-bottom: 1.6px solid currentColor; transform: translateY(-2px) rotate(45deg);
   transition: transform 160ms ease;
 }
-market-page.market-terminal .market-directory[open] .market-directory-action::after {
+market-page.market-terminal .market-directory-toggle[aria-expanded="true"] .market-directory-action::after {
   transform: translateY(2px) rotate(225deg);
 }
 market-page.market-terminal .market-directory-content { border-top: 1px solid var(--line-soft); padding: 16px 24px 24px; }
