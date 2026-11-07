@@ -87,9 +87,16 @@ export class CallCapture {
    if(request!==this.screenRequest){stop(stream);return}
    const video=stream.getVideoTracks().find(t=>t.readyState==='live');
    if(!video){stop(stream);throw new DOMException('No video','NotFoundError')}
-   // The browser may still allow capturing another 2T Call tab. Keep its video,
-   // but never rebroadcast the voices played by that tab into the same call.
-   if(isCallTabCapture(video)){
+   // Browser hints are not guarantees. Never forward entire-monitor system
+   // loopback audio: it contains the voices played by this call.
+   // Still permit tab audio, which is isolated from other tabs by the browser.
+   const surface=video.getSettings().displaySurface;
+   if(surface==='monitor'){
+    for(const audio of stream.getAudioTracks()){stream.removeTrack(audio);audio.stop()}
+    this.error='Som geral do computador desativado para evitar que participantes se escutem. Para compartilhar som, selecione uma guia com áudio.';
+   }
+   // A different 2T Call tab may also replay voices; never retransmit it.
+   else if(isCallTabCapture(video)){
     for(const audio of stream.getAudioTracks()){stream.removeTrack(audio);audio.stop()}
     this.error='Áudio da guia 2T Call desativado para evitar eco. O microfone continua funcionando.';
    }

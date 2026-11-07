@@ -17,7 +17,10 @@ export const defaultScreenQuality:ScreenQuality='high';
 export function screenCaptureConstraints(quality:ScreenQuality):DisplayMediaStreamOptions{
  const {width,height,fps}=screenPresets[quality];
  // getDisplayMedia rejects min/exact; use ideal here, apply max after selection.
- return {video:{width:{ideal:width},height:{ideal:height},frameRate:{ideal:fps}},audio:true};
+ // Do not offer whole-system audio: it includes remote callers' voices and sends
+ // them back to themselves. Audio from an individual shared tab remains available.
+ return {video:{width:{ideal:width},height:{ideal:height},frameRate:{ideal:fps}},
+  audio:{restrictOwnAudio:true},systemAudio:'exclude'} as DisplayMediaStreamOptions;
 }
 export function screenTrackConstraints(quality:ScreenQuality):MediaTrackConstraints{
  const {width,height,fps}=screenPresets[quality];
