@@ -1,5 +1,5 @@
 import type {RoomScreen,ScreenControl,ScreenEvent} from './protocol';
-import {defaultScreenQuality,screenCaptureConstraints,screenTrackConstraints,type ScreenQuality,type ScreenContent} from './screen-quality';
+import {defaultScreenQuality,screenCaptureConstraints,screenTrackConstraints,type ScreenQuality,type ScreenContent,type ScreenSource} from './screen-quality';
 
 interface State {self:string;remote:boolean;screens:RoomScreen[];screenLimit:number}
 interface Attempt {request:string;generation?:number;seen:boolean;started:boolean;timer:number}
@@ -21,6 +21,8 @@ export class CallCapture {
  screen?:MediaStream;camera?:MediaStream;screenBusy=false;cameraBusy=false;error='';
  quality:ScreenQuality=defaultScreenQuality;
  content:ScreenContent='screen';
+ source:ScreenSource='monitor';
+ setSource(source:ScreenSource){if(this.screen||this.screenBusy)return;this.source=source;this.changed()}
  cameras:MediaDeviceInfo[]=[];
  private screenRequest=0;private cameraRequest=0;private attempt?:Attempt;
  private cancelled=new Set<string>();
@@ -74,7 +76,7 @@ export class CallCapture {
   const request=++this.screenRequest;this.screenBusy=true;
   // Invoke the native picker in the click's activation, before any network await.
   let capture:Promise<MediaStream>;
-  try{capture=navigator.mediaDevices.getDisplayMedia({...screenCaptureConstraints(this.quality),selfBrowserSurface:'exclude'} as DisplayMediaStreamOptions)}
+  try{capture=navigator.mediaDevices.getDisplayMedia({...screenCaptureConstraints(this.quality,this.source),selfBrowserSurface:'exclude'} as DisplayMediaStreamOptions)}
   catch(error){this.screenBusy=false;this.error=this.failure(error);this.changed();return}
   if(state.remote){
    const nonce=crypto.randomUUID().replaceAll('-','');
