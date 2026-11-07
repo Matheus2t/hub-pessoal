@@ -26,6 +26,7 @@ export class CallSignaling {
  screens:RoomScreen[]=[];
  screenLimit=1;
  private socket?:WebSocket;private heartbeat?:number;private retry?:number;private watchdog?:number;private attempts=0;
+ private lastResponseAt=0;
  private stopped=false;private credential='';private generation=0;
  private endpoint?:URL;private waking?:AbortController;private wakeTimeout?:number;
  private channelJoin?:ChannelJoin;
@@ -55,14 +56,22 @@ export class CallSignaling {
   try{socket=new WebSocket(url)}catch{this.fail('Não foi possível conectar ao sinalizador configurado.');return}
   this.socket=socket;
   let finished=false,lastResponse=performance.now();
+  this.lastResponseAt=lastResponse;
   const resuming=first.type==='resume';
   let initial:ClientMessage|undefined=first;
   socket.onopen=()=>{if(finished||generation!==this.generation)return;socket.send(JSON.stringify(initial));initial=undefined;
-   this.heartbeat=window.setInterval(()=>{if(performance.now()-lastResponse>20000){disconnected();return}if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'ping'}))},8000)};
+   lastResponse=this.lastResponseAt=performance.now();
+   this.heartbeat=window.setInterval(()=>{
+    // Mobile OSes throttle timers while locked. Let the server decide whether
+    // an idle background socket has expired, rather than closing it locally.
+    const timeout=document.visibilityState==='hidden'?120000:25000;
+    if(performance.now()-lastResponse>timeout){disconnected();return}
+    if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'ping'}))
+   },8000)};
   socket.onmessage=event=>{
    if(finished||generation!==this.generation||this.stopped)return;
    let message:ServerMessage;try{message=JSON.parse(event.data)}catch{this.fail('Resposta inválida do sinalizador.');return}
-   lastResponse=performance.now();
+   lastResponse=this.lastResponseAt=performance.now();
    if(message.type==='session'){
     window.clearTimeout(this.watchdog);
     this.credential=message.credential??this.credential;
@@ -96,9 +105,12 @@ export class CallSignaling {
    if(finished||generation!==this.generation||this.stopped)return;
    finished=true;window.clearInterval(this.heartbeat);window.clearTimeout(this.watchdog);
    socket.onopen=socket.onmessage=socket.onclose=null;socket.close();
-   if(this.session&&this.credential&&this.attempts<5){
+   if(this.session&&this.credential&&this.attempts<18){
     this.state='reconnecting';this.screens=[];this.changed();
-    this.retry=window.setTimeout(()=>this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential}),Math.min(500*2**this.attempts++,4000));
+    this.retry=window.setTimeout(()=>{
+      this.retry=undefined;
+      this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential});
+     },Math.min(500*2**this.attempts++,8000));
    }else if(this.channelJoin&&this.session)this.rejoinChannel();
    else this.fail(this.error||'Sinalizador indisponível. Confira a conexão e tente novamente.');
   };
@@ -110,6 +122,21 @@ export class CallSignaling {
   const join={...this.channelJoin!,reentry:this.channelProof};
   this.dispose();this.stopped=false;this.error='';this.session=undefined;this.people=[];this.attempts=0;
   this.open(join,true);
+ }
+ /** Bring a locked or backgrounded phone back into its existing room quickly. */
+ resumeOnForeground(){
+  if(this.stopped||!this.session||!this.credential)return;
+  const resume=()=>this.connect({type:'resume',room:this.session!.room,participant:this.session!.participant,credential:this.credential});
+  if(this.state==='reconnecting'){
+   if(this.retry!==undefined){window.clearTimeout(this.retry);this.retry=undefined;resume()}
+   else if(!this.socket||this.socket.readyState===WebSocket.CLOSED)resume();
+   return;
+  }
+  if(this.state!=='connected')return;
+  if(this.socket?.readyState===WebSocket.OPEN){
+   if(performance.now()-this.lastResponseAt>25000)this.socket.close();
+   else this.socket.send(JSON.stringify({type:'ping'}));
+  }else if(!this.socket||this.socket.readyState===WebSocket.CLOSED)resume();
  }
  send(message:{type:'close'|'rtc_config'}|Extract<ClientMessage,{type:'admit'|'reject'|'media'}>|Signal|WatchSignal|ScreenControl){
   if(this.state!=='connected'||this.socket?.readyState!==WebSocket.OPEN)return false;
