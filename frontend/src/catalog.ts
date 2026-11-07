@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
+export type Page = "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -27,6 +27,7 @@ export const tools: Tool[] = [
   { id: 'clt', name: 'Custo de funcionário CLT', category: 'Calculadoras', description: 'Salário, encargos e benefícios do empregador.', icon: 'calculator', href: '#/custo-clt' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  games: {title:'Games',section:'Games'},
   call: {title:'2T Call',section:'2T Call'},
   sports: {title:'Times',section:'Times'},
   learn: {title:'2T Learn',section:'Idiomas'},
