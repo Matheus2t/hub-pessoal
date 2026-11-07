@@ -64,7 +64,7 @@ export class CallSignaling {
    this.heartbeat=window.setInterval(()=>{
     // Mobile OSes throttle timers while locked. Let the server decide whether
     // an idle background socket has expired, rather than closing it locally.
-    const timeout=document.visibilityState==='hidden'?120000:25000;
+    const timeout=document.visibilityState==='hidden'?120000:20000;
     if(performance.now()-lastResponse>timeout){disconnected();return}
     if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'ping'}))
    },8000)};

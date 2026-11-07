@@ -219,7 +219,11 @@ def test_abandoned_host_expires_room_after_grace(service):
     admit(owner, visitor, joined)
     owner.close()
     latest_presence(visitor, 2, 1)
+    # Give a mobile browser time to resume after a short screen lock.
     clock[0] += 21
+    visitor.send_json({"type": "ping"})
+    assert until(visitor, "pong")["type"] == "pong"
+    clock[0] += 160
     visitor.send_json({"type": "ping"})
     assert until(visitor, "closed")["reason"] == "host_left"
     assert session["room"] not in app.state.rooms.rooms
