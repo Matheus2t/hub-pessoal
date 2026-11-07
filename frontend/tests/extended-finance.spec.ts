@@ -51,6 +51,9 @@ test('amortization saves interest and allows payment versus term', async ({ page
 test('CLT shows annual provisions once and switches tax regime', async ({ page }) => {
   await page.goto('/#/custo-clt');
   const tool = page.locator('extended-finance-calculator');
+  await tool.locator('summary').click();
+  await tool.getByLabel('FGTS', {exact:true}).fill('7,5');
+  await expect(tool.locator('details.extended-advanced')).toHaveAttribute('open','');
   await tool.getByLabel('Salário bruto mensal').fill('3.000');
   await tool.getByLabel('Benefícios mensais').fill('0');
   await tool.getByLabel('Vale-transporte — custo da empresa').fill('0');

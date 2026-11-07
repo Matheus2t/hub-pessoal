@@ -93,6 +93,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   @state() private error = '';
   @state() private stale = false;
   @state() private tablePage = 0;
+  @state() private advancedOpen = false;
   @state() private system: LoanSystem = 'price';
   @state() private mode: ExtraMode = 'term';
   @state() private regime: CltRegime = 'general';
@@ -100,7 +101,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   protected willUpdate(changes: Map<PropertyKey, unknown>) {
     if (changes.has('kind') || !Object.keys(this.values).length) {
       this.values = Object.fromEntries(configurations[this.kind].fields.map(f => [f.key, f.value]));
-      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0;
+      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0; this.advancedOpen = false;
     }
   }
   private change(event: CustomEvent<{ name: string; value: string }>) {
@@ -133,6 +134,7 @@ export class ExtendedFinanceCalculator extends LightElement {
     this.errors = errors;
     this.error = '';
     if (Object.keys(errors).length) {
+      if (configurations[this.kind].fields.some(f => f.advanced && errors[f.key])) this.advancedOpen = true;
       await this.updateComplete;
       this.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus();
       return;
@@ -262,7 +264,7 @@ export class ExtendedFinanceCalculator extends LightElement {
               </label>` : nothing}
             </div>` : nothing}
             <div class="form-grid finance-extended-fields">${config.fields.filter(f => !f.advanced).map(f => this.renderField(f))}</div>
-            ${config.fields.some(f => f.advanced) ? html`<details class="extended-advanced" ?open=${Object.keys(this.errors).some(k => config.fields.find(f => f.key === k)?.advanced)}>
+            ${config.fields.some(f => f.advanced) ? html`<details class="extended-advanced" ?open=${this.advancedOpen || Object.keys(this.errors).some(k => config.fields.find(f => f.key === k)?.advanced)} @toggle=${(e: Event) => { this.advancedOpen = (e.currentTarget as HTMLDetailsElement).open; }}>
               <summary>Parâmetros avançados</summary>
               <div class="form-grid finance-extended-fields">${config.fields.filter(f => f.advanced).map(f => this.renderField(f))}</div>
             </details>` : nothing}
