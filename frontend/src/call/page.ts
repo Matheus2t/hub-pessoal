@@ -48,6 +48,30 @@ export class CallPage extends LightElement {
  private restoredPeople=new Set<string>();
  private output=new CallAudioOutput(this.voice,()=>this.requestUpdate(),id=>this.preferences.selectOutput(id));
  private onDevicesChanged=()=>{void this.output.refresh()};
+ /** Best-effort call audio focus while the phone screen is locked. */
+ private setCallAudioSession(active:boolean){
+  try{
+   const session=(navigator as Navigator&{audioSession?:{type:'auto'|'play-and-record'}}).audioSession;
+   if(session)session.type=active?'play-and-record':'auto';
+  }catch{/* Audio Session API is optional. */}
+  try{
+   const session=navigator.mediaSession;
+   if(session){
+    session.playbackState=active?'playing':'none';
+    session.metadata=active?new MediaMetadata({title:'2T Call',artist:'Chamada de voz'}):null;
+   }
+  }catch{/* Media Session API is optional. */}
+ }
+ private onForeground=()=>{
+  if(document.visibilityState!=='visible'||!this.call.session)return;
+  this.call.resumeOnForeground();
+  if(this.voice.active){this.setCallAudioSession(true);this.voice.unlockAudio()}
+  this.requestUpdate();
+ };
+ private onPageHide=(event:PageTransitionEvent)=>{
+  // Restoring a cached page must not explicitly leave the room.
+  if(!event.persisted)this.teardown();
+ };
  private lastMedia='';
  private call=new CallSignaling(()=>this.callChanged(),message=>this.voice.receive(message),message=>this.capture.event(message));
  private capture=new CallCapture(()=>({self:this.call.session?.participant??'',remote:this.call.state==='connected'&&this.voice.active,
@@ -110,9 +134,10 @@ export class CallPage extends LightElement {
  }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');
   // Lets another 2T Call tab recognize and discard captured call playback audio.
-  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.teardown);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
- disconnectedCallback(){window.removeEventListener('pagehide',this.teardown);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
+  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
+ disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
+  this.setCallAudioSession(false);
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.restoredPeople.clear();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
   this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.output.reset();this.release();this.call.leave();this.lastMedia='';
@@ -193,6 +218,7 @@ export class CallPage extends LightElement {
    this.channelParticipant=session.participant;
   }
   if(this.call.state==='closed'||this.call.state==='idle'){
+   this.setCallAudioSession(false);
    this.voice.stop(true);this.restoredPeople.clear();this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;if(this.call.state==='closed')this.release();this.lastMedia='';
   }else{
    if(this.call.state==='reconnecting')this.lastMedia='';
@@ -217,13 +243,14 @@ export class CallPage extends LightElement {
  private enterVoice(){
   if(this.call.state!=='connected'||!this.call.rtc)return;
   this.capture.release();
+  this.setCallAudioSession(true);
   this.voice.setMicrophone(this.microphone);this.voice.start();
   this.voice.sync(this.call.session!.participant,this.call.people,this.call.rtc,true,this.watchedScreen);
   this.restoreListening();
   if(this.preferences.output&&this.output.supported)void this.output.choose(this.preferences.output);
   this.publishMedia();
  }
- private leaveVoice(){this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
+ private leaveVoice(){this.setCallAudioSession(false);this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
