@@ -4,6 +4,7 @@ import { LightElement } from "../ui";
 @customElement("form-field")
 export class FormField extends LightElement {
   @property() name = "";
+  @property() idPrefix = "field";
   @property() label = "";
   @property() value = "";
   @property() unit = "";
@@ -13,12 +14,12 @@ export class FormField extends LightElement {
   @property({ type: Boolean }) disabled = false;
   render() {
     return html`<div class="form-field">
-      <label for=${`field-${this.name}`}>${this.label}</label>
+      <label for=${`${this.idPrefix}-${this.name}`}>${this.label}</label>
       <div class="field-input ${this.error ? "invalid" : ""}">
         ${this.unit === "R$"
           ? html`<span class="field-prefix">R$</span>`
           : ""}<input
-          id=${`field-${this.name}`}
+          id=${`${this.idPrefix}-${this.name}`}
           name=${this.name}
           type="text"
           inputmode=${this.integer ? "numeric" : "decimal"}
@@ -26,7 +27,7 @@ export class FormField extends LightElement {
           .value=${this.value}
           ?disabled=${this.disabled}
           aria-invalid=${Boolean(this.error)}
-          aria-describedby=${`hint-${this.name}`}
+          aria-describedby=${`${this.idPrefix}-hint-${this.name}`}
           @input=${(e: Event) =>
             this.dispatchEvent(
               new CustomEvent("field-input", {
@@ -49,7 +50,7 @@ export class FormField extends LightElement {
           : ""}
       </div>
       <p
-        id=${`hint-${this.name}`}
+        id=${`${this.idPrefix}-hint-${this.name}`}
         class="field-hint ${this.error ? "field-error" : ""}"
       >
         ${this.error || this.hint}
