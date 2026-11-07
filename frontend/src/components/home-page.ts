@@ -20,6 +20,7 @@ export class HomePage extends LightElement {
         <span class="home-call-copy"><strong>2T Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
         <span class="home-call-action">Acessar <span aria-hidden="true">↗</span></span>
       </a>
+      <a class="home-call" href="#/games" aria-label="Acessar Games"><span class="home-call-icon" aria-hidden="true">🎮</span><span class="home-call-copy"><strong>Games</strong><span>Snake: jogue, evolua de nível e registre seu recorde.</span></span><span class="home-call-action">Jogar <span aria-hidden="true">↗</span></span></a>
       <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras"><span class="area-icon">${icon("calculator")}</span>
           <div class="area-content"><div class="area-copy"><h2>Calculadoras</h2><p>Simule juros, aportes e parcelas de financiamentos.</p></div>
