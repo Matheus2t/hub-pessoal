@@ -38,9 +38,9 @@ class CallSettings(BaseSettings):
     proxy_mode: str = Field(default="none", pattern="^(none|cloudflare|render)$")
     room_seconds: int = Field(default=3600, ge=60, le=14400)
     invite_seconds: int = Field(default=900, ge=30, le=3600)
-    reconnect_seconds: int = Field(default=20, ge=1, le=60)
+    reconnect_seconds: int = Field(default=180, ge=1, le=600)
     approval_seconds: int = Field(default=60, ge=1, le=120)
-    heartbeat_seconds: int = Field(default=30, ge=1, le=120)
+    heartbeat_seconds: int = Field(default=90, ge=1, le=120)
     max_rooms: int = Field(default=8, ge=1, le=32)
     stun_urls: str = "stun:stun.cloudflare.com:3478"
     turn_urls: str = ""
