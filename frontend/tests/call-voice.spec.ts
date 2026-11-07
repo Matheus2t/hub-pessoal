@@ -242,3 +242,26 @@ test('lost signaling heartbeat resumes the same participant and preserves audio 
   await a.page.getByRole('button',{name:'Encerrar sala',exact:true}).click();
  }finally{await a.context.close();await b.context.close()}
 });
+
+
+test('mobile lock lifecycle keeps an active call and resumes signaling on return',async({browser})=>{
+ const {context,page}=await tab(browser);
+ try{
+  await owner(page);await enter(page);
+  const before=await page.evaluate(()=>{
+   const component=document.querySelector('call-page') as any;
+   return {participant:component.call.session?.participant,voice:component.voice.active};
+  });
+  expect(before.voice).toBe(true);
+  await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
+  expect(await page.evaluate(()=>{
+   const component=document.querySelector('call-page') as any;
+   return {participant:component.call.session?.participant,voice:component.voice.active};
+  })).toEqual(before);
+  await page.evaluate(participant=>{(window as any).__expectedParticipant=participant;window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}))},before.participant);
+  await expect.poll(()=>page.evaluate(()=>{
+   const component=document.querySelector('call-page') as any;
+   return component.call.state==='connected'&&component.call.session?.participant=== (window as any).__expectedParticipant;
+  }),{timeout:10000}).toBe(true);
+ }finally{await context.close()}
+});
