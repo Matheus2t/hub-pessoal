@@ -11,6 +11,7 @@ export class AppSidebar extends LightElement {
   render() {
     return html`<nav aria-label="Navegação principal">
       <a class="nav-item" href="#/" aria-current=${this.page==='overview'?'page':'false'}>Início</a>
+      <a class="nav-item" href="#/games" aria-current=${this.page==='games'?'page':'false'}>Games</a>
       <details class="teams-menu" @keydown=${(e:KeyboardEvent)=>{if(e.key==='Escape'){(e.currentTarget as HTMLDetailsElement).open=false;(e.currentTarget as HTMLElement).querySelector('summary')?.focus()}}}>
         <summary class="nav-item" aria-current=${['76ers','spfc','barcelona','sports'].includes(this.page)?'page':'false'}>Times</summary>
         <team-shortcuts .page=${this.page}></team-shortcuts>
