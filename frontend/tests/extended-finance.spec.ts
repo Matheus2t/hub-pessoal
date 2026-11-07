@@ -39,7 +39,7 @@ test('amortization saves interest and allows payment versus term', async ({ page
   await tool.getByLabel('Saldo devedor inicial').fill('1.200');
   await tool.getByLabel('Taxa efetiva anual').fill('0');
   await tool.getByLabel('Parcelas restantes').fill('12');
-  await tool.getByLabel('Amortização única').fill('600');
+  await tool.getByLabel('Amortização única', {exact:true}).fill('600');
   await tool.getByLabel('Mês da amortização única').fill('1');
   await tool.getByRole('button',{name:'Simular amortização'}).click();
   await expect(tool.getByText('6 meses')).toBeVisible();
