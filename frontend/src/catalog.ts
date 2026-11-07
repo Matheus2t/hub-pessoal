@@ -1,5 +1,5 @@
 import type { IconName } from "./ui";
-export type Page = "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
+export type Page = "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -21,6 +21,10 @@ export const tools: Tool[] = [
   { id: 'simple', name: 'Juros simples', category: 'Calculadoras', description: 'Capital e juros sem capitalização.', icon: 'calculator', href: '#/juros-simples' },
   { id: 'price', name: 'Financiamento PRICE', category: 'Calculadoras', description: 'Parcelas fixas e custo total do crédito.', icon: 'calculator', href: '#/price' },
   { id: 'sac', name: 'Financiamento SAC', category: 'Calculadoras', description: 'Amortização constante e parcelas decrescentes.', icon: 'calculator', href: '#/sac' },
+  { id: 'retirement', name: 'Aposentadoria', category: 'Calculadoras', description: 'Planeje patrimônio, aportes e renda futura.', icon: 'calculator', href: '#/aposentadoria' },
+  { id: 'housing', name: 'Aluguel x Financiamento', category: 'Calculadoras', description: 'Compare o patrimônio de alugar ou comprar.', icon: 'calculator', href: '#/aluguel-vs-financiamento' },
+  { id: 'amortization', name: 'Calculadora de amortização', category: 'Calculadoras', description: 'Antecipe parcelas e reduza juros ou prazo.', icon: 'calculator', href: '#/amortizacao' },
+  { id: 'clt', name: 'Custo de funcionário CLT', category: 'Calculadoras', description: 'Salário, encargos e benefícios do empregador.', icon: 'calculator', href: '#/custo-clt' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
   call: {title:'2T Call',section:'2T Call'},
@@ -33,6 +37,10 @@ export const pages: Record<Page, { title: string; section: string }> = {
   '76ers': { title: 'Philadelphia 76ers', section: 'Philadelphia 76ers' },
   spfc: { title: 'São Paulo Futebol Clube', section: 'São Paulo Futebol Clube' },
   barcelona: { title: 'FC Barcelona', section: 'FC Barcelona' },
+  retirement: { title: 'Aposentadoria', section: 'Calculadoras' },
+  housing: { title: 'Aluguel x Financiamento', section: 'Calculadoras' },
+  amortization: { title: 'Calculadora de amortização', section: 'Calculadoras' },
+  clt: { title: 'Custo de funcionário CLT', section: 'Calculadoras' },
   catalog: { title: 'Calculadoras', section: 'Calculadoras' },
   market: { title: 'Mercado de Ações', section: 'Ações' },
   simple: { title: 'Juros simples', section: 'Calculadoras' },
@@ -47,7 +55,11 @@ export const currentPage = (): Page =>
   location.hash === '#/times' ? 'sports' :
   location.hash === '#/renda-fixa' ? 'fixedIncome' :
   location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
-  location.hash === '#/calculadoras' ? 'catalog' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
+  location.hash === '#/calculadoras' ? 'catalog' :
+  location.hash === '#/aposentadoria' ? 'retirement' :
+  location.hash === '#/aluguel-vs-financiamento' ? 'housing' :
+  location.hash === '#/amortizacao' ? 'amortization' :
+  location.hash === '#/custo-clt' ? 'clt' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
     : "overview";

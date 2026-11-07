@@ -10,6 +10,7 @@ import "./holiday-calendar";
 import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
+import "./extended-finance-calculator";
 import "./market-page";
 import "./team-shortcuts";
 import "./team-page";
@@ -64,14 +65,14 @@ export class AppShell extends LightElement {
   }
   render() {
     return html`<a class="skip-link" href="#content" @click=${(event: Event) => { event.preventDefault(); this.querySelector<HTMLElement>("#content")?.focus(); }}>Pular para o conteúdo</a>
-      <div class=${`app-layout ${['market','calculator','simple','price','sac','fixedIncome','catalog'].includes(this.page)?'finance-workspace':''}`}>
+      <div class=${`app-layout ${['market','calculator','simple','price','sac','retirement','housing','amortization','clt','fixedIncome','catalog'].includes(this.page)?'finance-workspace':''}`}>
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">2T Learn</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           <call-page ?hidden=${this.page !== "call"} @call-session-change=${this.onCallSession}></call-page>
@@ -82,6 +83,7 @@ export class AppShell extends LightElement {
           ${this.page === 'market' ? keyed(this.route, html`<market-page .symbol=${this.route.startsWith('#/acoes/') ? this.route.slice(8).toUpperCase() : ''}></market-page>`) : ''}
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
+          ${["retirement", "housing", "amortization", "clt"].includes(this.page) ? keyed(this.page, html`<extended-finance-calculator .kind=${this.page}></extended-finance-calculator>`) : ""}
           <footer class="page-footer">
             <span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span>
             <div class="footer-meta">

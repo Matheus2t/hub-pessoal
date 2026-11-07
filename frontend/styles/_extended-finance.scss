@@ -1,0 +1,59 @@
+/* New financial calculators reuse the 2T panel system and theme variables. */
+extended-finance-calculator { display:block; min-width:0; max-width:100%; }
+.extended-calculator .simulation-panel { padding:24px; }
+.extended-calculator .finance-extended-fields { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 14px; }
+.extended-calculator .finance-extended-fields form-field { min-width:0; }
+.extended-calculator .finance-extended-fields .field-input input { font-size:16px; }
+.extended-calculator .extended-select-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:18px; }
+.extended-calculator .extended-select { display:block; min-width:0; color:var(--secondary); font-size:13px; font-weight:600; margin-bottom:18px; }
+.extended-calculator .extended-select-grid .extended-select { margin:0; }
+.extended-calculator .extended-select select { display:block; background:var(--raised); border:1px solid var(--line); color:var(--text); border-radius:6px; width:100%; max-width:100%; min-height:45px; padding:10px; margin-top:8px; font:inherit; font-weight:500; }
+.extended-calculator .extended-select select:focus-visible { outline:2px solid var(--text); outline-offset:2px; }
+.extended-calculator .extended-advanced { border-top:1px solid var(--line-soft); margin-top:24px; padding-top:4px; }
+.extended-calculator .extended-advanced summary { cursor:pointer; color:var(--secondary); padding:16px 0; font-weight:600; font-size:13px; }
+.extended-calculator .extended-advanced[open] summary { color:var(--text); }
+.extended-calculator .extended-advanced .finance-extended-fields { padding-bottom:8px; }
+.extended-calculator .extended-note { margin:22px 0 0; line-height:1.65; }
+.extended-calculator .form-bottom { justify-content:stretch; }
+.extended-calculator .form-bottom .button { width:100%; justify-content:center; min-height:47px; }
+.extended-calculator .metrics-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.extended-calculator .metric-card { min-width:0; }
+.extended-calculator .metric-card strong, .extended-calculator .metric-card.accent strong { font-size:clamp(20px,2.6vw,32px); line-height:1.2; }
+.extended-calculator .extended-detail { padding:18px 22px; margin-top:12px; border:1px solid var(--line-soft); color:var(--secondary); background:var(--panel); border-radius:8px; font-size:13px; line-height:1.8; }
+.extended-calculator .extended-detail strong { color:var(--text); font-weight:650; }
+.extended-calculator .extended-chart { border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:24px; min-width:0; overflow:hidden; height:100%; }
+.extended-calculator .extended-chart-legend { display:flex; flex-wrap:wrap; gap:18px; color:var(--secondary); font-size:13px; font-weight:550; margin-bottom:14px; }
+.extended-calculator .extended-chart-legend span { display:inline-flex; align-items:center; gap:8px; }
+.extended-calculator .extended-chart-legend span::before { content:''; display:inline-block; width:18px; border-top:2px solid var(--text); }
+.extended-calculator .extended-chart-legend .extended-legend-second::before { border-color:var(--secondary); border-top-style:dashed; }
+.extended-calculator .extended-chart svg { display:block; width:100%; max-height:360px; overflow:visible; }
+.extended-calculator .extended-chart svg text { fill:var(--muted); font:13px var(--font-body); }
+.extended-calculator .extended-gridline { stroke:var(--line); stroke-width:1; }
+.extended-calculator .extended-line-first, .extended-calculator .extended-line-second { fill:none; stroke-width:2.7; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke; }
+.extended-calculator .extended-line-first { stroke:var(--text); }
+.extended-calculator .extended-line-second { stroke:var(--secondary); stroke-dasharray:7 5; }
+.extended-calculator .extended-chart-caption { color:var(--muted); font-size:12px; margin-top:8px; }
+.extended-calculator .extended-table { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px; min-width:0; }
+.extended-calculator .extended-table h2 { font-size:17px; font-weight:600; margin:0 0 18px; }
+.extended-calculator .extended-table .table-scroll { overflow-x:auto; max-width:100%; }
+.extended-calculator .extended-table table { border-collapse:collapse; width:100%; min-width:480px; font-size:13px; font-variant-numeric:tabular-nums; }
+.extended-calculator .extended-table th { color:var(--secondary); font-weight:600; text-align:right; border-bottom:1px solid var(--line); padding:12px 13px; white-space:nowrap; }
+.extended-calculator .extended-table th:first-child { text-align:left; }
+.extended-calculator .extended-table td { border-bottom:1px solid var(--line-soft); padding:12px 13px; text-align:right; white-space:nowrap; }
+.extended-calculator .extended-table td:first-child { text-align:left; color:var(--secondary); }
+.extended-calculator .extended-table tr:last-child td { border-bottom:0; }
+.extended-calculator .extended-table .table-pagination { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.extended-calculator .extended-disclosure { color:var(--muted); font-size:12px; line-height:1.7; margin:14px 0 0; }
+@media(max-width:1150px) and (min-width:901px) {
+  .extended-calculator .finance-extended-fields, .extended-calculator .extended-select-grid { grid-template-columns:minmax(0,1fr); }
+}
+@media(max-width:700px) {
+  .extended-calculator .finance-extended-fields { grid-template-columns:minmax(0,1fr); }
+  .extended-calculator .metrics-grid { grid-template-columns:minmax(0,1fr); gap:15px; }
+  .extended-calculator .metrics-grid .metric-card { border:0; padding:0 0 15px; border-bottom:1px solid var(--line-soft); }
+  .extended-calculator .metrics-grid .metric-card:last-child { border:0; padding:0; }
+  .extended-calculator .extended-select-grid { grid-template-columns:minmax(0,1fr); }
+  .extended-calculator .extended-chart { padding:15px; }
+  .extended-calculator .extended-table { padding:14px; }
+  .extended-calculator .simulation-panel { padding:18px; }
+}
