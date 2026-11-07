@@ -10,7 +10,7 @@ import {CallPreferences} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture,callCaptureHandle} from './capture';
-import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent} from './screen-quality';
+import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent,type ScreenSource} from './screen-quality';
 import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
@@ -503,6 +503,15 @@ export class CallPage extends LightElement {
    <button class="call-control-camera" type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button class="call-control-screen" type="button" aria-pressed=${!!this.capture.screen} ?disabled=${this.voice.active&&this.call.state!=='connected'} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':this.capture.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
    ${this.voice.active?html`<div class="call-share-quality" role="group" aria-label="Qualidade de compartilhamento">
+    <label>O que compartilhar
+     <select aria-label="Fonte da transmissão" .value=${this.capture.source}
+      ?disabled=${!!this.capture.screen||this.capture.screenBusy}
+      @change=${(event:Event)=>this.capture.setSource((event.currentTarget as HTMLSelectElement).value as ScreenSource)}>
+      <option value="monitor">Uma das telas (monitor 1 ou 2)</option>
+      <option value="window">Janela de aplicativo ou jogo</option>
+      <option value="browser">Guia do navegador</option>
+     </select>
+    </label>
     <label>Qualidade do vídeo
      <select aria-label="Qualidade da transmissão" .value=${this.capture.quality}
       @change=${(event:Event)=>this.setScreenQuality((event.currentTarget as HTMLSelectElement).value as ScreenQuality)}>
@@ -516,6 +525,11 @@ export class CallPage extends LightElement {
       <option value="game">Jogos e movimento</option>
      </select>
     </label>
+    <p class="call-share-hint">${this.capture.source==='monitor'?
+     'O Chrome mostrará as telas disponíveis. Escolha o monitor com o jogo. Se aparecer somente uma tela, use Win + P → Estender no Windows. O áudio geral da tela fica desligado para evitar eco.':
+     this.capture.source==='window'?
+     'Se o jogo desaparecer ao alternar para o Chrome, use Janela sem bordas nas configurações do jogo ou escolha Uma das telas. Jogos em tela cheia exclusiva podem não aparecer.':
+     'Selecione a guia desejada no Chrome. O áudio da guia depende do navegador.'}</p>
    </div>`:nothing}
    <button class="call-control-secondary" type="button" ?disabled=${!this.microphone&&!this.capture.screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
    ${this.capture.canFlip?html`<button class="call-control-secondary" type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}

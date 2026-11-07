@@ -338,14 +338,27 @@ test('two simultaneous screens switch video and local audio without replacing th
   const first=await id(a.page),second=await id(b.page),watcher=await id(viewer);
   const hostQuality=a.page.getByRole('combobox',{name:'Qualidade da transmissão'});
   const hostContent=a.page.getByRole('combobox',{name:'Tipo de transmissão'});
+  const hostSource=a.page.getByRole('combobox',{name:'Fonte da transmissão'});
+  const guestSource=b.page.getByRole('combobox',{name:'Fonte da transmissão'});
+  await expect(hostSource).toHaveValue('monitor');
+  await expect(hostSource.locator('option')).toHaveCount(3);
+  await guestSource.selectOption('window');
+  await expect(b.page.locator('.call-share-hint')).toContainText('Janela sem bordas');
   await expect(hostQuality).toHaveValue('high');
   await hostQuality.selectOption('max');
   await hostContent.selectOption('game');
   for(const {page} of [a,b])await page.evaluate(()=>{(window as any).__delayDisplay=true});
   await shareButton(a.page).click();await shareButton(b.page).click();
   expect(await a.page.evaluate(()=>(window as any).__displayRequest)).toMatchObject({
-   video:{width:{ideal:2560},height:{ideal:1440},frameRate:{ideal:60}}
+   video:{width:{ideal:2560},height:{ideal:1440},frameRate:{ideal:60},displaySurface:'monitor'},
+   monitorTypeSurfaces:'include',selfBrowserSurface:'exclude',surfaceSwitching:'include',
+   systemAudio:'exclude'
   });
+  expect(await b.page.evaluate(()=>(window as any).__displayRequest)).toMatchObject({
+   video:{displaySurface:'window'},monitorTypeSurfaces:'include'
+  });
+  await expect(hostSource).toBeDisabled();
+  await expect(guestSource).toBeDisabled();
   await expect.poll(()=>viewer.evaluate(()=>(document.querySelector('call-page') as any).call.screens.length)).toBe(2);
   await shareButton(viewer).click();
   await expect(viewer.getByRole('alert')).toContainText('Já existem duas transmissões');

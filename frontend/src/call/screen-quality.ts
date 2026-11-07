@@ -1,6 +1,8 @@
 /** Local screen-sharing goals. These are ceilings, never guaranteed network quality. */
 export type ScreenQuality='normal'|'high'|'max';
 export type ScreenContent='screen'|'game';
+/** Preferred category in browser capture chooser; not a device ID. */
+export type ScreenSource='monitor'|'window'|'browser';
 export interface ScreenPreset {
  label:string;
  width:number;height:number;fps:number;
@@ -14,13 +16,19 @@ export const screenPresets:Readonly<Record<ScreenQuality,ScreenPreset>>={
 export const screenQualityOptions:ReadonlyArray<ScreenQuality>=['normal','high','max'];
 export const defaultScreenQuality:ScreenQuality='high';
 
-export function screenCaptureConstraints(quality:ScreenQuality):DisplayMediaStreamOptions{
+export function screenCaptureConstraints(quality:ScreenQuality,source:ScreenSource='monitor'):DisplayMediaStreamOptions{
  const {width,height,fps}=screenPresets[quality];
  // getDisplayMedia rejects min/exact; use ideal here, apply max after selection.
  // Do not offer whole-system audio: it includes remote callers' voices and sends
  // them back to themselves. Audio from an individual shared tab remains available.
- return {video:{width:{ideal:width},height:{ideal:height},frameRate:{ideal:fps}},
-  audio:{restrictOwnAudio:true},systemAudio:'exclude'} as DisplayMediaStreamOptions;
+ return {
+  video:{width:{ideal:width},height:{ideal:height},frameRate:{ideal:fps},displaySurface:source},
+  audio:{restrictOwnAudio:true},
+  // Surface hints only preselect a category; the user chooses the actual source.
+  monitorTypeSurfaces:'include',preferCurrentTab:false,
+  selfBrowserSurface:'exclude',surfaceSwitching:'include',
+  systemAudio:'exclude'
+ } as DisplayMediaStreamOptions;
 }
 export function screenTrackConstraints(quality:ScreenQuality):MediaTrackConstraints{
  const {width,height,fps}=screenPresets[quality];
