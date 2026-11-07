@@ -298,3 +298,10 @@ def test_disabled_without_key_or_on_vercel(monkeypatch):
             with pytest.raises(WebSocketDisconnect):
                 with client.websocket_connect("/call/ws", headers={"origin": ORIGIN}):
                     pass
+
+
+def test_mobile_background_default_grace():
+    # A locked browser may stop delivering JavaScript heartbeat messages.
+    defaults = CallSettings.model_fields
+    assert defaults["heartbeat_seconds"].default >= 60
+    assert defaults["reconnect_seconds"].default >= 120
