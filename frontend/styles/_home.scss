@@ -3,6 +3,11 @@ calculator-catalog { display:block; min-width:0; }
 .main-content:has(home-page) .page-footer { margin-top:auto; }
 /* 2T: vertical quick-access cards and discreet footer calendar. */
 home-page { display:flex; flex:1; flex-direction:column; justify-content:center; gap:28px; padding-block:24px 40px; }
+/* Keep the homepage hierarchy stable, including when an older JS bundle is still open. */
+home-page > .platform-intro { order: 0; }
+home-page > .home-call[href="#/call"] { order: 1; }
+home-page > .platform-areas { order: 2; }
+home-page > .home-call[href="#/games"] { order: 3; }
 .platform-intro { width: 100%; max-width: 1440px; margin-inline: auto; }
 .platform-areas { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; max-width:1440px; margin-inline:auto; gap:24px; align-items:stretch; }
 home-page .area-card { display:flex; flex-direction:column; align-items:stretch; aspect-ratio:3 / 4; min-height:0; height:auto; padding:clamp(20px,1.8vw,28px); gap:18px; border:1px solid var(--line-soft); border-radius:10px; background:var(--panel); }
