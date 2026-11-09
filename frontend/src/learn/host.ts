@@ -15,5 +15,5 @@ export class LearnHost extends LightElement {
     try{const url=`/learn.js${retry?`?retry=${retry}`:''}`;await(pending??=import(url));if(this.isConnected)this.ready=true}
     catch{pending=undefined;retry++;if(this.isConnected)this.failed=true}
   }
-  render(){return this.ready?html`<learn-page .activity=${this.activity} .language=${this.language} .invalid=${this.invalid}></learn-page>`:this.failed?html`<section class="learn-message" role="status"><h1>2T Learn</h1><p>Não foi possível carregar esta área.</p><button class="button" @click=${()=>this.load()}>Tentar novamente</button></section>`:html`<p role="status">Carregando 2T Learn…</p>`}
+  render(){return this.ready?html`<learn-page .activity=${this.activity} .language=${this.language} .invalid=${this.invalid}></learn-page>`:this.failed?html`<section class="learn-message" role="status"><h1>Learn / Изучать</h1><p>Não foi possível carregar esta área.</p><button class="button" @click=${()=>this.load()}>Tentar novamente</button></section>`:html`<p role="status">Carregando Learn / Изучать…</p>`}
 }

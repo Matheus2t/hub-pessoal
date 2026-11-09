@@ -9,7 +9,7 @@ export class HomePage extends LightElement {
       <section class="platform-intro">
         <h1>Início</h1>
       </section>
-      <a class="home-call" href="#/call" aria-label="Acessar 2T Call">
+      <a class="home-call" href="#/call" aria-label="Acessar Call">
         <span class="home-call-icon" aria-hidden="true">
           <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <rect x="6" y="11" width="24" height="22" rx="4"/>
@@ -17,7 +17,7 @@ export class HomePage extends LightElement {
             <path d="M12 39h18"/>
           </svg>
         </span>
-        <span class="home-call-copy"><strong>2T Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
+        <span class="home-call-copy"><strong>Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
         <span class="home-call-action">Acessar <span aria-hidden="true">↗</span></span>
       </a>
       <section class="platform-areas" aria-label="Áreas disponíveis">
@@ -39,7 +39,7 @@ export class HomePage extends LightElement {
           </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
         <a class="tool-card area-card area-learn" href="#/learn"><span class="area-icon">${icon("layers")}</span>
-          <div class="area-content"><div class="area-copy"><h2>2T Learn</h2><p>Inglês e russo. Vocabulário, exercícios e revisões.</p></div>
+          <div class="area-content"><div class="area-copy"><h2>Learn / Изучать</h2><p>Inglês e russo. Vocabulário, exercícios e revisões.</p></div>
             <svg class="area-preview" viewBox="0 0 200 110" aria-hidden="true"><path class="preview-line" d="M20 20h65q15 0 15 15v65q-15-12-30-12H20Zm160 0h-65q-15 0-15 15v65q15-12 30-12h50Z"/><path class="preview-grid" d="M34 40h40m-40 15h40m-40 15h30m62-30h40m-40 15h40m-40 15h30"/></svg>
           </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>

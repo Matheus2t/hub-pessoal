@@ -58,7 +58,7 @@ export class CallPage extends LightElement {
    const session=navigator.mediaSession;
    if(session){
     session.playbackState=active?'playing':'none';
-    session.metadata=active?new MediaMetadata({title:'2T Call',artist:'Chamada de voz'}):null;
+    session.metadata=active?new MediaMetadata({title:'Call',artist:'Chamada de voz'}):null;
    }
   }catch{/* Media Session API is optional. */}
  }
@@ -133,7 +133,7 @@ export class CallPage extends LightElement {
   this.requestUpdate();
  }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');
-  // Lets another 2T Call tab recognize and discard captured call playback audio.
+  // Lets another Call tab recognize and discard captured call playback audio.
   try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
  disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
@@ -446,7 +446,7 @@ export class CallPage extends LightElement {
    ${this.call.session.host?html`<button type="button" @click=${this.copyInvite}>${this.copied?'Link copiado':'Copiar convite'}</button><button type="button" ?disabled=${this.call.state!=='connected'} @click=${()=>this.call.send({type:'close'})}>Encerrar sala</button>`:nothing}
    <button type="button" @click=${this.teardown}>Sair da sala</button></div>`;
   return html`
-  ${channelRoute?html`<header><div><a href="#/call">Voltar ao 2T Call</a><h1>${channelSession?.name??this.channel?.name??'Sala Permanente'}</h1><p>Canal de voz · até cinco pessoas.</p></div></header>
+  ${channelRoute?html`<header><div><a href="#/call">Voltar ao Call</a><h1>${channelSession?.name??this.channel?.name??'Sala Permanente'}</h1><p>Canal de voz · até cinco pessoas.</p></div></header>
    ${this.channelLoading?html`<p role="status">Carregando sala. O sinalizador pode levar até 90 segundos para iniciar.</p>`:nothing}
    ${!channelId||this.channelError?html`<p class="call-error" role="alert">${this.channelError||'Link inválido da sala permanente.'}</p>
     ${channelId&&!this.channelLoading?html`<button type="button" @click=${this.loadChannel}>Tentar novamente</button>`:nothing}`:nothing}
@@ -460,7 +460,7 @@ export class CallPage extends LightElement {
     <button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button>
    </section>`:nothing}
    ${channelSession?html`<div class="call-room-actions"><button type="button" @click=${this.copyChannel}>${this.copied?'Link copiado':'Copiar link'}</button><button type="button" @click=${this.leaveChannel}>Sair do canal</button></div>`:nothing}
-  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>2T Call</h1></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
+  `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>Call</h1></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
 
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
    <section class="call-channel-panel" aria-label="Sala Permanente">
