@@ -28,12 +28,12 @@ export const tools: Tool[] = [
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
   games: {title:'Games',section:'Games'},
-  call: {title:'2T Call',section:'2T Call'},
+  call: {title:'Call',section:'Call'},
   sports: {title:'Times',section:'Times'},
-  learn: {title:'2T Learn',section:'Idiomas'},
-  learnEn: {title:'Inglês',section:'2T Learn'},
-  learnRu: {title:'Russo',section:'2T Learn'},
-  learnInvalid: {title:'Página não encontrada',section:'2T Learn'},
+  learn: {title:'Learn / Изучать',section:'Idiomas'},
+  learnEn: {title:'Inglês',section:'Learn / Изучать'},
+  learnRu: {title:'Russo',section:'Learn / Изучать'},
+  learnInvalid: {title:'Página não encontrada',section:'Learn / Изучать'},
   fixedIncome: { title: 'Renda Fixa', section: 'Renda Fixa' },
   '76ers': { title: 'Philadelphia 76ers', section: 'Philadelphia 76ers' },
   spfc: { title: 'São Paulo Futebol Clube', section: 'São Paulo Futebol Clube' },

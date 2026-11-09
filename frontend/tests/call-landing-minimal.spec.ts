@@ -4,7 +4,7 @@ import {test,expect} from '@playwright/test';
 test('Call retains room actions but removes requested copy',async({page})=>{
  await page.goto('/#/call');
  const root=page.locator('call-page');
- await expect(root.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();
+ await expect(root.getByRole('heading',{name:'Call',exact:true})).toBeVisible();
  const badge=root.locator('.call-badge');
  await expect(badge).toHaveText('CONVERSAS PRIVADAS · 5 PESSOAS');
  expect(await badge.evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(16);
@@ -29,7 +29,7 @@ for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   await page.goto('/#/call');
   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   const root=page.locator('call-page'),cards=root.locator('.call-join-grid > section');
-  await expect(root.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();
+  await expect(root.getByRole('heading',{name:'Call',exact:true})).toBeVisible();
   await expect(root.locator('.call-badge')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await expect(cards).toHaveCount(2);

@@ -15,7 +15,7 @@ for(const width of [1920,1366,768,390,320]) test(`platform areas at ${width}`,as
    await expect(link).toBeVisible();
    await expect.poll(()=>link.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);
  }
- await expect(navigation.getByRole('link',{name:'2T Call',exact:true})).toHaveCount(0);
+ await expect(navigation.getByRole('link',{name:'Call',exact:true})).toHaveCount(0);
  await expect(page.locator('home-page a.home-call[href="#/call"]')).toBeVisible();
  if(width<=600){
    const positions=await page.evaluate(()=>{
