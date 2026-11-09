@@ -68,7 +68,7 @@ test('navigation, responsive themes and explicit unsupported-browser feedback',a
   for(const width of[1366,768,390,320])for(const theme of['dark','light']){
    await page.setViewportSize({width,height:950});await page.evaluate(t=>{document.documentElement.dataset.theme=t;scrollTo(0,0)},theme);
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-   await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveAttribute('aria-current','page');
+   await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Call',exact:true})).toHaveAttribute('aria-current','page');
    await page.screenshot({path:info.outputPath(`external-${width}-${theme}.png`),fullPage:true,animations:'disabled',timeout:10000});
   }
   if(!supported.rtc){await page.getByRole('button',{name:'Entrar na chamada',exact:true}).click();await expect(page.getByRole('alert')).toContainText('WebRTC indisponível')}

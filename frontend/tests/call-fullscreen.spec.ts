@@ -25,7 +25,7 @@ test.beforeEach(async({page})=>{
   }) as typeof document.removeEventListener;
  });
  await page.goto(`${origin}/#/call`);
- await expect(page.locator('call-page h1')).toHaveText('2T Call');
+ await expect(page.locator('call-page h1')).toHaveText('Call');
  await expect(page.locator('.call-fullscreen')).toHaveCount(0);
  await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();

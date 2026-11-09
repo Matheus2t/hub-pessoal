@@ -27,7 +27,7 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
   }
  });
  const response=await page.goto(origin+'/#/call');expect(response?.status()).toBe(200);expect(new URL(page.url()).origin).toBe(origin);
- await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Call',exact:true})).toBeVisible();
  const config=await page.evaluate(async()=>({value:(globalThis as any).__2T_CALL_SIGNAL_URL__,status:(await fetch('/call-config.js')).status}));
  expect(config).toEqual({value:signal,status:200});
  const csp=await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
@@ -52,7 +52,7 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'2T Call',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Call',exact:true})).toHaveCount(0);
   if((width===1366&&theme==='dark')||(width===320&&theme==='light'))await page.screenshot({path:test.info().outputPath(`preview-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
  }
  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início',exact:true}).click();
@@ -60,7 +60,7 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  await expect(page.locator('call-page')).toBeHidden();
  await expect(page.locator('home-page .home-call[href="#/call"]')).toBeVisible();
  await page.locator('home-page .home-call').click();
- await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Call',exact:true})).toBeVisible();
  if(publicUrl){
   // Public, deliberately invalid invitation: no owner's credential or real room.
   // A new context models a guest without cookies and forces a real document load;

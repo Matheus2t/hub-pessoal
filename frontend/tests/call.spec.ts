@@ -8,7 +8,7 @@ test.skip(!key,'Start the Call test service and set CALL_TEST_ADMIN_KEY.');
 const localTLS=process.env.CALL_TEST_LOCAL_TLS==='1'; // Self-signed loopback fixture only.
 test.use({permissions:['clipboard-read','clipboard-write'],ignoreHTTPSErrors:localTLS});
 
-async function open(page:Page){await page.goto(`${origin}/#/call`);await expect(page.getByRole('heading',{name:'2T Call',exact:true})).toBeVisible()}
+async function open(page:Page){await page.goto(`${origin}/#/call`);await expect(page.getByRole('heading',{name:'Call',exact:true})).toBeVisible()}
 async function create(page:Page){
  await open(page);await page.getByRole('button',{name:'Criar uma sala',exact:true}).click();await page.getByLabel('Seu nome',{exact:true}).fill('Anfitrião');
  await page.getByRole('button',{name:'Criar sala privada',exact:true}).click();
