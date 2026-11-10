@@ -225,6 +225,7 @@ export class ExtendedFinanceCalculator extends LightElement {
       <svg viewBox="0 0 790 252" role="img" aria-label=${`Gráfico de evolução: ${a} versus ${b}`}
            preserveAspectRatio="xMidYMid meet" @pointermove=${inspect} @pointerdown=${inspect}>
         <title>Evolução comparativa dos cenários</title>
+        <rect x=${left} y=${top} width=${width} height=${height} fill="transparent" style="pointer-events:all"></rect>
         ${Array.from({length:5},(_,i)=>low+(range*i)/4).map(value=>html`
           <line class="extended-gridline" x1=${left} x2=${left+width} y1=${py(value)} y2=${py(value)}></line>
           <text class="extended-chart-axis" x="779" y=${py(value)+4} text-anchor="end">${compact(value)}</text>`)}
