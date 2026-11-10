@@ -357,13 +357,15 @@ export class CallPage extends LightElement {
    if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
    this.microphone=outgoing;
    this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
-   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===outgoing){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
+   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
  }
  private microphoneSettings(){
-  const processor=this.micProcessing,supported=processor.supported;
-  const flag=(key:MicrophoneFlag,label:string)=>supported[key]===false?nothing:html`<label class="call-mic-check">
+  const processor=this.micProcessing,supported=processor.supported,actual=processor.effective;
+  const actualStatus=(key:MicrophoneFlag)=>supported[key]!==true?'Não suportado':
+   !this.microphone?'Aguardando microfone':actual[key]===true?'Ativo':actual[key]===false?'Desativado':'Não informado';
+  const flag=(key:MicrophoneFlag,label:string)=>supported[key]!==true?nothing:html`<label class="call-mic-check">
    <input type="checkbox" .checked=${processor.flags[key]} @change=${(event:Event)=>void processor.setFlag(key,(event.currentTarget as HTMLInputElement).checked)}/>${label}
   </label>`;
   return html`<details class="call-microphone-settings">
@@ -382,6 +384,8 @@ export class CallPage extends LightElement {
      ${flag('echoCancellation','Cancelamento de eco')}
      ${flag('autoGainControl','Ganho automático')}
     </div>
+    ${this.microphone?html`<small class="call-mic-effective" role="status">Filtros efetivos — ruído: ${actualStatus('noiseSuppression')} · eco: ${actualStatus('echoCancellation')} · ganho: ${actualStatus('autoGainControl')}</small>`:nothing}
+    <small>Voz limpa: redução de ruídos e cancelamento de eco do navegador. O ganho automático fica desligado para evitar amplificar sons de fundo.</small>
     ${processor.hasGate?html`<label>Sensibilidade de voz <output>${processor.sensitivity===0?'Desativada':`${processor.sensitivity}%`}</output>
      <input type="range" min="0" max="100" step="5" aria-label="Sensibilidade de voz"
       .value=${String(processor.sensitivity)}
