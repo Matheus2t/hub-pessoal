@@ -124,3 +124,40 @@ test('Russian writing sessions use phonetic mode for Cyrillic without touching r
   await page.getByRole('button',{name:'Verificar resposta'}).click();
   await expect(page.locator('.learn-feedback')).toContainText('correto');
 });
+
+test('IME composition, manual signs and small-screen layout remain usable',async({page})=>{
+  await page.setViewportSize({width:320,height:750});
+  await page.goto('/#/learn/ru/test');
+  await page.getByRole('button',{name:'Iniciar avaliação'}).click();
+  const i=ru.exercises.filter(e=>e.skill==='test').slice(0,30).findIndex(e=>answerLanguage(e)==='ru');
+  await page.getByRole('button',{name:new RegExp('^Questão '+(i+1)+'(?: respondida)?$')}).click();
+  const field=page.getByRole('textbox',{name:'Sua resposta'});
+  await field.evaluate((el:HTMLTextAreaElement)=>{
+    el.focus();
+    el.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true}));
+    el.value='мир';
+    el.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertCompositionText',data:'мир',isComposing:true}));
+    el.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:'мир'}));
+  });
+  await expect(field).toHaveValue('мир');
+  await page.getByRole('button',{name:'Inserir ъ'}).click();
+  await expect(field).toHaveValue('миръ');
+  for(const theme of ['dark','light']){
+    await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+});
+test('phonetic preference survives reload and does not change English',async({page})=>{
+  await page.goto('/#/learn/ru/writing');
+  await page.getByRole('button',{name:'Iniciar prática'}).click();
+  await page.getByRole('button',{name:'Fonético ligado'}).click();
+  await expect(page.getByRole('button',{name:'Fonético desligado'})).toBeVisible();
+  await page.reload();
+  await page.getByRole('button',{name:'Iniciar prática'}).click();
+  await expect(page.getByRole('button',{name:'Fonético desligado'})).toBeVisible();
+  await page.getByLabel('Sua resposta').fill('privet');
+  await expect(page.getByLabel('Sua resposta')).toHaveValue('privet');
+  await page.goto('/#/learn/en/writing');
+  await page.getByRole('button',{name:'Iniciar prática'}).click();
+  await expect(page.locator('learn-phonetic-editor')).toHaveCount(0);
+});
