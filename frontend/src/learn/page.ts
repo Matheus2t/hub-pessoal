@@ -39,7 +39,7 @@ export class LearnPage extends LightElement {
     if(this.invalid)return html`<section class="learn-message"><h1>Página do Learn não encontrada</h1><p>Escolha Inglês ou Russo para continuar.</p><a class="button" href="#/learn">Selecionar idioma</a></section>`;
     const language=this.language as Language,label=labels[language];
     return html`<article class=${`learn-page ${label?"learn-page--language":"learn-page--index"} ${this.activity?"learn-page--activity":"learn-page--hub"}`}>
-      <header class="learn-hero">
+      ${label?html`<header class="learn-hero">
         <div class="learn-hero__copy">
           <div class="learn-hero__topline"><span class="learn-hero__brand">2T / LEARN</span><span class="learn-hero__category">${label?"AMBIENTE DE ESTUDO":"IDIOMAS"}</span></div>
           <h1 class="learn-hero__title">${label?label.name:"Learn"}</h1>
@@ -47,11 +47,11 @@ export class LearnPage extends LightElement {
           ${label?html`<a class="learn-hero__switch" href="#/learn">Trocar idioma <span aria-hidden="true">↗</span></a>`:nothing}
         </div>
         <div class="learn-hero__art" aria-hidden="true"><span class="learn-hero__art-label">LANGUAGE / STUDY</span><span class="learn-hero__art-symbol">${label?(language==="en"?"EN":"RU"):"2T"}</span><span class="learn-hero__art-foot">ENGLISH · РУССКИЙ</span></div>
-      </header>
+      </header>`:nothing}
       ${this.loading?html`<p role="status" class="learn-message">Carregando progresso local…</p>`:nothing}
       ${this.storageError?html`<div class="learn-message" role="status"><h2>Progresso local indisponível</h2><p>O navegador não permitiu acessar os dados. Nenhum progresso foi apagado. Verifique as permissões ou feche outras abas do Learn.</p><button class="button" @click=${()=>this.load()}>Tentar novamente</button></div>`:nothing}
       ${!label?html`<section class="learn-language-section" aria-labelledby="learn-select-title">
-        <div class="learn-section-intro"><div><span class="learn-section-intro__index">01 / IDIOMAS</span><h2 id="learn-select-title">Escolha o idioma</h2></div><span class="learn-section-intro__aside">02 opções disponíveis</span></div>
+        <div class="learn-section-intro"><div><span class="learn-section-intro__index">01 / IDIOMAS</span><h1 id="learn-select-title">Escolha o idioma</h1></div><span class="learn-section-intro__aside">02 opções disponíveis</span></div>
         <div class="learn-languages" aria-label="Selecionar idioma">
           ${(["en","ru"] as Language[]).map((l,i)=>{const name=labels[l],p=this.data?summarize(l,this.data.attempts,this.data.cards):undefined;const plan=this.data?currentPlan(this.data,l):undefined;return html`<a class="learn-language" href=${`#/learn/${l}`}>
             <span class="learn-language-code" aria-hidden="true">${String(i+1).padStart(2,"0")} / ${l.toUpperCase()}</span>
