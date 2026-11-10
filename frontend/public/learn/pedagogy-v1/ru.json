@@ -37,12 +37,12 @@
         {
           "id": "ru-word-008",
           "role": "lexical-support",
-          "note": "Bom dia"
+          "note": "Expressão de saudação para reconhecer padrões da escrita cirílica."
         },
         {
           "id": "ru-word-019",
           "role": "lexical-support",
-          "note": "Nome"
+          "note": "Reconhecer a palavra 'nome' em perguntas de apresentação."
         },
         {
           "id": "ru-listening-007",
@@ -75,12 +75,12 @@
         {
           "id": "ru-word-003",
           "role": "lexical-support",
-          "note": "Por favor"
+          "note": "Forma educada de cortesia utilizada em pedidos cotidianos."
         },
         {
           "id": "ru-word-019",
           "role": "lexical-support",
-          "note": "Nome"
+          "note": "Reconhecer a palavra 'nome' em perguntas de apresentação."
         },
         {
           "id": "ru-grammar-02",
@@ -126,22 +126,22 @@
         {
           "id": "ru-word-090",
           "role": "lexical-support",
-          "note": "Estação"
+          "note": "Identifica o destino procurado ao pedir informações na rua."
         },
         {
           "id": "ru-word-098",
           "role": "lexical-support",
-          "note": "À esquerda"
+          "note": "Direção à esquerda para interpretar a orientação recebida."
         },
         {
           "id": "ru-word-099",
           "role": "lexical-support",
-          "note": "À direita"
+          "note": "Contraste com esquerda na compreensão de um trajeto."
         },
         {
           "id": "ru-word-110",
           "role": "lexical-support",
-          "note": "Farmácia"
+          "note": "Marco de referência junto à estação, citado no diálogo."
         },
         {
           "id": "ru-phrase-007",
@@ -214,7 +214,7 @@
         {
           "id": "ru-grammar-07",
           "role": "grammar-support",
-          "note": "Negação"
+          "note": "Estrutura de negação usada para contrastar hábitos na rotina."
         }
       ]
     },
@@ -242,12 +242,12 @@
         {
           "id": "ru-phrase-013",
           "role": "language-support",
-          "note": "Cardápio"
+          "note": "Pedido de cardápio em interação de restaurante."
         },
         {
           "id": "ru-phrase-015",
           "role": "language-support",
-          "note": "Conta"
+          "note": "Pedido educado de conta ao encerrar uma refeição."
         },
         {
           "id": "ru-phrase-016",
@@ -257,7 +257,7 @@
         {
           "id": "ru-word-055",
           "role": "lexical-support",
-          "note": "Recibo"
+          "note": "Vocabulário para solicitar ou compreender comprovante de compra."
         }
       ]
     },
