@@ -74,8 +74,10 @@ A nova metodologia de Inglês/Russo segue as etapas 1–7 do plano de evolução
 
 - [Fundamentação pedagógica e critérios de avaliação](docs/learn-pedagogia-v1.md)
 - [Inventário existente e proposta curricular independente por idioma](docs/learn-inventario-curricular.md)
+- [Currículos de Inglês/Russo e unidades-piloto mapeadas](docs/learn-curriculo-v1.md)
 - [Handoff técnico e critérios para o Codex](docs/learn-handoff-codex.md)
 - Auditoria reprodutível de catálogos: `npm run learn:audit` (somente leitura).
+- Validação das propostas curriculares: `npm run learn:validate-pedagogy` (somente leitura).
 
 Não confundir exercícios completados com proficiência CEFR. Histórico, backups e funcionamento do Learn atual devem ser preservados até a validação pedagógica das unidades-piloto.
 
