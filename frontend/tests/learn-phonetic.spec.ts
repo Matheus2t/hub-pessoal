@@ -7,7 +7,8 @@ const ru=JSON.parse(readFileSync('frontend/public/learn/ru.json','utf8')) as Cur
 test('phonetic alphabet, digraphs, capitals and original Cyrillic are deterministic',()=>{
   expect(transliterate('privet').value).toBe('привет');
   expect(transliterate('spasibo').value).toBe('спасибо');
-  expect(transliterate('moy novyy yoga').value).toBe('мой новый йога');
+  expect(transliterate('moy novyy').value).toBe('мой новый');
+  expect(transliterate('joga').value).toBe('йога');
   expect(transliterate('G').value).toBe('Г');
   expect(transliterate('Sh shch zh ch ya yu yo').value).toBe('Ш щ ж ч я ю ё');
   expect(transliterate('Privet, мир!').value).toBe('Привет, мир!');
