@@ -111,6 +111,7 @@ export class FixedIncomeChart extends LightElement {
             <stop offset="0%" style=${`stop-color:var(--rf-graph-tone-${(highlighted%4)+1})`} stop-opacity=".22"/>
             <stop offset="100%" style=${`stop-color:var(--rf-graph-tone-${(highlighted%4)+1})`} stop-opacity="0"/>
           </linearGradient></defs>
+          <rect x=${plotLeft} y=${top} width=${plotWidth} height=${bottom-top} fill="transparent" style="pointer-events:all"/>
           ${ticks.map(value=>svg`<line x1=${plotLeft} x2=${plotRight} y1=${y(value)} y2=${y(value)} class="rf-chart-grid"/>
             <text class="rf-chart-axis-label" x=${this.width-7} y=${y(value)+4} text-anchor="end">${shortMoney(value)}</text>`)}
           ${axisDates.map((d,i)=>svg`<text class="rf-chart-axis-label" x=${x(d)} y="234" text-anchor=${i===0?'start':i===axisDates.length-1?'end':'middle'}>${d.slice(5,7)}/${d.slice(2,4)}</text>`)}
