@@ -1092,3 +1092,41 @@ call-page[hidden] { display:none !important; }
     .call-voice-controls { gap: 8px; }
   }
 }
+
+
+/* Voice studio: compact, neutral controls inspired by desktop voice channels. */
+.call-page {
+ .call-voice-studio { grid-column:1/-1; min-width:0; padding:12px 14px; background:var(--raised); border:1px solid var(--line-soft); border-radius:6px; }
+ .call-voice-studio-heading { display:flex; align-items:baseline; gap:12px; margin:0 0 12px; }
+ .call-voice-studio-heading span { font-size:10px; font-weight:650; letter-spacing:.12em; color:var(--secondary); }
+ .call-voice-studio-heading h3 { margin:0; font-size:15px; font-weight:600; }
+ .call-voice-studio-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+ .call-voice-studio-fields label { min-width:0; font-size:12px; color:var(--secondary); }
+ .call-voice-studio-fields select { display:block; margin:5px 0 0; width:100%; min-width:0; min-height:40px; padding:6px 9px; font:13px var(--font-body); color:var(--text); background:var(--panel); border:1px solid var(--line); border-radius:5px; }
+ .call-voice-threshold { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:12px 0 0; font-size:12px; }
+ .call-voice-threshold input { flex:1 1 160px; accent-color:var(--text); }
+ .call-voice-threshold output { font-variant-numeric:tabular-nums; }
+ .call-ptt-control { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding-top:12px; }
+ .call-ptt-control span { color:var(--secondary); font-size:11px; }
+ .call-ptt-button { touch-action:none; user-select:none; min-width:150px; }
+ .call-ptt-button[aria-pressed=true] { outline:2px solid var(--text); outline-offset:2px; }
+ .call-microphone-test { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 0 0; }
+ .call-microphone-test label { font-size:12px; color:var(--secondary); }
+ .call-microphone-test meter { flex:1 1 150px; min-width:90px; height:12px; accent-color:var(--text); }
+ .call-microphone-test output { font-variant-numeric:tabular-nums; min-width:40px; text-align:right; font-size:12px; }
+ .call-microphone-test button { min-height:38px; font-size:12px; }
+ .call-microphone-preview { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding-top:10px; }
+ .call-microphone-preview span { font-size:12px; color:var(--secondary); }
+ .call-microphone-preview audio { width:min(100%,260px); height:36px; }
+ .call-microphone-preview button { min-height:36px; font-size:12px; }
+ .call-mic-error { color:var(--secondary); font-size:12px; }
+ .call-microphone-settings .call-enhanced-toggle { grid-column:1/-1; font-size:12px; }
+ .call-people li.is-speaking .call-avatar { border:2px solid var(--text); box-shadow:0 0 0 3px var(--line-soft); }
+ .call-people li.is-speaking .call-speaking { font-weight:650; letter-spacing:.01em; }
+}
+@media(max-width:620px) {
+ .call-page .call-voice-studio { padding:12px; }
+ .call-page .call-voice-studio-fields { grid-template-columns:1fr; gap:10px; }
+ .call-page .call-microphone-test { justify-content:flex-start; }
+ .call-page .call-microphone-test meter { flex:1 1 100px; }
+}

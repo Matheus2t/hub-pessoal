@@ -13,13 +13,16 @@ const keys:MicrophoneFlag[]=['noiseSuppression','echoCancellation','autoGainCont
 export class CallMicrophoneProcessing {
  mode:MicrophoneMode='clean';
  flags:Flags={...clean};
- sensitivity=0; // 0 bypasses Web Audio entirely; 100 detects quieter speech.
+ sensitivity=0; // 0 disables the optional voice gate; 100 detects quieter speech.
+ enhanced=false; // Optional local spectral denoising; native filtering remains available.
+ activeEnhanced=false;
  error='';
  private source?:MediaStream;
  private outgoing?:MediaStream;
  private context?:AudioContext;
  private gate?:GainNode;
  private analyser?:AnalyserNode;
+ private worklet?:AudioWorkletNode;
  private samples?:Float32Array<ArrayBuffer>;
  private timer?:number;
  private openUntil=0;
@@ -32,6 +35,7 @@ export class CallMicrophoneProcessing {
  get input(){return this.source}
  get supported(){return navigator.mediaDevices?.getSupportedConstraints?.()??{}}
  get hasGate(){return !!(window.AudioContext||('webkitAudioContext' in window))}
+ get hasAdvanced(){return this.hasGate&&typeof AudioWorkletNode!=='undefined'}
 
  /** Actual values reported by the original input track, not checkbox requests. */
  get effective():Partial<Flags>{
@@ -57,7 +61,7 @@ export class CallMicrophoneProcessing {
   this.source=stream;
   try{stream.getAudioTracks()[0].contentHint='speech'}catch{/* Optional hint for voice encoding. */}
   this.checkApplied();
-  if(this.sensitivity>0)await this.startGate();
+  if(this.sensitivity>0||this.enhanced)await this.startGate();
   return this.stream??stream;
  }
 
@@ -98,22 +102,32 @@ export class CallMicrophoneProcessing {
   }
  }
 
+ async setEnhanced(enabled:boolean){
+  if(enabled===this.enhanced)return;
+  this.enhanced=enabled;this.error='';
+  await this.rebuild();
+  this.changed();
+ }
+
  async setSensitivity(value:number){
   const next=Math.max(0,Math.min(100,Math.round(value)));
   if(next===this.sensitivity)return;
   this.sensitivity=next;this.error='';
-  if(next===0){
-   // Restore the native microphone track. Leaving an AudioContext and an
-   // interval running even at 0% can interrupt audio on locked phones.
-   if(this.source){
-    const raw=this.source,processed=this.outgoing;
-    this.stopGate();
-    if(processed)this.streamChanged(raw);
-   }else this.stopGate();
-  }else if(this.source&&!this.context){
-   if(await this.startGate()&&this.stream)this.streamChanged(this.stream);
+  if(this.source){
+   if(next===0&&!this.enhanced)await this.rebuild();
+   else if(!this.context)await this.rebuild();
   }
   this.changed();
+ }
+
+ private async rebuild(){
+  if(!this.source)return;
+  const raw=this.source,processed=this.outgoing;
+  if(processed)this.streamChanged(raw);
+  this.stopGate();
+  if((this.enhanced||this.sensitivity>0)&&this.source===raw){
+   if(await this.startGate()&&this.source===raw&&this.stream!==raw)this.streamChanged(this.stream!);
+  }
  }
 
  private async startGate(){
@@ -129,35 +143,55 @@ export class CallMicrophoneProcessing {
   const version=this.generation;
   let context:AudioContext|undefined;
   try{
-   context=new Audio();
+   context=new Audio({latencyHint:'interactive'});
    await context.resume();
-   if(this.generation!==version||this.source!==source||this.sensitivity===0){
-    void context.close().catch(()=>{});
-    return false;
+   if(this.generation!==version||this.source!==source||(!this.enhanced&&this.sensitivity===0)){
+    void context.close().catch(()=>{});return false;
    }
    if(context.state!=='running')throw new Error('Suspended');
    const input=context.createMediaStreamSource(source);
    const analyser=context.createAnalyser(),gain=context.createGain(),destination=context.createMediaStreamDestination();
+   let last:AudioNode=input;
+   let worklet:AudioWorkletNode|undefined;
+   if(this.enhanced){
+    try{
+     if(!context.audioWorklet||typeof AudioWorkletNode==='undefined')throw new Error('unsupported');
+     await context.audioWorklet.addModule('/call-denoise-worklet.js');
+     if(this.generation!==version||this.source!==source){
+      void context.close().catch(()=>{});return false;
+     }
+     worklet=new AudioWorkletNode(context,'call-spectral-denoise',{
+      numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[1]
+     });
+     last.connect(worklet);last=worklet;
+    }catch{
+     this.error='Filtro avançado indisponível neste navegador. Mantido o áudio nativo.';
+    }
+   }
    analyser.fftSize=1024;analyser.smoothingTimeConstant=.25;
    gain.gain.value=1;
-   input.connect(analyser);analyser.connect(gain);gain.connect(destination);
-   this.context=context;this.analyser=analyser;this.gate=gain;this.outgoing=destination.stream;
+   last.connect(analyser);analyser.connect(gain);gain.connect(destination);
+   if(this.generation!==version||this.source!==source){
+    void context.close().catch(()=>{});return false;
+   }
+   this.context=context;this.analyser=analyser;this.gate=gain;this.worklet=worklet;
+   this.activeEnhanced=!!worklet;
+   this.outgoing=destination.stream;
    this.samples=new Float32Array(analyser.fftSize);
    this.openUntil=0;
    this.timer=window.setInterval(()=>this.sample(),40);
    return true;
   }catch{
-   this.error='Controle de sensibilidade indisponível neste navegador. O microfone original continua ativo.';
+   this.error='Processamento adicional indisponível. O microfone original continua ativo.';
    if(context)void context.close().catch(()=>{});
-   this.changed();
-   return false;
+   this.changed();return false;
   }
  }
 
  private sample(){
   const analyser=this.analyser,gate=this.gate,context=this.context,samples=this.samples;
   if(!analyser||!gate||!context||!samples||context.state!=='running')return;
-  if(this.sensitivity===0)return;
+  if(this.sensitivity===0){if(gate.gain.value<.99)gate.gain.setTargetAtTime(1,context.currentTime,.02);return}
   analyser.getFloatTimeDomainData(samples);
   let squared=0;
   for(let i=0;i<samples.length;i++)squared+=samples[i]*samples[i];
@@ -179,6 +213,7 @@ export class CallMicrophoneProcessing {
   this.timer=undefined;
   this.outgoing?.getTracks().forEach(track=>{track.onended=null;track.stop()});
   this.outgoing=undefined;this.gate=undefined;this.analyser=undefined;this.samples=undefined;
+  this.worklet?.disconnect();this.worklet=undefined;this.activeEnhanced=false;
   const context=this.context;this.context=undefined;
   if(context)void context.close().catch(()=>{});
  }

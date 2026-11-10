@@ -6,12 +6,13 @@ import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protoco
 import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
-import {CallPreferences} from './preferences';
+import {CallPreferences,type TalkMode} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture,callCaptureHandle} from './capture';
 import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent,type ScreenSource} from './screen-quality';
 import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
+import {CallMicrophoneDiagnostics} from './microphone-diagnostics';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
 import {repeat} from 'lit/directives/repeat.js';
@@ -24,7 +25,7 @@ export class CallPage extends LightElement {
  @state() private micBusy=false;
  @state() private error='';
  private micRequest=0;
- private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.voice.setMicrophone(stream)}});
+ private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.applyTalkMode();this.voice.setMicrophone(stream);this.publishMedia();this.announceCall()}});
  @state() private roomError='';
  @state() private copied=false;
  @state() private channel?:Extract<ChannelStatus,{room:string}>;
@@ -47,7 +48,84 @@ export class CallPage extends LightElement {
  private preferences=new CallPreferences();
  private restoredPeople=new Set<string>();
  private output=new CallAudioOutput(this.voice,()=>this.requestUpdate(),id=>this.preferences.selectOutput(id));
- private onDevicesChanged=()=>{void this.output.refresh()};
+ @state() private microphoneInputs:MediaDeviceInfo[]=[];
+ @state() private microphoneInput='';
+ @state() private holdingToTalk=false;
+ private speechUntil=0;
+ private microphoneDiagnostics=new CallMicrophoneDiagnostics(()=>this.requestUpdate(),level=>this.onMicrophoneLevel(level));
+ private onDevicesChanged=()=>{void this.output.refresh();void this.refreshMicrophoneInputs()};
+ private get talkMode(){return this.preferences.talkMode}
+ private get sendingMicrophone(){return !!this.microphone?.getAudioTracks().some(t=>t.readyState==='live'&&t.enabled)}
+ private applyTalkMode(){
+  const track=this.microphone?.getAudioTracks()[0];
+  if(!track)return;
+  const send=this.talkMode==='open'||this.talkMode==='ptt'&&this.holdingToTalk||
+   this.talkMode==='voice'&&performance.now()<this.speechUntil;
+  if(track.enabled!==send){
+   track.enabled=send;this.publishMedia();this.announceCall();this.requestUpdate();
+  }
+ }
+ private onMicrophoneLevel(level:number){
+  if(this.talkMode==='voice'&&this.microphone){
+   if(level>=this.preferences.voiceThreshold)this.speechUntil=performance.now()+650;
+   this.applyTalkMode();
+  }
+ }
+ private setTalkMode(mode:TalkMode){
+  if(!['open','voice','ptt'].includes(mode))return;
+  this.preferences.setTalkMode(mode);
+  this.holdingToTalk=false;this.speechUntil=0;
+  this.applyTalkMode();this.requestUpdate();
+ }
+ private holdToTalk(held:boolean){
+  if(this.talkMode!=='ptt'||!this.voice.active||!this.microphone)return;
+  if(this.holdingToTalk===held)return;
+  this.holdingToTalk=held;this.applyTalkMode();this.requestUpdate();
+ }
+ private onTalkKeyDown=(event:KeyboardEvent)=>{
+  if(event.code!=='Space'||this.talkMode!=='ptt'||event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
+  const target=event.target as HTMLElement|null;
+  if(target?.closest('input,textarea,select,button,[contenteditable="true"]'))return;
+  if(!this.voice.active||!this.microphone)return;
+  event.preventDefault();this.holdToTalk(true);
+ };
+ private onTalkKeyUp=(event:KeyboardEvent)=>{
+  if(event.code!=='Space'||!this.holdingToTalk)return;
+  event.preventDefault();this.holdToTalk(false);
+ };
+ private releaseTalk=()=>this.holdToTalk(false);
+ private async refreshMicrophoneInputs(){
+  if(!navigator.mediaDevices?.enumerateDevices)return;
+  try{
+   this.microphoneInputs=(await navigator.mediaDevices.enumerateDevices()).filter(device=>device.kind==='audioinput'&&device.deviceId);
+   this.requestUpdate();
+  }catch{/* Device enumeration is optional before permission is granted. */}
+ }
+ private inputConstraints(deviceId=this.microphoneInput):MediaTrackConstraints{
+  const options=this.micProcessing.constraints();
+  return deviceId?{...options,deviceId:{exact:deviceId}}:options;
+ }
+ private async selectMicrophoneInput(id:string){
+  if(this.micBusy)return;
+  const previous=this.microphoneInput;
+  this.microphoneInput=id;
+  if(!this.microphone){this.requestUpdate();return}
+  const request=++this.micRequest;this.micBusy=true;this.error='';this.requestUpdate();
+  try{
+   const stream=await navigator.mediaDevices.getUserMedia({audio:this.inputConstraints(id),video:false});
+   if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
+   const outgoing=await this.micProcessing.attach(stream);
+   if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
+   this.microphone=outgoing;
+   this.microphoneDiagnostics.attach(this.micProcessing.input);
+   this.applyTalkMode();
+   this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
+   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado.'}});
+   void this.refreshMicrophoneInputs();
+  }catch(error){
+   if(request===this.micRequest){this.microphoneInput=previous;this.error=this.message(error,false)}
+  }finally{if(request===this.micRequest){this.micBusy=false;this.requestUpdate()}}
+ }
  /** Best-effort call audio focus while the phone screen is locked. */
  private setCallAudioSession(active:boolean){
   try{
@@ -63,7 +141,8 @@ export class CallPage extends LightElement {
   }catch{/* Media Session API is optional. */}
  }
  private onForeground=()=>{
-  if(document.visibilityState!=='visible'||!this.call.session)return;
+  if(document.visibilityState!=='visible'){this.releaseTalk();return}
+  if(!this.call.session)return;
   this.call.resumeOnForeground();
   if(this.voice.active){this.setCallAudioSession(true);this.voice.unlockAudio()}
   this.requestUpdate();
@@ -134,9 +213,10 @@ export class CallPage extends LightElement {
  }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');
   // Lets another Call tab recognize and discard captured call playback audio.
-  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
- disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
+  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);window.addEventListener('keydown',this.onTalkKeyDown);window.addEventListener('keyup',this.onTalkKeyUp);window.addEventListener('blur',this.releaseTalk);window.addEventListener('pointerup',this.releaseTalk);window.addEventListener('pointercancel',this.releaseTalk);void this.output.refresh();void this.refreshMicrophoneInputs();this.loadChannel()}
+ disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);window.removeEventListener('keydown',this.onTalkKeyDown);window.removeEventListener('keyup',this.onTalkKeyUp);window.removeEventListener('blur',this.releaseTalk);window.removeEventListener('pointerup',this.releaseTalk);window.removeEventListener('pointercancel',this.releaseTalk);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
+  this.releaseTalk();this.microphoneDiagnostics.detach();
   this.setCallAudioSession(false);
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.restoredPeople.clear();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
@@ -196,7 +276,7 @@ export class CallPage extends LightElement {
  }
  private stopSpeakers(){window.clearInterval(this.speakerTimer);this.speakerTimer=undefined;if(this.speakers.size)this.speakers=new Set()}
  private updateSpeakers(){
-  if(this.call.session?.mode!=='channel'||!this.voice.active||this.call.state!=='connected'||this.call.people.length<2){this.stopSpeakers();return}
+  if(!this.voice.active||this.call.state!=='connected'||this.call.people.length<2){this.stopSpeakers();return}
   if(this.speakerTimer!==undefined)return;
   this.speakerTimer=window.setInterval(()=>{
    const now=performance.now(),next=new Set<string>();
@@ -235,7 +315,7 @@ export class CallPage extends LightElement {
  }
  private publishMedia(){
   if(this.call.state!=='connected')return;
-  const active=this.voice.active,microphone=active&&!!this.microphone?.getAudioTracks().some(t=>t.readyState==='live');
+  const active=this.voice.active,microphone=active&&this.sendingMicrophone;
   const camera=active&&!!this.capture.camera;
   const signature=`${active}:${microphone}:${camera}`;
   if(signature!==this.lastMedia&&this.call.send({type:'media',active,microphone,camera}))this.lastMedia=signature;
@@ -250,10 +330,14 @@ export class CallPage extends LightElement {
   if(this.preferences.output&&this.output.supported)void this.output.choose(this.preferences.output);
   this.publishMedia();
  }
- private leaveVoice(){this.setCallAudioSession(false);this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
+ private leaveVoice(){this.releaseTalk();this.setCallAudioSession(false);this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
+  if(id===this.call.session?.participant&&this.microphone&&this.voice.active){
+   if(this.talkMode==='ptt')return this.sendingMicrophone?'Transmitindo voz · PTT':'Aperte para falar · PTT';
+   if(this.talkMode==='voice')return this.sendingMicrophone?'Voz detectada':'Aguardando voz';
+  }
   if(!this.voice.active||id===this.call.session?.participant)return person.microphone?'Microfone ligado':'Microfone desligado';
   const peer=this.voice.peers.get(id);
   return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
@@ -322,7 +406,7 @@ export class CallPage extends LightElement {
   try{await navigator.clipboard.writeText(url.href);this.copied=true;this.roomError=''}catch{this.roomError='Não foi possível copiar. Permita o acesso à área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
- private stopMicrophone(){this.micRequest++;this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
+ private stopMicrophone(){this.releaseTalk();this.micRequest++;this.microphoneDiagnostics.detach();this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
  private get deafened(){return this.voice.audioMix.deafened}
  private toggleDeafen(){
   if(!this.voice.active)return;
@@ -350,16 +434,75 @@ export class CallPage extends LightElement {
   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='O microfone exige um navegador compatível e HTTPS ou localhost.';return}
   const request=++this.micRequest;this.micBusy=true;
   try{
-   const stream=await navigator.mediaDevices.getUserMedia({audio:this.micProcessing.constraints(),video:false});
+   const stream=await navigator.mediaDevices.getUserMedia({audio:this.inputConstraints(),video:false});
    if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
    if(!stream.getAudioTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No audio','NotFoundError')}
    const outgoing=await this.micProcessing.attach(stream);
    if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
    this.microphone=outgoing;
+   this.microphoneDiagnostics.attach(this.micProcessing.input);
+   this.applyTalkMode();
    this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
+   void this.refreshMicrophoneInputs();
    stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
+ }
+ private microphoneStudio(){
+  return html`<section class="call-voice-studio" aria-label="Controles de voz">
+   <div class="call-voice-studio-heading"><span>ÁUDIO</span><h3>Microfone e voz</h3></div>
+   <div class="call-voice-studio-fields">
+    <label>Microfone de entrada
+     <select aria-label="Microfone de entrada" .value=${live(this.microphoneInput)} ?disabled=${this.micBusy}
+      @change=${(event:Event)=>void this.selectMicrophoneInput((event.currentTarget as HTMLSelectElement).value)}>
+      <option value="">Padrão do sistema</option>
+      ${this.microphoneInputs.filter(d=>d.deviceId!=='default').map((device,index)=>html`<option value=${device.deviceId}>${device.label||`Microfone ${index+1}`}</option>`)}
+      ${this.microphoneInput&&!this.microphoneInputs.some(d=>d.deviceId===this.microphoneInput)?
+       html`<option value=${this.microphoneInput}>Microfone selecionado</option>`:nothing}
+     </select>
+    </label>
+    <label>Modo de fala
+     <select aria-label="Modo de fala" .value=${this.talkMode}
+      @change=${(event:Event)=>this.setTalkMode((event.currentTarget as HTMLSelectElement).value as TalkMode)}>
+      <option value="open">Microfone aberto</option>
+      <option value="voice">Ativação automática por voz</option>
+      <option value="ptt">Apertar para falar (PTT)</option>
+     </select>
+    </label>
+   </div>
+   ${this.talkMode==='voice'?html`<label class="call-voice-threshold">Sensibilidade da ativação automática
+    <input aria-label="Limiar de voz" type="range" min="10" max="60" step="5"
+     .value=${String(this.preferences.voiceThreshold)}
+     @input=${(event:Event)=>{this.preferences.setVoiceThreshold((event.currentTarget as HTMLInputElement).valueAsNumber);this.requestUpdate()}}/>
+    <output>${this.preferences.voiceThreshold}%</output>
+   </label>`:nothing}
+   ${this.talkMode==='ptt'?html`<div class="call-ptt-control">
+    <button class="call-ptt-button" type="button" aria-pressed=${this.holdingToTalk}
+     ?disabled=${!this.microphone}
+     @pointerdown=${(event:PointerEvent)=>{event.preventDefault();this.holdToTalk(true)}}
+     @pointerup=${()=>this.holdToTalk(false)}
+     @pointerleave=${()=>this.holdToTalk(false)}
+     @pointercancel=${()=>this.holdToTalk(false)}>
+     ${this.holdingToTalk?'Transmitindo voz':'Segure para falar'}
+    </button>
+    <span>No computador, mantenha Espaço pressionado fora dos campos de texto.</span>
+   </div>`:nothing}
+   <div class="call-microphone-test" role="group" aria-label="Teste do microfone">
+    <label for="call-microphone-meter">Nível do microfone</label>
+    <meter id="call-microphone-meter" aria-label="Nível do microfone" min="0" max="100" .value=${this.microphoneDiagnostics.level}></meter>
+    <output>${this.microphoneDiagnostics.level}%</output>
+    <button type="button" ?disabled=${!this.microphone}
+     @click=${()=>this.microphoneDiagnostics.recording?this.microphoneDiagnostics.stopRecording():
+      this.microphoneDiagnostics.startRecording(this.sendingMicrophone?this.micProcessing.stream:this.micProcessing.input)}>
+     ${this.microphoneDiagnostics.recording?'Parar gravação':'Gravar teste (6 segundos)'}
+    </button>
+   </div>
+   ${this.microphoneDiagnostics.previewUrl?html`<div class="call-microphone-preview"><span>Ouça sua voz (somente neste navegador)</span>
+    <audio aria-label="Reprodução do teste do microfone" controls src=${this.microphoneDiagnostics.previewUrl}></audio>
+    <button type="button" @click=${()=>{this.microphoneDiagnostics.clearPreview();this.requestUpdate()}}>Excluir teste</button>
+   </div>`:nothing}
+   ${this.microphoneDiagnostics.error?html`<p class="call-mic-error" role="status">${this.microphoneDiagnostics.error}</p>`:nothing}
+  </section>`;
  }
  private microphoneSettings(){
   const processor=this.micProcessing,supported=processor.supported,actual=processor.effective;
@@ -384,6 +527,12 @@ export class CallPage extends LightElement {
      ${flag('echoCancellation','Cancelamento de eco')}
      ${flag('autoGainControl','Ganho automático')}
     </div>
+    ${processor.hasAdvanced?html`<label class="call-mic-check call-enhanced-toggle">
+     <input type="checkbox" .checked=${processor.enhanced}
+      @change=${(event:Event)=>void processor.setEnhanced((event.currentTarget as HTMLInputElement).checked)}/>
+     Supressão avançada de ruído (local)
+    </label>`:nothing}
+    ${processor.enhanced?html`<small role="status">${processor.activeEnhanced?'Filtro espectral ativo · processamento no seu dispositivo':'Preparando filtro avançado ou usando redução nativa'}</small>`:nothing}
     ${this.microphone?html`<small class="call-mic-effective" role="status">Filtros efetivos — ruído: ${actualStatus('noiseSuppression')} · eco: ${actualStatus('echoCancellation')} · ganho: ${actualStatus('autoGainControl')}</small>`:nothing}
     <small>Voz limpa: redução de ruídos e cancelamento de eco do navegador. O ganho automático fica desligado para evitar amplificar sons de fundo.</small>
     ${processor.hasGate?html`<label>Sensibilidade de voz <output>${processor.sensitivity===0?'Desativada':`${processor.sensitivity}%`}</output>
@@ -568,8 +717,10 @@ export class CallPage extends LightElement {
     ${mediaStats?html`<p class="call-video-stats" aria-label="Qualidade real do vídeo">${mediaStats}</p>`:nothing}
    </section>
    <aside class="call-people"><div class="call-people-heading"><span class="call-people-kicker">NA SALA</span><h2>Participantes · ${this.call.people.filter(p=>p.connected).length}/5</h2></div><ol aria-label="Participantes da sala">
-    ${repeat(this.call.people,p=>p.id,p=>{const mode=this.fullscreen.modeFor(p.id),share=screens.find(source=>source.owner===p.id);return html`<li data-participant=${p.id} class=${share?'call-sharing':''}>
-     <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small>${this.speakers.has(p.id)?html`<small class="call-speaking">Falando</small>`:nothing}<small class=${p.camera||share?'call-camera-status is-active':'call-camera-status'}>${p.camera?'Câmera ligada':'Câmera desligada'}${share?' · compartilhando':''}</small></div></div>
+    ${repeat(this.call.people,p=>p.id,p=>{const mode=this.fullscreen.modeFor(p.id),share=screens.find(source=>source.owner===p.id);
+    const speaking=this.speakers.has(p.id)||(p.id===self&&this.sendingMicrophone&&this.microphoneDiagnostics.level>18);
+    return html`<li data-participant=${p.id} class=${[share?'call-sharing':'',speaking?'is-speaking':''].filter(Boolean).join(' ')}>
+     <div class="call-person"><span class="call-avatar" aria-hidden="true">${p.name.slice(0,2).toLocaleUpperCase()}</span><div><strong>${p.name}${p.id===self?' · você':''}</strong><small>${p.host?'Anfitrião · ':''}${p.connected?'Conectado':'Reconectando'}</small><small class="call-voice-state">${this.voiceStatus(p.id)}</small>${speaking?html`<small class="call-speaking" aria-label="Pessoa falando">Falando agora</small>`:nothing}<small class=${p.camera||share?'call-camera-status is-active':'call-camera-status'}>${p.camera?'Câmera ligada':'Câmera desligada'}${share?' · compartilhando':''}</small></div></div>
      <div class=${`call-camera-frame call-viewer${mode==='expanded'?' is-expanded':''}`} data-camera=${p.id} ?hidden=${!this.viewerSource(p.id)} role=${mode?'dialog':nothing} aria-modal=${mode?'true':nothing} aria-label=${`Câmera de ${p.name}`}>
       ${p.id===self?html`<video autoplay playsinline muted .muted=${true} .srcObject=${this.capture.camera??null} aria-label="Prévia da câmera"></video>`:nothing}
       ${this.viewerControls(p.id,p.name)}
@@ -579,6 +730,7 @@ export class CallPage extends LightElement {
    </ol></aside>
   </div>
   <div class="call-devices" ?hidden=${!this.voice.active}>
+  ${this.voice.active?this.microphoneStudio():nothing}
   ${this.voice.active?this.microphoneSettings():nothing}
   ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
    <label>Saída de áudio
