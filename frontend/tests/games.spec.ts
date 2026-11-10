@@ -38,3 +38,10 @@ test("Tabuleiros, campos e botões principais aparecem", async ({ page }) => {
   await page.goto("/#/games/pong");
   await expect(page.locator("arcade-pong canvas")).toBeVisible();
 });
+
+test("Snake continua jogável", async ({ page }) => {
+  await page.goto("/#/games/snake");
+  await expect(page.locator(".snake-board .snake-cell")).toHaveCount(400);
+  await page.getByRole("button", { name: "Começar", exact: true }).click();
+  await expect(page.locator(".snake-overlay")).toHaveCount(0);
+});
