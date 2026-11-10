@@ -51,7 +51,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
-  ^#\/games(?:\/(?:snake|sudoku|2048|breakout|pong|palavra-secreta|digitacao|jogo-da-velha|reflexos|memoria))?$/.test(location.hash) ? 'games' :
+  /^#\/games(?:\/(?:snake|sudoku|2048|breakout|pong|palavra-secreta|digitacao|jogo-da-velha|reflexos|memoria))?$/.test(location.hash) ? 'games' :
   /^#\/call(?:\/.*|\?.*)?$/.test(location.hash) ? 'call' :
   location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
   location.hash === '#/times' ? 'sports' :
