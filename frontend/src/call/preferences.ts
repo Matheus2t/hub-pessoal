@@ -1,6 +1,7 @@
 /** Strictly local preferences. Never persist room IDs, invites, credentials or SDP. */
 export interface SavedListening {microphone:number;screenAudio:number;muted:boolean}
 export type LayoutPreference='regular'|'compact';
+export type TalkMode='open'|'voice'|'ptt';
 
 const key='2t:call:preferences:v1';
 const normalize=(name:string)=>name.trim().slice(0,40).toLocaleLowerCase('pt-BR');
@@ -11,6 +12,8 @@ export class CallPreferences {
  nickname='';
  output='';
  layout:LayoutPreference='regular';
+ talkMode:TalkMode='open';
+ voiceThreshold=25;
  private levels=new Map<string,SavedListening>();
 
  constructor(){
@@ -20,6 +23,8 @@ export class CallPreferences {
    if(typeof record.nickname==='string')this.nickname=record.nickname.slice(0,40);
    if(typeof record.output==='string'&&record.output.length<=256)this.output=record.output;
    if(record.layout==='compact')this.layout='compact';
+   if(record.talkMode==='voice'||record.talkMode==='ptt')this.talkMode=record.talkMode;
+   if(Number.isFinite(record.voiceThreshold))this.voiceThreshold=Math.max(10,Math.min(60,Math.round(record.voiceThreshold)));
    if(Array.isArray(record.levels)){
     for(const pair of record.levels.slice(-24)){
      if(!Array.isArray(pair)||pair.length!==2||typeof pair[0]!=='string'||pair[0].length>40)continue;
@@ -36,6 +41,8 @@ export class CallPreferences {
  rememberName(name:string){this.nickname=name.trim().slice(0,40);this.save()}
  selectOutput(id:string){this.output=id.slice(0,256);this.save()}
  setLayout(layout:LayoutPreference){this.layout=layout;this.save()}
+ setTalkMode(mode:TalkMode){this.talkMode=mode;this.save()}
+ setVoiceThreshold(value:number){this.voiceThreshold=Math.max(10,Math.min(60,Math.round(value)));this.save()}
  listening(name:string){return this.levels.get(normalize(name))}
  rememberListening(name:string,levels:SavedListening){
   const id=normalize(name);
@@ -49,7 +56,7 @@ export class CallPreferences {
  }
  private save(){
   try{localStorage.setItem(key,JSON.stringify({
-   version:1,nickname:this.nickname,output:this.output,layout:this.layout,levels:[...this.levels]
+   version:1,nickname:this.nickname,output:this.output,layout:this.layout,talkMode:this.talkMode,voiceThreshold:this.voiceThreshold,levels:[...this.levels]
   }))}catch{/* A full/disabled storage must not affect calls. */}
  }
 }
