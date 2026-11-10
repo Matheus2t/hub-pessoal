@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "language": "en",
+  "status": "curriculum-draft",
+  "framework": "CEFR-aligned objectives (indicative; not certification)",
+  "principles": [
+    "No unit is mastered from a vocabulary quiz alone",
+    "Legacy attempts are never retroactively counted as communicative competence",
+    "Existing IDs remain stable; new tasks have new IDs",
+    "Prerequisites are recommendations, not lockouts"
+  ],
+  "objectives": [
+    {
+      "id": "en-introductions-01",
+      "order": 1,
+      "band": "A1",
+      "title": "Apresentar-se e perguntar sobre a outra pessoa",
+      "scenario": "Primeiro contato em um curso ou pequeno projeto",
+      "canDo": "Consigo me apresentar, explicar brevemente o que estudo e fazer uma pergunta adequada para continuar a conversa.",
+      "prerequisites": [],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "independentProduction",
+        "transfer"
+      ],
+      "pilotId": "en-pilot-introductions-01",
+      "assets": [
+        {
+          "id": "en-word-001",
+          "role": "lexical-support",
+          "note": "Saudação; não prova interação"
+        },
+        {
+          "id": "en-word-019",
+          "role": "lexical-support",
+          "note": "Vocabulário para nomes"
+        },
+        {
+          "id": "en-word-078",
+          "role": "lexical-support",
+          "note": "Profissão/estudo"
+        },
+        {
+          "id": "en-phrase-004",
+          "role": "language-support",
+          "note": "Perguntar pela grafia do nome é recurso, não o objetivo da unidade"
+        },
+        {
+          "id": "en-grammar-01",
+          "role": "grammar-support",
+          "note": "Estruturas com be"
+        },
+        {
+          "id": "en-grammar-02",
+          "role": "grammar-support",
+          "note": "Pronomes"
+        },
+        {
+          "id": "en-listening-001",
+          "role": "existing-practice",
+          "note": "Reconhecimento de saudação isolada; apenas revisão"
+        }
+      ]
+    },
+    {
+      "id": "en-routine-02",
+      "order": 2,
+      "band": "A1",
+      "title": "Descrever uma rotina e entender horários",
+      "scenario": "Organizar um dia de estudos ou trabalho",
+      "canDo": "Consigo explicar meus horários habituais e reconhecer diferenças na rotina de outra pessoa.",
+      "prerequisites": [
+        "en-introductions-01"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "en-reading-01",
+          "role": "context",
+          "note": "Texto de rotina existente, precisa de adaptação ao novo objetivo"
+        },
+        {
+          "id": "en-word-033",
+          "role": "lexical-support",
+          "note": "Palavra morning"
+        },
+        {
+          "id": "en-grammar-04",
+          "role": "grammar-support",
+          "note": "Presente simples"
+        },
+        {
+          "id": "en-writing-071",
+          "role": "existing-practice",
+          "note": "Escrita de horário de trabalho"
+        },
+        {
+          "id": "en-test-21",
+          "role": "existing-practice",
+          "note": "Terceira pessoa: não mede comunicação"
+        }
+      ]
+    },
+    {
+      "id": "en-navigation-03",
+      "order": 3,
+      "band": "A1–A2",
+      "title": "Pedir informação e se orientar",
+      "scenario": "Encontrar uma estação e confirmar o transporte",
+      "canDo": "Consigo perguntar onde fica um local e interpretar uma indicação curta.",
+      "prerequisites": [
+        "en-introductions-01"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "en-phrase-007",
+          "role": "language-support",
+          "note": "Procurar a estação"
+        },
+        {
+          "id": "en-phrase-008",
+          "role": "language-support",
+          "note": "Perguntar sobre o ônibus"
+        },
+        {
+          "id": "en-phrase-009",
+          "role": "language-support",
+          "note": "Bilhete"
+        },
+        {
+          "id": "en-word-090",
+          "role": "lexical-support",
+          "note": "Estação"
+        },
+        {
+          "id": "en-word-098",
+          "role": "lexical-support",
+          "note": "Esquerda"
+        },
+        {
+          "id": "en-word-099",
+          "role": "lexical-support",
+          "note": "Direita"
+        },
+        {
+          "id": "en-reading-07",
+          "role": "context",
+          "note": "Texto de transporte existente, requer revisão de pertinência"
+        },
+        {
+          "id": "en-test-09",
+          "role": "existing-practice",
+          "note": "Tradução de station isolada"
+        }
+      ]
+    },
+    {
+      "id": "en-purchases-04",
+      "order": 4,
+      "band": "A1–A2",
+      "title": "Fazer pedidos e esclarecer uma compra",
+      "scenario": "Comprar comida ou resolver um pedido simples",
+      "canDo": "Consigo pedir algo com educação, perguntar sobre pagamento e compreender uma resposta curta.",
+      "prerequisites": [
+        "en-introductions-01"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "en-phrase-013",
+          "role": "language-support",
+          "note": "Pedido de cardápio"
+        },
+        {
+          "id": "en-phrase-015",
+          "role": "language-support",
+          "note": "Pedido de conta"
+        },
+        {
+          "id": "en-phrase-016",
+          "role": "language-support",
+          "note": "Pagamento por cartão"
+        },
+        {
+          "id": "en-reading-02",
+          "role": "context",
+          "note": "Compra em mercado"
+        },
+        {
+          "id": "en-grammar-05",
+          "role": "grammar-support",
+          "note": "Perguntas e negativas"
+        }
+      ]
+    },
+    {
+      "id": "en-work-05",
+      "order": 5,
+      "band": "A2",
+      "title": "Comunicar compromissos e colaboração",
+      "scenario": "Reunião e colaboração em trabalho ou estudo",
+      "canDo": "Consigo explicar um compromisso, fazer perguntas e pedir esclarecimentos sobre uma tarefa.",
+      "prerequisites": [
+        "en-introductions-01",
+        "en-routine-02"
+      ],
+      "evidence": [
+        "comprehension",
+        "independentProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "en-reading-05",
+          "role": "context",
+          "note": "Reunião com horário alterado"
+        },
+        {
+          "id": "en-word-073",
+          "role": "lexical-support",
+          "note": "Reunião"
+        },
+        {
+          "id": "en-word-074",
+          "role": "lexical-support",
+          "note": "Colega"
+        },
+        {
+          "id": "en-writing-073",
+          "role": "existing-practice",
+          "note": "Mensagem sobre início da reunião"
+        },
+        {
+          "id": "en-writing-074",
+          "role": "existing-practice",
+          "note": "Tradução sobre colega"
+        },
+        {
+          "id": "en-phrase-003",
+          "role": "language-support",
+          "note": "Pedir repetição"
+        }
+      ]
+    },
+    {
+      "id": "en-projects-06",
+      "order": 6,
+      "band": "B1 (indicative)",
+      "title": "Explicar um projeto e justificar decisões",
+      "scenario": "Descrever um pequeno projeto e discutir objetivos",
+      "canDo": "Consigo explicar uma escolha e pedir esclarecimento sobre o propósito de uma atividade.",
+      "prerequisites": [
+        "en-work-05"
+      ],
+      "evidence": [
+        "comprehension",
+        "independentProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "en-v2-reading-001",
+          "role": "context",
+          "note": "Texto sobre projeto"
+        },
+        {
+          "id": "en-v2-phrase-012",
+          "role": "language-support",
+          "note": "Propósito da reunião"
+        },
+        {
+          "id": "en-v2-writing-012",
+          "role": "existing-practice",
+          "note": "Escrita de pergunta sobre objetivo"
+        },
+        {
+          "id": "en-v2-reading-002",
+          "role": "context",
+          "note": "Checagem de fontes; expansão possível após piloto"
+        }
+      ]
+    }
+  ]
+}
