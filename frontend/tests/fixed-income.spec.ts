@@ -47,3 +47,23 @@ test('600-month table is collapsed and paginated, locked funds are not available
  await page.getByLabel('Data pretendida de resgate').fill('');const table=page.locator('.rf-results fixed-income-evolution');await expect(table.locator('table')).not.toBeVisible();await table.locator('summary').click();await expect(table.locator('tbody tr')).toHaveCount(24);await expect(table.locator('.rf-pagination')).toContainText('Página 1 de 26');await table.getByRole('button',{name:'Próxima',exact:true}).click();await expect(table.locator('.rf-pagination')).toContainText('Página 2 de 26');
 });
 
+
+
+test('chart refresh keeps financial inputs intact while supporting periods and keyboard navigation',async({page})=>{
+ await page.setViewportSize({width:390,height:840});
+ await page.goto('/#/renda-fixa');
+ const fields=await fillCdb(page);
+ await fields.getByLabel('Vencimento',{exact:true}).fill('2038-01-01');
+ const graph=page.locator('.rf-results fixed-income-chart').first();
+ await expect(graph.locator('.rf-chart-surface')).toBeVisible();
+ await expect(graph.getByRole('button',{name:'5A',exact:true})).toBeEnabled();
+ await graph.getByRole('button',{name:'5A',exact:true}).click();
+ await expect(graph.getByRole('button',{name:'5A',exact:true})).toHaveAttribute('aria-pressed','true');
+ await graph.getByRole('button',{name:'Tudo',exact:true}).click();
+ await graph.getByRole('slider',{name:'Data no gráfico'}).focus();
+ await page.keyboard.press('Home');
+ await expect(graph.locator('.rf-chart-legend')).toContainText('10.000,00');
+ await expect(graph.locator('.rf-chart-line')).toHaveCount(3);
+ await expect(page.getByTestId('rf-net')).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+});
