@@ -209,3 +209,4 @@ export class ArcadeReflex extends LightElement {
     </button>
     <p class="arcade-status">O cronômetro só começa quando o sinal aparece. Tocar antes reinicia a tentativa.</p>
   </section>`;}
+}
