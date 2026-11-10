@@ -18,7 +18,7 @@ export type Segment = {rawStart:number;rawEnd:number;start:number;end:number;val
 export type Snapshot = {raw:string;position:number};
 export type Edit = {value:string;position:number;changed:boolean};
 const latin = (char:string) => /^[a-z]$/i.test(char);
-const letterCase = (text:string,raw:string) => raw===raw.toUpperCase() ? text.toUpperCase() : text;
+const letterCase = (text:string,raw:string) => raw[0]===raw[0].toUpperCase()?text.toUpperCase():text;
 
 /** Greedy ordered parse. All original Cyrillic and punctuation is passed through. */
 export function transliterate(raw:string,enabled=true):{value:string;segments:Segment[]} {
@@ -80,7 +80,7 @@ export class PhoneticBuffer {
     // Lock already visible characters, preserving what the user actually sees.
     this.rawValue=text;this.past=[];this.future=[];
     this.cursor=Math.min(position,this.value.length);
-    return {value:this.value,position:this.cursor,changed:false};
+    return {value:this.value,position:this.cursor,changed:this.value!==text};
   }
   /** For programmatic filling, IME commits or an unrecognized browser input event. */
   external(text:string,position:number=text.length):Edit {
