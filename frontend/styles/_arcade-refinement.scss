@@ -1,0 +1,313 @@
+/* 2T Games — editorial, restrained visual system shared by the hub and every game. */
+.arcade-hub,.arcade-game,.games-section {
+  --game-inset: clamp(20px,3vw,32px);
+  --game-border: var(--line-soft);
+  --game-surface: var(--panel);
+  --game-surface-2: var(--raised);
+  --game-subtle: var(--secondary);
+  color:var(--text);
+}
+.arcade-hub {max-width:1200px;padding:8px 0 44px}
+.arcade-hub-heading {
+  position:relative;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:28px;
+  padding:16px 2px 30px;margin-bottom:24px;border-bottom:1px solid var(--line-soft);
+}
+.arcade-hub-heading h1 {
+  font-size:clamp(48px,6vw,72px);font-weight:640;line-height:1.06;letter-spacing:-.075em;margin:14px 0 12px;
+}
+.arcade-heading-period {color:var(--muted)}
+.arcade-hub-heading p {max-width:540px;font-size:15px;color:var(--secondary);line-height:1.6}
+.arcade-hub .games-kicker,.arcade-game .games-kicker,.games-section .games-kicker {
+  display:inline-block;font-size:10px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;color:var(--muted);
+}
+.kicker-divider {color:var(--line);padding-inline:7px}
+.arcade-hub-total {
+  flex:0 0 auto;display:flex;align-items:flex-end;gap:13px;border-left:1px solid var(--line-soft);
+  padding:2px 4px 2px 22px;
+}
+.arcade-hub-total strong {font-size:clamp(38px,4vw,58px);font-weight:550;line-height:.91;letter-spacing:-.075em;font-variant-numeric:tabular-nums}
+.arcade-hub-total span {font-size:10px;line-height:1.5;letter-spacing:.09em;font-weight:650;color:var(--secondary)}
+.arcade-directory-tools {display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:26px}
+.arcade-category-tabs {display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.arcade-category-tabs button {
+  font-size:12px;font-weight:550;color:var(--secondary);background:transparent;border:1px solid transparent;
+  border-radius:6px;padding:9px 12px;min-height:38px;
+}
+.arcade-category-tabs button:hover {color:var(--text);background:var(--hover)}
+.arcade-category-tabs button[aria-pressed=true] {
+  background:var(--raised);border-color:var(--line);color:var(--text);
+}
+.arcade-search {
+  display:flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;
+  border-radius:7px;background:var(--panel);border:1px solid var(--line-soft);min-width:220px;
+}
+.arcade-search:focus-within {border-color:var(--secondary)}
+.arcade-search-icon {font-size:22px;line-height:1;color:var(--muted);font-weight:350}
+.arcade-search input {min-width:0;width:100%;outline:0;border:0;background:transparent;color:var(--text);font-size:13px}
+.arcade-search input:focus-visible {outline:0}
+.arcade-search input::placeholder {color:var(--muted)}
+.arcade-results-label {display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:16px}
+.arcade-results-label strong {font-size:14px;letter-spacing:-.015em;font-weight:600}
+.arcade-results-label span {font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.arcade-catalog {grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.arcade-tile {
+  display:grid;grid-template-columns:minmax(150px,38%) minmax(0,1fr);grid-template-rows:1fr;
+  padding:12px;gap:0 21px;min-height:220px;
+  background:var(--panel);border:1px solid var(--line-soft);border-radius:9px;
+  overflow:hidden;transition:border-color .16s ease,background .16s ease,transform .16s ease;
+}
+.arcade-tile:hover {transform:translateY(-2px);border-color:var(--secondary);background:var(--raised)}
+.arcade-tile:focus-visible {outline:2px solid var(--text);outline-offset:3px}
+.arcade-tile-art {
+  position:relative;grid-row:1;display:grid;place-items:center;min-width:0;min-height:186px;
+  border:1px solid var(--line-soft);border-radius:7px;
+  background:var(--bg);color:var(--text);isolation:isolate;overflow:hidden;aspect-ratio:auto;
+  font-family:var(--font-mono);
+}
+.arcade-tile-art:before {content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 24px,var(--line-soft) 25px),repeating-linear-gradient(90deg,transparent 0,transparent 24px,var(--line-soft) 25px);opacity:.24;z-index:-1}
+.arcade-preview {display:grid;place-items:center;width:100%;padding:12px;position:relative}
+.arcade-art-index {position:absolute;bottom:12px;left:13px;font:600 10px var(--font-mono);color:var(--muted);letter-spacing:.14em}
+.arcade-tile-info {min-width:0;display:flex;flex-direction:column;padding:13px 8px 5px 0}
+.arcade-tile-description {flex:1;align-self:auto}
+.arcade-tile-description h2 {font-size:clamp(20px,2.2vw,27px);letter-spacing:-.05em;margin:11px 0 8px;font-weight:640;line-height:1.1}
+.arcade-tile-description p {max-width:28ch;color:var(--secondary);line-height:1.6;font-size:13px}
+.arcade-tile-foot {
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);color:var(--muted);
+  font-size:11px;
+}
+.arcade-tile-foot strong {white-space:nowrap;font-size:12px;font-weight:600;color:var(--text)}
+.arcade-tile-foot strong span {font-size:17px;line-height:0;vertical-align:-1px;margin-left:4px}
+.arcade-empty {border:1px dashed var(--line);padding:44px 20px;text-align:center;border-radius:8px;color:var(--secondary)}
+/* Individually composed previews: static CSS artwork, no heavyweight image assets. */
+.game-art-snake {width:142px;height:105px;position:relative;background:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:20px 20px;opacity:.95}
+.game-art-snake span,.game-art-snake i {position:absolute;display:block;width:18px;height:18px;border-radius:3px;background:var(--secondary)}
+.game-art-snake span:nth-child(1){left:40px;top:20px;background:var(--text)}.game-art-snake span:nth-child(2){left:40px;top:40px}.game-art-snake span:nth-child(3){left:40px;top:60px}.game-art-snake span:nth-child(4){left:60px;top:60px}.game-art-snake span:nth-child(5){left:80px;top:60px}.game-art-snake span:nth-child(6){left:100px;top:60px}
+.game-art-snake i {left:100px;top:20px;width:12px;height:12px;transform:translate(3px,3px);border-radius:100%;background:var(--text)}
+.game-art-sudoku {display:grid;grid-template-columns:repeat(3,1fr);width:120px;height:120px;gap:1px;padding:2px;background:var(--secondary);border:1px solid var(--secondary)}
+.game-art-sudoku span {display:grid;place-items:center;font-size:18px;font-weight:650;background:var(--bg);color:var(--text)}
+.game-art-sudoku span:nth-child(2n){color:var(--muted)}
+.game-art-2048 {display:grid;grid-template-columns:repeat(2,1fr);gap:7px;width:130px;height:130px}
+.game-art-2048 span {display:grid;place-items:center;background:var(--raised);border:1px solid var(--line);border-radius:5px;font-size:24px;font-weight:700;color:var(--secondary)}
+.game-art-2048 span:nth-child(4){background:var(--text);color:var(--bg)}
+.game-art-breakout {position:relative;width:150px;height:120px}
+.game-art-bricks {display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;margin-top:5px}
+.game-art-bricks i {height:12px;border:1px solid var(--line);background:var(--secondary)}
+.game-art-bricks i.soft {background:var(--raised)}
+.game-art-breakout>b {position:absolute;left:50px;bottom:2px;width:50px;height:6px;border-radius:2px;background:var(--text)}
+.game-art-breakout>span {position:absolute;left:89px;bottom:33px;width:10px;height:10px;background:var(--text);border-radius:50%}
+.game-art-pong {width:150px;height:125px;position:relative;border-left:1px solid var(--line-soft);border-right:1px solid var(--line-soft)}
+.game-art-pong>i {position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--secondary)}
+.game-art-pong>span {display:block;position:absolute;width:7px;height:36px;background:var(--text);border-radius:1px}
+.game-art-pong .paddle-left {left:11px;top:30px}
+.game-art-pong .paddle-right {right:11px;bottom:26px}
+.game-art-pong>b {position:absolute;left:59%;top:40%;width:10px;height:10px;background:var(--secondary);border-radius:50%}
+.game-art-word {display:flex;justify-content:center;align-items:center;gap:4px}
+.game-art-word span {display:grid;place-items:center;width:22px;height:36px;border-bottom:2px solid var(--secondary);font-size:21px;font-weight:650}
+.game-art-typing {width:100%;max-width:165px;display:flex;flex-direction:column;gap:12px;font-size:10px;letter-spacing:-.025em;white-space:nowrap}
+.game-art-typing>span:first-child {color:var(--text)}.game-art-typing>span:nth-child(2){color:var(--secondary)}
+.game-art-typing>i {width:1px;height:24px;background:var(--text);animation:game-art-caret 1s step-end infinite}
+@keyframes game-art-caret {50% {opacity:0}}
+.game-art-tic {display:grid;grid-template-columns:repeat(3,1fr);width:126px;height:126px}
+.game-art-tic span {display:grid;place-items:center;border:1px solid var(--line);font:500 27px var(--font-body)}
+.game-art-reflex {width:132px;height:132px;position:relative;display:grid;place-content:center;text-align:center}
+.game-art-reflex>span {position:absolute;inset:0;border:1px solid var(--line);border-radius:50%}
+.game-art-reflex>i {position:absolute;inset:15px;border:1px dashed var(--secondary);border-radius:50%}
+.game-art-reflex>strong {z-index:1;font-size:28px;font-weight:600;letter-spacing:-.08em;font-variant-numeric:tabular-nums}
+.game-art-reflex>small {z-index:1;color:var(--muted);font:600 10px var(--font-mono);letter-spacing:.15em}
+.game-art-memory {width:140px;height:112px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;align-items:center}
+.game-art-memory span {display:grid;place-items:center;height:72px;border:1px solid var(--line);border-radius:5px;background:var(--raised);font-size:19px}
+.game-art-memory span:first-child,.game-art-memory span:last-child {background:var(--text);color:var(--bg)}
+/* Game pages: consistent hierarchy and desktop/mobile alignment. */
+.arcade-game,.games-section {max-width:1060px;margin-inline:auto;padding:4px 0 48px}
+.arcade-game .arcade-heading {display:block;margin:0 0 26px}
+.arcade-back,.games-section .arcade-back {
+  display:inline-flex;align-items:center;gap:9px;min-height:36px;margin-bottom:24px;
+  font-size:13px;color:var(--secondary);
+}
+.arcade-back>span {font-size:18px;line-height:1}
+.arcade-back:hover {color:var(--text)}
+.arcade-game-heading .arcade-heading-title {
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  padding-bottom:22px;border-bottom:1px solid var(--line-soft);
+}
+.arcade-game-heading h1,.games-section .games-header h1 {
+  margin:12px 0 9px;font-size:clamp(34px,4.3vw,52px);letter-spacing:-.065em;font-weight:660;line-height:1.06;
+}
+.arcade-game-heading p,.games-section .games-header p {font-size:14px;line-height:1.65;color:var(--secondary);max-width:640px}
+.arcade-heading-mark {
+  align-self:flex-end;color:var(--muted);font:500 clamp(24px,3.3vw,39px) var(--font-mono);
+  letter-spacing:-.09em;white-space:nowrap;line-height:1;
+}
+.arcade-heading-mark small {font-size:13px;letter-spacing:0;color:var(--muted)}
+.arcade-toolbar {
+  display:flex;align-items:center;justify-content:flex-start;gap:12px;
+  padding:15px 18px;border:1px solid var(--line-soft);border-radius:9px;
+  background:var(--panel);margin:0 0 22px;
+  min-height:74px;
+}
+.arcade-toolbar>span {
+  padding-right:17px;margin-right:1px;border-right:1px solid var(--line-soft);
+  font-size:12px;color:var(--secondary);font-variant-numeric:tabular-nums;
+}
+.arcade-toolbar>span strong {display:inline-block;margin-left:5px;color:var(--text);font-weight:700;font-size:18px;letter-spacing:-.045em}
+.arcade-toolbar label {gap:10px;color:var(--secondary);font-size:12px}
+.arcade-toolbar button,.arcade-toolbar select,.arcade-pad button,.arcade-mobile-pad button,.sudoku-numbers button {
+  border:1px solid var(--line);background:var(--raised);border-radius:6px;
+  color:var(--text);min-height:43px;padding:9px 15px;font-size:13px;font-weight:550;
+}
+.arcade-toolbar button:hover,.arcade-toolbar select:hover,.arcade-pad button:hover,.arcade-mobile-pad button:hover,.sudoku-numbers button:hover {
+  background:var(--hover);border-color:var(--secondary);
+}
+.arcade-toolbar button:first-of-type {margin-left:auto}
+.arcade-toolbar select {padding-right:9px;max-width:190px}
+.arcade-toolbar button:focus-visible,.arcade-toolbar select:focus-visible,.arcade-category-tabs button:focus-visible,
+.arcade-pad button:focus-visible,.sudoku-numbers button:focus-visible,.arcade-letters button:focus-visible,
+.arcade-reflex-area:focus-visible {outline:2px solid var(--text);outline-offset:3px}
+.arcade-status {max-width:800px;margin:18px auto 0;padding:0 2px;color:var(--secondary);font-size:13px;line-height:1.7}
+.arcade-sudoku-wrap {width:min(560px,100%);margin:0 auto;padding:22px;background:var(--panel);border:1px solid var(--line-soft);border-radius:10px}
+.arcade-sudoku {background:var(--line);border:2px solid var(--secondary);border-radius:4px;overflow:hidden}
+.arcade-sudoku .sudoku-cell {font-variant-numeric:tabular-nums;background:var(--panel);border-color:var(--line-soft)}
+.arcade-sudoku .sudoku-cell.given {background:var(--raised);color:var(--text)}
+.arcade-sudoku .sudoku-cell:not(.given) {color:var(--secondary)}
+.arcade-sudoku .sudoku-cell.selected {background:var(--hover);color:var(--text)}
+.arcade-sudoku .sudoku-cell.wrong {color:#e88d8d}
+.sudoku-numbers {gap:6px;margin-top:16px}
+.sudoku-numbers button {font-size:15px;font-weight:650;padding:10px 0}
+.arcade-2048 {width:min(520px,100%);padding:13px;gap:10px;border-radius:11px;background:var(--raised);border:1px solid var(--line);box-shadow:0 0 0 9px var(--panel)}
+.arcade-2048 .tile {border:1px solid var(--line);background:var(--panel);border-radius:7px;font-variant-numeric:tabular-nums}
+.arcade-2048 .tile-2,.arcade-2048 .tile-4 {background:var(--hover);color:var(--text)}
+.arcade-2048 .tile-8,.arcade-2048 .tile-16 {background:#545454;color:#fff}
+.arcade-2048 .tile-32,.arcade-2048 .tile-64 {background:#747474;color:#fff}
+.arcade-pad {margin-top:24px;gap:7px}
+.arcade-pad button {min-width:56px;min-height:47px;font-size:18px}
+.arcade-word-panel {background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:38px 26px}
+.arcade-word-panel>p {font-size:13px;color:var(--secondary)}
+.arcade-word-panel>p strong {color:var(--text);font-weight:600;font-size:16px}
+.arcade-word {margin:38px auto 40px;gap:6px}
+.arcade-word>span {border-bottom:2px solid var(--line);font-weight:650}
+.arcade-letters {max-width:750px;gap:7px}
+.arcade-letters button {height:48px;width:45px;font-family:var(--font-mono);font-size:13px;border-radius:6px}
+.arcade-letters button:not(:disabled):hover {background:var(--hover);border-color:var(--secondary)}
+.arcade-letters button:disabled {opacity:.45}
+.arcade-tic-board {width:min(460px,100%);gap:7px;padding:12px;background:var(--raised);border:1px solid var(--line-soft);border-radius:11px}
+.arcade-tic-board button {background:var(--panel);border:1px solid var(--line-soft);border-radius:6px;font-size:clamp(45px,8vw,76px)}
+.arcade-tic-board button:hover:not(:disabled) {background:var(--hover);border-color:var(--secondary)}
+.arcade-memory-board {width:min(720px,100%);gap:9px}
+.arcade-memory-board button {border-radius:7px;background:var(--panel);font-weight:600;border:1px solid var(--line);font-size:clamp(26px,4vw,39px)}
+.arcade-memory-board button:hover:not(:disabled) {background:var(--hover);border-color:var(--secondary)}
+.arcade-memory-board button.face-up {background:var(--raised);border-color:var(--secondary)}
+.arcade-canvas-wrap {width:min(850px,100%);padding:12px;background:var(--panel);border:1px solid var(--line-soft);border-radius:10px}
+.arcade-canvas-wrap canvas {border-radius:5px}
+.arcade-mobile-pad {margin:20px auto 0}
+.arcade-mobile-pad button {width:76px;min-height:48px;font-size:21px;touch-action:none}
+.arcade-typing {max-width:900px}
+.arcade-typing-text {padding:30px;line-height:2;background:var(--panel);border:1px solid var(--line-soft);font-size:clamp(15px,2vw,21px);letter-spacing:.005em}
+.arcade-typing textarea {padding:20px;border-radius:8px;min-height:170px;background:var(--raised);border:1px solid var(--line)}
+.arcade-reflex-area {min-height:370px;max-width:850px;gap:18px;border-radius:10px;background:var(--panel)}
+.arcade-reflex-area strong {font-size:clamp(29px,5vw,48px)}
+.arcade-reflex-area span {color:var(--secondary)}
+.arcade-reflex-area.reflex-ready {background:var(--text);color:var(--bg);border-color:var(--text)}
+.arcade-reflex-area.reflex-ready span {color:var(--bg)}
+.arcade-reflex-area.reflex-waiting {background:var(--raised);color:var(--text)}
+/* Snake uses the same language while keeping its established play mechanics. */
+.games-section .games-header {margin:0 0 24px;padding:0 0 23px;border-bottom:1px solid var(--line-soft)}
+.games-section .games-header h1 {margin-bottom:10px}
+.games-layout {grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr);gap:16px}
+.snake-panel,.snake-info,.snake-rank {border-color:var(--line-soft);border-radius:10px;background:var(--panel)}
+.snake-panel {padding:24px}
+.snake-stats {margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line-soft)}
+.snake-stats>div {padding:2px 12px}
+.snake-stats small {font-size:11px;letter-spacing:.02em;color:var(--secondary)}
+.snake-stats strong {display:block;margin-top:2px;font-size:30px;font-weight:620;letter-spacing:-.06em}
+.snake-stage {max-width:580px}
+.snake-board {border-color:var(--line);border-radius:7px;background:#0d0e0f}
+.snake-cell.is-food {border:3px solid #0d0e0f}
+.snake-actions {margin:21px 0 0;gap:8px}
+.snake-actions button,.snake-controls button,.snake-save button {
+  min-height:44px;border-radius:6px;font-size:13px;font-weight:550;padding:10px 15px;
+}
+.snake-actions button:hover,.snake-controls button:hover,.snake-save button:hover {background:var(--hover);border-color:var(--secondary)}
+.snake-actions button:first-child {background:var(--text);color:var(--bg);border-color:var(--text)}
+.snake-actions button:first-child:hover {opacity:.86}
+.snake-controls {margin:18px 0 0;gap:7px}
+.snake-controls>div {gap:7px}
+.snake-controls button {width:53px;height:47px;font-size:20px;padding:0}
+.snake-sidebar {gap:15px}
+.snake-info,.snake-rank {padding:24px}
+.snake-info h2,.snake-rank h2 {font-size:20px;line-height:1.25;letter-spacing:-.04em;margin:11px 0 14px;font-weight:630}
+.snake-info p {font-size:13px;line-height:1.75}
+.snake-info p+p {border-top:1px solid var(--line-soft);padding-top:12px;margin-top:18px}
+.snake-rank li {padding:13px 0}
+.snake-overlay {background:rgba(8,9,11,.79)}
+.snake-overlay-content {gap:17px;padding:28px;border:1px solid #4a4a4a;border-radius:10px;background:#141414}
+.snake-overlay-content strong {font-size:clamp(23px,3vw,31px);font-weight:630}
+.snake-primary {min-height:45px}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-tile {transition:none}
+  .arcade-tile:hover {transform:none}
+  .game-art-typing>i {animation:none}
+}
+@media(max-width:950px) {
+  .arcade-catalog {grid-template-columns:minmax(0,1fr)}
+  .arcade-tile {max-width:750px;min-height:210px;grid-template-columns:minmax(170px,34%) minmax(0,1fr)}
+  .arcade-tile-art {min-height:182px}
+}
+@media(max-width:720px) {
+  .arcade-hub-heading {padding:8px 0 22px;align-items:flex-start}
+  .arcade-hub-total {padding-left:13px}
+  .arcade-hub-total strong {font-size:40px}
+  .arcade-hub-total span {font-size:9px}
+  .arcade-hub-heading h1 {font-size:51px}
+  .arcade-hub-heading p {font-size:13px}
+  .arcade-directory-tools {gap:14px}
+  .arcade-category-tabs {width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+  .arcade-category-tabs button {flex:0 0 auto;min-height:42px}
+  .arcade-search {width:100%;min-width:0}
+  .arcade-game-heading .arcade-heading-title {align-items:flex-end}
+  .arcade-toolbar {gap:10px;padding:12px;min-height:0}
+  .arcade-toolbar>span {padding-right:10px;font-size:11px}
+  .arcade-toolbar>span strong {font-size:16px}
+  .arcade-toolbar label {flex:0 1 auto}
+  .arcade-toolbar button:first-of-type {margin-left:0}
+  .arcade-sudoku-wrap {padding:12px}
+  .arcade-memory-board {grid-template-columns:repeat(4,minmax(0,1fr))}
+  .arcade-canvas-wrap {padding:6px}
+  .snake-panel {padding:16px}
+  .games-layout {grid-template-columns:1fr}
+  .snake-sidebar {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px) {
+  .arcade-hub-total {display:none}
+  .arcade-hub-heading h1 {font-size:48px}
+  .arcade-tile {min-height:155px;grid-template-columns:110px minmax(0,1fr);gap:0 12px;padding:10px}
+  .arcade-tile-art {min-height:130px}
+  .arcade-preview {transform:scale(.76);padding:5px}
+  .arcade-art-index {bottom:5px;left:7px}
+  .arcade-tile-info {padding:8px 2px 2px 0}
+  .arcade-tile-description h2 {font-size:20px;margin:6px 0 5px}
+  .arcade-tile-description p {font-size:11px;line-height:1.4}
+  .arcade-tile-foot {margin-top:9px;padding-top:9px;font-size:10px}
+  .arcade-tile-foot strong {font-size:11px}
+  .arcade-game-heading p {font-size:13px}
+  .arcade-heading-mark {font-size:26px}
+  .arcade-toolbar {padding:12px;gap:10px}
+  .arcade-toolbar>span {border-right:0;margin-right:0;padding-right:6px}
+  .arcade-toolbar button {flex:0 0 auto}
+  .arcade-game,.games-section {padding-bottom:26px}
+  .arcade-word-panel {padding:20px 10px}
+  .arcade-word {margin:24px auto 26px;gap:4px}
+  .arcade-word>span {width:23px;height:36px}
+  .arcade-letters {gap:5px}
+  .arcade-letters button {width:clamp(31px,9vw,39px);height:42px;font-size:12px}
+  .sudoku-numbers {grid-template-columns:repeat(5,minmax(0,1fr))}
+  .arcade-sudoku-wrap {padding:8px}
+  .arcade-sudoku .sudoku-cell {font-size:clamp(13px,4vw,19px)}
+  .arcade-2048 {gap:7px;padding:8px}
+  .arcade-reflex-area {min-height:270px}
+  .arcade-typing-text {padding:17px;line-height:1.8}
+  .arcade-typing textarea {padding:16px;min-height:140px}
+  .snake-sidebar {grid-template-columns:1fr}
+  .snake-stats strong {font-size:24px}
+}
