@@ -200,10 +200,10 @@ export class ArcadeTic extends LightElement {
     }
     if(bestIndex>=0)this.apply(bestIndex,"O");
   }
-  private click(i:number){if(this.mode==="ai"&&this.turn!=="X")return;this.apply(i,this.turn);}
+  private playAt(i:number){if(this.mode==="ai"&&this.turn!=="X")return;this.apply(i,this.turn);}
   render(){return html`<section class="arcade-game">${gameHeader("jogo-da-velha","Três símbolos em linha vencem. Jogue contra a máquina ou com um amigo.")}
     <div class="arcade-toolbar"><label>Modo <select .value=${this.mode} @change=${(e:Event)=>{this.mode=(e.target as HTMLSelectElement).value;this.reset();}}><option value="ai">Contra a máquina</option><option value="local">Dois jogadores</option></select></label><span>Vitórias X: ${this.wins}</span><button @click=${()=>this.reset()}>Nova partida</button></div>
-    <div class="arcade-tic-board" role="group" aria-label="Jogo da Velha">${this.board.map((mark,i)=>html`<button @click=${()=>this.click(i)} ?disabled=${!!mark||!!this.result||(this.mode==="ai"&&this.turn==="O")} aria-label=${`Casa ${i+1}: ${mark||"vazia"}`}>${mark}</button>`)}</div>
+    <div class="arcade-tic-board" role="group" aria-label="Jogo da Velha">${this.board.map((mark,i)=>html`<button @click=${()=>this.playAt(i)} ?disabled=${!!mark||!!this.result||(this.mode==="ai"&&this.turn==="O")} aria-label=${`Casa ${i+1}: ${mark||"vazia"}`}>${mark}</button>`)}</div>
     <p class="arcade-status" role="status">${this.result===null?`Vez de ${this.turn}`:this.result==="draw"?"Empate!":`${this.result} venceu!`}</p>
   </section>`;}
 }
