@@ -44,6 +44,6 @@ export class HomePage extends LightElement {
           </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
       </section>
-      <a class="home-call" href="#/games" aria-label="Acessar Games"><span class="home-call-icon" aria-hidden="true">🎮</span><span class="home-call-copy"><strong>Games</strong><span>Snake: jogue, evolua de nível e registre seu recorde.</span></span><span class="home-call-action">Jogar <span aria-hidden="true">↗</span></span></a>`;
+      <a class="home-call home-games-entry" href="#/games" aria-label="Explorar Games"><span class="home-call-icon home-games-icon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"><rect x="4" y="10" width="32" height="20" rx="7"/><path d="M12 17v7m-3.5-3.5h7M26 18h.1M30 22h.1"/></svg></span><span class="home-call-copy"><strong>Games</strong><span>10 jogos clássicos. Arcade, lógica, palavras e desafios de habilidade.</span></span><span class="home-call-action">Explorar jogos <span aria-hidden="true">↗</span></span></a>`;
   }
 }
