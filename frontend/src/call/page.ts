@@ -25,7 +25,7 @@ export class CallPage extends LightElement {
  @state() private micBusy=false;
  @state() private error='';
  private micRequest=0;
- private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.voice.setMicrophone(stream)}});
+ private micProcessing=new CallMicrophoneProcessing(()=>this.requestUpdate(),stream=>{if(this.microphone){this.microphone=stream;this.applyTalkMode();this.voice.setMicrophone(stream);this.publishMedia();this.announceCall()}});
  @state() private roomError='';
  @state() private copied=false;
  @state() private channel?:Extract<ChannelStatus,{room:string}>;
@@ -471,6 +471,12 @@ export class CallPage extends LightElement {
      ${flag('echoCancellation','Cancelamento de eco')}
      ${flag('autoGainControl','Ganho automático')}
     </div>
+    ${processor.hasAdvanced?html`<label class="call-mic-check call-enhanced-toggle">
+     <input type="checkbox" .checked=${processor.enhanced}
+      @change=${(event:Event)=>void processor.setEnhanced((event.currentTarget as HTMLInputElement).checked)}/>
+     Supressão avançada de ruído (local)
+    </label>`:nothing}
+    ${processor.enhanced?html`<small role="status">${processor.activeEnhanced?'Filtro espectral ativo · processamento no seu dispositivo':'Preparando filtro avançado ou usando redução nativa'}</small>`:nothing}
     ${this.microphone?html`<small class="call-mic-effective" role="status">Filtros efetivos — ruído: ${actualStatus('noiseSuppression')} · eco: ${actualStatus('echoCancellation')} · ganho: ${actualStatus('autoGainControl')}</small>`:nothing}
     <small>Voz limpa: redução de ruídos e cancelamento de eco do navegador. O ganho automático fica desligado para evitar amplificar sons de fundo.</small>
     ${processor.hasGate?html`<label>Sensibilidade de voz <output>${processor.sensitivity===0?'Desativada':`${processor.sensitivity}%`}</output>
