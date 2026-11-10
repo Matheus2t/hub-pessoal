@@ -29,6 +29,7 @@ export class CallMicrophoneProcessing {
  constructor(private changed:()=>void,private streamChanged:(stream:MediaStream)=>void){}
 
  get stream(){return this.outgoing??this.source}
+ get input(){return this.source}
  get supported(){return navigator.mediaDevices?.getSupportedConstraints?.()??{}}
  get hasGate(){return !!(window.AudioContext||('webkitAudioContext' in window))}
 
@@ -54,6 +55,7 @@ export class CallMicrophoneProcessing {
  async attach(stream:MediaStream){
   this.stop();
   this.source=stream;
+  try{stream.getAudioTracks()[0].contentHint='speech'}catch{/* Optional hint for voice encoding. */}
   this.checkApplied();
   if(this.sensitivity>0)await this.startGate();
   return this.stream??stream;
