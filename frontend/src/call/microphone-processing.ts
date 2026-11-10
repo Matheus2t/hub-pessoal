@@ -169,7 +169,7 @@ export class CallMicrophoneProcessing {
   if(rms>=threshold)this.openUntil=now+420;
   const open=now<this.openUntil;
   const target=open?1:.12;
-  if(Math.abs(gate.gain.value-target)>.03)gate.gain.setTargetAtTime(target,context.currentTime,open?.015:.16);
+  if(Math.abs(gate.gain.value-target)>.03)gate.gain.setTargetAtTime(target,context.currentTime,open ? .015 : .16);
  }
 
  private stopGate(){
