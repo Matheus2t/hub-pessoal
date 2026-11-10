@@ -1,0 +1,30 @@
+name: Validar teclado fonético do Learn
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/learn/**'
+      - 'frontend/tests/learn-phonetic.spec.ts'
+      - 'frontend/styles/_learn.scss'
+      - '.github/workflows/learn-phonetic-validation.yml'
+permissions:
+  contents: read
+jobs:
+  russian-phonetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Run complete Learn regression and phonetic editor browser tests
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-phonetic.log 2>&1 &
+          sleep 2
+          PW_CHANNEL=chromium npx playwright test frontend/tests/learn-*.spec.ts
