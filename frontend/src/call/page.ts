@@ -357,7 +357,7 @@ export class CallPage extends LightElement {
    if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
    this.microphone=outgoing;
    this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
-   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.microphone===outgoing){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
+   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
  }
