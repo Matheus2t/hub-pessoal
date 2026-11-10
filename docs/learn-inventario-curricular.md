@@ -136,3 +136,10 @@ node scripts/audit-learn-curriculum.mjs --check
 ```
 
 O script é somente leitura. A execução com `--check` falha em corrupção estrutural; lacunas de ensino são diagnósticos para revisão, não erros automáticos.
+
+
+---
+
+## Atualização da etapa 2.2/2.3 — 10/11/2026
+
+Currículos independentes, vínculos a IDs legados e roteiros originais das duas unidades-piloto foram preparados em `frontend/public/learn/pedagogy-v1/`. Consulte `docs/learn-curriculo-v1.md` para a matriz de competências, limites, critérios editoriais e integração. Execute `npm run learn:validate-pedagogy` para conferir integridade antes de iniciar engenharia. **Estado: rascunho validado estruturalmente; não publicado como experiência de estudo, sem aprovação linguística definitiva.**
