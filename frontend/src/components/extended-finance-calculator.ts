@@ -93,6 +93,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   @state() private error = '';
   @state() private stale = false;
   @state() private tablePage = 0;
+  @state() private chartIndex = -1;
   @state() private advancedOpen = false;
   @state() private system: LoanSystem = 'price';
   @state() private mode: ExtraMode = 'term';
@@ -101,7 +102,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   protected willUpdate(changes: Map<PropertyKey, unknown>) {
     if (changes.has('kind') || !Object.keys(this.values).length) {
       this.values = Object.fromEntries(configurations[this.kind].fields.map(f => [f.key, f.value]));
-      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0; this.advancedOpen = false;
+      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0; this.chartIndex = -1; this.advancedOpen = false;
     }
   }
   private change(event: CustomEvent<{ name: string; value: string }>) {
@@ -148,6 +149,7 @@ export class ExtendedFinanceCalculator extends LightElement {
       }
       this.stale = false;
       this.tablePage = 0;
+      this.chartIndex = -1;
     } catch (e) { this.error = e instanceof Error ? e.message : 'Não foi possível calcular com esses parâmetros.'; }
   }
   private renderField(f: Field) {
@@ -188,21 +190,59 @@ export class ExtendedFinanceCalculator extends LightElement {
     return null;
   }
   private renderChart(points: FinancePoint[], a: string, b: string) {
-    const left = 55, top = 18, width = 700, height = 190;
-    const max = Math.max(1, ...points.flatMap(p => [p.first, p.second])) * 1.05;
-    const lastPeriod = points.at(-1)?.period ?? 1;
-    const firstPeriod = points[0]?.period ?? 0;
-    const coord = (value: number, period: number) => `${left + (period - firstPeriod) / Math.max(1, lastPeriod - firstPeriod) * width},${top + height - Math.max(0, value) / max * height}`;
-    const trace = (key: 'first' | 'second') => points.map(p => coord(p[key], p.period)).join(' ');
-    return html`<div class="extended-chart"><div class="extended-chart-legend"><span class="extended-legend-first">${a}</span><span class="extended-legend-second">${b}</span></div>
-      <svg viewBox="0 0 790 250" role="img" aria-label=${`Gráfico de evolução: ${a} versus ${b}`} preserveAspectRatio="xMidYMid meet">
+    if (!points.length) return nothing;
+    const left = 17, top = 18, width = 700, height = 188;
+    const values = points.flatMap(point => [point.first, point.second]);
+    const minimum = Math.min(0, ...values), maximum = Math.max(1, ...values);
+    const gap = Math.max(1, maximum - minimum) * .1;
+    const low = minimum - gap, high = maximum + gap, range = high - low;
+    const lastPeriod = points.at(-1)!.period, firstPeriod = points[0].period;
+    const px = (period: number) => left + (period-firstPeriod) / Math.max(1, lastPeriod-firstPeriod) * width;
+    const py = (value: number) => top + (high-value) / range * height;
+    const trace = (key: 'first' | 'second') => points.map(p => `${px(p.period).toFixed(2)},${py(p[key]).toFixed(2)}`).join(' ');
+    const index = this.chartIndex < 0 ? points.length-1 : Math.min(this.chartIndex, points.length-1);
+    const selected = points[index], cursorX = px(selected.period);
+    const axis = this.kind === 'amortization' ? 'Mês' : this.kind === 'retirement' ? 'Idade' : 'Ano';
+    const compact = (n: number) => 'R$ '+new Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1}).format(n);
+    const inspect = (event: PointerEvent) => {
+      if (event.pointerType === 'touch' && event.type === 'pointermove') return;
+      const graphic = event.currentTarget as SVGSVGElement, matrix = graphic.getScreenCTM();
+      if (!matrix) return;
+      const pt = new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());
+      const fraction = Math.max(0,Math.min(1,(pt.x-left)/width));
+      const period = firstPeriod + fraction*(lastPeriod-firstPeriod);
+      let closest = 0;
+      for(let i=1;i<points.length;i++)
+        if(Math.abs(points[i].period-period)<Math.abs(points[closest].period-period))closest=i;
+      if (closest !== this.chartIndex) this.chartIndex = closest;
+    };
+    return html`<div class="extended-chart extended-chart-terminal">
+      <div class="extended-chart-top">
+        <div class="extended-chart-current"><span>${axis.toUpperCase()} ${selected.period} · COMPARAÇÃO</span>
+          <strong>${money(selected.first)}</strong><small>${a}</small></div>
+        <div class="extended-chart-secondary"><span>${b}</span><strong>${money(selected.second)}</strong></div>
+      </div>
+      <svg viewBox="0 0 790 252" role="img" aria-label=${`Gráfico de evolução: ${a} versus ${b}`}
+           preserveAspectRatio="xMidYMid meet" @pointermove=${inspect} @pointerdown=${inspect}>
         <title>Evolução comparativa dos cenários</title>
-        ${[0, 0.5, 1].map(y => html`<line class="extended-gridline" x1=${left} x2=${left + width} y1=${top + height * y} y2=${top + height * y}></line>`)}
-        <polyline class="extended-line-first" points=${trace('first')}></polyline>
+        ${Array.from({length:5},(_,i)=>low+(range*i)/4).map(value=>html`
+          <line class="extended-gridline" x1=${left} x2=${left+width} y1=${py(value)} y2=${py(value)}></line>
+          <text class="extended-chart-axis" x="779" y=${py(value)+4} text-anchor="end">${compact(value)}</text>`)}
+        <polygon class="extended-area" points=${`${trace('first')} ${px(lastPeriod)},${top+height} ${px(firstPeriod)},${top+height}`}></polygon>
         <polyline class="extended-line-second" points=${trace('second')}></polyline>
-        <text x=${left} y="236">${firstPeriod}</text><text x=${left + width} y="236" text-anchor="end">${lastPeriod}</text>
+        <polyline class="extended-line-first" points=${trace('first')}></polyline>
+        <line class="extended-chart-cursor" x1=${cursorX} x2=${cursorX} y1=${top} y2=${top+height}></line>
+        <circle class="extended-chart-point" cx=${cursorX} cy=${py(selected.first)} r="5"></circle>
+        <circle class="extended-chart-point second" cx=${cursorX} cy=${py(selected.second)} r="4"></circle>
+        <text class="extended-chart-axis" x=${left} y="239">${axis} ${firstPeriod}</text>
+        <text class="extended-chart-axis" x=${left+width} y="239" text-anchor="end">${axis} ${lastPeriod}</text>
       </svg>
-      <p class="extended-chart-caption">${this.kind === 'amortization' ? 'Eixo horizontal: meses.' : this.kind === 'retirement' ? 'Eixo horizontal: idade.' : 'Eixo horizontal: anos.'}</p>
+      <div class="extended-chart-legend"><span class="extended-legend-first">${a}</span><span class="extended-legend-second">${b}</span></div>
+      <label class="extended-chart-scrub">Explorar ${this.kind === 'amortization' ? 'mês' : this.kind === 'retirement' ? 'idade' : 'ano'} a ${this.kind === 'amortization' ? 'mês' : this.kind === 'retirement' ? 'idade' : 'ano'}
+        <input type="range" min="0" max=${points.length-1} step="1" .value=${String(index)}
+          aria-label="Período exibido no gráfico"
+          @input=${(event: Event)=>{this.chartIndex=Number((event.target as HTMLInputElement).value)}} />
+      </label>
     </div>`;
   }
   private tableData(): { heads: string[]; rows: string[][]; title: string } {
