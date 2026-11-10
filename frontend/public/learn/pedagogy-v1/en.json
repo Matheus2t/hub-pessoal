@@ -54,7 +54,7 @@
         {
           "id": "en-grammar-02",
           "role": "grammar-support",
-          "note": "Pronomes"
+          "note": "Pronomes para identificar o interlocutor e responder a uma apresentação."
         },
         {
           "id": "en-listening-001",
@@ -135,22 +135,22 @@
         {
           "id": "en-phrase-009",
           "role": "language-support",
-          "note": "Bilhete"
+          "note": "Modelo de pergunta para comprar bilhete em um trajeto desconhecido."
         },
         {
           "id": "en-word-090",
           "role": "lexical-support",
-          "note": "Estação"
+          "note": "Reconhecimento do destino principal na tarefa de orientação."
         },
         {
           "id": "en-word-098",
           "role": "lexical-support",
-          "note": "Esquerda"
+          "note": "Direção à esquerda para compreender o trajeto indicado."
         },
         {
           "id": "en-word-099",
           "role": "lexical-support",
-          "note": "Direita"
+          "note": "Contraste com esquerda, evitando confundir direções no contexto."
         },
         {
           "id": "en-reading-07",
@@ -232,12 +232,12 @@
         {
           "id": "en-word-073",
           "role": "lexical-support",
-          "note": "Reunião"
+          "note": "Vocabulário para descrever reuniões e compromissos de trabalho."
         },
         {
           "id": "en-word-074",
           "role": "lexical-support",
-          "note": "Colega"
+          "note": "Identifica o interlocutor em conversas e tarefas profissionais."
         },
         {
           "id": "en-writing-073",
