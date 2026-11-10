@@ -553,6 +553,29 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await expect(a.page.locator('.call-controls')).toBeHidden();
   expect(await a.page.evaluate(()=>(document.querySelector('call-page') as any).voice.peers.size)).toBe(0);
   const invite=await owner(a.page);await guest(b.page,a.page,invite,'Convidado');await enter(a.page);await enter(b.page);await media(b.page,await id(a.page),'microphone');
+  const studio=a.page.getByRole('region',{name:'Controles de voz'});
+  await expect(studio.getByRole('combobox',{name:'Microfone de entrada'})).toBeVisible();
+  const talk=studio.getByRole('combobox',{name:'Modo de fala'});
+  await expect(talk).toHaveValue('open');
+  await expect(studio.getByLabel('Nível do microfone')).toBeVisible();
+  await talk.selectOption('ptt');
+  await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(false);
+  const push=studio.getByRole('button',{name:'Segure para falar'});
+  await push.dispatchEvent('pointerdown',{pointerId:1,pointerType:'mouse',button:0});
+  await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(true);
+  await push.dispatchEvent('pointerup',{pointerId:1,pointerType:'mouse',button:0});
+  await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(false);
+  await talk.selectOption('voice');
+  await expect(studio.getByRole('slider',{name:'Limiar de voz'})).toBeVisible();
+  await talk.selectOption('open');
+  await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(true);
+  await studio.getByRole('button',{name:'Gravar teste (6 segundos)'}).click();
+  await expect(studio.getByRole('button',{name:'Parar gravação'})).toBeVisible();
+  await a.page.waitForTimeout(350);
+  await studio.getByRole('button',{name:'Parar gravação'}).click();
+  await expect(studio.getByLabel('Reprodução do teste do microfone')).toBeVisible();
+  await studio.getByRole('button',{name:'Excluir teste'}).click();
+  await expect(studio.getByLabel('Reprodução do teste do microfone')).toHaveCount(0);
   const settings=a.page.locator('.call-microphone-settings');
   await settings.locator('summary').click();
   const mode=settings.getByRole('combobox',{name:'Processamento do microfone'});
@@ -567,6 +590,13 @@ test('permission refusal, cancelled and late captures, local preview and route c
   })).toEqual([false,false,false]);
   await settings.getByRole('checkbox',{name:'Redução de ruídos'}).check();
   await expect(mode).toHaveValue('custom');
+  const enhanced=settings.getByRole('checkbox',{name:'Supressão avançada de ruído (local)'});
+  if(await enhanced.count()){
+   await enhanced.check();
+   await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).micProcessing.enhanced)).toBe(true);
+   await enhanced.uncheck();
+   await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).micProcessing.enhanced)).toBe(false);
+  }
   const gate=settings.getByRole('slider',{name:'Sensibilidade de voz'});
   await gate.evaluate((input:HTMLInputElement)=>{input.value='55';input.dispatchEvent(new Event('input',{bubbles:true}))});
   await expect.poll(()=>a.page.evaluate(()=>{
