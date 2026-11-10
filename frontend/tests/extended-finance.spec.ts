@@ -86,3 +86,41 @@ for (const width of [390,1366]) {
     }
   });
 }
+
+
+test('finance chart polish keeps keyboard, period filters and negative-value axis',async({page})=>{
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.setViewportSize({width:390,height:860});
+ // O servidor estático do CI não executa o FastAPI de juros simples.
+ await page.route('**/api/finance/simple',route=>route.fulfill({
+   status:200,contentType:'application/json',
+   body:JSON.stringify({final_amount:'1120.00',total_invested:'1000.00',total_interest:'120.00',
+     evolution:Array.from({length:12},(_,i)=>({
+       month:i+1,deposit:'0',invested:'1000.00',balance:String(1010+10*i),interest:String(10*(i+1))
+     }))
+   })
+ }));
+ await page.goto('/#/juros-simples');
+ const finance=page.locator('finance-calculator');
+ await finance.getByRole('button',{name:'Calcular'}).click();
+ const evolution=finance.locator('evolution-chart');
+ await expect(evolution.locator('.chart-plot')).toBeVisible();
+ await expect(evolution.locator('.chart-window-buttons')).toBeVisible();
+ await evolution.getByRole('slider',{name:'Mês exibido no gráfico'}).focus();
+ await page.keyboard.press('Home');
+ await expect(evolution.locator('.chart-readout')).toContainText('Mês 0');
+ await page.goto('/#/aposentadoria');
+ const calculator=page.locator('extended-finance-calculator');
+ await calculator.getByRole('button',{name:'Projetar aposentadoria'}).click();
+ const graph=calculator.locator('.extended-chart-terminal');
+ await expect(graph.locator('.extended-chart-top')).toBeVisible();
+ await expect(graph.locator('.extended-chart-point')).toHaveCount(2);
+ await graph.getByRole('slider',{name:'Período exibido no gráfico'}).focus();
+ await page.keyboard.press('Home');
+ await expect(graph.locator('.extended-chart-current')).toContainText('R$');
+ for (const theme of ['dark','light']) {
+   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+ expect(errors).toEqual([]);
+});

@@ -67,3 +67,24 @@ test('chart refresh keeps financial inputs intact while supporting periods and k
  await expect(page.getByTestId('rf-net')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });
+
+
+test('chart polish shows exact return marker and retains financial totals across periods',async({page})=>{
+ const failures:string[]=[];page.on('pageerror',e=>failures.push(e.message));
+ await page.setViewportSize({width:390,height:844});await page.goto('/#/renda-fixa');
+ const f=await fillCdb(page);
+ await f.getByLabel('Vencimento',{exact:true}).fill('2038-01-01');
+ const chart=page.locator('.rf-results fixed-income-chart').first();
+ await expect(chart.locator('.rf-chart-surface')).toBeVisible();
+ await expect(chart.locator('.rf-chart-growth')).toContainText('R$');
+ await expect(chart.locator('.rf-chart-price-tag')).toHaveCount(1);
+ await chart.getByRole('button',{name:'5A',exact:true}).click();
+ await expect(chart.getByRole('button',{name:'5A',exact:true})).toHaveAttribute('aria-pressed','true');
+ await chart.getByRole('slider',{name:'Data no gráfico'}).focus();
+ await page.keyboard.press('Home');
+ await expect(chart.locator('.rf-chart-readout')).toContainText('R$');
+ await chart.getByRole('button',{name:'Tudo',exact:true}).click();
+ await expect(chart.locator('.rf-chart-line')).toHaveCount(3);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(failures).toEqual([]);
+});

@@ -12,7 +12,10 @@ type SeriesKey = (typeof SERIES)[number]["key"];
 
 @customElement("evolution-chart")
 export class EvolutionChart extends LightElement {
+  private static nextGradientId = 0;
+  private readonly gradientId = `calc-graph-fill-${EvolutionChart.nextGradientId++}`;
   @property({ attribute: false }) rows: EvolutionRow[] = [];
+  @state() private windowMonths = 0;
   @state() private active = -1;
   @state() private width = 800;
   @state() private inspecting = false;
@@ -20,7 +23,8 @@ export class EvolutionChart extends LightElement {
   private observer?: ResizeObserver;
   protected firstUpdated() {
     this.observer = new ResizeObserver((entries) => {
-      this.width = Math.max(260, entries[0].contentRect.width);
+      const next = Math.max(260, Math.round(entries[0].contentRect.width));
+      if (Math.abs(next - this.width) > 1) this.width = next;
     });
     this.observer.observe(this);
   }
@@ -39,7 +43,7 @@ export class EvolutionChart extends LightElement {
     if (!this.rows.length) return [];
     const first = this.rows[0];
     const initial = Number(first.invested) - Number(first.deposit);
-    return [
+    const complete = [
       { month: 0, balance: initial, invested: initial, interest: 0 },
       ...this.rows.map((row) => ({
         month: row.month,
@@ -48,6 +52,9 @@ export class EvolutionChart extends LightElement {
         interest: Number(row.balance) - Number(row.invested),
       })),
     ];
+    if (!this.windowMonths || complete.at(-1)!.month <= this.windowMonths) return complete;
+    const firstVisible = complete.at(-1)!.month - this.windowMonths;
+    return complete.filter((point) => point.month >= firstVisible);
   }
   private selectSeries(key: SeriesKey) {
     this.hoveredSeries = key;
@@ -155,7 +162,15 @@ export class EvolutionChart extends LightElement {
           <span class="section-index">02</span>
           <h2 id="chart-title">Evolução do patrimônio</h2>
         </div>
-        <span class="subtle">${this.rows.length} meses</span>
+        <div class="chart-window-control">
+          <span class="subtle">${this.rows.length} meses</span>
+          <div class="chart-window-buttons" role="group" aria-label="Período exibido">
+            ${[{ label: "1A", months: 12 }, { label: "3A", months: 36 }, { label: "5A", months: 60 }, { label: "Tudo", months: 0 }].map(option => html`
+              <button type="button" aria-pressed=${this.windowMonths === option.months}
+                ?disabled=${option.months > 0 && this.rows.length <= option.months}
+                @click=${() => { this.windowMonths = option.months; this.active = -1; this.stopInspect(); }}>${option.label}</button>`)}
+          </div>
+        </div>
       </div>
       <div class="chart-toolbar">
         <div class="chart-legend" aria-label="Séries do gráfico">
@@ -173,10 +188,10 @@ export class EvolutionChart extends LightElement {
           )}
         </div>
         <div class="chart-readout" aria-live="off">
-          <span>Mês ${selected.month}</span
+          <span>Mês ${selected.month} · PATRIMÔNIO ACUMULADO</span
           ><strong>${money(selected.balance)}</strong
-          ><small>Investido: ${money(selected.invested)}</small
-          ><small>Juros: ${money(selected.interest)}</small>
+          ><small>Investido: <b>${money(selected.invested)}</b></small
+          ><small>Juros: <b>${money(selected.interest)}</b></small>
         </div>
       </div>
       <div class="chart-plot">
@@ -191,6 +206,10 @@ export class EvolutionChart extends LightElement {
             if (event.pointerType !== "touch") this.stopInspect();
           }}
         >
+          <defs><linearGradient id=${this.gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e7edf4" stop-opacity=".19"/>
+            <stop offset="100%" stop-color="#e7edf4" stop-opacity="0"/>
+          </linearGradient></defs>
           <rect
             class="chart-hit-area"
             x=${left}
@@ -205,6 +224,7 @@ export class EvolutionChart extends LightElement {
           })}
           <path
             class="chart-area"
+            style=${`fill:url(#${this.gradientId})`}
             d=${`${line("balance")} L${x(points.length - 1)},${height - bottom} L${left},${height - bottom} Z`}
           />
           <path
@@ -223,13 +243,10 @@ export class EvolutionChart extends LightElement {
             const n = Math.round((i / (ticks - 1)) * (points.length - 1));
             return svg`<text class="chart-axis" text-anchor=${i === 0 ? "start" : i === ticks - 1 ? "end" : "middle"} x=${x(n)} y=${height - 10}>Mês ${points[n].month}</text>`;
           })}
-          <line
-            class="chart-cursor"
-            x1=${x(active)}
-            x2=${x(active)}
-            y1=${top}
-            y2=${height - bottom}
-          />
+          <line class="chart-cursor" x1=${x(active)} x2=${x(active)} y1=${top} y2=${height - bottom} />
+          <line class="chart-cursor-horizontal" x1=${left} x2=${width-right}
+            y1=${y(selected[this.inspecting && this.hoveredSeries ? this.hoveredSeries : "balance"])}
+            y2=${y(selected[this.inspecting && this.hoveredSeries ? this.hoveredSeries : "balance"])} />
           <circle
             class="chart-point"
             cx=${x(active)}

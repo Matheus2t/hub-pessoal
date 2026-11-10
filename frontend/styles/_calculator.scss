@@ -797,3 +797,254 @@ compound-calculator .chart-panel, finance-calculator .chart-panel { border-radiu
 compound-calculator .button.primary, finance-calculator .button.primary { min-height: 46px; border-radius: 6px; padding-inline: 24px; }
 compound-calculator .results-details, finance-calculator .results-details { border-radius: 10px; }
 @media(max-width:600px) { .simulation-panel { padding: 20px; } compound-calculator .chart-panel, finance-calculator .chart-panel { padding: 16px; } }
+
+/* Visual V2 dos gráficos de Calculadoras: mesmo acabamento da Renda Fixa. */
+evolution-chart .chart-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0 !important;
+  margin: 0;
+}
+evolution-chart .panel-heading {
+  order: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 0 15px;
+}
+evolution-chart .panel-heading h2 { font-size: 17px; font-weight: 600; letter-spacing: -.03em; }
+evolution-chart .chart-window-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+evolution-chart .chart-window-control .subtle { font-size: 11px; color: var(--secondary); white-space: nowrap; }
+evolution-chart .chart-window-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line-soft);
+  background: var(--panel);
+  border-radius: 7px;
+}
+evolution-chart .chart-window-buttons button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  color: var(--secondary);
+  cursor: pointer;
+  padding: 6px 9px;
+  font: 600 11px var(--font-body);
+  min-width: 33px;
+}
+evolution-chart .chart-window-buttons button[aria-pressed=true] { color: var(--bg); background: var(--text); }
+evolution-chart .chart-window-buttons button:hover:not(:disabled):not([aria-pressed=true]) { background: var(--raised); color: var(--text); }
+evolution-chart .chart-window-buttons button:disabled:not([aria-pressed=true]) { opacity: .35; cursor: default; }
+evolution-chart .chart-window-buttons button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+evolution-chart .chart-toolbar { display: contents; }
+evolution-chart .chart-readout {
+  order: 1;
+  display: grid;
+  grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);
+  align-items: baseline;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 20px 21px 13px;
+  background: #090c10;
+  color: #edf1f5;
+  border: 1px solid #303843;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+  min-width: 0;
+}
+evolution-chart .chart-readout > span {
+  grid-column: 1/-1;
+  color: #8d9bad;
+  letter-spacing: .1em;
+  font-size: 10px;
+  font-weight: 650;
+}
+evolution-chart .chart-readout > strong {
+  font-size: clamp(19px, 2.1vw, 28px);
+  letter-spacing: -.045em;
+  font-weight: 650;
+  color: #f2f5f8;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+evolution-chart .chart-readout > small {
+  font-size: 11px;
+  color: #9dabbb;
+  min-width: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+evolution-chart .chart-readout > small b {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e3e9ef;
+  font-variant-numeric: tabular-nums;
+}
+evolution-chart .chart-plot {
+  order: 2;
+  padding: 0 11px 8px;
+  border: 1px solid #303843;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: #090c10;
+  overflow: hidden;
+}
+evolution-chart .evolution-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  min-height: 185px;
+  overflow: hidden;
+}
+evolution-chart .chart-axis {
+  fill: #8694a4;
+  font-size: 11px;
+  font-weight: 500;
+}
+evolution-chart .chart-grid {
+  stroke: #303743;
+  stroke-dasharray: 3 5;
+  stroke-width: .75;
+}
+evolution-chart .chart-balance {
+  stroke: #f0f3f8;
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+evolution-chart .chart-invested {
+  stroke: #9fadb9;
+  stroke-width: 1.9;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+evolution-chart .chart-interest {
+  stroke: #72959d;
+  stroke-width: 1.75;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+evolution-chart .chart-balance.is-inspected,
+evolution-chart .chart-invested.is-inspected,
+evolution-chart .chart-interest.is-inspected { stroke-width: 3.1; }
+evolution-chart .chart-cursor,
+evolution-chart .chart-cursor-horizontal {
+  stroke: #9ba6b4;
+  stroke-dasharray: 3 5;
+  stroke-width: .9;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+evolution-chart .chart-cursor-horizontal { opacity: .55; }
+evolution-chart .chart-point {
+  fill: #090c10;
+  stroke: #f3f6f9;
+  stroke-width: 2.6;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+evolution-chart .chart-tooltip {
+  background: #151b23;
+  border: 1px solid #46515e;
+  color: #f2f5f8;
+  border-radius: 7px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.28);
+  padding: 11px 13px;
+  z-index: 2;
+}
+evolution-chart .chart-tooltip span { color: #aebac7; }
+evolution-chart .chart-tooltip strong { color: #f4f6f8; }
+evolution-chart .chart-legend {
+  order: 3;
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
+  padding: 0;
+  margin: 12px 0 0;
+}
+evolution-chart .chart-legend-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  padding: 11px 12px;
+  color: var(--secondary);
+  background: transparent;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+evolution-chart .chart-legend-item:hover,
+evolution-chart .chart-legend-item.is-active {
+  color: var(--text);
+  border-color: var(--line);
+  background: var(--panel);
+}
+evolution-chart .legend-dot.balance { background: #e5eaf0; }
+evolution-chart .legend-dot.invested { border-top-color: #9fadb9; }
+evolution-chart .legend-dot.interest { border-top-color: #72959d; }
+evolution-chart .chart-slider {
+  order: 4;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding-top: 15px;
+  color: var(--secondary);
+  font-size: 12px;
+}
+evolution-chart .chart-slider input { width: min(78%,470px); accent-color: var(--text); }
+evolution-chart .chart-slider input:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+@media (max-width: 700px) {
+  evolution-chart .panel-heading { align-items: start; }
+  evolution-chart .chart-window-control { width: 100%; justify-content: space-between; }
+  evolution-chart .chart-readout { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 16px 12px 12px; }
+  evolution-chart .chart-readout > strong { grid-column: 1/-1; font-size: 23px; }
+  evolution-chart .chart-readout > small b { font-size: 12px; }
+  evolution-chart .chart-plot { padding: 0 3px 5px; }
+  evolution-chart .chart-legend { grid-template-columns: minmax(0,1fr); }
+  evolution-chart .chart-legend-item { padding: 9px 11px; }
+  evolution-chart .chart-slider { flex-wrap: wrap; padding-top: 12px; }
+  evolution-chart .chart-slider input { width: 100%; }
+}
+
+/* Ponto de navegação visível e confortável, inclusive no teclado. */
+evolution-chart .chart-slider input::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(to right, var(--text) 0%, var(--text) var(--slider-progress), var(--line) var(--slider-progress), var(--line) 100%);
+}
+evolution-chart .chart-slider input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -5px;
+  border: 2px solid var(--panel);
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 0 0 1px var(--line);
+}
+evolution-chart .chart-slider input::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--panel);
+  border-radius: 50%;
+  background: var(--text);
+}
