@@ -15,7 +15,7 @@ const printDate=(date:string)=>date.split('-').reverse().join('/');
 @customElement('fixed-income-chart')
 export class FixedIncomeChart extends LightElement {
   private static sequence=0;
-  private readonly gradientId=\`rf-chart-gradient-\${FixedIncomeChart.sequence++}\`;
+  private readonly gradientId=`rf-chart-gradient-${FixedIncomeChart.sequence++}`;
   @property({attribute:false}) series:FixedChartSeries[]=[];
   @property() label='Evolução patrimonial';
   @state() private selectedDate='';
@@ -70,7 +70,7 @@ export class FixedIncomeChart extends LightElement {
     const top=16,bottom=207,plotHeight=bottom-top;
     const x=(d:string)=>plotLeft+(Date.parse(d)-firstVisible)/(lastVisible-firstVisible||1)*plotWidth;
     const y=(v:number)=>bottom-(v-low)/range*plotHeight;
-    const path=(points:{date:string;value:number}[])=>points.map((p,i)=>\`\${i?'L':'M'}\${x(p.date).toFixed(2)},\${y(p.value).toFixed(2)}\`).join(' ');
+    const path=(points:{date:string;value:number}[])=>points.map((p,i)=>`${i?'L':'M'}${x(p.date).toFixed(2)},${y(p.value).toFixed(2)}`).join(' ');
     const highlighted=this.series[0]?.name==='Capital inicial'?this.series.length-1:0;
     const currentIndex=Math.max(0,dates.indexOf(this.selectedDate));
     const index=this.selectedDate&&dates.includes(this.selectedDate)?currentIndex:dates.length-1;
@@ -80,53 +80,53 @@ export class FixedIncomeChart extends LightElement {
     const axisDates=[...new Set(xIndexes)].map(i=>dates[i]);
     const spanYears=(lastTime-firstTime)/(365.2425*86400000);
 
-    return html\`<figure class="rf-chart rf-chart-terminal">
+    return html`<figure class="rf-chart rf-chart-terminal">
       <figcaption class="rf-chart-head">
-        <div class="rf-chart-title"><span>PROJEÇÃO DE PATRIMÔNIO</span><strong>\${this.label}</strong></div>
+        <div class="rf-chart-title"><span>PROJEÇÃO DE PATRIMÔNIO</span><strong>${this.label}</strong></div>
         <div class="rf-chart-periods" role="group" aria-label="Período exibido">
-          \${periods.map(item=>html\`<button type="button" class=\${this.period===item.label?'active':''}
-            aria-pressed=\${this.period===item.label}
-            ?disabled=\${item.years>0&&spanYears<=item.years}
-            @click=\${()=>{this.period=item.label;this.selectedDate=''}}>\${item.label}</button>\`)}
+          ${periods.map(item=>html`<button type="button" class=${this.period===item.label?'active':''}
+            aria-pressed=${this.period===item.label}
+            ?disabled=${item.years>0&&spanYears<=item.years}
+            @click=${()=>{this.period=item.label;this.selectedDate=''}}>${item.label}</button>`)}
         </div>
       </figcaption>
       <div class="rf-chart-surface">
         <div class="rf-chart-readout">
-          <div><span>VALOR PROJETADO NA DATA</span><strong>\${current?money(current.value):'Sem ponto nesta data'}</strong></div>
-          <time datetime=\${date}>\${printDate(date)}</time>
+          <div><span>VALOR PROJETADO NA DATA</span><strong>${current?money(current.value):'Sem ponto nesta data'}</strong></div>
+          <time datetime=${date}>${printDate(date)}</time>
         </div>
-        <svg viewBox=\${\`0 0 \${this.width} 242\`} role="img"
-          aria-label=\${\`\${this.label}. Valores projetados; use o seletor de data abaixo para leitura acessível.\`}
-          @pointermove=\${(event:PointerEvent)=>this.movePointer(event,dates,plotLeft,plotWidth)}
-          @pointerdown=\${(event:PointerEvent)=>this.movePointer(event,dates,plotLeft,plotWidth)}>
-          <defs><linearGradient id=\${this.gradientId} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" style=\${\`stop-color:var(--rf-graph-tone-\${(highlighted%4)+1})\`} stop-opacity=".22"/>
-            <stop offset="100%" style=\${\`stop-color:var(--rf-graph-tone-\${(highlighted%4)+1})\`} stop-opacity="0"/>
+        <svg viewBox=${`0 0 ${this.width} 242`} role="img"
+          aria-label=${`${this.label}. Valores projetados; use o seletor de data abaixo para leitura acessível.`}
+          @pointermove=${(event:PointerEvent)=>this.movePointer(event,dates,plotLeft,plotWidth)}
+          @pointerdown=${(event:PointerEvent)=>this.movePointer(event,dates,plotLeft,plotWidth)}>
+          <defs><linearGradient id=${this.gradientId} x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" style=${`stop-color:var(--rf-graph-tone-${(highlighted%4)+1})`} stop-opacity=".22"/>
+            <stop offset="100%" style=${`stop-color:var(--rf-graph-tone-${(highlighted%4)+1})`} stop-opacity="0"/>
           </linearGradient></defs>
-          \${ticks.map(value=>svg\`<line x1=\${plotLeft} x2=\${plotRight} y1=\${y(value)} y2=\${y(value)} class="rf-chart-grid"/>
-            <text class="rf-chart-axis-label" x=\${this.width-7} y=\${y(value)+4} text-anchor="end">\${shortMoney(value)}</text>\`)}
-          \${axisDates.map((d,i)=>svg\`<text class="rf-chart-axis-label" x=\${x(d)} y="234" text-anchor=\${i===0?'start':i===axisDates.length-1?'end':'middle'}>\${d.slice(5,7)}/\${d.slice(2,4)}</text>\`)}
-          \${lines.map((line,i)=>line.points.length>1&&i===highlighted?svg\`<path class="rf-chart-area" d=\${\`\${path(line.points)} L\${x(line.points[line.points.length-1].date)},\${bottom} L\${x(line.points[0].date)},\${bottom} Z\`} fill=\${\`url(#\${this.gradientId})\`}/>\`:nothing)}
-          \${lines.map((line,i)=>line.points.length?svg\`<path d=\${path(line.points)}
-            class="rf-chart-line \${i===highlighted?'rf-chart-line--primary':''}"
-            style=\${\`--rf-series:var(--rf-graph-tone-\${(i%4)+1})\`}
-            stroke-width=\${i===highlighted?2.8:1.75}
-            stroke-dasharray=\${i===highlighted?'none':patterns[i%4]||'none'} fill="none"/>\`:nothing)}
-          <line class="rf-chart-cursor" x1=\${x(date)} x2=\${x(date)} y1=\${top} y2=\${bottom}/>
-          \${lines.map((line,i)=>{const point=line.points.find(p=>p.date===date);return point?svg\`<circle cx=\${x(date)} cy=\${y(point.value)} r=\${i===highlighted?5:3.5}
-            class="rf-chart-point" style=\${\`--rf-series:var(--rf-graph-tone-\${(i%4)+1})\`}/>\`:nothing})}
+          ${ticks.map(value=>svg`<line x1=${plotLeft} x2=${plotRight} y1=${y(value)} y2=${y(value)} class="rf-chart-grid"/>
+            <text class="rf-chart-axis-label" x=${this.width-7} y=${y(value)+4} text-anchor="end">${shortMoney(value)}</text>`)}
+          ${axisDates.map((d,i)=>svg`<text class="rf-chart-axis-label" x=${x(d)} y="234" text-anchor=${i===0?'start':i===axisDates.length-1?'end':'middle'}>${d.slice(5,7)}/${d.slice(2,4)}</text>`)}
+          ${lines.map((line,i)=>line.points.length>1&&i===highlighted?svg`<path class="rf-chart-area" d=${`${path(line.points)} L${x(line.points[line.points.length-1].date)},${bottom} L${x(line.points[0].date)},${bottom} Z`} fill=${`url(#${this.gradientId})`}/>`:nothing)}
+          ${lines.map((line,i)=>line.points.length?svg`<path d=${path(line.points)}
+            class="rf-chart-line ${i===highlighted?'rf-chart-line--primary':''}"
+            style=${`--rf-series:var(--rf-graph-tone-${(i%4)+1})`}
+            stroke-width=${i===highlighted?2.8:1.75}
+            stroke-dasharray=${i===highlighted?'none':patterns[i%4]||'none'} fill="none"/>`:nothing)}
+          <line class="rf-chart-cursor" x1=${x(date)} x2=${x(date)} y1=${top} y2=${bottom}/>
+          ${lines.map((line,i)=>{const point=line.points.find(p=>p.date===date);return point?svg`<circle cx=${x(date)} cy=${y(point.value)} r=${i===highlighted?5:3.5}
+            class="rf-chart-point" style=${`--rf-series:var(--rf-graph-tone-${(i%4)+1})`}/>`:nothing})}
         </svg>
       </div>
-      <label class="rf-chart-slider">Data no gráfico: <strong>\${printDate(date)}</strong>
-        <input type="range" min="0" max=\${dates.length-1} step="1" aria-label="Data no gráfico"
-          .value=\${String(index)}
-          @input=\${(event:Event)=>{this.selectedDate=dates[Number((event.target as HTMLInputElement).value)]}} />
+      <label class="rf-chart-slider">Data no gráfico: <strong>${printDate(date)}</strong>
+        <input type="range" min="0" max=${dates.length-1} step="1" aria-label="Data no gráfico"
+          .value=${String(index)}
+          @input=${(event:Event)=>{this.selectedDate=dates[Number((event.target as HTMLInputElement).value)]}} />
       </label>
       <ul class="rf-chart-legend">
-        \${this.series.map((line,i)=>{const point=lines[i].points.find(p=>p.date===date);
-          return html\`<li><span class="rf-line-sample" style=\${\`--rf-series:var(--rf-graph-tone-\${(i%4)+1});border-top-style:\${i===highlighted?'solid':'dashed'}\`}></span>
-          <span>\${line.name}</span><strong>\${point?money(point.value):'Sem ponto nesta data'}</strong></li>\`})}
+        ${this.series.map((line,i)=>{const point=lines[i].points.find(p=>p.date===date);
+          return html`<li><span class="rf-line-sample" style=${`--rf-series:var(--rf-graph-tone-${(i%4)+1});border-top-style:${i===highlighted?'solid':'dashed'}`}></span>
+          <span>${line.name}</span><strong>${point?money(point.value):'Sem ponto nesta data'}</strong></li>`})}
       </ul>
-    </figure>\`;
+    </figure>`;
   }
 }
