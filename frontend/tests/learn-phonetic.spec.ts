@@ -37,7 +37,7 @@ test('phonetic editor obeys length, multiline insertion and on/off preference',(
   expect(b.setEnabled(true).value).toBe('щ\nг');
 });
 test('target language protects Portuguese translation fields',()=>{
-  const vocabulary=ru.exercises.find(e=>e.skill==='vocabulary')!;
+  const vocabulary=ru.exercises.find(e=>e.skill==='listening')!;
   const writing=ru.exercises.find(e=>e.skill==='writing')!;
   expect(answerLanguage(vocabulary)).toBe('pt-BR');
   expect(answerLanguage(writing)).toBe('ru');
