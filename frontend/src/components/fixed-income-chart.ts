@@ -75,6 +75,11 @@ export class FixedIncomeChart extends LightElement {
     const currentIndex=Math.max(0,dates.indexOf(this.selectedDate));
     const index=this.selectedDate&&dates.includes(this.selectedDate)?currentIndex:dates.length-1;
     const date=dates[index],current=lines[highlighted]?.points.find(p=>p.date===date);
+    const starting=lines[highlighted]?.points[0]?.value;
+    const growth=current&&starting!==undefined?current.value-starting:null;
+    const growthPercent=growth!==null&&starting!==0?growth/Math.abs(starting)*100:null;
+    const growthLabel=growth===null?'—':`${growth>=0?'+':'−'}${money(Math.abs(growth))}`;
+    const percentLabel=growthPercent===null?'':`${growthPercent>=0?'+':''}${growthPercent.toLocaleString('pt-BR',{maximumFractionDigits:2,minimumFractionDigits:2})}%`;
     const ticks=Array.from({length:5},(_,i)=>low+range*i/4);
     const xIndexes=dates.length<=2?[0,dates.length-1]:[0,Math.floor((dates.length-1)/2),dates.length-1];
     const axisDates=[...new Set(xIndexes)].map(i=>dates[i]);
@@ -93,7 +98,10 @@ export class FixedIncomeChart extends LightElement {
       <div class="rf-chart-surface">
         <div class="rf-chart-readout">
           <div><span>VALOR PROJETADO NA DATA</span><strong>${current?money(current.value):'Sem ponto nesta data'}</strong></div>
-          <time datetime=${date}>${printDate(date)}</time>
+          <div class="rf-chart-context"><time datetime=${date}>${printDate(date)}</time>
+            <span class="rf-chart-growth" aria-label="Variação desde o início da série selecionada">
+              ${growthLabel}${percentLabel?html`<small>${percentLabel}</small>`:nothing}</span>
+          </div>
         </div>
         <svg viewBox=${`0 0 ${this.width} 242`} role="img"
           aria-label=${`${this.label}. Valores projetados; use o seletor de data abaixo para leitura acessível.`}
@@ -113,6 +121,9 @@ export class FixedIncomeChart extends LightElement {
             stroke-width=${i===highlighted?2.8:1.75}
             stroke-dasharray=${i===highlighted?'none':patterns[i%4]||'none'} fill="none"/>`:nothing)}
           <line class="rf-chart-cursor" x1=${x(date)} x2=${x(date)} y1=${top} y2=${bottom}/>
+          ${current?svg`<line class="rf-chart-cursor-horizontal" x1=${plotLeft} x2=${plotRight} y1=${y(current.value)} y2=${y(current.value)}/>
+            <rect class="rf-chart-price-tag" x=${plotRight+4} y=${y(current.value)-10} width="70" height="20" rx="4"/>
+            <text class="rf-chart-price-text" x=${this.width-5} y=${y(current.value)+3.4} text-anchor="end">${shortMoney(current.value)}</text>`:nothing}
           ${lines.map((line,i)=>{const point=line.points.find(p=>p.date===date);return point?svg`<circle cx=${x(date)} cy=${y(point.value)} r=${i===highlighted?5:3.5}
             class="rf-chart-point" style=${`--rf-series:var(--rf-graph-tone-${(i%4)+1})`}/>`:nothing})}
         </svg>
