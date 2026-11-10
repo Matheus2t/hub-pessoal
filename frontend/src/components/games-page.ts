@@ -1,6 +1,7 @@
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
+import { gameHeader } from "./arcade-core";
 
 type Point = { x: number; y: number };
 type Entry = { name: string; score: number; date: string };
@@ -144,7 +145,7 @@ export class GamesPage extends LightElement {
     const head = this.snake[0].y * SIZE + this.snake[0].x;
     const food = this.food.y * SIZE + this.food.x;
     return html`<section class="games-section">
-      <header class="games-header"><div><span class="games-kicker">Games / 01</span><h1>Snake</h1><p>A cobrinha clássica. Colete pontos, evolua de nível e supere seu recorde.</p></div></header>
+      ${gameHeader("snake","A cobrinha clássica. Colete pontos, evolua de nível e supere seu recorde.")}
       <div class="games-layout">
         <section class="snake-panel" aria-label="Jogo Snake">
           <div class="snake-stats">
