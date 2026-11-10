@@ -556,6 +556,10 @@ test('permission refusal, cancelled and late captures, local preview and route c
   const settings=a.page.locator('.call-microphone-settings');
   await settings.locator('summary').click();
   const mode=settings.getByRole('combobox',{name:'Processamento do microfone'});
+  await expect(mode).toHaveValue('clean');
+  expect(await a.page.evaluate(()=>(document.querySelector('call-page') as any).micProcessing.flags.autoGainControl)).toBe(false);
+  await expect(settings.locator('.call-mic-effective')).toContainText('ruído:');
+  await expect(settings.locator('.call-mic-effective')).toContainText('ganho:');
   await mode.selectOption('natural');
   await expect.poll(()=>a.page.evaluate(()=>{
    const processor=(document.querySelector('call-page') as any).micProcessing;
@@ -573,6 +577,13 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await media(b.page,await id(a.page),'microphone');
   await gate.evaluate((input:HTMLInputElement)=>{input.value='0';input.dispatchEvent(new Event('input',{bubbles:true}))});
   await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).micProcessing.sensitivity)).toBe(0);
+  await expect.poll(()=>a.page.evaluate(()=>{
+   const page=document.querySelector('call-page') as any;
+   return page.micProcessing.context===undefined&&page.micProcessing.outgoing===undefined&&
+    page.microphone?.getAudioTracks()[0]===page.micProcessing.source?.getAudioTracks()[0]&&
+    page.micProcessing.source.getAudioTracks()[0].readyState==='live';
+  })).toBe(true);
+  await media(b.page,await id(a.page),'microphone');
   await a.page.evaluate(()=>{(window as any).__denyDisplay=true;(window as any).__denyCamera=true});
   await a.page.getByRole('button',{name:'Compartilhar tela',exact:true}).click();await expect(a.page.getByRole('alert')).toContainText('cancelado');
   await a.page.getByRole('button',{name:'Ativar câmera',exact:true}).click();await expect(a.page.getByRole('alert')).toContainText('Permita');
