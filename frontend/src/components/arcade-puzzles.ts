@@ -244,3 +244,4 @@ export class ArcadeMemory extends LightElement {
     <div class="arcade-memory-board" role="group" aria-label="Cartas de memória">${this.deck.map((v,i)=>html`<button class=${this.revealed.includes(i)||this.matched.includes(i)?"face-up":""} ?disabled=${this.matched.includes(i)} @click=${()=>this.flip(i)} aria-label=${`Carta ${i+1}, ${this.revealed.includes(i)||this.matched.includes(i)?v:"virada"}`}>${this.revealed.includes(i)||this.matched.includes(i)?v:"?"}</button>`)}</div>
     <p class="arcade-status" role="status">${this.complete?`Concluído em ${this.moves} movimentos e ${this.seconds} segundos!`:"Vire duas cartas e encontre o par."}</p>
   </section>`;}
+}
