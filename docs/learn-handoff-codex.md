@@ -128,3 +128,8 @@ Arquivos principais: `frontend/src/learn/content.ts`, `model.ts`, `storage.ts`, 
 ## Atualização da etapa 2.2/2.3 — 10/11/2026
 
 Currículos independentes, vínculos a IDs legados e roteiros originais das duas unidades-piloto foram preparados em `frontend/public/learn/pedagogy-v1/`. Consulte `docs/learn-curriculo-v1.md` para a matriz de competências, limites, critérios editoriais e integração. Execute `npm run learn:validate-pedagogy` para conferir integridade antes de iniciar engenharia. **Estado: rascunho validado estruturalmente; não publicado como experiência de estudo, sem aprovação linguística definitiva.**
+
+
+## Complemento etapa 3.1 — diagnóstico pedagógico
+
+O contrato de diagnóstico e seus cenários de teste foram definido em `docs/learn-diagnostico-v1.md`. **Antes de implementar um diagnóstico automático**, preservar o estado `não avaliado` para lacunas de evidência, rubricas que não podem ser corrigidas com segurança e produção oral. Não derivar percentuais de fluência de tentativas de tradução; manter recomendações explicáveis e não bloqueantes.
