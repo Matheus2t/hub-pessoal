@@ -16,6 +16,9 @@ import "./team-shortcuts";
 import "./team-page";
 import "./sports-calendar";
 import "./games-page";
+import "./arcade-core";
+import "./arcade-puzzles";
+import "./arcade-action";
 import "./fixed-income-page";
 import "./panel-workspace";
 import "../learn/host";
@@ -77,7 +80,7 @@ export class AppShell extends LightElement {
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           <call-page ?hidden=${this.page !== "call"} @call-session-change=${this.onCallSession}></call-page>
-          ${this.page === 'games' ? html`<games-page></games-page>` : ''}
+          ${this.page === 'games' ? keyed(this.route, this.route === '#/games' ? html`<arcade-hub></arcade-hub>` : this.route === '#/games/snake' ? html`<games-page></games-page>` : this.route === '#/games/sudoku' ? html`<arcade-sudoku></arcade-sudoku>` : this.route === '#/games/2048' ? html`<arcade-2048></arcade-2048>` : this.route === '#/games/breakout' ? html`<arcade-breakout></arcade-breakout>` : this.route === '#/games/pong' ? html`<arcade-pong></arcade-pong>` : this.route === '#/games/palavra-secreta' ? html`<arcade-words></arcade-words>` : this.route === '#/games/digitacao' ? html`<arcade-typing></arcade-typing>` : this.route === '#/games/jogo-da-velha' ? html`<arcade-tic></arcade-tic>` : this.route === '#/games/reflexos' ? html`<arcade-reflex></arcade-reflex>` : html`<arcade-memory></arcade-memory>`) : ''}
           ${this.page === 'sports' ? html`<sports-calendar></sports-calendar>` : ''}
           ${this.page === 'fixedIncome' ? html`<fixed-income-page></fixed-income-page>` : ''}
           ${['76ers', 'spfc', 'barcelona'].includes(this.page) ? keyed(this.page, html`<team-page .team=${this.page}></team-page>`) : ''}
