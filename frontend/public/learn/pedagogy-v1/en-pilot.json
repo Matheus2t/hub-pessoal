@@ -57,7 +57,7 @@
       "id": "en-intro-c1",
       "kind": "comprehension",
       "evidence": "comprehension",
-      "prompt": "O que Leo estuda?",
+      "prompt": "No diálogo, qual área Leo diz que estuda?",
       "choices": [
         "Inglês",
         "Análise de dados",
