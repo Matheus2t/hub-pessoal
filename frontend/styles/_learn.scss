@@ -959,3 +959,63 @@ learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto
     .learn-language:hover, .learn-unit-choice:hover { transform: none; }
   }
 }
+
+
+// Session preparation uses the same editorial layout as the new Learn hub.
+.learn-page {
+  .learn-practice-setup {
+    max-width: 1100px;
+    margin: 0 0 32px;
+    border: 1px solid var(--line-soft);
+    border-radius: 13px;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .learn-practice-setup__header {
+    padding: clamp(24px,3.5vw,43px);
+    border-bottom: 1px solid var(--line-soft);
+    h2 {
+      margin: 11px 0 0;
+      font-size: clamp(28px,3vw,43px);
+      font-weight: 530;
+      letter-spacing: -.055em;
+    }
+  }
+  .learn-practice-setup .learn-filters {
+    margin: 0;
+    padding: clamp(22px,3vw,35px);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .learn-practice-translit {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 clamp(22px,3vw,35px);
+    font-size: 13px;
+    color: var(--secondary);
+    input { margin: 0; }
+  }
+  .learn-practice-setup__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 24px;
+    margin-top: 8px;
+    padding: 22px clamp(22px,3vw,35px);
+    border-top: 1px solid var(--line-soft);
+    background: var(--raised);
+    p { margin: 0; font-size: 13px; color: var(--secondary); }
+    .button.primary { min-height: 49px; padding-inline: 28px; }
+  }
+  learn-activity > .learn-privacy { margin-top: 32px; }
+  @media (max-width: 650px) {
+    .learn-practice-setup__footer {
+      align-items: stretch;
+      flex-direction: column;
+      .button.primary { width: 100%; }
+    }
+  }
+}
