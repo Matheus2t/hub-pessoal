@@ -6,12 +6,13 @@ import {channelLink,parseChannel,parseInvite,type ChannelStatus} from './protoco
 import {channelDevice,requestChannel,requestChannelLobby} from './channel';
 import './channel-owner';
 import {VoiceMesh} from './voice';
-import {CallPreferences} from './preferences';
+import {CallPreferences,type TalkMode} from './preferences';
 import {CallAudioOutput} from './output';
 import type {ListeningSource} from './audio-mix';
 import {CallCapture,callCaptureHandle} from './capture';
 import {screenPresets,screenQualityOptions,type ScreenQuality,type ScreenContent,type ScreenSource} from './screen-quality';
 import {CallMicrophoneProcessing,type MicrophoneMode,type MicrophoneFlag} from './microphone-processing';
+import {CallMicrophoneDiagnostics} from './microphone-diagnostics';
 import {ScreenFullscreen} from './fullscreen';
 import {ScreenPictureInPicture} from './picture-in-picture';
 import {repeat} from 'lit/directives/repeat.js';
@@ -47,7 +48,84 @@ export class CallPage extends LightElement {
  private preferences=new CallPreferences();
  private restoredPeople=new Set<string>();
  private output=new CallAudioOutput(this.voice,()=>this.requestUpdate(),id=>this.preferences.selectOutput(id));
- private onDevicesChanged=()=>{void this.output.refresh()};
+ @state() private microphoneInputs:MediaDeviceInfo[]=[];
+ @state() private microphoneInput='';
+ @state() private holdingToTalk=false;
+ private speechUntil=0;
+ private microphoneDiagnostics=new CallMicrophoneDiagnostics(()=>this.requestUpdate(),level=>this.onMicrophoneLevel(level));
+ private onDevicesChanged=()=>{void this.output.refresh();void this.refreshMicrophoneInputs()};
+ private get talkMode(){return this.preferences.talkMode}
+ private get sendingMicrophone(){return !!this.microphone?.getAudioTracks().some(t=>t.readyState==='live'&&t.enabled)}
+ private applyTalkMode(){
+  const track=this.microphone?.getAudioTracks()[0];
+  if(!track)return;
+  const send=this.talkMode==='open'||this.talkMode==='ptt'&&this.holdingToTalk||
+   this.talkMode==='voice'&&performance.now()<this.speechUntil;
+  if(track.enabled!==send){
+   track.enabled=send;this.publishMedia();this.announceCall();this.requestUpdate();
+  }
+ }
+ private onMicrophoneLevel(level:number){
+  if(this.talkMode==='voice'&&this.microphone){
+   if(level>=this.preferences.voiceThreshold)this.speechUntil=performance.now()+650;
+   this.applyTalkMode();
+  }
+ }
+ private setTalkMode(mode:TalkMode){
+  if(!['open','voice','ptt'].includes(mode))return;
+  this.preferences.setTalkMode(mode);
+  this.holdingToTalk=false;this.speechUntil=0;
+  this.applyTalkMode();this.requestUpdate();
+ }
+ private holdToTalk(held:boolean){
+  if(this.talkMode!=='ptt'||!this.voice.active||!this.microphone)return;
+  if(this.holdingToTalk===held)return;
+  this.holdingToTalk=held;this.applyTalkMode();this.requestUpdate();
+ }
+ private onTalkKeyDown=(event:KeyboardEvent)=>{
+  if(event.code!=='Space'||this.talkMode!=='ptt'||event.repeat||event.altKey||event.ctrlKey||event.metaKey)return;
+  const target=event.target as HTMLElement|null;
+  if(target?.closest('input,textarea,select,button,[contenteditable="true"]'))return;
+  if(!this.voice.active||!this.microphone)return;
+  event.preventDefault();this.holdToTalk(true);
+ };
+ private onTalkKeyUp=(event:KeyboardEvent)=>{
+  if(event.code!=='Space'||!this.holdingToTalk)return;
+  event.preventDefault();this.holdToTalk(false);
+ };
+ private releaseTalk=()=>this.holdToTalk(false);
+ private async refreshMicrophoneInputs(){
+  if(!navigator.mediaDevices?.enumerateDevices)return;
+  try{
+   this.microphoneInputs=(await navigator.mediaDevices.enumerateDevices()).filter(device=>device.kind==='audioinput'&&device.deviceId);
+   this.requestUpdate();
+  }catch{/* Device enumeration is optional before permission is granted. */}
+ }
+ private inputConstraints(deviceId=this.microphoneInput):MediaTrackConstraints{
+  const options=this.micProcessing.constraints();
+  return deviceId?{...options,deviceId:{exact:deviceId}}:options;
+ }
+ private async selectMicrophoneInput(id:string){
+  if(this.micBusy)return;
+  const previous=this.microphoneInput;
+  this.microphoneInput=id;
+  if(!this.microphone){this.requestUpdate();return}
+  const request=++this.micRequest;this.micBusy=true;this.error='';this.requestUpdate();
+  try{
+   const stream=await navigator.mediaDevices.getUserMedia({audio:this.inputConstraints(id),video:false});
+   if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
+   const outgoing=await this.micProcessing.attach(stream);
+   if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
+   this.microphone=outgoing;
+   this.microphoneDiagnostics.attach(this.micProcessing.input);
+   this.applyTalkMode();
+   this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
+   stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado.'}});
+   void this.refreshMicrophoneInputs();
+  }catch(error){
+   if(request===this.micRequest){this.microphoneInput=previous;this.error=this.message(error,false)}
+  }finally{if(request===this.micRequest){this.micBusy=false;this.requestUpdate()}}
+ }
  /** Best-effort call audio focus while the phone screen is locked. */
  private setCallAudioSession(active:boolean){
   try{
@@ -63,7 +141,8 @@ export class CallPage extends LightElement {
   }catch{/* Media Session API is optional. */}
  }
  private onForeground=()=>{
-  if(document.visibilityState!=='visible'||!this.call.session)return;
+  if(document.visibilityState!=='visible'){this.releaseTalk();return}
+  if(!this.call.session)return;
   this.call.resumeOnForeground();
   if(this.voice.active){this.setCallAudioSession(true);this.voice.unlockAudio()}
   this.requestUpdate();
@@ -134,9 +213,10 @@ export class CallPage extends LightElement {
  }
  connectedCallback(){super.connectedCallback();this.classList.add('call-page');
   // Lets another Call tab recognize and discard captured call playback audio.
-  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);void this.output.refresh();this.loadChannel()}
- disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);this.teardown();super.disconnectedCallback()}
+  try{(navigator.mediaDevices as MediaDevices&{setCaptureHandleConfig?:(config:{handle:string;exposeOrigin:boolean;permittedOrigins:string[]})=>void})?.setCaptureHandleConfig?.({handle:callCaptureHandle,exposeOrigin:true,permittedOrigins:[location.origin]})}catch{/* Optional browser capability. */}window.addEventListener('pagehide',this.onPageHide);window.addEventListener('pageshow',this.onForeground);document.addEventListener('visibilitychange',this.onForeground);window.addEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.addEventListener?.('devicechange',this.onDevicesChanged);window.addEventListener('keydown',this.onTalkKeyDown);window.addEventListener('keyup',this.onTalkKeyUp);window.addEventListener('blur',this.releaseTalk);window.addEventListener('pointerup',this.releaseTalk);window.addEventListener('pointercancel',this.releaseTalk);void this.output.refresh();void this.refreshMicrophoneInputs();this.loadChannel()}
+ disconnectedCallback(){window.removeEventListener('pagehide',this.onPageHide);window.removeEventListener('pageshow',this.onForeground);document.removeEventListener('visibilitychange',this.onForeground);window.removeEventListener('hashchange',this.routeChanged);navigator.mediaDevices?.removeEventListener?.('devicechange',this.onDevicesChanged);window.removeEventListener('keydown',this.onTalkKeyDown);window.removeEventListener('keyup',this.onTalkKeyUp);window.removeEventListener('blur',this.releaseTalk);window.removeEventListener('pointerup',this.releaseTalk);window.removeEventListener('pointercancel',this.releaseTalk);this.teardown();super.disconnectedCallback()}
  private teardown=()=>{
+  this.releaseTalk();this.microphoneDiagnostics.detach();
   this.setCallAudioSession(false);
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
   this.stopSpeakers();this.restoredPeople.clear();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
