@@ -68,6 +68,17 @@ npm run test:e2e
 
 Playwright valida HTTP/MIME dos estáticos, cálculo real pela API, navegação, temas, menu móvel, ausência de overflow, gráfico, tabela, loading e falhas da API nas larguras 1920, 1366, 768, 390 e 320 px. As capturas ficam em `test-results/` (ignorado pelo Git). Para Chromium instalado pelo Playwright, defina `PW_CHANNEL=chromium`. `BASE_URL` permite validar um deploy autorizado.
 
+## 2T Learn — reconstrução pedagógica
+
+A nova metodologia de Inglês/Russo segue as etapas 1–7 do plano de evolução: fundamentos, currículo, personalização, aulas-piloto, consolidação, validação e expansão.
+
+- [Fundamentação pedagógica e critérios de avaliação](docs/learn-pedagogia-v1.md)
+- [Inventário existente e proposta curricular independente por idioma](docs/learn-inventario-curricular.md)
+- [Handoff técnico e critérios para o Codex](docs/learn-handoff-codex.md)
+- Auditoria reprodutível de catálogos: `npm run learn:audit` (somente leitura).
+
+Não confundir exercícios completados com proficiência CEFR. Histórico, backups e funcionamento do Learn atual devem ser preservados até a validação pedagógica das unidades-piloto.
+
 ## GitHub
 
 Repositório existente: https://github.com/Matheus2t/hub-pessoal — branch `main`, com deploy automático no projeto Vercel existente.
