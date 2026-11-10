@@ -1019,3 +1019,109 @@ learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto
     }
   }
 }
+
+
+// Russian phonetic input — isolated from English and Portuguese response fields.
+.learn-page {
+  learn-phonetic-editor { display: block; width: 100%; min-width: 0; }
+  .learn-phonetic-editor {
+    display: grid;
+    gap: 11px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+  .learn-phonetic-editor__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 9px 16px;
+    label { color: var(--secondary); font-size: 14px; font-weight: 500; }
+  }
+  .learn-phonetic-editor__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--raised);
+    color: var(--text);
+    font: 12px var(--font-body);
+    font-weight: 550;
+    cursor: pointer;
+    &:hover { border-color: var(--secondary); }
+    &:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  }
+  .learn-phonetic-editor__indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .learn-phonetic-editor__toggle[aria-pressed=true] .learn-phonetic-editor__indicator {
+    background: currentColor;
+  }
+  .learn-phonetic-editor textarea {
+    width: 100%;
+    min-height: 126px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--bg);
+    color: var(--text);
+    font: 18px/1.65 var(--font-body);
+    resize: vertical;
+    &:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  }
+  .learn-phonetic-editor__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 12px;
+    padding: 12px 0 3px;
+    border-top: 1px solid var(--line-soft);
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--secondary);
+      line-height: 1.55;
+    }
+  }
+  .learn-phonetic-editor__symbols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    button {
+      display: inline-grid;
+      place-items: center;
+      min-width: 39px;
+      min-height: 39px;
+      padding: 6px 9px;
+      border: 1px solid var(--line-soft);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--text);
+      font: 18px var(--font-body);
+      cursor: pointer;
+      &:hover { background: var(--raised); border-color: var(--line); }
+      &:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+      &:disabled { opacity: .5; cursor: not-allowed; }
+    }
+  }
+  .learn-phonetic-editor__hint {
+    margin: 0;
+    color: var(--secondary);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  @media(max-width: 450px) {
+    .learn-phonetic-editor__header { align-items: start; flex-direction: column; }
+    .learn-phonetic-editor__symbols { gap: 5px; }
+    .learn-phonetic-editor__symbols button { min-width: 36px; min-height: 36px; }
+  }
+}
