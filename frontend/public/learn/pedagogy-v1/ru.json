@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "language": "ru",
+  "status": "curriculum-draft",
+  "framework": "CEFR-aligned objectives (indicative; not certification)",
+  "principles": [
+    "Cyrillic reading is supported without requiring all grammar upfront",
+    "Phonetic keyboard is optional scaffolding, not evidence of independent Cyrillic typing",
+    "Legacy attempts do not prove oral production",
+    "Existing IDs are preserved"
+  ],
+  "objectives": [
+    {
+      "id": "ru-cyrillic-01",
+      "order": 1,
+      "band": "Pre-A1/A1",
+      "title": "Reconhecer cirílico funcional",
+      "scenario": "Identificar palavras, nomes e indicações básicas",
+      "canDo": "Consigo distinguir grafias e ler palavras frequentes sem depender sempre da transliteração.",
+      "prerequisites": [],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "ru-grammar-01",
+          "role": "grammar-support",
+          "note": "Lição introdutória de leitura"
+        },
+        {
+          "id": "ru-word-001",
+          "role": "lexical-support",
+          "note": "Saudação formal"
+        },
+        {
+          "id": "ru-word-008",
+          "role": "lexical-support",
+          "note": "Expressão de saudação para reconhecer padrões da escrita cirílica."
+        },
+        {
+          "id": "ru-word-019",
+          "role": "lexical-support",
+          "note": "Reconhecer a palavra 'nome' em perguntas de apresentação."
+        },
+        {
+          "id": "ru-listening-007",
+          "role": "existing-practice",
+          "note": "Reconhecimento de desculpe; não avalia pronúncia"
+        }
+      ]
+    },
+    {
+      "id": "ru-introductions-02",
+      "order": 2,
+      "band": "A1",
+      "title": "Cumprimentar e apresentar-se",
+      "scenario": "Primeira conversa entre colegas",
+      "canDo": "Consigo cumprimentar, perguntar nome e responder apropriadamente a uma apresentação simples.",
+      "prerequisites": [
+        "ru-cyrillic-01"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "ru-word-001",
+          "role": "lexical-support",
+          "note": "Cumprimento formal"
+        },
+        {
+          "id": "ru-word-003",
+          "role": "lexical-support",
+          "note": "Forma educada de cortesia utilizada em pedidos cotidianos."
+        },
+        {
+          "id": "ru-word-019",
+          "role": "lexical-support",
+          "note": "Reconhecer a palavra 'nome' em perguntas de apresentação."
+        },
+        {
+          "id": "ru-grammar-02",
+          "role": "grammar-support",
+          "note": "Pronomes pessoais"
+        },
+        {
+          "id": "ru-phrase-004",
+          "role": "language-support",
+          "note": "Como se escreve o sobrenome"
+        },
+        {
+          "id": "ru-test-08",
+          "role": "existing-practice",
+          "note": "Bom dia escrito isoladamente"
+        }
+      ]
+    },
+    {
+      "id": "ru-directions-03",
+      "order": 3,
+      "band": "A1–A2",
+      "title": "Pedir informações na rua",
+      "scenario": "Localizar uma estação; depois, outra instalação",
+      "canDo": "Consigo perguntar onde fica um local e compreender uma orientação curta.",
+      "prerequisites": [
+        "ru-cyrillic-01",
+        "ru-introductions-02"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "independentProduction",
+        "transfer"
+      ],
+      "pilotId": "ru-pilot-directions-01",
+      "assets": [
+        {
+          "id": "ru-word-007",
+          "role": "lexical-support",
+          "note": "Pedido de atenção/desculpa"
+        },
+        {
+          "id": "ru-word-090",
+          "role": "lexical-support",
+          "note": "Identifica o destino procurado ao pedir informações na rua."
+        },
+        {
+          "id": "ru-word-098",
+          "role": "lexical-support",
+          "note": "Direção à esquerda para interpretar a orientação recebida."
+        },
+        {
+          "id": "ru-word-099",
+          "role": "lexical-support",
+          "note": "Contraste com esquerda na compreensão de um trajeto."
+        },
+        {
+          "id": "ru-word-110",
+          "role": "lexical-support",
+          "note": "Marco de referência junto à estação, citado no diálogo."
+        },
+        {
+          "id": "ru-phrase-007",
+          "role": "language-support",
+          "note": "Procurar a estação"
+        },
+        {
+          "id": "ru-phrase-031",
+          "role": "language-support",
+          "note": "Perguntar pela farmácia"
+        },
+        {
+          "id": "ru-grammar-08",
+          "role": "grammar-support",
+          "note": "Perguntas em russo"
+        },
+        {
+          "id": "ru-grammar-08-q1",
+          "role": "existing-practice",
+          "note": "Lacuna sobre onde fica a estação"
+        },
+        {
+          "id": "ru-writing-098",
+          "role": "existing-practice",
+          "note": "Instrução de virar à esquerda"
+        },
+        {
+          "id": "ru-writing-099",
+          "role": "existing-practice",
+          "note": "Instrução de virar à direita"
+        },
+        {
+          "id": "ru-test-09",
+          "role": "existing-practice",
+          "note": "Escrita de estação isolada"
+        }
+      ]
+    },
+    {
+      "id": "ru-routine-04",
+      "order": 4,
+      "band": "A1–A2",
+      "title": "Falar de rotina e descrever pessoas",
+      "scenario": "Conversar sobre horários e hábitos",
+      "canDo": "Consigo descrever atividades habituais e entender a rotina curta de outra pessoa.",
+      "prerequisites": [
+        "ru-introductions-02"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "ru-reading-01",
+          "role": "context",
+          "note": "Texto de rotina existente"
+        },
+        {
+          "id": "ru-grammar-06",
+          "role": "grammar-support",
+          "note": "Verbos no presente"
+        },
+        {
+          "id": "ru-test-26",
+          "role": "existing-practice",
+          "note": "Frase sobre ler todos os dias"
+        },
+        {
+          "id": "ru-grammar-07",
+          "role": "grammar-support",
+          "note": "Estrutura de negação usada para contrastar hábitos na rotina."
+        }
+      ]
+    },
+    {
+      "id": "ru-purchases-05",
+      "order": 5,
+      "band": "A1–A2",
+      "title": "Pedir comida e resolver uma compra",
+      "scenario": "Pedir cardápio, solicitar a conta e pagar",
+      "canDo": "Consigo pedir algo de forma adequada e entender uma pergunta simples sobre pagamento.",
+      "prerequisites": [
+        "ru-introductions-02"
+      ],
+      "evidence": [
+        "comprehension",
+        "guidedProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "ru-reading-02",
+          "role": "context",
+          "note": "Texto sobre compras"
+        },
+        {
+          "id": "ru-phrase-013",
+          "role": "language-support",
+          "note": "Pedido de cardápio em interação de restaurante."
+        },
+        {
+          "id": "ru-phrase-015",
+          "role": "language-support",
+          "note": "Pedido educado de conta ao encerrar uma refeição."
+        },
+        {
+          "id": "ru-phrase-016",
+          "role": "language-support",
+          "note": "Pagamento por cartão"
+        },
+        {
+          "id": "ru-word-055",
+          "role": "lexical-support",
+          "note": "Vocabulário para solicitar ou compreender comprovante de compra."
+        }
+      ]
+    },
+    {
+      "id": "ru-journey-06",
+      "order": 6,
+      "band": "A2–B1 (indicative)",
+      "title": "Explicar mudanças de viagem e movimento",
+      "scenario": "Alterar trajetos e descrever deslocamentos",
+      "canDo": "Consigo comparar opções de caminho e relatar uma mudança breve de planos.",
+      "prerequisites": [
+        "ru-directions-03",
+        "ru-routine-04"
+      ],
+      "evidence": [
+        "comprehension",
+        "independentProduction",
+        "transfer"
+      ],
+      "assets": [
+        {
+          "id": "ru-v2-reading-003",
+          "role": "context",
+          "note": "Texto novo sobre rota"
+        },
+        {
+          "id": "ru-v2-grammar-005",
+          "role": "grammar-support",
+          "note": "Verbos de movimento"
+        },
+        {
+          "id": "ru-phrase-008",
+          "role": "language-support",
+          "note": "Rota de ônibus"
+        },
+        {
+          "id": "ru-writing-090",
+          "role": "existing-practice",
+          "note": "Perguntar sobre a estação"
+        }
+      ]
+    }
+  ]
+}

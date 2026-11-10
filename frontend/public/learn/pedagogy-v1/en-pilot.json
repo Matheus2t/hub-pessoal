@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "id": "en-pilot-introductions-01",
+  "language": "en",
+  "objectiveId": "en-introductions-01",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "title": "Primeiro contato em um curso",
+  "durationMinutesRange": [
+    12,
+    20
+  ],
+  "canDo": "Consigo me apresentar, dizer brevemente o que estudo ou faço e perguntar sobre outra pessoa.",
+  "scenario": "Duas pessoas conversam antes de uma atividade. Depois você participa da conversa.",
+  "dialogue": [
+    {
+      "speaker": "Maya",
+      "text": "Hi! I'm Maya. What's your name?"
+    },
+    {
+      "speaker": "Leo",
+      "text": "I'm Leo. Nice to meet you."
+    },
+    {
+      "speaker": "Maya",
+      "text": "Nice to meet you too. Are you a student?"
+    },
+    {
+      "speaker": "Leo",
+      "text": "Yes, I study data analysis. What about you?"
+    },
+    {
+      "speaker": "Maya",
+      "text": "I work in an office. I also study English."
+    }
+  ],
+  "support": {
+    "visibility": "on-demand",
+    "glossary": [
+      {
+        "source": "Nice to meet you",
+        "pt": "Prazer em conhecer você"
+      },
+      {
+        "source": "What about you?",
+        "pt": "E você?"
+      },
+      {
+        "source": "I also",
+        "pt": "Eu também"
+      }
+    ],
+    "summaryPt": "Maya cumprimenta Leo, pergunta o nome e se ele estuda. Leo diz que estuda análise de dados e pergunta sobre Maya, que trabalha num escritório e também estuda inglês."
+  },
+  "steps": [
+    {
+      "id": "en-intro-c1",
+      "kind": "comprehension",
+      "evidence": "comprehension",
+      "prompt": "No diálogo, qual área Leo diz que estuda?",
+      "choices": [
+        "Inglês",
+        "Análise de dados",
+        "Design"
+      ],
+      "correctIndex": 1,
+      "feedback": "Leo diz 'I study data analysis'. Maya é quem estuda Inglês."
+    },
+    {
+      "id": "en-intro-n1",
+      "kind": "notice",
+      "evidence": "practiceOnly",
+      "prompt": "Compare 'I'm Leo', 'I study data analysis' e 'What about you?'. Como essas expressões ajudam a manter uma conversa?",
+      "explanation": "'I'm' apresenta a pessoa; 'I study' descreve o estudo; 'What about you?' devolve a pergunta."
+    },
+    {
+      "id": "en-intro-p1",
+      "kind": "guidedProduction",
+      "evidence": "guidedProduction",
+      "prompt": "Nora diz: 'Hello, I'm Nora. What's your name?'. Responda com nome fictício e diga o que faz ou estuda.",
+      "hints": [
+        "Hi, I'm ...",
+        "I study ... / I work in ..."
+      ],
+      "exampleAnswers": [
+        "Hi, I'm Sam. I study programming.",
+        "Hello, I'm Ana. I work in IT."
+      ],
+      "rubric": [
+        "Apresentação inteligível",
+        "Comunica estudo ou trabalho",
+        "Aceita nomes fictícios e variações naturais"
+      ],
+      "evaluation": "rubric-review-required"
+    },
+    {
+      "id": "en-intro-t1",
+      "kind": "transfer",
+      "evidence": "transfer",
+      "prompt": "Você entrou numa reunião online de projeto. Apresente-se, diga o que estuda/trabalha e faça uma pergunta adequada a um participante.",
+      "hints": [],
+      "exampleAnswers": [
+        "Hi, I'm Alex. I study programming. What do you work on?",
+        "Hello, I'm Marina. I work in data analysis. What do you study?"
+      ],
+      "rubric": [
+        "Se apresenta",
+        "Informa trabalho ou estudo",
+        "Faz pergunta relevante",
+        "Não exige fórmula exata"
+      ],
+      "evaluation": "rubric-review-required"
+    }
+  ],
+  "delayedReview": {
+    "afterDays": [
+      2,
+      7
+    ],
+    "prompt": "Em uma nova atividade de voluntariado, apresente-se e pergunte sobre a atividade da outra pessoa sem consultar o exemplo.",
+    "evidence": "delayedRecall"
+  },
+  "reviewGates": [
+    "Confirmar nível e naturalidade",
+    "Revisar respostas livres",
+    "Validar áudio antes de declarar competência auditiva",
+    "Não inferir produção oral ou CEFR"
+  ],
+  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção"
+}

@@ -121,3 +121,10 @@ PW_CHANNEL=chromium npx playwright test frontend/tests/learn-*.spec.ts
 Arquivos principais: `frontend/src/learn/content.ts`, `model.ts`, `storage.ts`, `backup.ts`, `path.ts`, `selection.ts`, `planning.ts`, `units.ts`, `session.ts`, `assessment.ts`.
 
 **Observação:** este documento é um contrato e backlog técnico de referência, não um pedido para executar tudo de uma vez. Os incrementos devem caber em revisão e teste independentes.
+
+
+---
+
+## Atualização da etapa 2.2/2.3 — 10/11/2026
+
+Currículos independentes, vínculos a IDs legados e roteiros originais das duas unidades-piloto foram preparados em `frontend/public/learn/pedagogy-v1/`. Consulte `docs/learn-curriculo-v1.md` para a matriz de competências, limites, critérios editoriais e integração. Execute `npm run learn:validate-pedagogy` para conferir integridade antes de iniciar engenharia. **Estado: rascunho validado estruturalmente; não publicado como experiência de estudo, sem aprovação linguística definitiva.**

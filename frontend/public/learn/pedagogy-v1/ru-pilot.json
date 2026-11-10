@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "ru-pilot-directions-01",
+  "language": "ru",
+  "objectiveId": "ru-directions-03",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "title": "Encontrando uma estação de metrô",
+  "durationMinutesRange": [
+    12,
+    20
+  ],
+  "canDo": "Consigo pedir uma informação educadamente e compreender uma orientação curta sobre localização.",
+  "scenario": "Você está em uma cidade e pergunta a um desconhecido como encontrar a estação de metrô.",
+  "dialogue": [
+    {
+      "speaker": "Посетитель",
+      "text": "Извините, где ближайшая станция метро?"
+    },
+    {
+      "speaker": "Прохожий",
+      "text": "Идите прямо, потом поверните налево. Станция рядом с аптекой."
+    },
+    {
+      "speaker": "Посетитель",
+      "text": "Спасибо!"
+    },
+    {
+      "speaker": "Прохожий",
+      "text": "Пожалуйста."
+    }
+  ],
+  "support": {
+    "visibility": "on-demand",
+    "glossary": [
+      {
+        "source": "Извините",
+        "pt": "Com licença / desculpe (formal)"
+      },
+      {
+        "source": "где",
+        "pt": "Onde"
+      },
+      {
+        "source": "ближайшая",
+        "pt": "Mais próxima"
+      },
+      {
+        "source": "Идите прямо",
+        "pt": "Siga em frente"
+      },
+      {
+        "source": "налево",
+        "pt": "À esquerda"
+      },
+      {
+        "source": "рядом с аптекой",
+        "pt": "Ao lado da farmácia"
+      }
+    ],
+    "summaryPt": "Um visitante pergunta pela estação de metrô mais próxima. A pessoa manda seguir em frente e virar à esquerda. A estação fica ao lado de uma farmácia."
+  },
+  "steps": [
+    {
+      "id": "ru-dir-c1",
+      "kind": "comprehension",
+      "evidence": "comprehension",
+      "prompt": "A estação fica ao lado de qual lugar?",
+      "choices": [
+        "Uma farmácia",
+        "Um hotel",
+        "Um supermercado"
+      ],
+      "correctIndex": 0,
+      "feedback": "'Рядом с аптекой' significa 'ao lado da farmácia'."
+    },
+    {
+      "id": "ru-dir-c2",
+      "kind": "comprehension",
+      "evidence": "comprehension",
+      "prompt": "Depois de andar em frente, para qual lado deve virar?",
+      "choices": [
+        "Direita",
+        "Esquerda",
+        "Não precisa virar"
+      ],
+      "correctIndex": 1,
+      "feedback": "'Поверните налево' significa virar à esquerda."
+    },
+    {
+      "id": "ru-dir-n1",
+      "kind": "notice",
+      "evidence": "practiceOnly",
+      "prompt": "Observe 'Извините', 'где', 'станция метро' e 'налево'. Qual é a função de cada expressão?",
+      "explanation": "'Извините' é apropriado para chamar atenção de um desconhecido; 'где' pergunta onde; 'станция метро' identifica o destino. 'Рядом с' é seguido de uma forma flexionada do substantivo — não é necessário dominar todos os casos agora."
+    },
+    {
+      "id": "ru-dir-p1",
+      "kind": "guidedProduction",
+      "evidence": "guidedProduction",
+      "prompt": "Você procura a estação de metrô. Escreva uma pergunta educada em russo. Pode usar teclado fonético.",
+      "hints": [
+        "Comece com 'Извините'",
+        "Onde = 'где'",
+        "Estação de metrô = 'станция метро'"
+      ],
+      "exampleAnswers": [
+        "Извините, где станция метро?",
+        "Подскажите, пожалуйста, где ближайшая станция метро?"
+      ],
+      "rubric": [
+        "Pedido de localização inteligível",
+        "Identifica estação ou metrô corretamente",
+        "Aceita alternativas naturais de cortesia",
+        "Não exige a palavra ближайшая"
+      ],
+      "evaluation": "rubric-review-required"
+    },
+    {
+      "id": "ru-dir-t1",
+      "kind": "transfer",
+      "evidence": "transfer",
+      "prompt": "Agora você precisa localizar uma biblioteca (библиотека), não a estação. Pergunte educadamente onde ela fica.",
+      "hints": [],
+      "exampleAnswers": [
+        "Извините, где библиотека?",
+        "Подскажите, пожалуйста, где находится библиотека?"
+      ],
+      "rubric": [
+        "Pergunta onde fica a biblioteca",
+        "Usa uma construção natural e compreensível",
+        "Não confunde biblioteca com estação",
+        "Aceita equivalentes validados"
+      ],
+      "evaluation": "rubric-review-required"
+    }
+  ],
+  "delayedReview": {
+    "afterDays": [
+      2,
+      7
+    ],
+    "prompt": "Em outro dia, você procura um hospital (больница). Pergunte a um desconhecido onde fica, sem consultar a frase modelo.",
+    "evidence": "delayedRecall"
+  },
+  "reviewGates": [
+    "Revisão linguística das formas/casos em russo",
+    "Verificar instruções e respostas alternativas",
+    "Verificar suporte do teclado fonético",
+    "Validar áudio antes de afirmar listening",
+    "Não inferir pronúncia ou CEFR"
+  ],
+  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção"
+}
