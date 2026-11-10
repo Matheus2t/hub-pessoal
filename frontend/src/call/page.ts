@@ -448,6 +448,62 @@ export class CallPage extends LightElement {
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
  }
+ private microphoneStudio(){
+  return html`<section class="call-voice-studio" aria-label="Controles de voz">
+   <div class="call-voice-studio-heading"><span>ÁUDIO</span><h3>Microfone e voz</h3></div>
+   <div class="call-voice-studio-fields">
+    <label>Microfone de entrada
+     <select aria-label="Microfone de entrada" .value=${live(this.microphoneInput)} ?disabled=${this.micBusy}
+      @change=${(event:Event)=>void this.selectMicrophoneInput((event.currentTarget as HTMLSelectElement).value)}>
+      <option value="">Padrão do sistema</option>
+      ${this.microphoneInputs.filter(d=>d.deviceId!=='default').map((device,index)=>html`<option value=${device.deviceId}>${device.label||`Microfone ${index+1}`}</option>`)}
+      ${this.microphoneInput&&!this.microphoneInputs.some(d=>d.deviceId===this.microphoneInput)?
+       html`<option value=${this.microphoneInput}>Microfone selecionado</option>`:nothing}
+     </select>
+    </label>
+    <label>Modo de fala
+     <select aria-label="Modo de fala" .value=${this.talkMode}
+      @change=${(event:Event)=>this.setTalkMode((event.currentTarget as HTMLSelectElement).value as TalkMode)}>
+      <option value="open">Microfone aberto</option>
+      <option value="voice">Ativação automática por voz</option>
+      <option value="ptt">Apertar para falar (PTT)</option>
+     </select>
+    </label>
+   </div>
+   ${this.talkMode==='voice'?html`<label class="call-voice-threshold">Sensibilidade da ativação automática
+    <input aria-label="Limiar de voz" type="range" min="10" max="60" step="5"
+     .value=${String(this.preferences.voiceThreshold)}
+     @input=${(event:Event)=>{this.preferences.setVoiceThreshold((event.currentTarget as HTMLInputElement).valueAsNumber);this.requestUpdate()}}/>
+    <output>${this.preferences.voiceThreshold}%</output>
+   </label>`:nothing}
+   ${this.talkMode==='ptt'?html`<div class="call-ptt-control">
+    <button class="call-ptt-button" type="button" aria-pressed=${this.holdingToTalk}
+     ?disabled=${!this.microphone}
+     @pointerdown=${(event:PointerEvent)=>{event.preventDefault();this.holdToTalk(true)}}
+     @pointerup=${()=>this.holdToTalk(false)}
+     @pointerleave=${()=>this.holdToTalk(false)}
+     @pointercancel=${()=>this.holdToTalk(false)}>
+     ${this.holdingToTalk?'Transmitindo voz':'Segure para falar'}
+    </button>
+    <span>No computador, mantenha Espaço pressionado fora dos campos de texto.</span>
+   </div>`:nothing}
+   <div class="call-microphone-test" role="group" aria-label="Teste do microfone">
+    <label for="call-microphone-meter">Nível do microfone</label>
+    <meter id="call-microphone-meter" aria-label="Nível do microfone" min="0" max="100" .value=${this.microphoneDiagnostics.level}></meter>
+    <output>${this.microphoneDiagnostics.level}%</output>
+    <button type="button" ?disabled=${!this.microphone}
+     @click=${()=>this.microphoneDiagnostics.recording?this.microphoneDiagnostics.stopRecording():
+      this.microphoneDiagnostics.startRecording(this.sendingMicrophone?this.micProcessing.stream:this.micProcessing.input)}>
+     ${this.microphoneDiagnostics.recording?'Parar gravação':'Gravar teste (6 segundos)'}
+    </button>
+   </div>
+   ${this.microphoneDiagnostics.previewUrl?html`<div class="call-microphone-preview"><span>Ouça sua voz (somente neste navegador)</span>
+    <audio aria-label="Reprodução do teste do microfone" controls src=${this.microphoneDiagnostics.previewUrl}></audio>
+    <button type="button" @click=${()=>{this.microphoneDiagnostics.clearPreview();this.requestUpdate()}}>Excluir teste</button>
+   </div>`:nothing}
+   ${this.microphoneDiagnostics.error?html`<p class="call-mic-error" role="status">${this.microphoneDiagnostics.error}</p>`:nothing}
+  </section>`;
+ }
  private microphoneSettings(){
   const processor=this.micProcessing,supported=processor.supported,actual=processor.effective;
   const actualStatus=(key:MicrophoneFlag)=>supported[key]!==true?'Não suportado':
@@ -672,6 +728,7 @@ export class CallPage extends LightElement {
    </ol></aside>
   </div>
   <div class="call-devices" ?hidden=${!this.voice.active}>
+  ${this.voice.active?this.microphoneStudio():nothing}
   ${this.voice.active?this.microphoneSettings():nothing}
   ${this.voice.active&&this.output.supported?html`<div class="call-audio-output" role="group" aria-label="Saída de áudio">
    <label>Saída de áudio
