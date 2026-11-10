@@ -94,11 +94,33 @@ export class ExtendedFinanceCalculator extends LightElement {
   @state() private stale = false;
   @state() private tablePage = 0;
   @state() private chartIndex = -1;
+  @state() private graphWidth = 790;
+  private chartResize?: ResizeObserver;
+  private observedChart?: HTMLElement;
   @state() private advancedOpen = false;
   @state() private system: LoanSystem = 'price';
   @state() private mode: ExtraMode = 'term';
   @state() private regime: CltRegime = 'general';
   connectedCallback() { super.connectedCallback(); this.classList.add('workspace-v2', 'calculator-workspace', 'extended-calculator'); }
+  protected updated() {
+    const chart = this.querySelector<HTMLElement>('.extended-chart-terminal') ?? undefined;
+    if (chart !== this.observedChart) {
+      this.chartResize?.disconnect();
+      this.observedChart = chart;
+      if (chart && typeof ResizeObserver !== 'undefined') {
+        this.chartResize = new ResizeObserver(entries => {
+          const next = Math.max(240, Math.round(entries[0].contentRect.width));
+          if (Math.abs(next - this.graphWidth) > 1) this.graphWidth = next;
+        });
+        this.chartResize.observe(chart);
+      }
+    }
+  }
+  disconnectedCallback() {
+    this.chartResize?.disconnect();
+    this.observedChart = undefined;
+    super.disconnectedCallback();
+  }
   protected willUpdate(changes: Map<PropertyKey, unknown>) {
     if (changes.has('kind') || !Object.keys(this.values).length) {
       this.values = Object.fromEntries(configurations[this.kind].fields.map(f => [f.key, f.value]));
@@ -191,7 +213,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   }
   private renderChart(points: FinancePoint[], a: string, b: string) {
     if (!points.length) return nothing;
-    const left = 17, top = 18, width = 700, height = 188;
+    const left = 17, top = 18, canvasWidth = this.graphWidth, width = Math.max(140, canvasWidth - 90), height = 188;
     const values = points.flatMap(point => [point.first, point.second]);
     const minimum = Math.min(0, ...values), maximum = Math.max(1, ...values);
     const gap = Math.max(1, maximum - minimum) * .1;
@@ -222,13 +244,13 @@ export class ExtendedFinanceCalculator extends LightElement {
           <strong>${money(selected.first)}</strong><small>${a}</small></div>
         <div class="extended-chart-secondary"><span>${b}</span><strong>${money(selected.second)}</strong></div>
       </div>
-      <svg viewBox="0 0 790 252" role="img" aria-label=${`Gráfico de evolução: ${a} versus ${b}`}
+      <svg viewBox=${`0 0 ${canvasWidth} 252`} role="img" aria-label=${`Gráfico de evolução: ${a} versus ${b}`}
            preserveAspectRatio="xMidYMid meet" @pointermove=${inspect} @pointerdown=${inspect}>
         <title>Evolução comparativa dos cenários</title>
         <rect x=${left} y=${top} width=${width} height=${height} fill="transparent" style="pointer-events:all"></rect>
         ${Array.from({length:5},(_,i)=>low+(range*i)/4).map(value=>html`
           <line class="extended-gridline" x1=${left} x2=${left+width} y1=${py(value)} y2=${py(value)}></line>
-          <text class="extended-chart-axis" x="779" y=${py(value)+4} text-anchor="end">${compact(value)}</text>`)}
+          <text class="extended-chart-axis" x=${canvasWidth-10} y=${py(value)+4} text-anchor="end">${compact(value)}</text>`)}
         <polygon class="extended-area" points=${`${trace('first')} ${px(lastPeriod)},${top+height} ${px(firstPeriod)},${top+height}`}></polygon>
         <polyline class="extended-line-second" points=${trace('second')}></polyline>
         <polyline class="extended-line-first" points=${trace('first')}></polyline>
