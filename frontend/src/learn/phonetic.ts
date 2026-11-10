@@ -4,7 +4,7 @@
  * for deletion, selection replacement and cursor movement.
  */
 const combinations:ReadonlyArray<readonly [string,string]> = [
-  ['shch','щ'],['sch','щ'],['yo','ё'],['yu','ю'],['ya','я'],
+  ['shch','щ'],['sch','щ'],['yy','ый'],['yo','ё'],['yu','ю'],['ya','я'],
   ['zh','ж'],['ch','ч'],['sh','ш'],['kh','х'],['ts','ц'],['eh','э']
 ];
 const singles:Readonly<Record<string,string>> = {
@@ -33,7 +33,13 @@ export function transliterate(raw:string,enabled=true):{value:string;segments:Se
           size=source.length;converted=letterCase(replacement,candidate);found=true;break;
         }
       }
-      if(!found)converted=letterCase(singles[raw[i].toLowerCase()]||raw[i],raw[i]);
+      if(!found){
+        const key=raw[i].toLowerCase();
+        const previous=(raw[i-1]||'').toLowerCase();
+        const next=(raw[i+1]||'').toLowerCase();
+        const consonantY=key==='y'&&(/[aeiouаеёиоуыэюя]/u.test(previous)||i===0&&/[aeiou]/u.test(next));
+        converted=letterCase(consonantY?'й':singles[key]||raw[i],raw[i]);
+      }
     }else {
       const code=raw.codePointAt(i)!;
       size=code>0xffff?2:1;
