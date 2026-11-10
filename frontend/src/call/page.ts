@@ -276,7 +276,7 @@ export class CallPage extends LightElement {
  }
  private stopSpeakers(){window.clearInterval(this.speakerTimer);this.speakerTimer=undefined;if(this.speakers.size)this.speakers=new Set()}
  private updateSpeakers(){
-  if(this.call.session?.mode!=='channel'||!this.voice.active||this.call.state!=='connected'||this.call.people.length<2){this.stopSpeakers();return}
+  if(!this.voice.active||this.call.state!=='connected'||this.call.people.length<2){this.stopSpeakers();return}
   if(this.speakerTimer!==undefined)return;
   this.speakerTimer=window.setInterval(()=>{
    const now=performance.now(),next=new Set<string>();
@@ -315,7 +315,7 @@ export class CallPage extends LightElement {
  }
  private publishMedia(){
   if(this.call.state!=='connected')return;
-  const active=this.voice.active,microphone=active&&!!this.microphone?.getAudioTracks().some(t=>t.readyState==='live');
+  const active=this.voice.active,microphone=active&&this.sendingMicrophone;
   const camera=active&&!!this.capture.camera;
   const signature=`${active}:${microphone}:${camera}`;
   if(signature!==this.lastMedia&&this.call.send({type:'media',active,microphone,camera}))this.lastMedia=signature;
@@ -330,10 +330,14 @@ export class CallPage extends LightElement {
   if(this.preferences.output&&this.output.supported)void this.output.choose(this.preferences.output);
   this.publishMedia();
  }
- private leaveVoice(){this.setCallAudioSession(false);this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
+ private leaveVoice(){this.releaseTalk();this.setCallAudioSession(false);this.restoredPeople.clear();this.pictureInPicture.sync(null);this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;this.voice.stop();this.voice.audioMix.setDeafened(false);this.release();this.publishMedia()}
  private voiceStatus(id:string){
   const person=this.call.people.find(p=>p.id===id);
   if(!person?.voice)return 'Fora da chamada';
+  if(id===this.call.session?.participant&&this.microphone&&this.voice.active){
+   if(this.talkMode==='ptt')return this.sendingMicrophone?'Transmitindo voz · PTT':'Aperte para falar · PTT';
+   if(this.talkMode==='voice')return this.sendingMicrophone?'Voz detectada':'Aguardando voz';
+  }
   if(!this.voice.active||id===this.call.session?.participant)return person.microphone?'Microfone ligado':'Microfone desligado';
   const peer=this.voice.peers.get(id);
   return !peer?'Conectando áudio':peer.failed?'Falha no áudio':peer.pc.connectionState==='connected'?`Áudio conectado · ${person.microphone?'microfone ligado':'microfone desligado'}`:peer.attempts?'Reconectando áudio':'Conectando áudio';
@@ -402,7 +406,7 @@ export class CallPage extends LightElement {
   try{await navigator.clipboard.writeText(url.href);this.copied=true;this.roomError=''}catch{this.roomError='Não foi possível copiar. Permita o acesso à área de transferência.'}
  }
  private stop(stream?:MediaStream){stream?.getTracks().forEach(track=>{track.onended=null;track.stop()})}
- private stopMicrophone(){this.micRequest++;this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
+ private stopMicrophone(){this.releaseTalk();this.micRequest++;this.microphoneDiagnostics.detach();this.micProcessing.stop();this.stop(this.microphone);this.microphone=undefined;this.micBusy=false;this.voice.setMicrophone();this.publishMedia();this.announceCall()}
  private get deafened(){return this.voice.audioMix.deafened}
  private toggleDeafen(){
   if(!this.voice.active)return;
@@ -430,13 +434,16 @@ export class CallPage extends LightElement {
   if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){this.error='O microfone exige um navegador compatível e HTTPS ou localhost.';return}
   const request=++this.micRequest;this.micBusy=true;
   try{
-   const stream=await navigator.mediaDevices.getUserMedia({audio:this.micProcessing.constraints(),video:false});
+   const stream=await navigator.mediaDevices.getUserMedia({audio:this.inputConstraints(),video:false});
    if(!this.isConnected||request!==this.micRequest){this.stop(stream);return}
    if(!stream.getAudioTracks().some(t=>t.readyState==='live')){this.stop(stream);throw new DOMException('No audio','NotFoundError')}
    const outgoing=await this.micProcessing.attach(stream);
    if(!this.isConnected||request!==this.micRequest){this.micProcessing.stop();return}
    this.microphone=outgoing;
+   this.microphoneDiagnostics.attach(this.micProcessing.input);
+   this.applyTalkMode();
    this.voice.setMicrophone(outgoing);this.publishMedia();this.announceCall();
+   void this.refreshMicrophoneInputs();
    stream.getAudioTracks().forEach(track=>track.onended=()=>{if(this.micProcessing.input===stream){this.stopMicrophone();this.error='O microfone foi desconectado ou teve o acesso encerrado.'}});
   }catch(error){if(this.isConnected&&request===this.micRequest)this.error=this.message(error,false)}
   finally{if(request===this.micRequest)this.micBusy=false}
