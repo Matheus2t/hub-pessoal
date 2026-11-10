@@ -1024,3 +1024,27 @@ evolution-chart .chart-slider input:focus-visible { outline: 2px solid var(--tex
   evolution-chart .chart-slider { flex-wrap: wrap; padding-top: 12px; }
   evolution-chart .chart-slider input { width: 100%; }
 }
+
+/* Ponto de navegação visível e confortável, inclusive no teclado. */
+evolution-chart .chart-slider input::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(to right, var(--text) 0%, var(--text) var(--slider-progress), var(--line) var(--slider-progress), var(--line) 100%);
+}
+evolution-chart .chart-slider input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -5px;
+  border: 2px solid var(--panel);
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 0 0 1px var(--line);
+}
+evolution-chart .chart-slider input::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--panel);
+  border-radius: 50%;
+  background: var(--text);
+}
