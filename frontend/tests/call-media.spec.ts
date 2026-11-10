@@ -537,7 +537,7 @@ test('two simultaneous screens switch video and local audio without replacing th
    const prefs=(document.querySelector('call-page') as any).preferences;
    const saved=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
    return {layout:prefs.layout,fields:Object.keys(saved).sort()};
-  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','version']});
+  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','talkMode','version','voiceThreshold']});
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;
   })).toBe(true);
