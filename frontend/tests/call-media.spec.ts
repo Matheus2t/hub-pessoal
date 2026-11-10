@@ -537,7 +537,7 @@ test('two simultaneous screens switch video and local audio without replacing th
    const prefs=(document.querySelector('call-page') as any).preferences;
    const saved=JSON.parse(localStorage.getItem('2t:call:preferences:v1')||'null');
    return {layout:prefs.layout,fields:Object.keys(saved).sort()};
-  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','version']});
+  })).toEqual({layout:'compact',fields:['layout','levels','nickname','output','talkMode','version','voiceThreshold']});
   expect(await viewer.evaluate(()=>{
    const {voice}=document.querySelector('call-page') as any;return voice.peers.size===0&&voice.audioMix.inputs.size===0;
   })).toBe(true);
@@ -560,7 +560,8 @@ test('permission refusal, cancelled and late captures, local preview and route c
   await expect(studio.getByLabel('Nível do microfone')).toBeVisible();
   await talk.selectOption('ptt');
   await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(false);
-  const push=studio.getByRole('button',{name:'Segure para falar'});
+  const push=studio.locator('.call-ptt-button');
+  await expect(push).toHaveText('Segure para falar');
   await push.dispatchEvent('pointerdown',{pointerId:1,pointerType:'mouse',button:0});
   await expect.poll(()=>a.page.evaluate(()=>(document.querySelector('call-page') as any).microphone.getAudioTracks()[0].enabled)).toBe(true);
   await push.dispatchEvent('pointerup',{pointerId:1,pointerType:'mouse',button:0});
