@@ -587,3 +587,15 @@ aprovados; suíte completa Playwright com 116 aprovados e 1 teste live TradingVi
 optativo desativado. Após a suíte completa, um teste adicional de seleção por teclado
 e foco visível foi adicionado e executado com aprovação (nove testes de UI Learn
 no total). Nenhum teste de atividade educacional foi anunciado como implementado.
+
+---
+
+## Teclado fonético russo (11/2026)
+
+- Campos de resposta que **esperam cirílico russo** exibem um editor fonético ligado por padrão; respostas em português, Inglês e outras modalidades permanecem com o campo nativo.
+- Digitando no teclado americano: `g → г`, `privet → привет`, `spasibo → спасибо`, `sh → ш`, `shch/sch → щ`, `zh → ж`, `ch → ч`, `ya → я`, `yu → ю`, `yo → ё`. `j` produz `й`; `y` produz `ы` em geral, mas `й` após vogais. `yy` atende ao final `ый`.
+- A correspondência fonética é determinística, não semântica: palavras ambíguas podem precisar de correção manual. O editor traz teclas para `ё, й, ы, э, ь, ъ, щ, ж, ю, я`.
+- Operações modeladas por unidades fonéticas (incluindo dígrafos): inserção no cursor, substituição de seleção, Backspace/Delete, seleção de palavra, colar/cortar, desfazer/refazer, letras maiúsculas, pontuação, quebra de linha e texto cirílico misturado. Limite de 2.000 caracteres **visíveis**; não grava a forma latina bruta nas tentativas.
+- Botão **Fonético ligado/desligado**. A preferência fica apenas no navegador (localStorage `2t-learn-phonetic-ru`); não modifica IndexedDB, modelos de backup nem algoritmos de correção.
+- Os eventos de composição/IME não são interceptados durante a composição; a entrada comprometida passa pela reconciliação do campo. O editor também aceita entradas de voz/acessibilidade e preenchimento programático.
+- A validação inclui suíte Playwright específica e regressão completa das telas Learn em dois idiomas e larguras responsivas. Inspeções de teclado físico real e diferentes IMEs ainda são dependentes do dispositivo e navegador do usuário.
