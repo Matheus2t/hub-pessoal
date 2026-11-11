@@ -31,6 +31,8 @@ jobs:
         run: npm run learn:validate-curation
       - name: Validate task-specific writing and transfer rubrics
         run: npm run learn:validate-task-rubrics
+      - name: Validate delayed comprehension and transfer probes
+        run: npm run learn:validate-delayed
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
