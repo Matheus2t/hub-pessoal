@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "status": "pedagogical-review",
+  "runtimeEnabled": false,
+  "purpose": "Planned, separately phrased follow-up tasks to observe delayed contextual comprehension and written transfer; not a calibrated retention test.",
+  "measurementPolicy": {
+    "startAfter": "pilot completion",
+    "scheduleType": "proposed intervals only, not an active reminder",
+    "disallowedClaims": [
+      "certified CEFR level",
+      "spoken fluency",
+      "pronunciation accuracy",
+      "durable memory beyond observed interval",
+      "causal learning gain without comparison group"
+    ],
+    "incompleteOrMissedProbe": "notAssessed (never zero or learner failure)",
+    "comparability": "Follow-up tasks are not formally difficulty-equated; never aggregate raw score into a proficiency percentage.",
+    "previousPracticeConfound": "A day-2 attempt is itself study/retrieval and can influence day-7 performance. Document and do not interpret day-7 as isolated natural forgetting.",
+    "assistancePolicy": "Record any lexical cue as support. A written response with target noun supplied is not fully unaided lexical production."
+  },
+  "probes": [
+    {
+      "id": "en-intro-d2",
+      "language": "en",
+      "pilotId": "en-pilot-introductions-01",
+      "objectiveId": "en-introductions-01",
+      "timing": {
+        "recommendedDelayDays": 2,
+        "measurement": "delayed practice observation; not isolated long-term memory certification",
+        "clockStartsFrom": "completion of teaching pilot",
+        "intervalIsNotValidated": true
+      },
+      "scenarioPt": "Duas pessoas se apresentam num evento de bairro. Você vai participar depois.",
+      "stimulus": {
+        "text": "Sam: Hi, I'm Sam. I work at a bakery. What about you? Noor: Nice to meet you. I study science.",
+        "type": "written",
+        "mediaAvailable": false,
+        "assistiveTextShownBeforeAttempt": true
+      },
+      "readingComprehension": {
+        "id": "en-intro-d2-read",
+        "promptPt": "Quem trabalha em uma padaria?",
+        "choices": [
+          "Sam",
+          "Noor",
+          "Os dois"
+        ],
+        "correctIndex": 0,
+        "explanationPt": "Sam diz 'I work at a bakery'; Noor usa 'I study science'. São atividades de pessoas diferentes.",
+        "evidence": "comprehension"
+      },
+      "writtenTransfer": {
+        "id": "en-intro-d2-write",
+        "promptPt": "Você chegou a uma atividade comunitária de jardinagem. Apresente-se com nome fictício, diga o que estuda ou faz e pergunte algo pertinente à outra pessoa.",
+        "language": "en",
+        "answerMode": "open",
+        "lexicalCue": null,
+        "modelHiddenDuringAttempt": true,
+        "hintsDuringAttempt": false,
+        "assistanceToRecord": [],
+        "examplesAfterAttempt": [
+          "Hello, I'm Jules. I study English. What do you like to grow?",
+          "Hi, my name is Ana. I work in IT. Do you enjoy gardening?"
+        ],
+        "essentialMeaning": [
+          "Apresentação compreensível",
+          "Atividade própria informada",
+          "Pergunta relacionada ao novo contato"
+        ],
+        "feedbackCases": [
+          {
+            "issue": "missing-question",
+            "response": "Hi, I'm Jules. I study English.",
+            "feedbackPt": "Sua apresentação está completa, mas falta uma pergunta que dê espaço para a outra pessoa responder."
+          },
+          {
+            "issue": "unclear-activity",
+            "response": "Hi, I'm Jules. You gardening?",
+            "feedbackPt": "A pergunta sobre jardinagem é possível, mas você não disse o que faz ou estuda. Acrescente essa informação."
+          }
+        ],
+        "evaluation": "rubricWithReview",
+        "evidence": "delayedRecall",
+        "evaluationLimitPt": "É aplicação escrita com intervalo e contexto novo; não avalia produção oral."
+      },
+      "editorialStatus": "needs-language-and-learner-review",
+      "runtimeEnabled": false
+    },
+    {
+      "id": "en-intro-d7",
+      "language": "en",
+      "pilotId": "en-pilot-introductions-01",
+      "objectiveId": "en-introductions-01",
+      "timing": {
+        "recommendedDelayDays": 7,
+        "measurement": "delayed practice observation; not isolated long-term memory certification",
+        "clockStartsFrom": "completion of teaching pilot",
+        "intervalIsNotValidated": true
+      },
+      "scenarioPt": "Primeiro contato entre participantes de uma noite de jogos de tabuleiro.",
+      "stimulus": {
+        "text": "Ava: Nice to meet you. I'm a volunteer here. Are you new? Kim: Yes, it's my first time. I work in technology.",
+        "type": "written",
+        "mediaAvailable": false,
+        "assistiveTextShownBeforeAttempt": true
+      },
+      "readingComprehension": {
+        "id": "en-intro-d7-read",
+        "promptPt": "Quem informa que trabalha com tecnologia?",
+        "choices": [
+          "Ava",
+          "Kim",
+          "Ninguém"
+        ],
+        "correctIndex": 1,
+        "explanationPt": "Kim diz 'I work in technology'. Ava se identifica como voluntária do evento.",
+        "evidence": "comprehension"
+      },
+      "writtenTransfer": {
+        "id": "en-intro-d7-write",
+        "promptPt": "Você conhece outra pessoa num grupo de jogos de tabuleiro. Apresente-se, diga brevemente o que estuda ou faz e faça uma pergunta simples sobre a pessoa.",
+        "language": "en",
+        "answerMode": "open",
+        "lexicalCue": null,
+        "modelHiddenDuringAttempt": true,
+        "hintsDuringAttempt": false,
+        "assistanceToRecord": [],
+        "examplesAfterAttempt": [
+          "Hi, I'm Lucas. I study programming. What do you do?",
+          "Hello, I'm Rosa. I work with computers. Are you new to this group?"
+        ],
+        "essentialMeaning": [
+          "Apresenta identidade",
+          "Informa trabalho ou estudo",
+          "Faz pergunta compreensível ao participante"
+        ],
+        "feedbackCases": [
+          {
+            "issue": "missing-identity",
+            "response": "I study programming. Do you like games?",
+            "feedbackPt": "Você falou de seu estudo e perguntou algo, mas não se apresentou. Acrescente um nome fictício."
+          },
+          {
+            "issue": "irrelevant-question",
+            "response": "Hi, I'm Jan. I work in IT. Where is the train station?",
+            "feedbackPt": "A pergunta está formada, porém está desconectada do encontro de jogos. Tente perguntar sobre a outra pessoa ou o evento."
+          }
+        ],
+        "evaluation": "rubricWithReview",
+        "evidence": "delayedRecall",
+        "evaluationLimitPt": "É aplicação escrita com intervalo e contexto novo; não avalia produção oral."
+      },
+      "editorialStatus": "needs-language-and-learner-review",
+      "runtimeEnabled": false
+    },
+    {
+      "id": "ru-dir-d2",
+      "language": "ru",
+      "pilotId": "ru-pilot-directions-01",
+      "objectiveId": "ru-directions-03",
+      "timing": {
+        "recommendedDelayDays": 2,
+        "measurement": "delayed practice observation; not isolated long-term memory certification",
+        "clockStartsFrom": "completion of teaching pilot",
+        "intervalIsNotValidated": true
+      },
+      "scenarioPt": "Uma pessoa procura um hospital (больница) e recebe uma orientação na rua.",
+      "stimulus": {
+        "text": "Посетитель: Извините, где больница? Прохожий: Идите прямо, потом направо. Больница рядом с парком.",
+        "type": "written",
+        "mediaAvailable": false,
+        "assistiveTextShownBeforeAttempt": true
+      },
+      "readingComprehension": {
+        "id": "ru-dir-d2-read",
+        "promptPt": "Depois de seguir em frente, a pessoa deve virar para qual lado?",
+        "choices": [
+          "À esquerda",
+          "À direita",
+          "Não precisa virar"
+        ],
+        "correctIndex": 1,
+        "explanationPt": "A orientação é 'Идите прямо, потом направо': siga em frente e depois vire à direita.",
+        "evidence": "comprehension"
+      },
+      "writtenTransfer": {
+        "id": "ru-dir-d2-write",
+        "promptPt": "Em outra rua, você precisa encontrar um hospital. A palavra é больница. Formule um pedido educado em russo para saber onde fica.",
+        "language": "ru",
+        "answerMode": "open",
+        "lexicalCue": {
+          "targetWord": "больница",
+          "translationPt": "hospital",
+          "purpose": "Ensinar a palavra do novo destino sem revelar a construção que deve ser recuperada."
+        },
+        "modelHiddenDuringAttempt": true,
+        "hintsDuringAttempt": false,
+        "assistanceToRecord": [
+          "lexical-cue"
+        ],
+        "examplesAfterAttempt": [
+          "Извините, где больница?",
+          "Подскажите, пожалуйста, где находится больница?"
+        ],
+        "essentialMeaning": [
+          "Pergunta de localização compreensível",
+          "Hospital como destino correto",
+          "Cortesia adequada ao interlocutor"
+        ],
+        "feedbackCases": [
+          {
+            "issue": "wrong-destination",
+            "response": "Извините, где станция метро?",
+            "feedbackPt": "Você usou uma pergunta de localização, mas ainda pede o metrô. Troque o destino por больница."
+          },
+          {
+            "issue": "register",
+            "response": "Где больница?",
+            "feedbackPt": "A pergunta é compreensível. Acrescente uma forma educada, como Извините, ao abordar um desconhecido."
+          }
+        ],
+        "evaluation": "rubricWithReview",
+        "evidence": "delayedRecall",
+        "evaluationLimitPt": "O vocábulo do destino foi fornecido. É prática diferida da construção de pergunta, não produção totalmente sem apoio."
+      },
+      "editorialStatus": "needs-language-and-learner-review",
+      "runtimeEnabled": false
+    },
+    {
+      "id": "ru-dir-d7",
+      "language": "ru",
+      "pilotId": "ru-pilot-directions-01",
+      "objectiveId": "ru-directions-03",
+      "timing": {
+        "recommendedDelayDays": 7,
+        "measurement": "delayed practice observation; not isolated long-term memory certification",
+        "clockStartsFrom": "completion of teaching pilot",
+        "intervalIsNotValidated": true
+      },
+      "scenarioPt": "Uma pessoa procura um museu (музей) pela primeira vez.",
+      "stimulus": {
+        "text": "Музей рядом с аптекой. Идите налево.",
+        "type": "written",
+        "mediaAvailable": false,
+        "assistiveTextShownBeforeAttempt": true
+      },
+      "readingComprehension": {
+        "id": "ru-dir-d7-read",
+        "promptPt": "Que lugar fica perto do museu?",
+        "choices": [
+          "Uma farmácia",
+          "Uma estação",
+          "Um hospital"
+        ],
+        "correctIndex": 0,
+        "explanationPt": "'Рядом с аптекой' indica proximidade da farmácia. A indicação adicional é virar à esquerda.",
+        "evidence": "comprehension"
+      },
+      "writtenTransfer": {
+        "id": "ru-dir-d7-write",
+        "promptPt": "Você está em outra cidade e quer visitar um museu. Museu se diz музей. Pergunte educadamente em russo onde ele fica.",
+        "language": "ru",
+        "answerMode": "open",
+        "lexicalCue": {
+          "targetWord": "музей",
+          "translationPt": "museu",
+          "purpose": "Fornecer somente o vocábulo novo, não uma frase-padrão a copiar."
+        },
+        "modelHiddenDuringAttempt": true,
+        "hintsDuringAttempt": false,
+        "assistanceToRecord": [
+          "lexical-cue"
+        ],
+        "examplesAfterAttempt": [
+          "Извините, где музей?",
+          "Подскажите, пожалуйста, где находится музей?"
+        ],
+        "essentialMeaning": [
+          "Pergunta adequada de localização",
+          "Museu como destino novo",
+          "Cortesia adequada em abordagem de rua"
+        ],
+        "feedbackCases": [
+          {
+            "issue": "wrong-destination",
+            "response": "Извините, где библиотека?",
+            "feedbackPt": "A pergunta está clara, mas pede biblioteca. O destino desta revisão é музей."
+          },
+          {
+            "issue": "meaning",
+            "response": "Извините, я музей.",
+            "feedbackPt": "A frase indica 'eu sou museu', não uma pergunta. Use uma estrutura de localização adequada ao destino."
+          }
+        ],
+        "evaluation": "rubricWithReview",
+        "evidence": "delayedRecall",
+        "evaluationLimitPt": "O vocábulo do destino foi fornecido. É prática diferida da construção de pergunta, não produção totalmente sem apoio."
+      },
+      "editorialStatus": "needs-language-and-learner-review",
+      "runtimeEnabled": false
+    }
+  ],
+  "releaseConditions": [
+    "Independent linguistic review",
+    "Validate all stimuli and variants with learners",
+    "Implement delayed-task scheduling only with explicit product decisions and saved attempt data",
+    "Preserve existing backups and legacy identifiers",
+    "Do not activate until a new validated learning engine is available"
+  ]
+}
