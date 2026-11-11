@@ -140,3 +140,10 @@ O contrato de diagnóstico e seus cenários de teste foram definido em `docs/lea
 ## Continuação pedagógica — tarefas diagnósticas e feedback (10/11/2026)
 
 Foram preparados `en-diagnostic.json` e `ru-diagnostic.json`, com tarefas graduadas por competências, e o contrato `evaluation-policy.json` com rubricas e resultados incertos. O banco `feedback-casebook.json` contém exemplos e contraexemplos editoriais de respostas. Todos ficam em `frontend/public/learn/pedagogy-v1/` e permanecem **desativados em produção**, pendentes de revisão linguística e implementação. Consulte `docs/learn-diagnostico-feedback-v1.md` e execute `npm run learn:validate-diagnostics`.
+
+
+---
+
+## Auditoria didática incremental — novembro de 2026
+
+A revisão documentada em `docs/learn-auditoria-didatica-v1.md` confirmou **10 grupos de perguntas repetidas** (5 por idioma) e **80 explicações genéricas de escrita** (40 por idioma). Os roteiros `en-pilot.json` e `ru-pilot.json` agora possuem justificativa por etapa, microexplicações, feedback específico para alternativas erradas e regras explícitas de apoio. O arquivo `quality-baseline.json` e o comando `npm run learn:quality-audit` acompanham possíveis regressões sem modificar o catálogo histórico. A revisão linguística independente e o teste com estudante continuam pendentes; **nenhum piloto foi ativado**.
