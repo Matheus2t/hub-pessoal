@@ -65,9 +65,9 @@ As propostas públicas de Lilissimaa e Laboratório de Idiomas inspiram a prefer
 | Plano de revisão e fontes | Sim | Dar continuidade e rastreabilidade |
 | Áudio/interação oral | Conforme o objetivo e disponibilidade | Não inventar avaliação oral quando inexistente |
 
-**Exemplo — Russo (unidade-piloto):** perguntar onde fica uma estação e compreender uma orientação curta; na transferência, perguntar por outro destino (farmácia). Não exigir que o estudante domine todos os casos antes dessa situação.
+**Exemplo — Russo (unidade-piloto):** perguntar onde fica uma estação e compreender uma orientação curta; na transferência, perguntar por uma **biblioteca** (a palavra em cirílico é oferecida como pista lexical). Não exigir que o estudante domine todos os casos antes dessa situação.
 
-**Exemplo — Inglês (unidade-piloto):** se apresentar em um encontro de trabalho e pedir uma informação simples; na transferência, se apresentar num contexto de curso ou projeto com dados diferentes.
+**Exemplo — Inglês (unidade-piloto):** observar uma apresentação em contexto de curso; na transferência, apresentar-se em uma **reunião de projeto** e fazer uma pergunta relevante ao interlocutor.
 
 ### 2.1 Sequência flexível
 
@@ -149,3 +149,6 @@ Sem essas evidências, o estado exibido deve ser "praticado", "em desenvolviment
 - [ ] Calibração de critérios e validação pedagógica com tarefas novas (etapa 6).
 
 **Próximo passo lógico:** etapa 2 — relacionar conteúdo atual aos objetivos comunicativos antes de pedir ao Codex o motor de aulas.
+
+
+**Fechamento editorial interno:** consulte `docs/learn-pilotos-fechamento-editorial.md` e `docs/learn-codex-kickoff-v1.md`. Os pilotos estão prontos para engenharia em prévia desativada, **não** liberados ao público sem revisão externa.
