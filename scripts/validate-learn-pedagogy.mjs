@@ -92,6 +92,34 @@ export function validatePedagogicalArtifacts(lang,catalog,outline,pilot){
   check(pilot.delayedReview?.afterDays?.every((day,i,a)=>Number.isInteger(day)&&day>0&&(i===0||day>a[i-1])),'review timing invalid');
   check(pilot.delayedReview?.evidence==='delayedRecall','delayed review evidence must be distinct');
   check(Array.isArray(pilot.reviewGates)&&pilot.reviewGates.length>=3,'human editorial gates missing');
+  // The 2T teaching design requires a reason for each step, contextual
+  // micro-explanations and feedback for every wrong multiple-choice option.
+  // These tests validate data completeness, NOT linguistic correctness.
+  const design=pilot.teachingDesign||{};
+  check(typeof design.priority==='string'&&design.priority.length>=30,'pilot lacks instructional priority');
+  check(Array.isArray(design.estimatedSupportLevels)&&design.estimatedSupportLevels.length>=3,'support model not defined');
+  check(typeof design.supportRule==='string'&&design.supportRule.length>=60,'support/reveal policy missing');
+  check(Array.isArray(design.languageNotes)&&design.languageNotes.length>=3,'not enough contextual teaching notes');
+  check(Array.isArray(design.misconceptions)&&design.misconceptions.length>=3,'misconception feedback plan missing');
+  check(Array.isArray(design.transferDelta)&&design.transferDelta.length>=2,'transfer must specify what changed');
+  check(Array.isArray(design.stepIntent)&&design.stepIntent.length===steps.length,'each pilot step needs an instructional purpose');
+  const intents=new Set((design.stepIntent||[]).map(x=>x.stepId));
+  for(const step of steps){
+    check(intents.has(step.id),'missing pedagogical reason for step '+step.id);
+    if(step.kind==='comprehension'){
+      const mapped=step.feedbackByWrongChoice||{};
+      check(Object.keys(mapped).length===step.choices?.length-1,'misconception-aware feedback missing for choices in '+step.id);
+      for(const [idx,feedback] of Object.entries(mapped)){
+        check(Number.isInteger(Number(idx))&&Number(idx)!==step.correctIndex,'wrong-choice feedback accidentally targets correct answer: '+step.id);
+        check(typeof feedback==='string'&&feedback.length>=35,'insufficient feedback for distractor '+idx+' in '+step.id);
+      }
+    }
+  }
+  const review=pilot.editorialReview||{};
+  check(review.requireHumanLinguisticReview===true&&review.requirePilotLearnerTest===true,'expert and learner reviews cannot be skipped');
+  check(review.preventRuntimeUntilApproved===true&&pilot.runtimeEnabled===false,'unreviewed pilot must be disabled');
+  check(review.audioRecordingAvailable===false,'audio is not available yet; do not claim listening results');
+
   return {errors,objectives:objectives.length,assetLinks:totalRefs,steps:steps.length};
 }
 
