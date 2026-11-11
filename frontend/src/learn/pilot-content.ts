@@ -44,6 +44,7 @@ const definitions:Record<Language,PilotDefinition>={
  ru:{language:'ru',id:'ru-pilot-directions-01',contentFile:'ru-pilot.json',objectiveId:'ru-directions-03',dialogueLines:4,
   stepIds:['ru-dir-c1','ru-dir-c2','ru-dir-n1','ru-dir-p1','ru-dir-t1'],openTaskIds:['ru-dir-p1','ru-dir-t1']},
 };
+export function pilotTaskIds(language:Language):readonly string[]{return definitions[language].stepIds;}
 const expectedKinds=['comprehension','comprehension','notice','guidedProduction','transfer'] as const;
 const expectedEvidence=['comprehension','comprehension','practiceOnly','guidedProduction','transfer'] as const;
 const record=(value:unknown):value is Record<string,any>=>!!value&&typeof value==='object'&&!Array.isArray(value);

@@ -246,6 +246,21 @@
     "previewFlag": "c4-delayed",
     "noCEFROrOralClaims": true
   },
+  "integrationImplementation": {
+    "milestoneId": "C5-learn-integration",
+    "status": "implemented-disabled-local-preview",
+    "runtimeEnabled": false,
+    "languages": ["en", "ru"],
+    "previewAccess": "loopback-only",
+    "previewFlag": "c5-integration",
+    "reuses": ["pilot-events", "diagnostic-events", "delayed-review-events", "legacy-daily-plan", "lesson-progress"],
+    "indexedDbVersion": 3,
+    "backupVersion": 3,
+    "legacyBackupVersionsAccepted": [1, 2],
+    "openResponseOutcomeWithoutReviewer": "uncertain",
+    "notAssessedIsNotFailure": true,
+    "noCEFROrFluencyClaims": true
+  },
   "publicReleaseGate": [
     "independent English and Russian language review",
     "real-learner pilot feedback",

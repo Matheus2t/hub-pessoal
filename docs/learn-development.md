@@ -790,3 +790,37 @@ nesta sessão. As revisões continuam locais e desativadas para estudantes. Os r
 dependem do horário do dispositivo; não há notificações. Conteúdo e intervalos ainda
 exigem revisão linguística independente e teste com aprendizes antes de qualquer
 liberação pública. Nada nesta etapa implica fluência, nível CEFR ou retenção duradoura.
+
+## Etapa C5 — integração final local (11/2026)
+
+`#/learn/{en|ru}/integration` reúne diagnóstico, aula-piloto, revisões, plano diário
+legado e acompanhamento. O resumo é derivado dos eventos e progressos já persistidos:
+não introduz stores, altera o plano antigo ou duplica registros. Inclui retomada de
+diagnóstico/aula/revisão/plano quando há estado ativo, contagem da aula e agenda D+2/D+7.
+O plano diário mantém sua meta e apresenta as sugestões C5 separadamente. O dashboard
+mostra resultados avaliados, incertos, não avaliados, pendências de revisão, dificuldades
+e competências, sem inferir fluência ou nível CEFR. Inglês e Russo são agregados
+independentemente.
+
+A flag `?learn-preview=c5-integration` ativa o fluxo somente em `localhost`, loopback
+IPv4 ou loopback IPv6. Ela também permite navegar pelos pilotos, diagnóstico e revisões
+existentes, ainda submetidos à mesma proteção local. O manifesto mantém a implementação
+desativada para estudantes. Persistência permanece no IndexedDB v3; backups continuam
+aceitando v1/v2 e exportando/restaurando v3.
+
+### Validação C5
+
+- `npm run typecheck` e `npm run build`: aprovados.
+- Dez validadores Learn: 10/10 aprovados; readiness confirma C1–C5 desativadas para
+  acesso público e compatibilidade do armazenamento.
+- Playwright completo do Learn em Chrome contra o build estático servido em loopback:
+  108/108 aprovados, incluindo legado, C1–C5, retomada, revisões, diagnósticos, backups,
+  isolamento dos idiomas, acessibilidade e layouts responsivos.
+- Playwright específico C4+C5: 9/9 aprovados antes da regressão completa.
+
+**Limites:** a validação foi automatizada em navegador Chromium/Chrome; não houve
+homologação com estudantes nem teste físico em dispositivos. A prévia C5 continua
+restrita a loopback e a publicação não habilita novas rotas para o público. Revisão
+pedagógica humana e validação com aprendizes continuam necessárias antes de qualquer
+ativação. O status de produção deve ser confirmado no PR/deployment, sem tratar o build
+local como validação do domínio oficial.

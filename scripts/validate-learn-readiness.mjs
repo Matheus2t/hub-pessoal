@@ -52,7 +52,7 @@ verify(delayedImplementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&
 const previewSource=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
 verify(!previewSource.includes("hostname.endsWith('.vercel.app')"),'C1 must not allow arbitrary Vercel hosts');
 verify(previewSource.includes("hostname==='localhost'")&&previewSource.includes("hostname==='127.0.0.1'"),'C1 local preview gate missing');
-verify(previewSource.includes("get('learn-preview')===pilot")&&previewSource.includes("'c1'|'c2'"),'C1/C2 must use separate explicit loopback-only preview flags');
+verify(previewSource.includes("get('learn-preview')===flag")&&previewSource.includes("'c1'|'c2'")&&previewSource.includes('previewFlagEnabled(pilot,host,search)'),'C1/C2 must use separate explicit loopback-only preview flags');
 verify(previewSource.includes('isLearnDiagnosticPreviewEnabled')&&previewSource.includes('diagnostic-${language}')&&previewSource.includes("hostname==='[::1]'"),'C3 must use an explicit loopback-only gate including IPv6 loopback');
 const runtimeSource=readFileSync('frontend/src/learn/pilot-page.ts','utf8');
 verify(runtimeSource.includes("@customElement('learn-pilot-player')")&&runtimeSource.includes('loadPilotBundle(language)'),'C1/C2 must share one declarative runner');
@@ -70,8 +70,18 @@ const delayedRuntime=readFileSync('frontend/src/learn/delayed-review-page.ts','u
 const delayedRoute=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
 verify(delayedRuntime.includes("@customElement('learn-delayed-review')")&&delayedRuntime.includes('pilotCompletionAt')&&delayedRuntime.includes('recordLessonEvent'),'C4 runtime must derive the schedule from pilot evidence and persist reviews');
 verify(delayedRuntime.includes('makeDelayedReviewEvent')&&delayedRuntime.includes('learn-phonetic-editor')&&delayedRuntime.includes('skipRemaining'),'C4 must preserve uncertainty, Russian input and unassessed skips');
-verify(delayedRoute.includes("get('learn-preview')==='c4-delayed'")&&delayedRoute.includes("hostname==='localhost'")&&delayedRoute.includes("hostname==='127.0.0.1'"),'C4 preview route must require the exact loopback flag');
+verify(delayedRoute.includes("previewFlagEnabled('c4-delayed'")&&delayedRoute.includes("hostname==='localhost'")&&delayedRoute.includes("hostname==='127.0.0.1'"),'C4 preview route must require the exact loopback flag');
 verify(evidence.delayedReviewEventExtension?.openResponse?.includes('Always uncertain')&&evidence.delayedReviewEventExtension?.persistenceCompatibility?.includes('IndexedDB remains v3'),'C4 event contract must preserve uncertainty and v3 storage');
+const integration=manifest.integrationImplementation;
+verify(integration?.milestoneId==='C5-learn-integration'&&integration?.runtimeEnabled===false&&integration?.previewAccess==='loopback-only'&&integration?.previewFlag==='c5-integration','C5 integration must remain local-only and disabled by default');
+verify(integration?.indexedDbVersion===3&&integration?.backupVersion===3&&integration?.legacyBackupVersionsAccepted?.join('/')==='1/2','C5 must preserve IndexedDB v3 and v1/v2/v3 backups');
+verify(integration?.openResponseOutcomeWithoutReviewer==='uncertain'&&integration?.notAssessedIsNotFailure===true&&integration?.noCEFROrFluencyClaims===true,'C5 must preserve conservative evidence limits');
+const integrationRuntime=readFileSync('frontend/src/learn/integration.ts','utf8');
+const integrationPage=readFileSync('frontend/src/learn/integration-page.ts','utf8');
+verify(integrationRuntime.includes('summarizeLearnIntegration')&&integrationRuntime.includes('uncertain')&&integrationRuntime.includes('notAssessed'),'C5 must aggregate evidence states without conflation');
+verify(integrationPage.includes("@customElement('learn-integration-hub')")&&integrationPage.includes('summarizeLearnIntegration')&&integrationPage.includes('Etapas de aprendizagem'),'C5 navigation hub must be implemented');
+verify(integrationRuntime.includes('currentPlan')&&integrationRuntime.includes('delayedDueAt'),'C5 suggestions must reuse the legacy daily plan and real review timing');
+verify(readFileSync('frontend/src/learn/pilot-preview.ts','utf8').includes("get('learn-preview')==='c5-integration'"),'C5 route guard must use exact flag and loopback host');
 for(const path of manifest.docs||[])verify(existsSync(path),'missing handoff document '+path);
 for(const path of Object.values(manifest.artifacts||{}).flat()){
  verify(existsSync(base+path),'missing declared content asset '+path);
@@ -172,4 +182,4 @@ console.log('Cross-artifact checks: '+allTaskIds.size+' distinct tasks, '+openTa
 if(errors.length){
  console.error(errors.map(e=>'ERROR: '+e).join('\n'));
  process.exitCode=1;
-}else console.log('C1/C2 + C3 + C4 STRUCTURE READY: disabled pilots, local-only diagnostics/reviews, additive storage and legacy backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');
+}else console.log('C1/C2 + C3 + C4 + C5 STRUCTURE READY: disabled pilots, local-only diagnostics/reviews/integration, evidence-state separation and legacy backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');

@@ -1335,3 +1335,51 @@ learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto
   .learn-delayed-dashboard .learn-pilot-header .button { align-self: flex-start; }
   .learn-delayed-actions { align-items: stretch; flex-direction: column; }
 }
+
+learn-integration-hub, learn-integration-evidence { display:block; min-width:0; }
+.learn-integration { display:grid; gap:clamp(20px,3vw,34px); max-width:1120px; margin:0 auto; }
+.learn-integration__header { display:grid; gap:8px; }
+.learn-integration__header h1 { margin:0; font-size:clamp(28px,4vw,42px); line-height:1.1; }
+.learn-integration__header p { max-width:62ch; margin:0; color:var(--secondary); line-height:1.6; }
+.learn-integration__header > a { width:max-content; }
+.learn-integration__nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.learn-integration__nav-item { display:grid; grid-template-columns:1fr auto; align-items:center; gap:8px 12px; min-width:0; padding:16px; border:1px solid var(--line-soft); border-radius:10px; background:var(--panel); color:var(--text); text-decoration:none; }
+.learn-integration__nav-item > span:first-child { font-weight:650; }
+.learn-integration__nav-item small { grid-column:1; color:var(--secondary); }
+.learn-integration__nav-item > span:last-child { grid-column:2; grid-row:1 / span 2; color:var(--secondary); }
+.learn-integration__nav-item:hover { border-color:var(--line); background:var(--raised); }
+.learn-integration__section { min-width:0; }
+.learn-integration__section > .learn-section-intro { margin-bottom:12px; }
+.learn-integration__section h2 { margin:0; font-size:22px; }
+.learn-integration__list { display:grid; gap:8px; padding:0; margin:0; list-style:none; }
+.learn-integration__list li { display:flex; align-items:center; justify-content:space-between; gap:16px; min-width:0; padding:14px 16px; border:1px solid var(--line-soft); border-radius:9px; background:var(--panel); }
+.learn-integration__list li > div { min-width:0; }
+.learn-integration__list p { margin:5px 0 0; color:var(--secondary); font-size:13px; line-height:1.55; }
+.learn-integration__list .button { flex:none; }
+.learn-integration__evidence { padding:18px; border:1px solid var(--line-soft); border-radius:10px; background:var(--panel); }
+.learn-integration__evidence dl,.learn-c5-evidence dl { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+.learn-integration__evidence dl div,.learn-c5-evidence dl div { min-width:0; padding:11px; border:1px solid var(--line-soft); border-radius:8px; background:var(--raised); }
+.learn-integration__evidence dt,.learn-c5-evidence dt { color:var(--secondary); font-size:12px; line-height:1.4; }
+.learn-integration__evidence dd,.learn-c5-evidence dd { margin:5px 0 0; font-size:22px; font-weight:650; }
+.learn-integration__evidence > p,.learn-c5-evidence > p { color:var(--secondary); font-size:13px; line-height:1.6; }
+.learn-c5-panel { margin:0 0 22px; padding:16px; border:1px solid var(--line-soft); border-radius:10px; background:var(--panel); }
+.learn-c5-panel > .learn-section-intro { align-items:center; margin-bottom:10px; }
+.learn-c5-panel h3 { margin:0; font-size:18px; }
+.learn-c5-panel > p { color:var(--secondary); font-size:13px; line-height:1.55; }
+.learn-c5-evidence ul { display:grid; gap:7px; padding:0; margin:12px 0; list-style:none; }
+.learn-c5-evidence li { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; padding:10px 12px; border:1px solid var(--line-soft); border-radius:7px; }
+.learn-c5-evidence li span { color:var(--secondary); font-size:13px; }
+.learn-integration :is(a,button,summary):focus-visible,.learn-c5-panel :is(a,button,summary):focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+@media (max-width: 760px) {
+ .learn-integration__nav { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .learn-integration__evidence dl,.learn-c5-evidence dl { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 520px) {
+ .learn-integration { gap:22px; }
+ .learn-integration__nav { grid-template-columns:minmax(0,1fr); }
+ .learn-integration__nav-item { padding:13px; }
+ .learn-integration__list li { align-items:flex-start; flex-direction:column; }
+ .learn-integration__evidence,.learn-c5-panel { padding:13px; }
+ .learn-c5-panel > .learn-section-intro { align-items:flex-start; flex-direction:column; }
+ .learn-c5-evidence li { align-items:flex-start; flex-direction:column; }
+}
