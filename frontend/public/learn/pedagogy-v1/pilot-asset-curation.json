@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 1,
+  "status": "editorial-preselection",
+  "runtimeEnabled": false,
+  "reviewRound": "pilots-first",
+  "objectiveByLanguage": {
+    "en": "en-introductions-01",
+    "ru": "ru-directions-03"
+  },
+  "rules": {
+    "notEvidence": "Every legacy item is at most input, guided practice or support; never evidence of independent production, transfer or CEFR.",
+    "reuseGate": "Reuse only after linguistic and learner review; no full answers or model sentences shown during unaided transfer.",
+    "knownRisk": "Topics and isolated translations cannot establish communicative alignment; deferred items remain available in legacy Learn.",
+    "revisionPolicy": "Do not change IDs under which attempts exist; content changes require review and migration planning."
+  },
+  "languages": {
+    "en": {
+      "intendedPilot": "en-pilot-introductions-01",
+      "reviewStatus": "internal-editorial-review-only",
+      "decisions": [
+        {
+          "id": "en-word-001",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Saudação presente no diálogo; pode servir de apoio de compreensão, sem medir comunicação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-019",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Palavra diretamente relacionada à pergunta pelo nome no primeiro encontro.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-078",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Student aparece na pergunta de Maya e é necessária para interpretar a conversa.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-008",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Good morning é útil em encontros matinais, mas não aparece na situação apresentada.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-071",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Work é útil para o aluno distinguir trabalhar de estudar no diálogo e em novas apresentações.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-072",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Office aparece como contexto ocupacional e ajuda a compreender a fala de Maya.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-075",
+          "decision": "needs_revision",
+          "slot": "revision-queue",
+          "why": "A tradução genérica de job como cargo é estreita; emprego ou trabalho também são usos frequentes. Não usar como referência sem contexto.",
+          "nextAction": "Revisar tradução e exemplos por sentido; manter ID e histórico até migração segura.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-077",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "University não é necessário para a tarefa; uso prematuro acrescentaria vocabulário sem propósito.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-word-083",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Question pode ajudar a explicar a finalidade de perguntar algo, mas não precisa ser memorizado.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-phrase-003",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Pedir repetição é funcional, mas a expressão específica se refere à última palavra e tem dificuldade superior ao piloto.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-phrase-004",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Perguntar a grafia do sobrenome é atividade distinta de se apresentar e perguntar sobre trabalho/estudos.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-reading-03",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Estudo em dupla é útil para uma unidade de hábitos e prática, não para testar primeira apresentação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-reading-10",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Conversação após aula usa texto A2; pode ser retomada quando trabalhar interações mais longas.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-writing-077",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Tradução sobre terceira pessoa na universidade não observa apresentação própria.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-writing-083",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "A frase permite pedir esclarecimento sobre uma palavra, mas a tradução isolada não prova interação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-grammar-01-q1",
+          "decision": "reuse",
+          "slot": "guided-practice",
+          "why": "Completar I am a student pode apoiar construção inicial; não contar como produção independente.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-grammar-04-q1",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Conjugação de terceira pessoa é ensinável depois; o objetivo inicial é falar de si e conhecer outro.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-test-08",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Saudação escrita pode servir de revisão lexical, não de evidência de diálogo.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-dictation-033",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Frase de rotina matinal e ditado não fazem parte da apresentação; áudio TTS não foi validado para escuta natural.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "en-v2-reading-001",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Narrativa B1 de projeto comunitário exige repertório além do primeiro encontro A1.",
+          "countsAsIndependentCompetence": false
+        }
+      ]
+    },
+    "ru": {
+      "intendedPilot": "ru-pilot-directions-01",
+      "reviewStatus": "internal-editorial-review-only",
+      "decisions": [
+        {
+          "id": "ru-word-004",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Спасибо encerra o diálogo após o pedido de orientação e sustenta a troca de cortesia.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-007",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Извините é a forma cortês usada ao abordar desconhecido para pedir informação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-086",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Автобус é transporte, mas a tarefa inicial aborda direção a pé e localização da estação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-090",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Станция é o destino central da pergunta e deve ser reconhecido no contexto.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-095",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Улица ajuda a situar o diálogo na rua, mas a palavra não é necessária na pergunta apresentada.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-097",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Карта seria útil para consultar um mapa, mas não aparece na interação orientada por diálogo.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-098",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Налево é indispensável para compreender a direção à esquerda.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-099",
+          "decision": "support_only",
+          "slot": "contrast",
+          "why": "Направо é contraponto útil a налево; não transformá-lo em nova meta independente.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-word-110",
+          "decision": "reuse",
+          "slot": "input-gloss",
+          "why": "Аптека é o ponto de referência espacial perto da estação no diálogo.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-phrase-003",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Pedir repetição favorece interação, mas a construção A2 é extensão opcional e não parte do objetivo inicial.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-phrase-009",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Comprar bilhete é uma tarefa comunicativa diferente de encontrar a localização da estação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-phrase-023",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Combinar encontro em frente à biblioteca introduz outro objetivo e preposição flexionada.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-phrase-031",
+          "decision": "support_only",
+          "slot": "contrast",
+          "why": "A pergunta pela farmácia mostra outro destino; apresentar apenas depois de tentativa independente para evitar pistas.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-reading-07",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Mudança de plataforma A2 com anúncio e números não é equivalente a pedir localização A1.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-writing-076",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Tradução com напротив библиотеки introduz genitivo e situação diferente do diálogo inicial.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-writing-095",
+          "decision": "defer",
+          "slot": "not-in-pilot",
+          "why": "Descrever uma rua como tranquila não exige pedir nem compreender orientações.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-test-02",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Reconhecer аптека ajuda com ponto de referência, mas tradução isolada não comprova orientação.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-test-07",
+          "decision": "support_only",
+          "slot": "optional-reference",
+          "why": "Reconhecer спасибо sustenta cortesia, sem provar compreensão de instruções.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-dictation-056",
+          "decision": "needs_revision",
+          "slot": "revision-queue",
+          "why": "Рядом с парком exemplifica localização, mas o ditado usa áudio sem gravação revisada; não ativar como listening do novo método.",
+          "nextAction": "Se reaproveitado, criar tarefa textual contextualizada com ID novo; revisar áudio antes de qualquer avaliação auditiva.",
+          "countsAsIndependentCompetence": false
+        },
+        {
+          "id": "ru-grammar-08-q1",
+          "decision": "reuse",
+          "slot": "guided-practice",
+          "why": "Completar где станция? treina a pergunta básica; não equivale a perguntar por biblioteca sem ajuda.",
+          "countsAsIndependentCompetence": false
+        }
+      ]
+    }
+  }
+}
