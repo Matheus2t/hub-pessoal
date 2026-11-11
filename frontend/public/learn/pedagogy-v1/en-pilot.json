@@ -64,7 +64,28 @@
         "Design"
       ],
       "correctIndex": 1,
-      "feedback": "Leo diz 'I study data analysis'. Maya é quem estuda Inglês."
+      "feedback": "Leo diz 'I study data analysis'. Maya é quem estuda Inglês.",
+      "feedbackByWrongChoice": {
+        "0": "Maya diz 'I also study English', mas a pergunta é sobre Leo, que estuda data analysis.",
+        "2": "Design não aparece na fala de Leo. Observe a frase 'I study data analysis'."
+      }
+    },
+    {
+      "id": "en-intro-c2",
+      "kind": "comprehension",
+      "evidence": "comprehension",
+      "prompt": "Quando Leo diz 'What about you?', o que ele está fazendo na conversa?",
+      "choices": [
+        "Convidando Maya a falar de si",
+        "Pedir licença para sair da sala",
+        "Perguntar as horas da aula"
+      ],
+      "correctIndex": 0,
+      "feedback": "Depois de dizer o que estuda, Leo devolve a pergunta para conhecer Maya. A expressão serve para manter o diálogo.",
+      "feedbackByWrongChoice": {
+        "1": "Não há pedido para sair: a pergunta vem depois de Leo contar sobre o que estuda.",
+        "2": "Não aparece referência a horários. A expressão pergunta sobre a outra pessoa."
+      }
     },
     {
       "id": "en-intro-n1",
@@ -126,5 +147,85 @@
     "Validar áudio antes de declarar competência auditiva",
     "Não inferir produção oral ou CEFR"
   ],
-  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção"
+  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção",
+  "teachingDesign": {
+    "priority": "develop a reciprocal introduction, not memorise isolated greetings",
+    "estimatedSupportLevels": [
+      "context-only",
+      "wordGloss",
+      "sentenceStarter",
+      "modelAnswerOnRequest"
+    ],
+    "supportRule": "Show any complete model only after a genuine first attempt; disclose that a model was used and do not record subsequent responses as independent.",
+    "stepIntent": [
+      {
+        "stepId": "en-intro-c1",
+        "why": "Retrieve who studied which subject, avoiding confusion between speakers."
+      },
+      {
+        "stepId": "en-intro-c2",
+        "why": "Interpret discourse function of a reciprocal question, not only its literal words."
+      },
+      {
+        "stepId": "en-intro-n1",
+        "why": "Notice patterns for identity, study and turn-taking."
+      },
+      {
+        "stepId": "en-intro-p1",
+        "why": "Provide scaffolded production using freely chosen facts."
+      },
+      {
+        "stepId": "en-intro-t1",
+        "why": "Apply introduction in a professional context and ask a new relevant question."
+      }
+    ],
+    "languageNotes": [
+      {
+        "concept": "I'm vs I study",
+        "explanationPt": "Use 'I'm...' para indicar identidade ou nome, e 'I study...' para descrever o que estuda. 'I am study' não é a forma adequada.",
+        "example": "I'm Leo. I study data analysis."
+      },
+      {
+        "concept": "What about you?",
+        "explanationPt": "É uma forma natural de devolver a pergunta após falar sobre si. Não serve para qualquer tipo de pergunta sem contexto.",
+        "example": "I study programming. What about you?"
+      },
+      {
+        "concept": "Are you a student?",
+        "explanationPt": "Com o verbo 'be', a pergunta começa por 'Are'; não se usa 'Do you are'.",
+        "example": "Are you a student? Yes, I am."
+      }
+    ],
+    "misconceptions": [
+      {
+        "pattern": "Confuses who studies English",
+        "diagnosis": "Speaker tracking",
+        "responsePt": "Leo estuda análise de dados; Maya trabalha e também estuda Inglês. Volte às falas de cada pessoa."
+      },
+      {
+        "pattern": "Omits a reciprocal question in transfer",
+        "diagnosis": "Incomplete communicative task",
+        "responsePt": "Você se apresentou. Agora faça uma pergunta que permita ao colega participar da conversa."
+      },
+      {
+        "pattern": "Uses a verbatim model with help",
+        "diagnosis": "Needs independent application",
+        "responsePt": "Tente novamente com um nome, atividade e pergunta diferentes, sem consultar a frase modelo."
+      }
+    ],
+    "transferDelta": [
+      "Different setting: online project meeting instead of class",
+      "Needs question about another participant, not just identity",
+      "Learner chooses a new topic of work or study"
+    ],
+    "editorialCaution": "Dialogues represent written informal interaction. No audio recording or evaluation of spoken fluency exists."
+  },
+  "editorialReview": {
+    "internalConsistency": "reviewed-by-project-author; not independently language-certified",
+    "requireHumanLinguisticReview": true,
+    "requirePilotLearnerTest": true,
+    "audioRecordingAvailable": false,
+    "preventRuntimeUntilApproved": true,
+    "reviewedCompetencyScope": "reading, comprehension, guided written production and transfer only; no oral assessment"
+  }
 }
