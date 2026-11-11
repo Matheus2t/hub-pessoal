@@ -207,6 +207,26 @@
     "remotePreviewEnabled": false,
     "remoteAccessRequiresServerAuthentication": true
   },
+  "diagnosticImplementation": {
+    "milestoneId": "C3-initial-competency-diagnostic",
+    "status": "implemented-disabled-preview",
+    "runtimeEnabled": false,
+    "languages": ["en", "ru"],
+    "taskCounts": {"en": 10, "ru": 10},
+    "missingAudioTaskIds": {
+      "en": ["en-diag-l1", "en-diag-l2"],
+      "ru": ["ru-diag-l1", "ru-diag-l2"]
+    },
+    "openResponseOutcomeWithoutReviewer": "uncertain",
+    "persistence": ["lessonEvents", "lessonProgress"],
+    "indexedDbVersion": 3,
+    "backupVersion": 3,
+    "legacyBackupVersionsAccepted": [1, 2],
+    "recordedEvidenceFields": ["objectiveId", "competencyId", "response", "shownAssistance", "contentVersion", "outcome", "diagnosticSessionId"],
+    "previewAccess": "loopback-only",
+    "previewFlags": {"en": "diagnostic-en", "ru": "diagnostic-ru"},
+    "noCEFROrOralClaims": true
+  },
   "publicReleaseGate": [
     "independent English and Russian language review",
     "real-learner pilot feedback",

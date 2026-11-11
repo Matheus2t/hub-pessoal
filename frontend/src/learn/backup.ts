@@ -29,10 +29,34 @@ export function validLessonFeedback(v:unknown):v is LessonFeedback {
  return obj(v)&&feedbackKeys.every(key=>text(v[key],1000));
 }
 export function validLessonEvent(v:unknown):v is LessonEvidenceEvent {
- if(!obj(v)||!text(v.eventId,120)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||!text(v.taskId,120)||!['comprehension','notice','guidedProduction','transfer'].includes(String(v.taskKind))||typeof v.response!=='string'||v.response.length>4000||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validShownAssistance)||!num(v.startedAt,0,MAX_TIME)||!num(v.submittedAt,v.startedAt,MAX_TIME)||!['supported','partiallySupported','notSupported','uncertain','notAssessed'].includes(String(v.outcome))||!['pending','reviewed','notRequired'].includes(String(v.reviewStatus))||!['deterministic','rubricWithReview','humanReview','unavailable'].includes(String(v.assessorKind))||(v.feedback!==null&&!validLessonFeedback(v.feedback))||!text(v.sourceContext,300)||typeof v.isIndependentClaimAllowed!=='boolean')return false;
+ const taskKinds=['comprehension','notice','guidedProduction','transfer','diagnosticReading','diagnosticRecognition','diagnosticGuidedProduction','diagnosticIndependentProduction','diagnosticTransfer','diagnosticListening'];
+ if(!obj(v)||!text(v.eventId,120)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||!text(v.taskId,120)||!taskKinds.includes(String(v.taskKind))||typeof v.response!=='string'||v.response.length>4000||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validShownAssistance)||!num(v.startedAt,0,MAX_TIME)||!num(v.submittedAt,v.startedAt,MAX_TIME)||!['supported','partiallySupported','notSupported','uncertain','notAssessed'].includes(String(v.outcome))||!['pending','reviewed','notRequired'].includes(String(v.reviewStatus))||!['deterministic','rubricWithReview','humanReview','unavailable'].includes(String(v.assessorKind))||(v.feedback!==null&&!validLessonFeedback(v.feedback))||!text(v.sourceContext,300)||typeof v.isIndependentClaimAllowed!=='boolean'||(v.diagnosticSessionId!==undefined&&!text(v.diagnosticSessionId,120)))return false;
+ const diagnosticLanguage:Record<string,string>={'en-diagnostic-v1':'en','ru-diagnostic-v1':'ru'};
+ if(diagnosticLanguage[v.unitId]){
+  const taskRecords:Record<string,{kind:string;objective:string;competency:string}>={
+   'en-diag-r1':{kind:'diagnosticReading',objective:'en-routine-02',competency:'written-comprehension'},'en-diag-r2':{kind:'diagnosticReading',objective:'en-navigation-03',competency:'written-comprehension'},
+   'en-diag-k1':{kind:'diagnosticRecognition',objective:'en-introductions-01',competency:'contextual-recognition'},'en-diag-k2':{kind:'diagnosticRecognition',objective:'en-work-05',competency:'contextual-recognition'},
+   'en-diag-p1':{kind:'diagnosticGuidedProduction',objective:'en-introductions-01',competency:'written-production'},'en-diag-p2':{kind:'diagnosticIndependentProduction',objective:'en-work-05',competency:'written-production'},
+   'en-diag-t1':{kind:'diagnosticTransfer',objective:'en-introductions-01',competency:'written-transfer'},'en-diag-t2':{kind:'diagnosticTransfer',objective:'en-navigation-03',competency:'written-transfer'},
+   'en-diag-l1':{kind:'diagnosticListening',objective:'en-introductions-01',competency:'listening-comprehension'},'en-diag-l2':{kind:'diagnosticListening',objective:'en-navigation-03',competency:'listening-comprehension'},
+   'ru-diag-r1':{kind:'diagnosticReading',objective:'ru-cyrillic-01',competency:'written-comprehension'},'ru-diag-r2':{kind:'diagnosticReading',objective:'ru-directions-03',competency:'written-comprehension'},
+   'ru-diag-k1':{kind:'diagnosticRecognition',objective:'ru-cyrillic-01',competency:'contextual-recognition'},'ru-diag-k2':{kind:'diagnosticRecognition',objective:'ru-introductions-02',competency:'contextual-recognition'},
+   'ru-diag-p1':{kind:'diagnosticGuidedProduction',objective:'ru-introductions-02',competency:'written-production'},'ru-diag-p2':{kind:'diagnosticIndependentProduction',objective:'ru-directions-03',competency:'written-production'},
+   'ru-diag-t1':{kind:'diagnosticTransfer',objective:'ru-directions-03',competency:'written-transfer'},'ru-diag-t2':{kind:'diagnosticTransfer',objective:'ru-routine-04',competency:'written-transfer'},
+   'ru-diag-l1':{kind:'diagnosticListening',objective:'ru-introductions-02',competency:'listening-comprehension'},'ru-diag-l2':{kind:'diagnosticListening',objective:'ru-directions-03',competency:'listening-comprehension'}
+  };
+  const evidenceKinds:Record<string,string>={diagnosticReading:'comprehension',diagnosticRecognition:'recognition',diagnosticGuidedProduction:'guidedProduction',diagnosticIndependentProduction:'independentProduction',diagnosticTransfer:'transfer',diagnosticListening:'comprehension'};
+  const skipped=String(v.eventId)===`${v.diagnosticSessionId}:skip:${v.taskId}`;
+  const task=taskRecords[String(v.taskId)];
+  if(v.language!==diagnosticLanguage[v.unitId]||!String(v.taskId).startsWith(`${v.language}-diag-`)||!text(v.diagnosticSessionId,120)||!task||task.kind!==v.taskKind||task.objective!==v.objectiveId||task.competency!==v.competencyId||v.evidenceKind!==evidenceKinds[String(v.taskKind)]||v.sourceContext!==`${v.unitId}@${v.contentVersion}/${v.taskId}`||v.isIndependentClaimAllowed||v.feedback!==null||(!skipped&&v.eventId!==`${v.diagnosticSessionId}:${v.taskId}`)||(skipped&&(v.outcome!=='notAssessed'||v.response!=='')))return false;
+  if(v.taskKind==='diagnosticListening')return v.outcome==='notAssessed'&&v.assessorKind==='unavailable'&&v.reviewStatus==='notRequired'&&v.response===''&&v.shownAssistance.length===0;
+  if(v.taskKind==='diagnosticReading'||v.taskKind==='diagnosticRecognition')return v.reviewStatus==='notRequired'&&(v.outcome==='notAssessed'?v.assessorKind==='unavailable':v.assessorKind==='deterministic'&&(v.outcome==='supported'||v.outcome==='notSupported'));
+  return v.outcome==='uncertain'&&v.assessorKind==='rubricWithReview'&&v.reviewStatus==='pending'||v.outcome==='notAssessed'&&v.assessorKind==='unavailable'&&v.reviewStatus==='notRequired';
+ }
+ if(v.diagnosticSessionId!==undefined)return false;
  const pilotLanguage:Record<string,string>={'en-pilot-introductions-01':'en','ru-pilot-directions-01':'ru'};
  if(pilotLanguage[v.unitId]&&pilotLanguage[v.unitId]!==v.language)return false;
- const expected:{[K in LessonEvidenceEvent['taskKind']]:LessonEvidenceEvent['evidenceKind']}={comprehension:'comprehension',notice:'practiceOnly',guidedProduction:'guidedProduction',transfer:'transfer'};
+ const expected:Record<string,string>={comprehension:'comprehension',notice:'practiceOnly',guidedProduction:'guidedProduction',transfer:'transfer'};
  const taskKind=v.taskKind as LessonEvidenceEvent['taskKind'];
  if(v.evidenceKind!==expected[taskKind]||v.sourceContext!==`${v.unitId}@${v.contentVersion}/${v.taskId}`)return false;
  if(v.taskKind==='comprehension')return v.assessorKind==='deterministic'&&v.reviewStatus==='notRequired'&&(v.outcome==='supported'||v.outcome==='notSupported')&&!v.isIndependentClaimAllowed;
@@ -50,9 +74,20 @@ export function validLessonDraft(v:unknown):v is LessonDraft {
  return obj(v)&&text(v.taskId,120)&&text(v.eventId,120)&&typeof v.response==='string'&&v.response.length<=4000&&num(v.startedAt,0,MAX_TIME)&&num(v.updatedAt,v.startedAt,MAX_TIME)&&(v.choiceIndex===undefined||Number.isInteger(v.choiceIndex)&&num(v.choiceIndex,0,20));
 }
 export function validLessonProgress(v:unknown):v is LessonProgress {
- if(!obj(v)||!text(v.key,300)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||v.key!==`${v.language}:${v.unitId}`||!Number.isInteger(v.currentStage)||!num(v.currentStage,0,7)||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validLessonAssistance)||!Array.isArray(v.drafts)||v.drafts.length>20||!v.drafts.every(validLessonDraft)||!num(v.updatedAt,0,MAX_TIME))return false;
+ if(!obj(v)||!text(v.key,300)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||v.key!==`${v.language}:${v.unitId}`||!Number.isInteger(v.currentStage)||!num(v.currentStage,0,10)||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validLessonAssistance)||!Array.isArray(v.drafts)||v.drafts.length>20||!v.drafts.every(validLessonDraft)||!num(v.updatedAt,0,MAX_TIME)||(v.diagnosticSessionId!==undefined&&!text(v.diagnosticSessionId,120))||(v.diagnosticLastEventId!==undefined&&!text(v.diagnosticLastEventId,120))||(['inProgress','completed','skipped'].includes(String(v.diagnosticStatus))===false&&v.diagnosticStatus!==undefined))return false;
+ const isDiagnostic=v.unitId==='en-diagnostic-v1'||v.unitId==='ru-diagnostic-v1';
+ if(isDiagnostic){
+  if(!text(v.diagnosticSessionId,120)||!['inProgress','completed','skipped'].includes(String(v.diagnosticStatus))||v.currentStage>10)return false;
+  const done=v.diagnosticStatus==='completed'||v.diagnosticStatus==='skipped';
+  if(done!==(v.currentStage===10)||(done&&v.drafts.length!==0)||v.drafts.length>1)return false;
+  const ids=['r1','r2','k1','k2','p1','p2','t1','t2','l1','l2'];
+  const stage=Number(v.currentStage);if(v.drafts.some(d=>d.taskId!==`${v.language}-diag-${ids[stage]}`))return false;
+ }
+ else if(v.diagnosticSessionId!==undefined||v.diagnosticStatus!==undefined||v.diagnosticLastEventId!==undefined||v.currentStage>7)return false;
  const pilotLanguage:Record<string,string>={'en-pilot-introductions-01':'en','ru-pilot-directions-01':'ru'};
+ const diagnosticLanguage:Record<string,string>={'en-diagnostic-v1':'en','ru-diagnostic-v1':'ru'};
  if(pilotLanguage[v.unitId]&&pilotLanguage[v.unitId]!==v.language)return false;
+ if(diagnosticLanguage[v.unitId]&&diagnosticLanguage[v.unitId]!==v.language)return false;
  const drafts=v.drafts as LessonDraft[];
  return new Set(drafts.map(d=>d.taskId)).size===drafts.length&&new Set(drafts.map(d=>d.eventId)).size===drafts.length;
 }
@@ -63,7 +98,13 @@ export function parseBackup(raw:string):Backup {
   if((data.version===2||data.version===3)&&(!Array.isArray(data.planning)||data.planning.length>2000||!data.planning.every(validPlanning)||new Set(data.planning.map(p=>p.key)).size!==data.planning.length))throw Error('Planos do backup inválidos ou duplicados.');
   if(data.version===2||data.version===3){const plans=(data.planning as PlanningRecord[]).filter((r):r is Extract<PlanningRecord,{kind:'plan'}>=>r.kind==='plan');const ids=plans.map(r=>r.plan.id);if(new Set(ids).size!==ids.length)throw Error('Identificadores de planos duplicados.');for(const r of plans)for(const i of r.plan.items){const a=(data.attempts as Attempt[]).find(a=>a.id===i.attemptId);if(a&&(a.language!==r.language||a.itemId!==i.itemId))throw Error('Tentativa incompatível com o plano.');}}
   if(data.version===3&&(!Array.isArray(data.lessonEvents)||data.lessonEvents.length>10000||!data.lessonEvents.every(validLessonEvent)||new Set(data.lessonEvents.map(e=>e.eventId)).size!==data.lessonEvents.length||!Array.isArray(data.lessonProgress)||data.lessonProgress.length>2000||!data.lessonProgress.every(validLessonProgress)||new Set(data.lessonProgress.map(p=>p.key)).size!==data.lessonProgress.length))throw Error('Evidências ou rascunhos do backup v3 inválidos ou duplicados.');
-  if(data.version===3){const eventIds=new Set((data.lessonEvents as LessonEvidenceEvent[]).map(e=>e.eventId));if((data.lessonProgress as LessonProgress[]).some(p=>p.drafts.some(d=>eventIds.has(d.eventId))))throw Error('O backup v3 associa a mesma tentativa a um evento e a um rascunho.');}
+  if(data.version===3){
+   const events=data.lessonEvents as LessonEvidenceEvent[],progress=data.lessonProgress as LessonProgress[],eventIds=new Set(events.map(e=>e.eventId));
+   if(progress.some(p=>p.drafts.some(d=>eventIds.has(d.eventId))))throw Error('O backup v3 associa a mesma tentativa a um evento e a um rascunho.');
+   const diagnosticAttempts=events.filter(e=>e.diagnosticSessionId),attemptKeys=diagnosticAttempts.map(e=>`${e.language}:${e.diagnosticSessionId}:${e.taskId}`);
+   if(new Set(attemptKeys).size!==attemptKeys.length)throw Error('O backup v3 contém tentativas diagnósticas duplicadas na mesma sessão.');
+   if(progress.some(p=>p.diagnosticLastEventId&&!events.some(e=>e.eventId===p.diagnosticLastEventId&&e.language===p.language&&e.unitId===p.unitId&&e.diagnosticSessionId===p.diagnosticSessionId)))throw Error('O progresso diagnóstico aponta para uma evidência ausente.');
+  }
   if(new Set(data.attempts.map(a=>a.id)).size!==data.attempts.length||new Set(data.cards.map(c=>`${c.language}:${c.itemId}`)).size!==data.cards.length)throw Error('Backup contém registros duplicados.');
   return {format:'2t-learn',version:data.version as 1|2|3,exportedAt:data.exportedAt,attempts:data.attempts,cards:data.cards,...(data.version>=2?{planning:data.planning as PlanningRecord[]}:{}),...(data.version===3?{lessonEvents:data.lessonEvents as LessonEvidenceEvent[],lessonProgress:data.lessonProgress as LessonProgress[]}:{})};
 }
