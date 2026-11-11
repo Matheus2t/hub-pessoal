@@ -23,6 +23,8 @@ jobs:
         run: npm run learn:validate-diagnostics
       - name: Audit repeated Learn assessments and generic writing feedback
         run: npm run learn:quality-audit
+      - name: Check legacy Learn asset traceability
+        run: npm run learn:coverage
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
