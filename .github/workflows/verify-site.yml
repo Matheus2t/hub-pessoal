@@ -27,6 +27,8 @@ jobs:
         run: npm run learn:coverage
       - name: Verify contextual reading guides and diagnostic isolation
         run: npm run learn:validate-reading
+      - name: Verify curated pilot assets and evidence limits
+        run: npm run learn:validate-curation
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
