@@ -87,7 +87,7 @@ npm run build
 
 ## 6. Handoff imediato para Codex
 
-O Codex já encontra os quatro JSONs e o validador na branch `main`. A **primeira tarefa de engenharia**, após revisão dos roteiros, será criar um leitor de unidade declarativa e uma jornada de aula end-to-end sem substituir os fluxos existentes, começando pelo piloto de Inglês e depois o de Russo.
+O Codex já encontra os quatro JSONs e o validador na branch `main`. A **primeira tarefa de engenharia** está especificada em `docs/learn-codex-kickoff-v1.md`: criar uma jornada de aula end-to-end em **prévia desativada**, com persistência e backups seguros, começando pelo piloto de Inglês e depois o de Russo.
 
 Condições obrigatórias: preservar todas as rotas, IDs, tentativas, cartões, provas, planos diários e backups; não publicar unidades marcadas `runtimeEnabled:false`; registrar ajuda recebida, tipo de evidência e feedback; não inventar medição de conversação/pronúncia; manter o estilo Lit/TS/SCSS existente.
 
@@ -120,3 +120,8 @@ Foram preparados `en-reading-guide.json` e `ru-reading-guide.json` para os texto
 ## Curadoria por ID dos primeiros pilotos — 11/11/2026
 
 Foi revisada uma amostra de 40 itens reais (20 por idioma) e registrada a decisão `reuse`, `support_only`, `needs_revision` ou `defer` em `frontend/public/learn/pedagogy-v1/pilot-asset-curation.json`. Cinco novos vínculos de apoio foram incluídos nos objetivos dos pilotos e uma referência fora de escopo foi retirada do objetivo inicial de Inglês; todos os itens históricos permanecem disponíveis. Consulte `docs/learn-curadoria-pilotos-v1.md` e execute `npm run learn:validate-curation`. **O parecer é editorial preliminar, não validação linguística independente; não ativar os pilotos nem derivar competências de traduções ou lacunas.**
+
+
+## Marco de prontidão para engenharia — 11/11/2026
+
+Revisão editorial interna e requisitos técnicos consolidados: `docs/learn-pilotos-fechamento-editorial.md`, `docs/learn-evidencias-consolidadas.md` e `docs/learn-codex-kickoff-v1.md`. `readiness-manifest.json` identifica o primeiro incremento técnico, os IDs de tarefas e os portões não cumpridos. **Pronto para Codex = pronto para protótipo desativado; não significa validação linguística externa ou publicação de curso para alunos.**
