@@ -76,4 +76,11 @@ test('browser player offers accessible playback controls and marks synthesis as 
   await player.getByRole('button',{name:'Continuar áudio'}).click();
   await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeEnabled({timeout:3000});
   await expect(player.locator('.learn-audio__status')).toContainText('não uma gravação validada');
+  for(const theme of ['dark','light'])for(const width of [320,390,768,1366]){
+    await page.setViewportSize({width,height:900});
+    await page.locator('html').evaluate((element:HTMLElement,value)=>element.dataset.theme=value,theme);
+    const bounds=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
+    expect(bounds.scroll,`audio overflow at ${width}px/${theme}`).toBeLessThanOrEqual(bounds.client);
+    await expect(player).toBeVisible();
+  }
 });
