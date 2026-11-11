@@ -97,3 +97,10 @@ Cada observação precisa identificar:
 **Dependências:** `docs/learn-pedagogia-v1.md`, `docs/learn-curriculo-v1.md`, `frontend/public/learn/pedagogy-v1/{en,ru}.json`.
 
 **Limite explícito:** o objetivo desta etapa não é simular um professor onisciente, mas construir um diagnóstico modesto, auditável e útil — e melhorar a precisão conforme o aluno gera evidências.
+
+
+---
+
+## Continuação pedagógica — tarefas diagnósticas e feedback (10/11/2026)
+
+Foram preparados `en-diagnostic.json` e `ru-diagnostic.json`, com tarefas graduadas por competências, e o contrato `evaluation-policy.json` com rubricas e resultados incertos. O banco `feedback-casebook.json` contém exemplos e contraexemplos editoriais de respostas. Todos ficam em `frontend/public/learn/pedagogy-v1/` e permanecem **desativados em produção**, pendentes de revisão linguística e implementação. Consulte `docs/learn-diagnostico-feedback-v1.md` e execute `npm run learn:validate-diagnostics`.

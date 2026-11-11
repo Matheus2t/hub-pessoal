@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "id": "ru-diagnostic-v1",
+  "language": "ru",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "goal": "Determine a useful starting unit from directly observed abilities; never certify proficiency.",
+  "administration": {
+    "optional": true,
+    "maxUnassistedTasks": 10,
+    "minTasksBeforeAnyRecommendation": 4,
+    "noFixedPassPercent": true,
+    "notAssessedOnMissingMedia": true,
+    "allowSkip": true
+  },
+  "questions": [
+    {
+      "id": "ru-diag-r1",
+      "type": "reading",
+      "mode": "closed",
+      "objectiveId": "ru-cyrillic-01",
+      "band": "Pre-A1/A1",
+      "stimulus": "На двери написано: «АПТЕКА».",
+      "promptPt": "Que tipo de estabelecimento aparece escrito na porta?",
+      "choices": [
+        "Farmácia",
+        "Escola",
+        "Estação"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "АПТЕКА significa farmácia. Reconhecer a palavra escrita não prova domínio da leitura completa.",
+      "evidence": "comprehension"
+    },
+    {
+      "id": "ru-diag-r2",
+      "type": "reading",
+      "mode": "closed",
+      "objectiveId": "ru-directions-03",
+      "band": "A1",
+      "stimulus": "Станция рядом с парком. Идите прямо.",
+      "promptPt": "Onde está a estação?",
+      "choices": [
+        "Perto do parque",
+        "Dentro do ônibus",
+        "Atrás do hotel"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "'Рядом с парком' indica perto do parque. A instrução de seguir em frente é adicional.",
+      "evidence": "comprehension"
+    },
+    {
+      "id": "ru-diag-k1",
+      "type": "recognition",
+      "mode": "closed",
+      "objectiveId": "ru-cyrillic-01",
+      "band": "Pre-A1/A1",
+      "stimulus": "As duas grafias são diferentes: 'мир' e 'мирь'.",
+      "promptPt": "Qual opção corresponde exatamente à palavra «мир»?",
+      "choices": [
+        "мир",
+        "мирь",
+        "миръ"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A forma exigida termina em р, sem sinal brando (ь) nem duro (ъ).",
+      "evidence": "recognition"
+    },
+    {
+      "id": "ru-diag-k2",
+      "type": "recognition",
+      "mode": "closed",
+      "objectiveId": "ru-introductions-02",
+      "band": "A1",
+      "stimulus": "Uma pessoa se apresenta: «Меня зовут Ольга.»",
+      "promptPt": "Qual é a informação apresentada?",
+      "choices": [
+        "Seu nome é Olga",
+        "Ela mora em uma estação",
+        "Ela precisa de um bilhete"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "'Меня зовут Ольга' significa 'Meu nome é Olga'.",
+      "evidence": "recognition"
+    },
+    {
+      "id": "ru-diag-p1",
+      "type": "guidedProduction",
+      "mode": "open",
+      "objectiveId": "ru-introductions-02",
+      "band": "A1",
+      "promptPt": "Você conhece uma pessoa em um curso. Cumprimente e diga seu nome fictício em russo. Pode usar o teclado fonético.",
+      "stimulus": "Новый знакомый: «Здравствуйте! Как вас зовут?»",
+      "exampleAnswers": [
+        "Здравствуйте! Меня зовут Анна.",
+        "Здравствуйте, я Максим."
+      ],
+      "requiredMeaning": [
+        "Saudação adequada",
+        "Apresenta um nome"
+      ],
+      "acceptableVariations": [
+        "Formal ou neutro adequado ao contexto",
+        "Nome fictício livre"
+      ],
+      "commonPitfalls": [
+        "Responder apenas com sim/não",
+        "Usar uma pergunta no lugar da apresentação"
+      ],
+      "feedbackPt": "Inclua uma saudação e uma forma de dizer seu nome, sem precisar copiar um nome do exemplo.",
+      "assistanceAllowed": [
+        "wordGloss",
+        "phoneticKeyboard",
+        "sentenceStarter"
+      ],
+      "evidence": "guidedProduction",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "ru-diag-p2",
+      "type": "independentProduction",
+      "mode": "open",
+      "objectiveId": "ru-directions-03",
+      "band": "A1–A2",
+      "promptPt": "Você está na rua e procura a estação. Escreva uma pergunta educada em russo para saber onde ela fica.",
+      "stimulus": "Новая ситуация: вы ищете станцию.",
+      "exampleAnswers": [
+        "Извините, где станция?",
+        "Подскажите, пожалуйста, где находится станция?"
+      ],
+      "requiredMeaning": [
+        "Pergunta por localização",
+        "Estação como destino",
+        "Pedido compreensível no contexto"
+      ],
+      "acceptableVariations": [
+        "Pergunta direta com где",
+        "Expressão de cortesia opcional mas desejável"
+      ],
+      "commonPitfalls": [
+        "Pedir bilhete em vez de localização",
+        "Trocar estação por outro lugar"
+      ],
+      "feedbackPt": "Pergunte onde fica a estação e deixe o destino claro para a outra pessoa.",
+      "assistanceAllowed": [],
+      "evidence": "independentProduction",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "ru-diag-t1",
+      "type": "transfer",
+      "mode": "open",
+      "objectiveId": "ru-directions-03",
+      "band": "A1–A2",
+      "promptPt": "Agora você procura uma farmácia (аптека). Pergunte em russo onde ela fica. Não use o exemplo da estação.",
+      "stimulus": "Novo destino: аптека.",
+      "exampleAnswers": [
+        "Извините, где аптека?",
+        "Подскажите, пожалуйста, где ближайшая аптека?"
+      ],
+      "requiredMeaning": [
+        "Pede localização da farmácia",
+        "Não mantém estação como destino"
+      ],
+      "acceptableVariations": [
+        "Com ou sem 'ближайшая'",
+        "Cortesia pode variar"
+      ],
+      "commonPitfalls": [
+        "Perguntar sobre estação",
+        "Mencionar farmácia sem formar uma pergunta"
+      ],
+      "feedbackPt": "Nesta situação o destino é a farmácia; mantenha a pergunta de localização, mas adapte o vocabulário.",
+      "assistanceAllowed": [],
+      "evidence": "transfer",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "ru-diag-t2",
+      "type": "transfer",
+      "mode": "open",
+      "objectiveId": "ru-routine-04",
+      "band": "A1–A2",
+      "promptPt": "Um amigo quer saber sua rotina. Diga em russo que você estuda de manhã. Não é necessário adicionar horários.",
+      "stimulus": "Новый контекст: «Когда ты учишься?»",
+      "exampleAnswers": [
+        "Я учусь утром.",
+        "Утром я учусь."
+      ],
+      "requiredMeaning": [
+        "Informação de que estuda",
+        "Período da manhã"
+      ],
+      "acceptableVariations": [
+        "Ordem das palavras natural",
+        "Pode usar другое verbo apropriado ao contexto"
+      ],
+      "commonPitfalls": [
+        "Mencionar noite em vez de manhã",
+        "Usar frase que nega estudar"
+      ],
+      "feedbackPt": "A mensagem deve conter tanto a atividade de estudar quanto a referência ao período da manhã.",
+      "assistanceAllowed": [],
+      "evidence": "transfer",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "ru-diag-l1",
+      "type": "listening",
+      "mode": "closed",
+      "objectiveId": "ru-introductions-02",
+      "band": "A1",
+      "audio": {
+        "status": "missing-reviewed-recording",
+        "spokenText": "Меня зовут Даша. Я студентка.",
+        "language": "ru",
+        "publicUrl": null
+      },
+      "promptPt": "Qual é o nome da pessoa?",
+      "choices": [
+        "Dasha",
+        "Olga",
+        "Nina"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A pessoa diz 'Меня зовут Даша'.",
+      "evidence": "comprehension",
+      "requiresAudio": true
+    },
+    {
+      "id": "ru-diag-l2",
+      "type": "listening",
+      "mode": "closed",
+      "objectiveId": "ru-directions-03",
+      "band": "A1–A2",
+      "audio": {
+        "status": "missing-reviewed-recording",
+        "spokenText": "Идите прямо, потом направо.",
+        "language": "ru",
+        "publicUrl": null
+      },
+      "promptPt": "Depois de seguir em frente, deve virar para qual lado?",
+      "choices": [
+        "Direita",
+        "Esquerda",
+        "Não deve virar"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A orientação diz 'потом направо', ou seja, depois à direita.",
+      "evidence": "comprehension",
+      "requiresAudio": true
+    }
+  ]
+}

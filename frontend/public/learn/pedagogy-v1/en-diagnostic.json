@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "id": "en-diagnostic-v1",
+  "language": "en",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "goal": "Determine a useful starting unit from directly observed abilities; never certify proficiency.",
+  "administration": {
+    "optional": true,
+    "maxUnassistedTasks": 10,
+    "minTasksBeforeAnyRecommendation": 4,
+    "noFixedPassPercent": true,
+    "notAssessedOnMissingMedia": true,
+    "allowSkip": true
+  },
+  "questions": [
+    {
+      "id": "en-diag-r1",
+      "type": "reading",
+      "mode": "closed",
+      "objectiveId": "en-routine-02",
+      "band": "A1",
+      "stimulus": "Nora studies in the morning. She works in the afternoon and rests after dinner.",
+      "promptPt": "Quando Nora trabalha?",
+      "choices": [
+        "De manhã",
+        "À tarde",
+        "Depois do jantar"
+      ],
+      "correctIndex": 1,
+      "feedbackPt": "O texto diferencia morning, afternoon e after dinner. Ela trabalha à tarde.",
+      "evidence": "comprehension"
+    },
+    {
+      "id": "en-diag-r2",
+      "type": "reading",
+      "mode": "closed",
+      "objectiveId": "en-navigation-03",
+      "band": "A1–A2",
+      "stimulus": "The train station is closed today. The ticket office is also closed. A worker says: 'You can take the bus from the square.'",
+      "promptPt": "Por que o trabalhador indica o ônibus?",
+      "choices": [
+        "Porque a estação não está funcionando",
+        "Porque há uma passagem gratuita",
+        "Porque o ônibus chega antes do trem"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A estação e a bilheteria estão fechadas. A indicação do ônibus é uma alternativa de transporte.",
+      "evidence": "comprehension"
+    },
+    {
+      "id": "en-diag-k1",
+      "type": "recognition",
+      "mode": "closed",
+      "objectiveId": "en-introductions-01",
+      "band": "A1",
+      "stimulus": "A classmate says: 'Nice to meet you.'",
+      "promptPt": "Qual resposta combina melhor com esse primeiro encontro?",
+      "choices": [
+        "Nice to meet you too.",
+        "I am late yesterday.",
+        "Where is the train?"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "'Nice to meet you too' responde educadamente ao cumprimento.",
+      "evidence": "recognition"
+    },
+    {
+      "id": "en-diag-k2",
+      "type": "recognition",
+      "mode": "closed",
+      "objectiveId": "en-work-05",
+      "band": "A2",
+      "stimulus": "You didn't understand what your colleague just said.",
+      "promptPt": "Qual expressão é mais adequada para pedir repetição?",
+      "choices": [
+        "Could you repeat that, please?",
+        "I have already sent it.",
+        "The office is upstairs."
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A primeira opção pede diretamente que a outra pessoa repita a informação.",
+      "evidence": "recognition"
+    },
+    {
+      "id": "en-diag-p1",
+      "type": "guidedProduction",
+      "mode": "open",
+      "objectiveId": "en-introductions-01",
+      "band": "A1",
+      "promptPt": "Você conhece uma pessoa em uma aula. Apresente-se com um nome fictício e diga o que estuda. Escreva em inglês.",
+      "stimulus": "New classmate: Hi! What's your name? What do you study?",
+      "exampleAnswers": [
+        "Hi, I'm Alex. I study programming.",
+        "Hello, my name is Ana. I'm studying English."
+      ],
+      "requiredMeaning": [
+        "Apresentação pessoal compreensível",
+        "Uma informação sobre estudo"
+      ],
+      "acceptableVariations": [
+        "Pode usar nome inventado",
+        "Pode dizer I study ou I'm studying com sentido coerente"
+      ],
+      "commonPitfalls": [
+        "Responder só com cumprimento sem informação pessoal",
+        "Reproduzir o nome de outra pessoa sem se apresentar"
+      ],
+      "feedbackPt": "Se você conseguiu se apresentar, já cumpriu a primeira parte. Confira se também respondeu ao que estuda.",
+      "assistanceAllowed": [
+        "wordGloss",
+        "sentenceStarter"
+      ],
+      "evidence": "guidedProduction",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "en-diag-p2",
+      "type": "independentProduction",
+      "mode": "open",
+      "objectiveId": "en-work-05",
+      "band": "A2",
+      "promptPt": "Você vai chegar dez minutos atrasado a uma reunião de um projeto. Escreva uma mensagem breve em inglês comunicando isso ao colega.",
+      "stimulus": "Context: Work project meeting, starting shortly.",
+      "exampleAnswers": [
+        "Hi, I'll be ten minutes late for the meeting. Sorry!",
+        "I'm running about ten minutes late. I'll join the meeting as soon as I can."
+      ],
+      "requiredMeaning": [
+        "Comunica atraso de aproximadamente dez minutos",
+        "Contexto de reunião ou compromisso claro"
+      ],
+      "acceptableVariations": [
+        "Pode incluir pedido de desculpas",
+        "Pode variar between I'll be late e I'm running late"
+      ],
+      "commonPitfalls": [
+        "Dizer que a reunião foi cancelada",
+        "Indicar horário diferente que contradiz o contexto"
+      ],
+      "feedbackPt": "Uma mensagem útil deve indicar que você vai se atrasar, por quanto tempo e, se possível, em que compromisso.",
+      "assistanceAllowed": [],
+      "evidence": "independentProduction",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "en-diag-t1",
+      "type": "transfer",
+      "mode": "open",
+      "objectiveId": "en-introductions-01",
+      "band": "A1",
+      "promptPt": "Agora você participa de uma reunião online com pessoas de outra equipe. Apresente-se e faça uma pergunta simples para conhecer outro participante. Escreva em inglês sem modelo.",
+      "stimulus": "New setting: first online project meeting.",
+      "exampleAnswers": [
+        "Hello, I'm Sam. I work in tech. What's your role?",
+        "Hi! I'm Jo, and I study data analysis. What do you do?"
+      ],
+      "requiredMeaning": [
+        "Apresentação adequada",
+        "Pergunta relevante ao interlocutor"
+      ],
+      "acceptableVariations": [
+        "Pode falar de estudos ou trabalho",
+        "Variações educadas de pergunta"
+      ],
+      "commonPitfalls": [
+        "Só se apresentar, sem fazer pergunta",
+        "Fazer pergunta sem relação com o contexto"
+      ],
+      "feedbackPt": "Além de se apresentar, faça uma pergunta que permita a outra pessoa continuar a conversa.",
+      "assistanceAllowed": [],
+      "evidence": "transfer",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "en-diag-t2",
+      "type": "transfer",
+      "mode": "open",
+      "objectiveId": "en-navigation-03",
+      "band": "A1–A2",
+      "promptPt": "Você está numa cidade diferente e precisa encontrar a estação rodoviária. Escreva uma pergunta educada em inglês pedindo orientação.",
+      "stimulus": "New location: bus station, not train station.",
+      "exampleAnswers": [
+        "Excuse me, where is the bus station?",
+        "Could you tell me how to get to the bus station?"
+      ],
+      "requiredMeaning": [
+        "Pergunta onde fica ou como chegar à estação rodoviária",
+        "Destino correto: bus station"
+      ],
+      "acceptableVariations": [
+        "Pergunta direta com Excuse me",
+        "Forma com could you tell me"
+      ],
+      "commonPitfalls": [
+        "Confundir train station com bus station",
+        "Responder com uma afirmação em vez de perguntar"
+      ],
+      "feedbackPt": "Indique o destino correto e peça a informação de maneira inteligível.",
+      "assistanceAllowed": [],
+      "evidence": "transfer",
+      "assessment": "rubricWithReview"
+    },
+    {
+      "id": "en-diag-l1",
+      "type": "listening",
+      "mode": "closed",
+      "objectiveId": "en-introductions-01",
+      "band": "A1",
+      "audio": {
+        "status": "missing-reviewed-recording",
+        "spokenText": "Hello, I'm Anna. I study in the morning.",
+        "language": "en",
+        "publicUrl": null
+      },
+      "promptPt": "Quando a pessoa estuda?",
+      "choices": [
+        "De manhã",
+        "À noite",
+        "À tarde"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A fala diz 'I study in the morning'.",
+      "evidence": "comprehension",
+      "requiresAudio": true
+    },
+    {
+      "id": "en-diag-l2",
+      "type": "listening",
+      "mode": "closed",
+      "objectiveId": "en-navigation-03",
+      "band": "A1–A2",
+      "audio": {
+        "status": "missing-reviewed-recording",
+        "spokenText": "Go straight and turn right after the bank.",
+        "language": "en",
+        "publicUrl": null
+      },
+      "promptPt": "Depois de seguir em frente, a pessoa deve virar para qual lado?",
+      "choices": [
+        "Direita",
+        "Esquerda",
+        "Nenhum"
+      ],
+      "correctIndex": 0,
+      "feedbackPt": "A instrução diz 'turn right after the bank'.",
+      "evidence": "comprehension",
+      "requiresAudio": true
+    }
+  ]
+}

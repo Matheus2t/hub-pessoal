@@ -133,3 +133,10 @@ Currículos independentes, vínculos a IDs legados e roteiros originais das duas
 ## Complemento etapa 3.1 — diagnóstico pedagógico
 
 O contrato de diagnóstico e seus cenários de teste foram definido em `docs/learn-diagnostico-v1.md`. **Antes de implementar um diagnóstico automático**, preservar o estado `não avaliado` para lacunas de evidência, rubricas que não podem ser corrigidas com segurança e produção oral. Não derivar percentuais de fluência de tentativas de tradução; manter recomendações explicáveis e não bloqueantes.
+
+
+---
+
+## Continuação pedagógica — tarefas diagnósticas e feedback (10/11/2026)
+
+Foram preparados `en-diagnostic.json` e `ru-diagnostic.json`, com tarefas graduadas por competências, e o contrato `evaluation-policy.json` com rubricas e resultados incertos. O banco `feedback-casebook.json` contém exemplos e contraexemplos editoriais de respostas. Todos ficam em `frontend/public/learn/pedagogy-v1/` e permanecem **desativados em produção**, pendentes de revisão linguística e implementação. Consulte `docs/learn-diagnostico-feedback-v1.md` e execute `npm run learn:validate-diagnostics`.

@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "status": "expert-review-pending",
+  "purpose": "Illustrative human-review gold cases for feedback design; not a production semantic classifier.",
+  "cases": [
+    {
+      "id": "case-en-01",
+      "language": "en",
+      "taskId": "en-intro-p1",
+      "answer": "Hello, I'm Sam. I study programming.",
+      "expected": "supported",
+      "feedback": {
+        "whatWorked": "Apresentou-se e informou o que estuda.",
+        "priorityIssue": "none",
+        "whyItMatters": "A mensagem cumpre a proposta do primeiro encontro.",
+        "concreteSuggestion": "Você pode perguntar sobre a outra pessoa para continuar a conversa.",
+        "retryPrompt": "Continue a conversa com uma pergunta breve.",
+        "assessmentLimits": "Não há avaliação de pronúncia."
+      }
+    },
+    {
+      "id": "case-en-02",
+      "language": "en",
+      "taskId": "en-intro-p1",
+      "answer": "Hi, I'm Sam.",
+      "expected": "partiallySupported",
+      "feedback": {
+        "whatWorked": "Apresentou-se de modo compreensível.",
+        "priorityIssue": "missingInformation",
+        "whyItMatters": "A situação também solicita que diga o que estuda.",
+        "concreteSuggestion": "Acrescente uma frase como 'I study programming'.",
+        "retryPrompt": "Responda de novo com seu nome e uma área de estudo.",
+        "assessmentLimits": "Não há avaliação de pronúncia."
+      }
+    },
+    {
+      "id": "case-en-03",
+      "language": "en",
+      "taskId": "en-intro-t1",
+      "answer": "Hi, I'm Lee. I work in data analysis. What do you do?",
+      "expected": "supported",
+      "feedback": {
+        "whatWorked": "Apresentou-se, explicou a área e fez uma pergunta relevante.",
+        "priorityIssue": "none",
+        "whyItMatters": "A resposta mantém uma conversa natural no novo contexto.",
+        "concreteSuggestion": "Pode continuar com uma pergunta mais específica conforme a resposta.",
+        "retryPrompt": "Imagine que a pessoa trabalha em design. Como você continuaria a conversa?",
+        "assessmentLimits": "Isto observa somente escrita, não fala."
+      }
+    },
+    {
+      "id": "case-en-04",
+      "language": "en",
+      "taskId": "en-intro-t1",
+      "answer": "What is the purpose of the meeting?",
+      "expected": "partiallySupported",
+      "feedback": {
+        "whatWorked": "A pergunta é apropriada em uma reunião.",
+        "priorityIssue": "missingInformation",
+        "whyItMatters": "Ainda falta se apresentar e dizer o que faz ou estuda.",
+        "concreteSuggestion": "Apresente-se antes de fazer a pergunta.",
+        "retryPrompt": "Escreva sua apresentação completa e depois pergunte sobre a reunião.",
+        "assessmentLimits": "Uma frase gramaticalmente boa pode cumprir apenas parte da tarefa."
+      }
+    },
+    {
+      "id": "case-en-05",
+      "language": "en",
+      "taskId": "en-intro-t1",
+      "answer": "I study in the data of the works. You what?",
+      "expected": "uncertain",
+      "feedback": {
+        "whatWorked": "Há uma tentativa de comunicar atividade e fazer pergunta.",
+        "priorityIssue": "notObservable",
+        "whyItMatters": "O significado exato não está claro o suficiente para classificar a tarefa.",
+        "concreteSuggestion": "Reformule usando duas frases curtas.",
+        "retryPrompt": "Diga seu nome, depois o que estuda e faça uma pergunta direta.",
+        "assessmentLimits": "Requer revisão ou nova tentativa; não penalizar automaticamente."
+      }
+    },
+    {
+      "id": "case-ru-01",
+      "language": "ru",
+      "taskId": "ru-dir-p1",
+      "answer": "Извините, где станция метро?",
+      "expected": "supported",
+      "feedback": {
+        "whatWorked": "Perguntou educadamente onde fica a estação de metrô.",
+        "priorityIssue": "none",
+        "whyItMatters": "O pedido é claro para um desconhecido.",
+        "concreteSuggestion": "Você pode acrescentar 'ближайшая' se quiser perguntar pela estação mais próxima.",
+        "retryPrompt": "Faça o mesmo pedido por outro destino.",
+        "assessmentLimits": "Não mede pronúncia."
+      }
+    },
+    {
+      "id": "case-ru-02",
+      "language": "ru",
+      "taskId": "ru-dir-p1",
+      "answer": "Извините, где билет?",
+      "expected": "notSupported",
+      "feedback": {
+        "whatWorked": "A pergunta de localização está inteligível.",
+        "priorityIssue": "wordChoice",
+        "whyItMatters": "Você perguntou onde está o bilhete, mas precisava localizar uma estação.",
+        "concreteSuggestion": "Use 'станция метро' como destino.",
+        "retryPrompt": "Pergunte onde fica a estação de metrô.",
+        "assessmentLimits": "O objetivo não é tradução literal, mas localizar o destino certo."
+      }
+    },
+    {
+      "id": "case-ru-03",
+      "language": "ru",
+      "taskId": "ru-dir-t1",
+      "answer": "Подскажите, пожалуйста, где находится библиотека?",
+      "expected": "supported",
+      "feedback": {
+        "whatWorked": "Perguntou educadamente pela biblioteca no contexto novo.",
+        "priorityIssue": "none",
+        "whyItMatters": "Conseguiu transferir a estrutura para um destino diferente.",
+        "concreteSuggestion": "Pode experimentar uma versão mais curta, mantendo a cortesia.",
+        "retryPrompt": "Pergunte agora por um parque (парк).",
+        "assessmentLimits": "Apenas a resposta escrita foi observada."
+      }
+    },
+    {
+      "id": "case-ru-04",
+      "language": "ru",
+      "taskId": "ru-dir-t1",
+      "answer": "Где станция?",
+      "expected": "notSupported",
+      "feedback": {
+        "whatWorked": "A forma 'Где ...?' funciona para perguntar onde fica algo.",
+        "priorityIssue": "meaning",
+        "whyItMatters": "O destino solicitado mudou para biblioteca; a resposta manteve estação.",
+        "concreteSuggestion": "Troque 'станция' por 'библиотека'.",
+        "retryPrompt": "Pergunte onde fica a biblioteca.",
+        "assessmentLimits": "Um erro de destino é diferente de um erro de ortografia."
+      }
+    },
+    {
+      "id": "case-ru-05",
+      "language": "ru",
+      "taskId": "ru-dir-t1",
+      "answer": "Извините, где библеотека?",
+      "expected": "partiallySupported",
+      "feedback": {
+        "whatWorked": "Fez a pergunta correta por um local e a intenção é reconhecível.",
+        "priorityIssue": "orthography",
+        "whyItMatters": "A grafia da palavra para biblioteca está incorreta.",
+        "concreteSuggestion": "A grafia é 'библиотека'.",
+        "retryPrompt": "Escreva a pergunta novamente com a grafia revisada.",
+        "assessmentLimits": "Não transformar um erro ortográfico menor em conclusão de incompreensão total."
+      }
+    },
+    {
+      "id": "case-ru-06",
+      "language": "ru",
+      "taskId": "ru-dir-t1",
+      "answer": "Я идёт ... где?",
+      "expected": "uncertain",
+      "feedback": {
+        "whatWorked": "Há tentativa de construir uma pergunta de localização.",
+        "priorityIssue": "notObservable",
+        "whyItMatters": "O destino e o sentido da frase não são claros.",
+        "concreteSuggestion": "Use uma pergunta curta com 'где' e o nome do destino.",
+        "retryPrompt": "Pergunte onde fica a biblioteca.",
+        "assessmentLimits": "A evidência é insuficiente; solicitar nova tentativa, não inventar escore."
+      }
+    }
+  ]
+}

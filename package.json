@@ -7,7 +7,8 @@
     "build:js": "esbuild frontend/src/main.ts --bundle --minify --outfile=dist/bundle.js && esbuild frontend/src/learn/page.ts --bundle --format=esm --minify --outfile=dist/learn.js && esbuild frontend/src/components/distributions-page.ts --bundle --format=esm --minify --outfile=dist/distributions.js",
     "build:css": "sass frontend/styles/main.scss dist/styles.css --style=compressed && node scripts/copy-financials.cjs",
     "learn:audit": "node scripts/audit-learn-curriculum.mjs --check",
-    "learn:validate-pedagogy": "node scripts/validate-learn-pedagogy.mjs"
+    "learn:validate-pedagogy": "node scripts/validate-learn-pedagogy.mjs",
+    "learn:validate-diagnostics": "node scripts/validate-learn-diagnostics.mjs"
   },
   "dependencies": {
     "lit": "^3.2.1"

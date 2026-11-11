@@ -19,6 +19,8 @@ jobs:
         run: npm run learn:audit
       - name: Validate planned Learn curricula and pilot contracts
         run: npm run learn:validate-pedagogy
+      - name: Validate Learn diagnostic banks and feedback rubric
+        run: npm run learn:validate-diagnostics
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
