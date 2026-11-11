@@ -9,7 +9,8 @@
     "learn:audit": "node scripts/audit-learn-curriculum.mjs --check",
     "learn:validate-pedagogy": "node scripts/validate-learn-pedagogy.mjs",
     "learn:validate-diagnostics": "node scripts/validate-learn-diagnostics.mjs",
-    "learn:quality-audit": "node scripts/audit-learn-teaching-quality.mjs --check"
+    "learn:quality-audit": "node scripts/audit-learn-teaching-quality.mjs --check",
+    "learn:coverage": "node scripts/report-learn-coverage.mjs --check"
   },
   "dependencies": {
     "lit": "^3.2.1"

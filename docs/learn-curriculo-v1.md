@@ -99,3 +99,10 @@ Condições obrigatórias: preservar todas as rotas, IDs, tentativas, cartões, 
 ## Auditoria didática incremental — novembro de 2026
 
 A revisão documentada em `docs/learn-auditoria-didatica-v1.md` confirmou **10 grupos de perguntas repetidas** (5 por idioma) e **80 explicações genéricas de escrita** (40 por idioma). Os roteiros `en-pilot.json` e `ru-pilot.json` agora possuem justificativa por etapa, microexplicações, feedback específico para alternativas erradas e regras explícitas de apoio. O arquivo `quality-baseline.json` e o comando `npm run learn:quality-audit` acompanham possíveis regressões sem modificar o catálogo histórico. A revisão linguística independente e o teste com estudante continuam pendentes; **nenhum piloto foi ativado**.
+
+
+---
+
+## Rastreabilidade completa do material legado — novembro de 2026
+
+O relatório `scripts/report-learn-coverage.mjs` identifica todos os 491 IDs por idioma, inclui referências a objetivos e marca os ainda não classificados. Consulte `docs/learn-rastreabilidade-v1.md` e execute `npm run learn:coverage` ou `node scripts/report-learn-coverage.mjs --json` para revisar a cobertura por modalidade. **Não transformar associação a um objetivo em evidência de competência. Não mapear conteúdo automaticamente pela presença de palavras-chave.**
