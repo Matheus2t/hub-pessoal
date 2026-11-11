@@ -1,7 +1,7 @@
 
 # 2T Learn — Preparação técnica para o Codex (handoff, não é um prompt)
 
-**Escopo:** preparar as etapas 3–5 do cronograma, **sem iniciar o motor adaptativo antes da validação do currículo-piloto**. O trabalho está dividido para economizar a cota semanal do Codex.
+**Escopo:** preparar as etapas 3–5 do cronograma. O motor pode começar como **protótipo desativado** com os pilotos revisados internamente; **não habilitar publicamente antes da validação linguística e com aprendizes reais**. O trabalho está dividido para economizar a cota semanal do Codex.
 
 ## A. O que já foi decidido e não deve ser rediscutido em código
 
@@ -24,7 +24,7 @@ O ChatGPT prepara e revisa:
 - critério de avaliação da compreensão, da produção e da transferência;
 - estratégia de apoio e revisão posterior.
 
-**Sem esses cinco materiais, NÃO começar a gerar dezenas de atividades nem treinar um "modelo de domínio" em pontuações arbitrárias.**
+**Os cinco materiais já foram preparados para a primeira implementação.** Não gerar dezenas de atividades nem construir um "modelo de domínio" em pontuações arbitrárias.
 
 ## C. Trabalho apropriado para Codex, em ordem
 
@@ -192,3 +192,12 @@ A apresentação do resultado dos exercícios de escrita foi ajustada para descr
 **Invariantes mantidas nesta mudança:** `evaluateAnswer`, `Attempt.correct`, persistência, históricos, backups, SRS e outros modos de prática não foram alterados. Assim, estatísticas antigas continuam baseadas no verificador determinístico — não constituem uma medição validada de produção livre.
 
 **Pendência para o Codex:** quando o motor de rubricas estiver pronto, separar explicitamente `matchedRegisteredVariant` de `communicativeEvidence` no esquema novo, sem reclassificar automaticamente as tentativas anteriores nem recalcular proficiência a partir de correspondências literais. Registrar ajuda e resultado incerto.
+
+
+---
+
+## Marco definitivo de handoff — preparação encerrada
+
+O documento autoritativo do **próximo incremento Codex** é `docs/learn-codex-kickoff-v1.md`. Use `frontend/public/learn/pedagogy-v1/readiness-manifest.json` para identificar o piloto EN, as fontes de dados, IDs, versão de conteúdo e portões de aprovação; `evidence-contract.json` define como registrar ajuda, resultados e incerteza. A revisão editorial interna está em `docs/learn-pilotos-fechamento-editorial.md`.
+
+**Decisão já tomada:** iniciar C1 (motor declarativo + persistência/backup em prévia fechada); não gastar o primeiro ciclo do Codex em nova ideação, nem ativar o curso publicamente. A validação linguística independente e com estudantes **continua pendente**, mas não bloqueia criar o protótipo desativado. Executar `npm run learn:validate-readiness` e as regressões existentes.
