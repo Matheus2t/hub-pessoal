@@ -168,3 +168,10 @@ Foram preparados `en-reading-guide.json` e `ru-reading-guide.json` para os texto
 ## Curadoria por ID dos primeiros pilotos — 11/11/2026
 
 Foi revisada uma amostra de 40 itens reais (20 por idioma) e registrada a decisão `reuse`, `support_only`, `needs_revision` ou `defer` em `frontend/public/learn/pedagogy-v1/pilot-asset-curation.json`. Cinco novos vínculos de apoio foram incluídos nos objetivos dos pilotos e uma referência fora de escopo foi retirada do objetivo inicial de Inglês; todos os itens históricos permanecem disponíveis. Consulte `docs/learn-curadoria-pilotos-v1.md` e execute `npm run learn:validate-curation`. **O parecer é editorial preliminar, não validação linguística independente; não ativar os pilotos nem derivar competências de traduções ou lacunas.**
+
+
+---
+
+## Revisão diferida dos pilotos — continuação da etapa 5
+
+Quatro eventos de prática diferida em `frontend/public/learn/pedagogy-v1/pilot-delayed-probes.json` (D+2 e D+7 de cada idioma) incluem compreensão de texto novo e produção escrita em contexto diferente, com rubrica e exemplos ocultos até a tentativa. O projeto está especificado em `docs/learn-retencao-transferencia-v1.md` e verificado por `npm run learn:validate-delayed`. **Não existem lembretes, avaliações de retenção em produção ou intervalos validados.** O Codex deve preservar essa distinção e registrar pista lexical quando uma palavra russa nova é fornecida.
