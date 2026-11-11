@@ -161,3 +161,10 @@ O relatório `scripts/report-learn-coverage.mjs` identifica todos os 491 IDs por
 ## Leitura guiada e independência diagnóstica — 11/11/2026
 
 Foram preparados `en-reading-guide.json` e `ru-reading-guide.json` para os textos existentes de rotina (`en-reading-01`, `ru-reading-01`). Eles usam trechos exatos dos textos, ajuda sob demanda e tarefas de compreensão e aplicação em novo contexto. O diagnóstico foi separado dos cenários do piloto para reduzir repetição da avaliação. Consulte `docs/learn-leitura-e-avaliacao-v1.md` e execute `npm run learn:validate-reading`. **Todos os guias e diagnósticos permanecem inativos; teste com aprendiz e revisão linguística independente ainda pendentes.**
+
+
+---
+
+## Curadoria por ID dos primeiros pilotos — 11/11/2026
+
+Foi revisada uma amostra de 40 itens reais (20 por idioma) e registrada a decisão `reuse`, `support_only`, `needs_revision` ou `defer` em `frontend/public/learn/pedagogy-v1/pilot-asset-curation.json`. Cinco novos vínculos de apoio foram incluídos nos objetivos dos pilotos e uma referência fora de escopo foi retirada do objetivo inicial de Inglês; todos os itens históricos permanecem disponíveis. Consulte `docs/learn-curadoria-pilotos-v1.md` e execute `npm run learn:validate-curation`. **O parecer é editorial preliminar, não validação linguística independente; não ativar os pilotos nem derivar competências de traduções ou lacunas.**

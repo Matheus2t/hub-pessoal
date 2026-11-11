@@ -42,11 +42,6 @@
           "note": "Profissão/estudo"
         },
         {
-          "id": "en-phrase-004",
-          "role": "language-support",
-          "note": "Perguntar pela grafia do nome é recurso, não o objetivo da unidade"
-        },
-        {
           "id": "en-grammar-01",
           "role": "grammar-support",
           "note": "Estruturas com be"
@@ -60,6 +55,21 @@
           "id": "en-listening-001",
           "role": "existing-practice",
           "note": "Reconhecimento de saudação isolada; apenas revisão"
+        },
+        {
+          "id": "en-word-071",
+          "role": "lexical-support",
+          "note": "Work permite compreender a apresentação de Maya e falar brevemente de trabalho; não mede produção independente."
+        },
+        {
+          "id": "en-word-072",
+          "role": "lexical-support",
+          "note": "Office aparece no diálogo e ajuda a entender um contexto de trabalho sem introduzir nova meta."
+        },
+        {
+          "id": "en-grammar-01-q1",
+          "role": "existing-practice",
+          "note": "Lacuna 'I am a student' apoia apresentação guiada; é exercício de forma e não evidência comunicativa."
         }
       ]
     },
