@@ -746,3 +746,47 @@ backup confere tarefa, objetivo, competência, sessão e duplicação de eventos
 **Limites:** o diagnóstico continua desativado publicamente. Listening não tem áudio
 validado e as respostas abertas não têm revisor confiável. Revisão linguística independente
 e testes com aprendizes reais ainda são necessários antes de habilitar estudantes.
+
+## Etapa C4 — consolidação e revisão espaçada (11/2026)
+
+`learn-delayed-review` adiciona a revisão D+2/D+7 para as duas aulas-piloto já
+existentes, totalizando quatro momentos e oito tarefas. A conclusão da aula é
+derivada dos registros das cinco tarefas originais, uma vez por ID; cada vencimento
+usa o timestamp real da conclusão mais exatamente 2 ou 7 dias. O sistema registra
+o vencimento recomendado e o intervalo realmente observado, sem lembretes ou
+penalização por atraso. D+7 guarda o horário da D+2 quando ela foi concluída; isso
+explicita que a revisão anterior também participa da experiência.
+
+As tarefas fechadas usam seus gabaritos e ficam limitadas à compreensão escrita.
+As produções abertas sempre são `uncertain`/pendentes, sem comparação literal. O
+estímulo apresentado, a pista lexical russa (`больница`/`музей`), o teclado fonético,
+respostas, rascunhos, tentativas e intervalos são vinculados ao idioma, à tentativa,
+à versão e ao ID original da tarefa. Pular registra `notAssessed`, não uma falha; é
+possível tentar novamente. As submissões usam IDs determinísticos por tentativa e
+tarefa, com gravação atômica e proteção contra duplicação.
+
+A persistência continua nas stores `lessonEvents` e `lessonProgress` do IndexedDB v3.
+Não foram criadas stores nem migrations. O backup mantém o formato v3 e valida as
+novas evidências/progressos, preservando importação v1/v2 e os dados de C1–C3. A rota
+`#/learn/{en|ru}/reviews` exige `?learn-preview=c4-delayed` e hostname loopback;
+roteador e componente aplicam a proteção, e o manifesto mantém `runtimeEnabled=false`.
+
+### Validação C4
+
+- `npm run typecheck` e `npm run build`: aprovados.
+- Dez validadores Learn: 10/10 aprovados.
+- Playwright C4 no Chrome/Chromium: 5/5 aprovados — guarda local, agendamento por
+  conclusão real, retomada, deduplicação, D+7 após D+2, atraso/skip/retry, respostas
+  abertas, ajuda russa, backup v1/v2/v3 e dimensões 320/390/768/1366 nos temas claro
+  e escuro.
+- Regressões sem navegador de C3, núcleo Learn, backups e modelo fonético: 12/12 aprovadas.
+- `git diff --check`: aprovado após a revisão final.
+
+**Limites:** o runner Edge gerenciado não iniciou por falha de ambiente; os testes
+Playwright C4 foram executados no Chrome com assets atendidos por fixture de rotas,
+pois o sandbox bloqueia conexões do navegador ao servidor local. Portanto, a suíte
+completa de interface existente de C1–C3 contra o servidor real não foi executada
+nesta sessão. As revisões continuam locais e desativadas para estudantes. Os relógios
+dependem do horário do dispositivo; não há notificações. Conteúdo e intervalos ainda
+exigem revisão linguística independente e teste com aprendizes antes de qualquer
+liberação pública. Nada nesta etapa implica fluência, nível CEFR ou retenção duradoura.

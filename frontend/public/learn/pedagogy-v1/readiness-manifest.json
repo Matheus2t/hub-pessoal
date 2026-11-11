@@ -227,6 +227,25 @@
     "previewFlags": {"en": "diagnostic-en", "ru": "diagnostic-ru"},
     "noCEFROrOralClaims": true
   },
+  "delayedReviewImplementation": {
+    "milestoneId": "C4-spaced-consolidation",
+    "status": "implemented-disabled-local-preview",
+    "runtimeEnabled": false,
+    "languages": ["en", "ru"],
+    "probeCounts": {"en": 2, "ru": 2},
+    "taskCount": 8,
+    "intervalsDays": [2, 7],
+    "scheduleAnchor": "actual completion timestamp of all five pilot tasks",
+    "lateReviews": "available without penalty; elapsed interval is recorded",
+    "openResponseOutcomeWithoutReviewer": "uncertain",
+    "persistence": ["lessonEvents", "lessonProgress"],
+    "indexedDbVersion": 3,
+    "backupVersion": 3,
+    "legacyBackupVersionsAccepted": [1, 2],
+    "previewAccess": "loopback-only",
+    "previewFlag": "c4-delayed",
+    "noCEFROrOralClaims": true
+  },
   "publicReleaseGate": [
     "independent English and Russian language review",
     "real-learner pilot feedback",

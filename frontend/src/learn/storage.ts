@@ -49,15 +49,15 @@ export async function restoreBackup(raw:string,confirmReplacement=false):Promise
     await done;
   }finally{db.close()}
 }
-export async function lessonData(language:Language,unitId:string):Promise<{progress?:LessonProgress;events:LessonEvidenceEvent[]}> {
- const db=await openLearnDB();try{const tx=db.transaction(['lessonEvents','lessonProgress'],'readonly'),done=complete(tx),events=tx.objectStore('lessonEvents').index('unitId').getAll(IDBKeyRange.only(unitId)),progress=tx.objectStore('lessonProgress').get(`${language}:${unitId}`);const [allEvents,state]=await Promise.all([value<LessonEvidenceEvent[]>(events),value<LessonProgress|undefined>(progress)]);await done;return {progress:state?.language===language?state:undefined,events:allEvents.filter(event=>event.language===language&&event.unitId===unitId).sort((a,b)=>a.submittedAt-b.submittedAt)};}finally{db.close()}
+export async function lessonData(language:Language,unitId:string,progressKey=`${language}:${unitId}`):Promise<{progress?:LessonProgress;events:LessonEvidenceEvent[]}> {
+ const db=await openLearnDB();try{const tx=db.transaction(['lessonEvents','lessonProgress'],'readonly'),done=complete(tx),events=tx.objectStore('lessonEvents').index('unitId').getAll(IDBKeyRange.only(unitId)),progress=tx.objectStore('lessonProgress').get(progressKey);const [allEvents,state]=await Promise.all([value<LessonEvidenceEvent[]>(events),value<LessonProgress|undefined>(progress)]);await done;return {progress:state?.language===language&&state.unitId===unitId?state:undefined,events:allEvents.filter(event=>event.language===language&&event.unitId===unitId).sort((a,b)=>a.submittedAt-b.submittedAt)};}finally{db.close()}
 }
 export async function saveLessonProgress(progress:LessonProgress):Promise<void> {
  if(!validLessonProgress(progress))throw Error('Rascunho ou progresso da aula inválido.');const db=await openLearnDB();try{const tx=db.transaction('lessonProgress','readwrite'),done=complete(tx);tx.objectStore('lessonProgress').put(progress);await done;}finally{db.close()}
 }
 /** Atomically inserts one immutable observation and advances the saved lesson state. */
 export async function recordLessonEvent(event:LessonEvidenceEvent,progress:LessonProgress):Promise<boolean> {
- if(!validLessonEvent(event)||!validLessonProgress(progress)||event.language!==progress.language||event.unitId!==progress.unitId||event.contentVersion!==progress.contentVersion)throw Error('Registro da aula incompatível.');const db=await openLearnDB();let inserted=false;
+ if(!validLessonEvent(event)||!validLessonProgress(progress)||event.language!==progress.language||event.unitId!==progress.unitId||event.contentVersion!==progress.contentVersion||(event.delayedReview&&(!progress.delayedReview?.attempts.some(a=>a.attemptId===event.delayedReview!.attemptId&&a.probeId===event.delayedReview!.probeId)||progress.sessionKind!=='delayedReview'||progress.delayedReview.pilotCompletedAt!==event.delayedReview.pilotCompletedAt)))throw Error('Registro da aula incompatível.');const db=await openLearnDB();let inserted=false;
  try{const tx=db.transaction(['lessonEvents','lessonProgress'],'readwrite'),done=complete(tx),events=tx.objectStore('lessonEvents'),states=tx.objectStore('lessonProgress'),found=events.get(event.eventId);found.onsuccess=()=>{try{if(found.result){if(JSON.stringify(found.result)!==JSON.stringify(event)){tx.abort();return;}}else{events.add(event);inserted=true;}states.put(progress);}catch{tx.abort();}};await done;return inserted;}finally{db.close()}
 }
 export async function savePlanning(record:PlanningRecord):Promise<void>{

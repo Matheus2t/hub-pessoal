@@ -1310,3 +1310,28 @@ learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto
     .learn-diagnostic__actions > .button { flex: 1 1 auto; }
   }
 }
+
+.learn-delayed-dashboard { width: min(100%, 920px); margin: 0 auto; padding: clamp(16px, 3vw, 32px) clamp(12px, 2vw, 24px) 44px; color: var(--text); }
+.learn-delayed-dashboard .learn-pilot-header { align-items: center; margin-bottom: 18px; padding-bottom: 16px; }
+.learn-delayed-dashboard .learn-pilot-header h1 { margin: 0; font-size: clamp(25px, 3vw, 34px); }
+.learn-delayed-intro { margin: 0 0 8px; color: var(--secondary); }
+.learn-delayed-note,.learn-delayed-progress { color: var(--secondary); font-size: 13px; line-height: 1.65; }
+.learn-delayed-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+.learn-delayed-card { min-width: 0; padding: clamp(15px, 2vw, 20px); border: 1px solid var(--line-soft); border-radius: 10px; background: var(--panel); }
+.learn-delayed-card__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--secondary); font-size: 12px; }
+.learn-delayed-card__top span:first-child { padding: 3px 8px; border: 1px solid var(--line); border-radius: 99px; color: var(--text); font-weight: 600; }
+.learn-delayed-card h2 { margin: 14px 0 8px; font-size: 20px; }
+.learn-delayed-card > p { line-height: 1.65; }
+.learn-delayed-muted { color: var(--secondary); font-size: 13px; }
+.learn-delayed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.learn-delayed-outcomes { display: grid; gap: 7px; padding-left: 19px; color: var(--secondary); font-size: 13px; line-height: 1.55; }
+.learn-delayed-task .learn-diagnostic__stimulus { margin: 18px 0; padding: 16px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--raised); font-size: 17px; line-height: 1.7; }
+.learn-delayed-task .learn-diagnostic__stimulus p { margin: 0; }
+.learn-delayed-skip { margin-top: 10px; padding: 6px 0; border: 0; background: transparent; color: var(--secondary); text-decoration: underline; cursor: pointer; }
+.learn-delayed :is(button,a,textarea,input):focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+@media (max-width: 650px) {
+  .learn-delayed-grid { grid-template-columns: minmax(0, 1fr); }
+  .learn-delayed-dashboard .learn-pilot-header { align-items: flex-start; flex-direction: column; }
+  .learn-delayed-dashboard .learn-pilot-header .button { align-self: flex-start; }
+  .learn-delayed-actions { align-items: stretch; flex-direction: column; }
+}
