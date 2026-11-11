@@ -175,3 +175,10 @@ Foi revisada uma amostra de 40 itens reais (20 por idioma) e registrada a decis�
 ## Revisão diferida dos pilotos — continuação da etapa 5
 
 Quatro eventos de prática diferida em `frontend/public/learn/pedagogy-v1/pilot-delayed-probes.json` (D+2 e D+7 de cada idioma) incluem compreensão de texto novo e produção escrita em contexto diferente, com rubrica e exemplos ocultos até a tentativa. O projeto está especificado em `docs/learn-retencao-transferencia-v1.md` e verificado por `npm run learn:validate-delayed`. **Não existem lembretes, avaliações de retenção em produção ou intervalos validados.** O Codex deve preservar essa distinção e registrar pista lexical quando uma palavra russa nova é fornecida.
+
+
+---
+
+## Proteção da integridade do diagnóstico — revisão posterior
+
+A revisão em `docs/learn-integridade-diagnostico-v1.md` redistribuiu as alternativas corretas (2 por posição em cada idioma), vinculou uma resposta canônica a cada índice e substituiu uma questão artificial de cirílico por sinalização funcional. As respostas de exemplo das tarefas abertas exigem visualização **somente após a tentativa**. Palavras russas fornecidas no enunciado são pistas lexicais que precisam ser registradas como assistência. O Codex deve interpretar esses contratos de dados, impedir reutilização de ID depois de existirem tentativas reais e evitar deduzir proficiência de reconhecimento ou da posição de um gabarito.
