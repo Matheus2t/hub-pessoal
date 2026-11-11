@@ -149,25 +149,26 @@
       "mode": "open",
       "objectiveId": "en-introductions-01",
       "band": "A1",
-      "promptPt": "Agora você participa de uma reunião online com pessoas de outra equipe. Apresente-se e faça uma pergunta simples para conhecer outro participante. Escreva em inglês sem modelo.",
-      "stimulus": "New setting: first online project meeting.",
+      "promptPt": "Você chega a um clube de fotografia e conhece outra pessoa pela primeira vez. Apresente-se, diga uma atividade que faz ou estuda e pergunte qual é o interesse da pessoa. Escreva em inglês sem consultar um modelo.",
+      "stimulus": "New setting: photography club welcome desk, unrelated to the online project meeting in the teaching pilot.",
       "exampleAnswers": [
-        "Hello, I'm Sam. I work in tech. What's your role?",
-        "Hi! I'm Jo, and I study data analysis. What do you do?"
+        "Hi, I'm Alex. I study computer science. What do you like to photograph?",
+        "Hello, I'm Pat. I work with computers. What kind of photography do you enjoy?"
       ],
       "requiredMeaning": [
-        "Apresentação adequada",
-        "Pergunta relevante ao interlocutor"
+        "Apresentação compreensível em um clube ou atividade social",
+        "Informa algo que faz ou estuda",
+        "Pergunta sobre interesse da outra pessoa"
       ],
       "acceptableVariations": [
-        "Pode falar de estudos ou trabalho",
-        "Variações educadas de pergunta"
+        "Pode mencionar estudo, trabalho ou outra atividade",
+        "Pergunta pode tratar de hobbies ou de fotografia"
       ],
       "commonPitfalls": [
-        "Só se apresentar, sem fazer pergunta",
-        "Fazer pergunta sem relação com o contexto"
+        "Somente repetir uma apresentação sem fazer uma pergunta",
+        "Escrever sobre uma reunião de projeto sem adaptar ao clube"
       ],
-      "feedbackPt": "Além de se apresentar, faça uma pergunta que permita a outra pessoa continuar a conversa.",
+      "feedbackPt": "A apresentação só está completa quando inclui uma informação sobre você e uma pergunta pertinente ao novo ambiente de clube.",
       "assistanceAllowed": [],
       "evidence": "transfer",
       "assessment": "rubricWithReview"
@@ -247,5 +248,13 @@
       "evidence": "comprehension",
       "requiresAudio": true
     }
-  ]
+  ],
+  "assessmentIntegrity": {
+    "policy": "do-not-reuse-training-scenario",
+    "pilotReference": "en-pilot-introductions-01",
+    "trainingContext": "course introductions and online project meeting",
+    "diagnosticDistinctContext": "photography club",
+    "risk": "The learner may recognize a rehearsed template; diagnostic must not reproduce the same situation and answer as the pilot.",
+    "reviewStatus": "editorial-review-required"
+  }
 }
