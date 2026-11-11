@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "id": "learn-evidence-contract-v1",
+  "status": "engineering-contract",
+  "runtimeEnabled": false,
+  "purpose": "An additive, auditable evidence model for the future task-based lesson engine; does not reinterpret historical drills as fluency.",
+  "languageScope": [
+    "en",
+    "ru"
+  ],
+  "taskEvidenceMap": [
+    {
+      "source": "pilot.comprehension",
+      "evidence": "comprehension",
+      "competencyUse": "reading-comprehension-only",
+      "assessor": "deterministic",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "pilot.notice",
+      "evidence": "practiceOnly",
+      "competencyUse": "none",
+      "assessor": "none",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "pilot.guidedProduction",
+      "evidence": "guidedProduction",
+      "competencyUse": "guided-written-production",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "pilot.transfer",
+      "evidence": "transfer",
+      "competencyUse": "written-transfer-only",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": true,
+      "onlyIf": "no model, example or sentence starter displayed; supplied lexical cue remains recorded"
+    },
+    {
+      "source": "diagnostic.recognition",
+      "evidence": "recognition",
+      "competencyUse": "recognition-only",
+      "assessor": "deterministic",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "diagnostic.reading",
+      "evidence": "comprehension",
+      "competencyUse": "reading-comprehension-only",
+      "assessor": "deterministic",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "diagnostic.guidedProduction",
+      "evidence": "guidedProduction",
+      "competencyUse": "guided-written-production",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": false
+    },
+    {
+      "source": "diagnostic.independentProduction",
+      "evidence": "independentProduction",
+      "competencyUse": "written-production-with-declared-assistance",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": true,
+      "onlyIf": "no answer model/hint displayed; lexical cue alone does not demonstrate lexical retrieval"
+    },
+    {
+      "source": "diagnostic.transfer",
+      "evidence": "transfer",
+      "competencyUse": "written-transfer-with-declared-assistance",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": true,
+      "onlyIf": "new context, model hidden; lexical cue recorded"
+    },
+    {
+      "source": "delayed.writtenTransfer",
+      "evidence": "delayedRecall",
+      "competencyUse": "written-delayed-recall-and-transfer-with-declared-assistance",
+      "assessor": "rubricWithReview",
+      "validForIndependentProduction": true,
+      "onlyIf": "attempt date actually occurs after prior pilot; interval measured, not assumed"
+    },
+    {
+      "source": "diagnostic.listening",
+      "evidence": "comprehension",
+      "competencyUse": "notAssessed-until-real-audio",
+      "assessor": "unavailable",
+      "validForIndependentProduction": false
+    }
+  ],
+  "outcomes": [
+    "supported",
+    "partiallySupported",
+    "notSupported",
+    "uncertain",
+    "notAssessed"
+  ],
+  "openResponseRule": {
+    "initial": "uncertain",
+    "requiresExplicitRubricReview": true,
+    "knownVariantIsNotAutomaticProof": true,
+    "fallbackIfReviewerUnavailable": "uncertain",
+    "feedbackShouldContain": [
+      "whatWorked",
+      "priorityIssue",
+      "whyItMatters",
+      "concreteSuggestion",
+      "retryPrompt",
+      "assessmentLimits"
+    ],
+    "notAssessedFor": [
+      "not-attempted",
+      "audio-unavailable",
+      "skipped",
+      "no-valid-stimulus"
+    ],
+    "retryIsNewObservation": true,
+    "priorObservationIsImmutable": true
+  },
+  "assistanceSemantics": {
+    "shownToLearnerCounts": true,
+    "types": [
+      "wordGloss",
+      "translation",
+      "sentenceStarter",
+      "modelAnswer",
+      "phoneticKeyboard",
+      "lexical-cue"
+    ],
+    "lexicalCueScope": "Can support construction of a phrase but cannot establish independent recall of the supplied word.",
+    "modelAnswerScope": "If shown before answer, suppress independent-production or transfer competency claims for that attempt.",
+    "phoneticKeyboardScope": "An accessibility/editing scaffold; does not by itself evaluate Cyrilic reading, pronunciation or autonomous typing.",
+    "hiddenHelpDoesNotCountAsUsed": true,
+    "showingGlossAfterSubmittedAnswerDoesNotReclassifyEarlierAttempt": true
+  },
+  "minimumEventFields": [
+    "eventId",
+    "language",
+    "unitId",
+    "contentVersion",
+    "taskId",
+    "taskKind",
+    "evidenceKind",
+    "response",
+    "shownAssistance",
+    "startedAt",
+    "submittedAt",
+    "outcome",
+    "reviewStatus",
+    "assessorKind",
+    "feedback",
+    "sourceContext",
+    "isIndependentClaimAllowed"
+  ],
+  "eventFieldContract": {
+    "eventId": "Unique and idempotent within browser; never reuse for another response.",
+    "language": "en or ru, matches unit and task.",
+    "unitId": "Stable ID of original pilot. Never impersonate a legacy exercise.",
+    "contentVersion": "Immutable positive integer in content artifact; do not silently reinterpret old event versions.",
+    "taskId": "Unique within all new lesson, diagnostic, reading and delayed task IDs.",
+    "taskKind": "Declared type in task; source of evidence classification.",
+    "evidenceKind": "Mapped from task kind; not derived from a percentage of correct legacy attempts.",
+    "response": "Learner's own answer, local by default; privacy limits before any remote integration.",
+    "shownAssistance": "Exact help shown before submission; includes support already printed in prompt, for example biblioteca.",
+    "startedAt": "Timestamp from attempt start.",
+    "submittedAt": "Timestamp at answer submission.",
+    "outcome": "Supported, partiallySupported, notSupported, uncertain or notAssessed; no automatic positive open-text verdict.",
+    "reviewStatus": "pending, reviewed or notRequired; pending is not passed.",
+    "assessorKind": "deterministic, rubricWithReview, humanReview or unavailable.",
+    "feedback": "Task-specific rationale; null until reliable feedback exists.",
+    "sourceContext": "Versioned task and stimulus context key to distinguish repetition from transfer.",
+    "isIndependentClaimAllowed": "False if model/sentence starter shown; cue-limited subskills must remain explicit."
+  },
+  "recommendationRules": [
+    {
+      "when": "No new observations",
+      "then": "Suggest first available intro unit with optional free navigation; do not invent a level."
+    },
+    {
+      "when": "Only recognition/closed comprehension",
+      "then": "Suggest an appropriate written application, never infer speaking or independent production."
+    },
+    {
+      "when": "Open response pending review or unclear",
+      "then": "Mark uncertain, offer a new attempt or review; do not mark mastery."
+    },
+    {
+      "when": "Relevant, reviewed writing evidence exists",
+      "then": "Recommend practice/transfer or a new objective and explain which observations support it."
+    },
+    {
+      "when": "A delayed probe was skipped",
+      "then": "Keep notAssessed and allow retry; do not record a zero."
+    }
+  ],
+  "currentLegacyBaseline": {
+    "idbName": "2t-learn",
+    "idbVersion": 2,
+    "stores": [
+      "attempts",
+      "cards",
+      "planning"
+    ],
+    "backupVersions": [
+      1,
+      2
+    ],
+    "modelFiles": [
+      "frontend/src/learn/model.ts",
+      "frontend/src/learn/backup.ts",
+      "frontend/src/learn/storage.ts"
+    ],
+    "legacyAttemptNotCompetence": true
+  },
+  "futurePersistenceRequirements": {
+    "newStoreRecommended": "pedagogicalEvents",
+    "migrateAdditively": true,
+    "backupFormatAfterMigration": "version 3 proposed, after migration design and compatibility testing",
+    "backupV1V2ImportRequired": true,
+    "writeAtomicity": "No partially saved lesson attempts; repeat submission idempotent.",
+    "draftResume": "Persist input and position separately from evaluated evidence; no phantom attempt on reload.",
+    "multiTabHandling": "Deterministic deduplication and conflict reporting.",
+    "storageFailure": "Preserve typed response in view, show actionable failure; never announce successful save."
+  },
+  "independenceInvariants": {
+    "languageIsolation": true,
+    "noOralInferences": true,
+    "noCEFRPredictions": true,
+    "sameExerciseRepeatedIsNotNewTransfer": true,
+    "legacyEventsCannotBeRetroactivelyUpgraded": true,
+    "audioMissingYieldsNotAssessed": true,
+    "publicRuntimeDefaultEnabled": false
+  },
+  "releaseGates": [
+    "Human review of English and Russian naturalness, alternatives and register",
+    "Learner test of both pilots and diagnostic tasks",
+    "Reliable reviewer or explicit uncertain handling for open responses",
+    "End-to-end event persistence + legacy backup compatibility",
+    "Feature flag explicitly authorized and all checks green"
+  ]
+}
