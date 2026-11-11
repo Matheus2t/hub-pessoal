@@ -65,17 +65,21 @@
       "id": "ru-dir-c1",
       "kind": "comprehension",
       "evidence": "comprehension",
-      "prompt": "Depois de virar à esquerda, você encontra uma farmácia. Por que esse é um sinal útil para achar a estação?",
+      "prompt": "No diálogo, por que a farmácia ajuda o visitante a encontrar a estação?",
       "choices": [
         "Porque a estação fica perto da farmácia",
-        "Porque é preciso comprar um bilhete na farmácia",
-        "Porque o metrô sai de dentro da farmácia"
+        "Porque o bilhete precisa ser comprado na farmácia",
+        "Porque o metrô parte de dentro da farmácia"
       ],
       "correctIndex": 0,
-      "feedback": "O diálogo associa as duas informações: primeiro você vira à esquerda, e a estação fica perto da farmácia ('рядом с аптекой').",
+      "feedback": "A farmácia funciona como referência: 'Станция рядом с аптекой' indica que a estação fica perto dela.",
       "feedbackByWrongChoice": {
-        "1": "O diálogo não menciona comprar bilhetes. A farmácia funciona como referência para encontrar a estação.",
-        "2": "'Рядом с' significa 'perto de/ao lado de', não 'dentro de'."
+        "1": "O diálogo não fala sobre comprar bilhetes. A farmácia serve como ponto de referência do trajeto.",
+        "2": "Рядом с significa perto de/ao lado de, e não dentro de. A estação fica perto da farmácia."
+      },
+      "assessmentContract": {
+        "closedQuestion": true,
+        "evidenceScope": "written-comprehension-only"
       }
     },
     {
@@ -93,6 +97,10 @@
       "feedbackByWrongChoice": {
         "0": "'Направо' seria à direita, mas a instrução dada usa 'налево' (à esquerda).",
         "2": "A pessoa pede explicitamente 'поверните налево', ou seja, virar à esquerda."
+      },
+      "assessmentContract": {
+        "closedQuestion": true,
+        "evidenceScope": "written-comprehension-only"
       }
     },
     {
@@ -100,7 +108,11 @@
       "kind": "notice",
       "evidence": "practiceOnly",
       "prompt": "Observe 'Извините', 'где', 'станция метро' e 'налево'. Qual é a função de cada expressão?",
-      "explanation": "'Извините' é apropriado para chamar atenção de um desconhecido; 'где' pergunta onde; 'станция метро' identifica o destino. 'Рядом с' é seguido de uma forma flexionada do substantivo — não é necessário dominar todos os casos agora."
+      "explanation": "'Извините' é apropriado para chamar atenção de um desconhecido; 'где' pergunta onde; 'станция метро' identifica o destino. 'Рядом с' é seguido de uma forma flexionada do substantivo — não é necessário dominar todos os casos agora.",
+      "assessmentContract": {
+        "scoreAsCompetence": false,
+        "evidenceScope": "practice-only"
+      }
     },
     {
       "id": "ru-dir-p1",
@@ -122,7 +134,16 @@
         "Aceita alternativas naturais de cortesia",
         "Não exige a palavra ближайшая"
       ],
-      "evaluation": "rubric-review-required"
+      "evaluation": "rubric-review-required",
+      "modelAnswersVisible": "after-attempt",
+      "assessmentContract": {
+        "canUseDeterministicMatchAsFinalGrade": false,
+        "assessor": "rubricWithReview",
+        "ifNoReliableReviewer": "uncertain",
+        "canRetryAfterFeedback": true,
+        "evidenceScope": "guided-written-production",
+        "visibleHelpMustBeRecorded": true
+      }
     },
     {
       "id": "ru-dir-t1",
@@ -140,7 +161,24 @@
         "Não confunde biblioteca com estação",
         "Aceita equivalentes validados"
       ],
-      "evaluation": "rubric-review-required"
+      "evaluation": "rubric-review-required",
+      "providedSupport": {
+        "kind": "lexical-cue",
+        "targetWord": "библиотека",
+        "translationPt": "biblioteca",
+        "shownInPrompt": true,
+        "countsAsAssistance": true,
+        "evidenceLimitPt": "A palavra biblioteca está disponível em cirílico no enunciado. A tarefa observa a adaptação da pergunta ao novo local, não a recuperação autônoma do nome do destino."
+      },
+      "modelAnswersVisible": "after-attempt",
+      "assessmentContract": {
+        "canUseDeterministicMatchAsFinalGrade": false,
+        "assessor": "rubricWithReview",
+        "ifNoReliableReviewer": "uncertain",
+        "canRetryAfterFeedback": true,
+        "evidenceScope": "written-transfer-with-declared-assistance",
+        "visibleHelpMustBeRecorded": true
+      }
     }
   ],
   "delayedReview": {
@@ -247,11 +285,32 @@
     "editorialCaution": "Cyrillic/grammar text is a draft pending independent language review. No spoken-pronunciation evidence exists."
   },
   "editorialReview": {
-    "internalConsistency": "reviewed-by-project-author; not independently language-certified",
+    "internalConsistency": "Internal review completed; independent language and learner validation still required",
     "requireHumanLinguisticReview": true,
     "requirePilotLearnerTest": true,
     "audioRecordingAvailable": false,
     "preventRuntimeUntilApproved": true,
     "reviewedCompetencyScope": "reading, comprehension, guided written production and transfer only; no oral assessment"
+  },
+  "contentVersion": 1,
+  "editorialFinalization": {
+    "engineeringInputReady": true,
+    "publicReleaseApproved": false,
+    "authoringReview": "internal-consistency-reviewed",
+    "blockingGates": [
+      "independent-language-review",
+      "observed-learner-pilot",
+      "review-method-for-open-responses",
+      "engine-and-data-integrity-tests",
+      "explicit-release-approval"
+    ],
+    "oralEvidenceAvailable": false,
+    "realLearnerResultsAvailable": false,
+    "implementationRule": "Content is suitable for a disabled prototype; do not enable an unreviewed lesson for learners.",
+    "languageReviewNotes": [
+      "Verificar naturalidade de Извините e das perguntas Где станция метро? e Где находится станция метро?.",
+      "Confirmar flexão de рядом с аптекой e adequação de formas de instrução com вы.",
+      "Testar se библиотека como pista lexical é registrada sem alegar produção totalmente independente."
+    ]
   }
 }

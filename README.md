@@ -68,6 +68,16 @@ npm run test:e2e
 
 Playwright valida HTTP/MIME dos estáticos, cálculo real pela API, navegação, temas, menu móvel, ausência de overflow, gráfico, tabela, loading e falhas da API nas larguras 1920, 1366, 768, 390 e 320 px. As capturas ficam em `test-results/` (ignorado pelo Git). Para Chromium instalado pelo Playwright, defina `PW_CHANNEL=chromium`. `BASE_URL` permite validar um deploy autorizado.
 
+## 2T Learn — documentação para o próximo incremento Codex
+
+- [Aula-piloto: fechamento editorial interno](docs/learn-pilotos-fechamento-editorial.md)
+- [Evidências e regras de avaliação consolidadas](docs/learn-evidencias-consolidadas.md)
+- [Especificação técnica do próximo incremento Codex](docs/learn-codex-kickoff-v1.md)
+- [Manifesto de prontidão das unidades](frontend/public/learn/pedagogy-v1/readiness-manifest.json)
+- Verificações completas de handoff: `npm run learn:validate-readiness`.
+
+**Apenas preparado para protótipo técnico desativado.** Revisão linguística independente e testes com aprendizes são obrigatórios antes de liberar aulas a usuários.
+
 ## 2T Learn — reconstrução pedagógica
 
 A nova metodologia de Inglês/Russo segue as etapas 1–7 do plano de evolução: fundamentos, currículo, personalização, aulas-piloto, consolidação, validação e expansão.
