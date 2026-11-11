@@ -82,7 +82,7 @@ for(const c of book.cases||[]){
   check(!!step&&['guidedProduction','transfer'].includes(step.kind),c.id+': must refer to an open pilot task');
   check(nonblank(c.answer),c.id+': blank response');
   const feedback=c.feedback||{};
-  for(const field of feedbackKeys)check(nonblank(feedback[field]),c.id+': missing feedback field '+field);
+  for(const field of feedbackKeys)check(field==='priorityIssue' ? typeof feedback[field]==='string'&&feedback[field].length>=3 : nonblank(feedback[field]),c.id+': missing feedback field '+field);
   check(issueTypes.has(feedback.priorityIssue),c.id+': invalid feedback issue type');
   if(c.expected==='supported')check(feedback.priorityIssue==='none',c.id+': fully supported case should not fabricate an error');
   if(c.expected==='uncertain')check(feedback.priorityIssue==='notObservable',c.id+': uncertain case needs explicit uncertainty');
