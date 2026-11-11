@@ -68,23 +68,31 @@
       "feedbackByWrongChoice": {
         "0": "Maya diz 'I also study English', mas a pergunta é sobre Leo, que estuda data analysis.",
         "2": "Design não aparece na fala de Leo. Observe a frase 'I study data analysis'."
+      },
+      "assessmentContract": {
+        "closedQuestion": true,
+        "evidenceScope": "written-comprehension-only"
       }
     },
     {
       "id": "en-intro-c2",
       "kind": "comprehension",
       "evidence": "comprehension",
-      "prompt": "Quando Leo diz 'What about you?', o que ele está fazendo na conversa?",
+      "prompt": "Qual é a intenção de Leo ao perguntar 'What about you?' depois de dizer o que estuda?",
       "choices": [
-        "Convidando Maya a falar de si",
+        "Convidar Maya a falar sobre si",
         "Pedir licença para sair da sala",
-        "Perguntar as horas da aula"
+        "Perguntar o horário da aula"
       ],
       "correctIndex": 0,
       "feedback": "Depois de dizer o que estuda, Leo devolve a pergunta para conhecer Maya. A expressão serve para manter o diálogo.",
       "feedbackByWrongChoice": {
-        "1": "Leo não está se despedindo: ele acabou de contar sobre seus estudos e convida Maya a responder.",
-        "2": "O diálogo não menciona horários. 'What about you?' devolve a pergunta a quem está conversando."
+        "1": "Leo não pede para sair: depois de contar o que estuda, ele convida Maya a falar sobre ela.",
+        "2": "A pergunta não trata de horários. Ela devolve a conversa à outra pessoa."
+      },
+      "assessmentContract": {
+        "closedQuestion": true,
+        "evidenceScope": "written-comprehension-only"
       }
     },
     {
@@ -92,7 +100,11 @@
       "kind": "notice",
       "evidence": "practiceOnly",
       "prompt": "Compare 'I'm Leo', 'I study data analysis' e 'What about you?'. Como essas expressões ajudam a manter uma conversa?",
-      "explanation": "'I'm' apresenta a pessoa; 'I study' descreve o estudo; 'What about you?' devolve a pergunta."
+      "explanation": "'I'm' apresenta a pessoa; 'I study' descreve o estudo; 'What about you?' devolve a pergunta.",
+      "assessmentContract": {
+        "scoreAsCompetence": false,
+        "evidenceScope": "practice-only"
+      }
     },
     {
       "id": "en-intro-p1",
@@ -112,7 +124,16 @@
         "Comunica estudo ou trabalho",
         "Aceita nomes fictícios e variações naturais"
       ],
-      "evaluation": "rubric-review-required"
+      "evaluation": "rubric-review-required",
+      "modelAnswersVisible": "after-attempt",
+      "assessmentContract": {
+        "canUseDeterministicMatchAsFinalGrade": false,
+        "assessor": "rubricWithReview",
+        "ifNoReliableReviewer": "uncertain",
+        "canRetryAfterFeedback": true,
+        "evidenceScope": "guided-written-production",
+        "visibleHelpMustBeRecorded": true
+      }
     },
     {
       "id": "en-intro-t1",
@@ -130,7 +151,16 @@
         "Faz pergunta relevante",
         "Não exige fórmula exata"
       ],
-      "evaluation": "rubric-review-required"
+      "evaluation": "rubric-review-required",
+      "modelAnswersVisible": "after-attempt",
+      "assessmentContract": {
+        "canUseDeterministicMatchAsFinalGrade": false,
+        "assessor": "rubricWithReview",
+        "ifNoReliableReviewer": "uncertain",
+        "canRetryAfterFeedback": true,
+        "evidenceScope": "written-transfer-with-declared-assistance",
+        "visibleHelpMustBeRecorded": true
+      }
     }
   ],
   "delayedReview": {
@@ -221,11 +251,32 @@
     "editorialCaution": "Dialogues represent written informal interaction. No audio recording or evaluation of spoken fluency exists."
   },
   "editorialReview": {
-    "internalConsistency": "reviewed-by-project-author; not independently language-certified",
+    "internalConsistency": "Internal review completed; independent language and learner validation still required",
     "requireHumanLinguisticReview": true,
     "requirePilotLearnerTest": true,
     "audioRecordingAvailable": false,
     "preventRuntimeUntilApproved": true,
     "reviewedCompetencyScope": "reading, comprehension, guided written production and transfer only; no oral assessment"
+  },
+  "contentVersion": 1,
+  "editorialFinalization": {
+    "engineeringInputReady": true,
+    "publicReleaseApproved": false,
+    "authoringReview": "internal-consistency-reviewed",
+    "blockingGates": [
+      "independent-language-review",
+      "observed-learner-pilot",
+      "review-method-for-open-responses",
+      "engine-and-data-integrity-tests",
+      "explicit-release-approval"
+    ],
+    "oralEvidenceAvailable": false,
+    "realLearnerResultsAvailable": false,
+    "implementationRule": "Content is suitable for a disabled prototype; do not enable an unreviewed lesson for learners.",
+    "languageReviewNotes": [
+      "Confirmar naturalidade de respostas alternativas a apresentação profissional, sem impor uma frase única.",
+      "Verificar se o aluno distingue quem estuda English e quem estuda data analysis.",
+      "Testar se o aluno consegue fazer pergunta relevante numa reunião sem copiar What about you."
+    ]
   }
 }
