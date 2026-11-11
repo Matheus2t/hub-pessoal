@@ -710,3 +710,39 @@ validação/round-trip v3 foram preservados, sem alteração nas stores legadas.
 houve ativação pública, acesso remoto, revisão por especialista de russo, teste com
 alunos, avaliação semântica confiável ou áudio. A estrutura pode ser testada por
 desenvolvimento, mas não está aprovada como conteúdo de ensino para estudantes.
+
+## Etapa C3 — diagnóstico inicial por competências (11/2026)
+
+`learn-diagnostic-player` reutiliza o Learn e os stores `lessonEvents` / `lessonProgress`.
+As rotas `#/learn/en/diagnostic` e `#/learn/ru/diagnostic` exigem, respectivamente,
+`?learn-preview=diagnostic-en` e `?learn-preview=diagnostic-ru` em `localhost`,
+`127.0.0.1` ou loopback IPv6. O guard também está aplicado no roteador; parâmetros
+em domínios Vercel ou públicos não habilitam o diagnóstico.
+
+Cada catálogo original mantém suas 10 tarefas. Perguntas fechadas usam o gabarito
+e feedback específico. Respostas abertas ficam `uncertain`/pendentes, sem correção
+por igualdade de texto. As duas tarefas de listening por idioma continuam indisponíveis
+e geram `notAssessed`; produção oral também aparece como não avaliada. O relatório
+lista evidências por competência, recomenda um ponto de partida explicável a partir
+de pelo menos quatro tarefas observáveis e não atribui nível CEFR, fluência ou domínio.
+Inglês e Russo têm sessões, rascunhos e eventos separados; respostas, ajudas, objetivo,
+competência, versão e sessão são gravados com IDs idempotentes. O editor fonético russo
+é reutilizado e a pista lexical pré-fornecida fica registrada. Exemplos só aparecem
+depois da tentativa; essa ajuda posterior não reclassifica o evento imutável.
+
+A persistência usa as stores existentes, sem aumentar o IndexedDB v3 ou mudar o backup
+v3. Importação v1/v2 e exportação/restauração v3 continuam válidas. O validador de
+backup confere tarefa, objetivo, competência, sessão e duplicação de eventos diagnósticos.
+
+### Validação C3
+
+- `npm run typecheck` e `npm run build`: aprovados.
+- Dez validadores Learn: aprovados, incluindo conteúdo e readiness.
+- Playwright Learn: 99/99 aprovados em Edge (Chromium), incluindo 8 testes C3 e regressão
+  de C1/C2, backups, teclado fonético e histórico legado.
+- C3 responsiva em 320, 390, 768 e 1366 px nos temas claro e escuro, sem overflow horizontal.
+- `git diff --check`: aprovado.
+
+**Limites:** o diagnóstico continua desativado publicamente. Listening não tem áudio
+validado e as respostas abertas não têm revisor confiável. Revisão linguística independente
+e testes com aprendizes reais ainda são necessários antes de habilitar estudantes.
