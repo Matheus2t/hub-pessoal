@@ -12,7 +12,7 @@ export class LearnSpeech {
   play(text:string,language:Language,rate=1,volume=1):Promise<void>{
     if(!this.synth)return Promise.reject(Error('Síntese de voz não disponível neste navegador.'));
     const voices=this.voices(language);
-    const voice=voices.find(v=>v.localService)??voices[0];
+    const voice=voices.find(v=>v.localService&&v.default)??voices.find(v=>v.localService)??voices.find(v=>v.default)??voices[0];
     if(!voice)return Promise.reject(Error(`Nenhuma voz compatível com ${language==='ru'?'russo':'inglês'} está instalada.`));
     if(!text.trim()||text.length>3000||rate<.5||rate>1.5||!Number.isFinite(rate)||volume<0||volume>1||!Number.isFinite(volume))
       return Promise.reject(Error('Áudio, velocidade ou volume inválidos.'));

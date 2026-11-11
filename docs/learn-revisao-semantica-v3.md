@@ -53,11 +53,11 @@ O arquivo [`learn-revisao-itens-474.csv`](learn-revisao-itens-474.csv) traz **to
 - A auditoria de áudios continua **textual**. O sistema usa síntese do navegador em atividades legadas; não há gravações validadas nem prova de pronúncia ou compreensão oral.
 - Para eventual uso avaliativo, observar direitos de uso do áudio, transcrições, rubricas, revisão independente por idioma e evidência de aprendizagem com estudantes.
 
-## Risco técnico para o Codex — divergência do gerador
+## Risco técnico para o Codex — reconciliado
 
-O arquivo **`scripts/learn/build-catalogs.py` reconstrói `frontend/public/learn/en.json` e `ru.json` a partir de TSV e scripts Python**. As decisões editoriais de PRs #104–#106 e desta passagem foram aplicadas diretamente aos catálogos JSON e **não estão todas refletidas nos arquivos-fonte do gerador**. Uma execução futura do gerador pode reverter correções! **Não executar a regeneração dos catálogos antes de reconciliar as fontes.**
+Após os PRs #104–#107, a divergência foi medida contra duas execuções isoladas de `scripts/learn/build-catalogs.py`: 241 registros diferiam da geração-base (222 exercícios e 19 registros de vocabulário, expressões, leituras e lições), sem inclusão ou remoção de IDs. Os campos editoriais aprovados foram consolidados em `scripts/learn/catalog-editorial-overrides.json` e agora são aplicados pelo próprio gerador.
 
-A atividade técnica seguinte é fazer um só fluxo reprodutível para gerar catálogos sem perder decisões editoriais; confirmar com diff e `npm run learn:audit` / `npm run learn:quality-audit`. Isso é um handoff de implementação para Codex, não aprovação pedagógica.
+`npm run learn:check-catalogs` gera cada catálogo duas vezes em diretórios temporários e compara o resultado estruturado com os JSON versionados e com o inventário de 474 IDs. O comando também é executado pelo workflow `verify-site.yml`. Para alterar conteúdo, editar a fonte autoral ou a camada editorial versionada e regenerar; não corrigir apenas os JSON publicados. Essa reconciliação técnica não representa aprovação linguística independente.
 
 ## Acompanhamento
 
@@ -65,3 +65,12 @@ A atividade técnica seguinte é fazer um só fluxo reprodutível para gerar cat
 - Prosseguir com revisão contextual item a item, especialmente respostas abertas e leituras com múltiplas paráfrases.
 - Submeter exportação congelada por idioma a revisor externo qualificado e documentar parecer por versão/hash; **nenhuma aprovação humana independente é declarada**.
 - Não liberar publicamente C1–C5 apenas com aprovação dos checks; exigir decisão explícita de lançamento.
+
+## Homologação técnica da consolidação — 2026-11-11
+
+- A camada de overrides cobre 241 registros divergentes entre a geração-base e os catálogos publicados: 222 exercícios e 19 palavras, expressões, leituras ou lições. O inventário editorial dos PRs #104–#107 marca 215 exercícios com mudanças; são recortes diferentes, pois a comparação do gerador inclui divergências anteriores ao intervalo editorial registrado. Nenhum ID foi criado ou removido.
+- O build do Learn aplica os overrides como última etapa. `npm run learn:check-catalogs` executou o gerador duas vezes em diretórios temporários, comparou as duas saídas aos catálogos versionados e confirmou os 474 IDs.
+- Build e typecheck aprovados; os 12 validadores do Learn aprovados; regressão Playwright completa do Learn: 120/120 aprovada no Chromium, cobrindo inglês, russo, C1–C5, backups, persistência, acessibilidade e telas de 320 a 1920 px. Uma captura em 320 px expirou numa primeira execução sob carga, mas passou isoladamente e na suíte integral repetida.
+- Respostas não reconhecidas de escrita livre ficam `uncertain`, não aumentam erros nem reduzem acurácia. Variantes cadastradas continuam determinísticas; os registros históricos sem `assessmentOutcome` preservam sua interpretação anterior. Backups v1/v2 continuam legíveis e v3 preserva o novo campo opcional.
+- Síntese usa voz compatível disponível no navegador e continua identificada como prática. O manifesto tem 124 entradas, nenhuma gravação validada e avaliação auditiva desabilitada.
+- As prévias C1–C5 permanecem desativadas publicamente e restritas ao loopback. Esses resultados são validação estrutural e automatizada, não certificação linguística ou homologação com estudantes.

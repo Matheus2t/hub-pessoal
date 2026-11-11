@@ -1,4 +1,5 @@
-import type {Attempt, Card, Grade, Language} from './model';
+import type {Attempt, AttemptOutcome, Card, Grade, Language} from './model';
+import type {Exercise} from './content';
 export const DAY=86400000;
 /** Punctuation/space/case only. Cyrillic ё remains distinct unless the exercise opts out. */
 export function normalizeAnswer(text:string,acceptYoAsE=false):string {
@@ -9,6 +10,15 @@ export function normalizeAnswer(text:string,acceptYoAsE=false):string {
 export function evaluateAnswer(answer:string,variants:readonly string[],acceptYoAsE=false):boolean {
   const value=normalizeAnswer(answer,acceptYoAsE);
   return !!value&&variants.some(v=>normalizeAnswer(v,acceptYoAsE)===value);
+}
+/** Exact validated variants remain deterministic; unrecognized open writing is not called wrong. */
+export function evaluateExerciseAnswer(answer:string,exercise:Pick<Exercise,'answers'|'acceptYoAsE'|'skill'>):AttemptOutcome {
+  if(evaluateAnswer(answer,exercise.answers,exercise.acceptYoAsE))return 'correct';
+  return exercise.skill==='writing'?'uncertain':'incorrect';
+}
+/** Historical rows retain their original boolean interpretation. */
+export function attemptOutcome(attempt:Pick<Attempt,'correct'|'assessmentOutcome'>):AttemptOutcome {
+  return attempt.assessmentOutcome==='uncertain'?'uncertain':attempt.correct?'correct':'incorrect';
 }
 export function newCard(language:Language,itemId:string,now=Date.now()):Card {
   return {language,itemId,interval:0,ease:2.5,repetitions:0,due:now,updated:now,lastGrade:null};
@@ -27,6 +37,7 @@ export function summarize(language:Language,attempts:Attempt[],cards:Card[],now=
   const days=new Set(history.map(a=>localDay(a.at)));let streak=0;
   const cursor=new Date(now);if(!days.has(localDay(+cursor)))cursor.setDate(cursor.getDate()-1);
   while(days.has(localDay(+cursor))){streak++;cursor.setDate(cursor.getDate()-1);}
-  const topics=[...new Set(history.map(a=>a.topic))].map(topic=>{const rows=history.filter(a=>a.topic===topic);return {topic,total:rows.length,errors:rows.filter(a=>!a.correct).length}});
-  return {attempts:history.length,correct:history.filter(a=>a.correct).length,accuracy:history.length?history.filter(a=>a.correct).length/history.length:null,seconds:history.reduce((n,a)=>n+a.seconds,0),days:days.size,streak,studied:new Set(history.filter(a=>a.skill==='vocabulary').map(a=>a.itemId)).size,mastered:own.filter(c=>c.repetitions>=3&&c.interval>=21&&c.lastGrade!==0&&c.lastGrade!==1).length,due:own.filter(c=>c.due<=now).length,topics:topics.sort((a,b)=>b.errors-a.errors),history};
+  const assessed=history.filter(a=>attemptOutcome(a)!=='uncertain'),correct=assessed.filter(a=>attemptOutcome(a)==='correct').length;
+  const topics=[...new Set(history.map(a=>a.topic))].map(topic=>{const rows=history.filter(a=>a.topic===topic);return {topic,total:rows.length,assessed:rows.filter(a=>attemptOutcome(a)!=='uncertain').length,errors:rows.filter(a=>attemptOutcome(a)==='incorrect').length,uncertain:rows.filter(a=>attemptOutcome(a)==='uncertain').length}});
+  return {attempts:history.length,correct,incorrect:assessed.length-correct,uncertain:history.length-assessed.length,accuracy:assessed.length?correct/assessed.length:null,seconds:history.reduce((n,a)=>n+a.seconds,0),days:days.size,streak,studied:new Set(history.filter(a=>a.skill==='vocabulary').map(a=>a.itemId)).size,mastered:own.filter(c=>c.repetitions>=3&&c.interval>=21&&c.lastGrade!==0&&c.lastGrade!==1).length,due:own.filter(c=>c.due<=now).length,topics:topics.sort((a,b)=>b.errors-a.errors),history};
 }
