@@ -182,3 +182,13 @@ Quatro eventos de prática diferida em `frontend/public/learn/pedagogy-v1/pilot-
 ## Proteção da integridade do diagnóstico — revisão posterior
 
 A revisão em `docs/learn-integridade-diagnostico-v1.md` redistribuiu as alternativas corretas (2 por posição em cada idioma), vinculou uma resposta canônica a cada índice e substituiu uma questão artificial de cirílico por sinalização funcional. As respostas de exemplo das tarefas abertas exigem visualização **somente após a tentativa**. Palavras russas fornecidas no enunciado são pistas lexicais que precisam ser registradas como assistência. O Codex deve interpretar esses contratos de dados, impedir reutilização de ID depois de existirem tentativas reais e evitar deduzir proficiência de reconhecimento ou da posição de um gabarito.
+
+---
+
+## Feedback provisório da escrita no Learn legado
+
+A apresentação do resultado dos exercícios de escrita foi ajustada para descrever **correspondência com respostas cadastradas**, e não uma avaliação semântica definitiva. Uma resposta não reconhecida mostra que o gabarito atual tem limites e que outras formulações podem ser válidas.
+
+**Invariantes mantidas nesta mudança:** `evaluateAnswer`, `Attempt.correct`, persistência, históricos, backups, SRS e outros modos de prática não foram alterados. Assim, estatísticas antigas continuam baseadas no verificador determinístico — não constituem uma medição validada de produção livre.
+
+**Pendência para o Codex:** quando o motor de rubricas estiver pronto, separar explicitamente `matchedRegisteredVariant` de `communicativeEvidence` no esquema novo, sem reclassificar automaticamente as tentativas anteriores nem recalcular proficiência a partir de correspondências literais. Registrar ajuda e resultado incerto.
