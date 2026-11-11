@@ -49,3 +49,16 @@ Cotejo programático entre `main` e a branch: **237 exercícios e 15 leituras po
 Executar checagens da suíte no CI do PR e corrigir qualquer regressão. Depois, realizar a revisão semântica aprofundada dos itens que permanecem com risco de ambiguidade e submeter o conjunto a revisão independente por idioma.
 
 **Critério de conclusão:** marcar `474/474 revisão final` somente após evidenciar verificação de estímulo, objetivo, pergunta, gabarito, variantes, feedback e nível de **cada item**, seguida de aprovação por especialista independente. Esta primeira passagem **não** satisfaz esse critério.
+
+## Complemento — segunda rodada de clareza gramatical (11/11/2026)
+
+Após a integração da primeira passagem pelo PR #105, uma nova leitura orientada por ambiguidade alterou mais **nove exercícios** (cinco EN e quatro RU) sem modificar IDs ou gabaritos:
+
+- `en-v2-grammar-002-q3`: agora exige explicitamente o verbo `learn` após `will`, evitando respostas livres igualmente gramaticais.
+- `en-v2-grammar-003-q2`: explicita a construção passiva no **presente**; antes, `are` e `were` poderiam ser plausíveis sem contexto.
+- `en-v2-grammar-005-q1/q3`: indica **Past Continuous** e referência temporal passada, evitando lacunas com vários tempos gramaticais possíveis.
+- `en-v2-test-001`: especifica **Present Perfect** como estrutura avaliada.
+- `ru-v2-grammar-001-q3`: indica o verbo `писать`, pois apenas o enunciado original permitia verbos de sentido diferente.
+- `ru-v2-grammar-002-q1/q2/q3`: feedback passa a distinguir o genitivo após `нет` do **genitivo de posse** em `книга моего брата`.
+
+**Acumulado dessas duas rodadas:** **158 exercícios distintos alterados** (149 na primeira passagem + 9 na segunda), sem alteração na quantidade de 474 exercícios. Isso continua sendo revisão editorial interna; o parecer independente por idioma permanece pendente.
