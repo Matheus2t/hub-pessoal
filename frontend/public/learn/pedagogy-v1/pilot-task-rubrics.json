@@ -37,7 +37,7 @@
         {
           "code": "register",
           "essential": false,
-          "descriptionPt": "Mantém cordialidade adequada a uma conversa inicial."
+          "descriptionPt": "Mantém cordialidade apropriada a um primeiro encontro, mesmo utilizando saudações menos formais."
         },
         {
           "code": "intelligibility",
@@ -78,7 +78,7 @@
         {
           "response": "Hi! I'm Ravi.",
           "suggestedOutcome": "partiallySupported",
-          "reasonPt": "Apresenta identidade, mas omite atividade.",
+          "reasonPt": "Apresenta claramente quem é o participante, mas não informa o que estuda ou faz, parte essencial da tarefa.",
           "requiresHumanReview": true
         },
         {
@@ -142,7 +142,7 @@
         },
         {
           "code": "confusing-question",
-          "howToHelpPt": "A pergunta ainda não é clara para o novo interlocutor.",
+          "howToHelpPt": "A pergunta foi iniciada, mas o interlocutor ainda não entenderia seu propósito na reunião.",
           "nextAttemptPt": "Formule a pergunta de modo direto, por exemplo sobre trabalho ou participação na equipe."
         }
       ],
@@ -235,13 +235,13 @@
         {
           "response": "Извините, где находится станция метро?",
           "suggestedOutcome": "supported",
-          "reasonPt": "Pergunta contextual, destino e cortesia adequados.",
+          "reasonPt": "Pergunta completa e contextualizada, com destino correto, linguagem compreensível e cortesia adequada.",
           "requiresHumanReview": true
         },
         {
           "response": "Подскажите, пожалуйста, где ближайшая станция метро?",
           "suggestedOutcome": "supported",
-          "reasonPt": "Alternativa idiomática válida, com adjetivo opcional.",
+          "reasonPt": "Alternativa idiomática e cortês que identifica a estação de metrô mais próxima sem exigir cópia do modelo.",
           "requiresHumanReview": true
         },
         {
@@ -253,7 +253,7 @@
         {
           "response": "Извините, где билет?",
           "suggestedOutcome": "notSupported",
-          "reasonPt": "O destino está errado: bilhete em lugar de estação.",
+          "reasonPt": "O estudante construiu uma pergunta, mas pede o bilhete em vez de perguntar a localização da estação.",
           "requiresHumanReview": true
         }
       ]
@@ -291,7 +291,7 @@
         {
           "code": "courtesy",
           "essential": false,
-          "descriptionPt": "A fórmula de cortesia é adequada a um desconhecido."
+          "descriptionPt": "Utiliza fórmula de cortesia adequada à abordagem de desconhecidos em uma interação de rua."
         },
         {
           "code": "orthography",
@@ -320,13 +320,13 @@
         {
           "response": "Извините, где библиотека?",
           "suggestedOutcome": "supported",
-          "reasonPt": "Pergunta adequada de localização e novo destino.",
+          "reasonPt": "Pergunta de localização natural, indicando biblioteca como destino novo e usando cortesia adequada.",
           "requiresHumanReview": true
         },
         {
           "response": "Подскажите, пожалуйста, где находится библиотека?",
           "suggestedOutcome": "supported",
-          "reasonPt": "Forma alternativa natural e cortês.",
+          "reasonPt": "Variação educada e natural com pergunta de localização, cumprindo a situação de transferência.",
           "requiresHumanReview": true
         },
         {
