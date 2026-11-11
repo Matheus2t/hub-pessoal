@@ -605,9 +605,10 @@ no total). Nenhum teste de atividade educacional foi anunciado como implementado
 Esta atualização substitui as antigas notas de planejamento acima quando elas
 descrevem a implementação atual: os catálogos legados já estão preenchidos; os
 números atuais são registrados abaixo. A aula C1 é um protótipo isolado e segue
-desativada para o público. A rota de prévia exige `?learn-preview=c1`, só aceita
-localhost ou host `.vercel.app` que não seja um dos domínios oficiais, e não
-altera o estado de liberação registrado nos conteúdos e no manifesto.
+desativada para o público. A rota de prévia exige `?learn-preview=c1` e só aceita
+`localhost`, `127.0.0.1` ou loopback IPv6. Todos os hosts remotos, inclusive
+`*.vercel.app`, ficam bloqueados pelo roteamento; a query não é autenticação.
+Isso não altera o estado de liberação dos conteúdos nem do manifesto.
 
 Implementado para `en-pilot-introductions-01`:
 - Fluxo declarativo de contexto, diálogo escrito, apoio sob demanda, duas perguntas
@@ -654,11 +655,15 @@ o piloto de Inglês descrito acima; não adiciona piloto de Russo.
 O piloto não tem áudio, avaliação semântica confiável nem sincronização entre
 dispositivos. A produção aberta fica sem correção e sem alegações de fluência ou
 nível CEFR. As rubricas precisam de revisão humana/linguística e testes com alunos
-antes de qualquer ativação. O preview flag controla a rota da aplicação, mas não
-é um mecanismo de autenticação para conteúdo estático; a prévia deve usar a
-proteção de acesso do deployment Vercel. O domínio oficial não deve ativar C1.
+antes de qualquer ativação. O parâmetro de URL não autentica usuários e os JSONs
+estáticos não são privados; por isso a prévia interativa é restrita a ambiente
+local, e **nenhum preview remoto é autorizado** por esta implementação. O projeto
+`vercel.json` desabilita o deployment automático de branches diferentes da
+`main`. Quando o projeto correto estiver acessível, uma prévia remota deverá ter
+autenticação no servidor/Vercel validada antes de qualquer habilitação.
 
-**Estado da entrega:** implementada localmente para revisão em preview; ainda não
-publicada em `main`. Antes da integração, validar que o preview Vercel está
-protegido e que `matheus2t.com.br` continua sem a rota C1, inclusive se alguém
-adicionar a query de prévia. Não iniciar Russo ou expansão curricular nesta etapa.
+**Estado da entrega:** implementada para teste em localhost e proposta no PR #92;
+não integrada a `main` nem publicada em produção nesta etapa. Após os checks, a
+integração do código pode ser avaliada sem habilitar a aula publicamente, mas a
+implantação exata do domínio oficial continua sem confirmação pela conexão Vercel
+atual. Não iniciar Russo nem expansão curricular nesta etapa.
