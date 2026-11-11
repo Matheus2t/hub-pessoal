@@ -1,53 +1,63 @@
-# 2T Learn — Homologação técnica final
+# 2T Learn — homologação final e prontidão
 
-Data: 2026-11-11
+Data da verificação: 2026-11-11
 
-Base examinada: `main` em `16a280a363e84d07766dabd4f3eba31b359a2475`
+Base local de referência: `main` em `40a5b5f15bb2aa72b1ec5462d28add572fe432fe` (PRs #98–#102).
+Escopo: Learn em Inglês e Russo; nenhuma outra área alterada.
 
-Árvore local de validação: idêntica à árvore dessa `main`.
+## Evidências técnicas
 
-## Checklist técnico
+- `npm run typecheck`: aprovado.
+- `npm run build`: aprovado após as alterações do player e da ficha de revisão.
+- Dez validadores originais do Learn: 10/10 aprovados. `npm run learn:validate-audio` adicional também aprovado; total atual: 11/11.
+- Regressão Playwright C1–C5, Learn legado e `platform-v2-learn.spec.ts`: **120/120 aprovados** em Chromium/Chrome, com servidor estático local.
+- Testes específicos de respostas abertas, pilotos e diagnóstico: 19/19 aprovados.
+- Testes do player de áudio: 4/4 aprovados, incluindo 320, 390, 768 e 1366 px em tema escuro/claro.
+- A regressão completa cobre 1920, 1366, 768, 390 e 320 px e ambos os temas nas verificações de interface existentes.
+- `git diff --check`: aprovado nos PRs. `dist/` e `test-results/` estão ignorados pelo Git.
+- Pytest não foi executado nesta homologação: não houve mudança no backend nem no contrato de API.
 
-- [x] Inglês e Russo: isolamento de tentativas, eventos, progresso, plano e resumo coberto pela regressão.
-- [x] Acesso: C1–C5 exige hostname loopback e flag específica; host público, domínio oficial e subdomínios Vercel não habilitam a prévia. A flag é uma seleção de interface, não autenticação.
-- [x] Persistência: IndexedDB v3 mantém stores legadas; atualização aditiva, gravações transacionais, deduplicação por IDs e falha de armazenamento sem confirmação falsa foram exercitadas.
-- [x] Backups: leitura/importação v1/v2 e validação/restauração v3, duplicações, integridade e rollback foram exercitados.
-- [x] Continuidade: rascunhos, retomada após reload, troca de idioma/rota e grandes históricos foram cobertos.
-- [x] Avaliação: itens fechados usam gabarito; respostas abertas permanecem `uncertain`/pendentes; listening sem áudio validado permanece `notAssessed`.
-- [x] Interface: teclado, foco visível, movimento reduzido, teclado fonético russo e layouts desktop/tablet/celular em tema claro/escuro foram testados.
-- [x] Privacidade: a auditoria do Learn encontrou carregamento somente same-origin de catálogos/conteúdo; não encontrou envio de respostas por `XMLHttpRequest` ou `sendBeacon`.
-- [x] Falhas de infraestrutura foram separadas de falhas do produto: a primeira execução Playwright foi bloqueada por `ERR_NETWORK_ACCESS_DENIED` ao loopback; após liberar o loopback, a suíte completa passou.
+### Entregas integradas
 
-## Validações executadas
+- PR #99: correção de dez duplicações exatas EN/RU, nota de relative clauses e auditoria estrutural ampliada.
+- PR #100: player de síntese local com volume, velocidade, pausa/retomada, repetição, mensagens acessíveis e manifest de áudio.
+- PR #101: aviso de privacidade da ficha aberta e documentação dos limites de revisão humana.
+- PR #102: protocolo e formulário vazio para testes formativos com estudantes.
 
-- Typecheck `npm run typecheck`: aprovado.
-- Build `npm run build`: aprovado; recompila TypeScript e gera bundles Lit/esbuild e CSS.
-- Dez validadores `learn:*`: 10/10 aprovados — currículo, pedagogia, diagnóstico, qualidade, cobertura, leitura, curadoria, rubricas, revisões e readiness.
-- Playwright Chromium: **116/116 aprovados**, em 15 specs do Learn e a regressão `platform-v2-learn.spec.ts`. Inclui migração, importação/restauração, falhas de armazenamento, privacidade, isolamento, retomada, deduplicação e 10.000 eventos.
-- Layouts cobertos em 1920, 1366, 768, 390 e 320 px; tema claro e escuro; verificações sem overflow horizontal.
-- `git diff --check`: aprovado. Artefatos `dist/` e `test-results/` permanecem ignorados.
-- Não foi executado Pytest: esta homologação não alterou nem usa o backend.
+Catálogo legado auditado estruturalmente: 491 registros por idioma (162 palavras, 62 expressões, 15 leituras, 15 lições, 237 exercícios). A triagem técnica não equivale a aprovação linguística independente.
 
-Os validadores também confirmam o tamanho atual de cada catálogo legado: 162 palavras, 62 expressões, 15 leituras, 15 lições e 237 exercícios em Inglês e em Russo.
+## Conteúdo, Listening e respostas abertas
 
-## Vercel e domínio oficial
+- 10 duplicações exatas foram corrigidas; zero grupos conhecidos permanecem no quality audit.
+- Permanecem 40/52 explicações genéricas de escrita por idioma e pendências de progressão, naturalidade, variantes e nível. Revisor humano independente continua necessário.
+- Manifest de Listening: 124 referências — 120 exercícios legados com Web Speech API local e 4 tarefas diagnósticas sem gravação revisada. **Gravações validadas: 0; avaliação auditiva habilitada: não.** Síntese varia por sistema/voz, é rascunho de prática e não prova listening.
+- Questões fechadas usam critérios determinísticos. Respostas abertas continuam `uncertain`/`pending`; a ficha exportada não dá nota nem gera feedback corretivo. Não existe identidade autenticada de revisor, endpoint privado, autorização, persistência de decisões ou trilha de retificação.
 
-- O check do commit `16a280a` chamado `Vercel` está `success` e aponta para a página de deployment do projeto `matheus2t`.
-- A conexão Vercel disponível não consegue consultar esse projeto/domínio: `GET project matheus2t` e a consulta do deployment retornam `404`; a listagem autorizada da equipe mostra somente `dashboard-esportivo`. Não foi possível inspecionar o deployment, seu SHA de produção, alias ou estado `Production/Ready`.
-- Verificação Chromium não autenticada em `https://matheus2t.com.br` com `learn-preview=c1`, `c2`, `diagnostic-en`, `diagnostic-ru`, `c4-delayed` e `c5-integration`: todas retornaram HTTP 200 com a página genérica “Página do Learn não encontrada”; nenhum conteúdo das experiências foi renderizado. Isso confirma indisponibilidade pública dessas rotas no domínio observado, mas **não identifica o commit servido nem valida a publicação da `main`**.
-- Resultado de produção: **deployment exato não confirmado**. É necessário conceder ao conector Vercel acesso de leitura ao projeto `matheus2t` na equipe proprietária para conferir projeto, deployment, alias e SHA.
+## Dados, segurança e acesso
 
-## Prontidão para ativação pública
+- Progresso fica no IndexedDB v3 do navegador; os contratos mantêm backups v1/v2/v3, histórico e isolamento por idioma. Não foi acrescentada persistência remota de respostas.
+- A ficha de revisão contém o texto da resposta e o contexto. Seu download é iniciado pelo usuário, sem envio automático; a interface alerta sobre guarda, compartilhamento e descarte.
+- As prévias C1–C5 continuam condicionadas a hostname loopback e flag local. A query string sozinha não é autenticação.
+- A navegação no domínio oficial, `https://matheus2t.com.br`, com flags `c1`, `c2`, `diagnostic-en`, `diagnostic-ru`, `c4-delayed` e `c5-integration`, exibiu a página “Página do Learn não encontrada”/404 da aplicação; nenhuma experiência nova foi renderizada. Isso confirma o bloqueio visual no domínio observado, não a identidade do deployment servido.
+- A conexão Vercel consultada no escopo exato `matheus2ts-projects` não lista `matheus2t` (busca sem resultados; `get_project` retorna 404). Não foi possível confirmar Production/Preview, alias, estado `Ready` ou SHA efetivamente servido. Não usamos outro projeto como substituto.
+- Não foi feita liberação pública deliberada. Como o deployment exato é inacessível ao conector, o estado atual de produção não pode ser certificado além do teste visual de rotas acima.
 
-**Prontidão técnica local: aprovada. Ativação pública/uso por estudantes: não aprovada.**
+## Testes com estudantes e privacidade
 
-Pendências antes de liberar C1–C5:
+O protocolo [learn-student-usability-protocol.md](learn-student-usability-protocol.md) e a ficha [learn-student-session.json](templates/learn-student-session.json) estão preparados. **Nenhum estudante participou**; não há resultados, satisfação, tempos ou evidências de aprendizagem coletados. O protocolo pede consentimento, perfil temporário local, coleta mínima e descarte. Teste com participantes não deve começar até o responsável aprovar aviso de privacidade, retenção e consentimento.
 
-1. Revisão linguística e pedagógica independente dos conteúdos de Inglês e Russo, rubricas, exemplos e dificuldade.
-2. Testes moderados com estudantes dos dois idiomas; testes automatizados não substituem essa validação.
-3. Áudio validado para listening; até lá, essas competências seguem não avaliadas.
-4. Para respostas abertas, não existe avaliador semântico confiável nesta entrega. A ficha contextual exportável serve apenas para revisão manual, não dá nota nem produz feedback corretivo. As respostas continuam `uncertain`.
-5. Antes de qualquer acesso remoto, definir autenticação/autorização no servidor, consentimento, privacidade, retenção e suporte. A query string não protege conteúdo e os arquivos estáticos podem ser públicos.
-6. Confirmar o deployment de produção e o SHA diretamente no projeto Vercel correto antes de declarar a homologação online concluída.
+## Checklist de prontidão
 
-Não foram encontrados defeitos de implementação que justificassem alterações no código nesta homologação; nenhuma funcionalidade ou flag pública foi habilitada. Este documento registra os resultados e os bloqueios verificáveis.
+| Frente | Situação verificável | Bloqueio antes da liberação pública |
+|---|---|---|
+| 1. Conteúdo EN/RU | Auditoria estrutural e correções mecânicas concluídas | Revisão linguística e pedagógica independente por idioma |
+| 2. Listening | Player técnico disponível para prática local; manifest validado | Gravações autorizadas/licenciadas, conferidas por falantes qualificados e testes de compreensão; até lá, `notAssessed` |
+| 3. Respostas abertas | Ficha contextual exportável; eventos permanecem incertos | Autenticação/autorização real de revisor, endpoint privado, persistência append-only e auditoria; depois, concordância de especialistas |
+| 4. Experiência | Automação de interface e protocolo preparados | Sessões reais consentidas com estudantes EN/RU e correções derivadas das observações |
+| 5. Segurança/publicação | Dados locais, flags loopback, rotas públicas não renderizaram | Acesso de leitura Vercel ao projeto correto, confirmação do SHA/ambiente, revisão de privacidade e autorização explícita de lançamento |
+
+## Pendências e instrução operacional Vercel
+
+No Vercel, conectar/autorizar a integração de leitura para a equipe `matheus2ts-projects` e para o projeto existente `matheus2t`. Não criar projeto substituto. Depois disso, consultar deployment `Production`, domínio `matheus2t.com.br`, SHA, alias e estado antes de afirmar publicação.
+
+Antes de ativar para estudantes, concluir revisão independente EN/RU, providenciar áudio validado, implementar revisão humana protegida ou manter abertas incertas, aprovar consentimento/retenção e executar o protocolo. Ativação pública exige uma decisão explícita posterior; checks técnicos e merge não constituem essa autorização.
