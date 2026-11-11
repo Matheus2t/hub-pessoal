@@ -21,6 +21,8 @@ jobs:
         run: npm run learn:validate-pedagogy
       - name: Validate Learn diagnostic banks and feedback rubric
         run: npm run learn:validate-diagnostics
+      - name: Audit repeated Learn assessments and generic writing feedback
+        run: npm run learn:quality-audit
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium

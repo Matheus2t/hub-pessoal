@@ -92,3 +92,10 @@ O Codex já encontra os quatro JSONs e o validador na branch `main`. A **primeir
 Condições obrigatórias: preservar todas as rotas, IDs, tentativas, cartões, provas, planos diários e backups; não publicar unidades marcadas `runtimeEnabled:false`; registrar ajuda recebida, tipo de evidência e feedback; não inventar medição de conversação/pronúncia; manter o estilo Lit/TS/SCSS existente.
 
 **Não criar catálogo massivo de novos itens agora.** Primeiro provar a metodologia com os pilotos.
+
+
+---
+
+## Auditoria didática incremental — novembro de 2026
+
+A revisão documentada em `docs/learn-auditoria-didatica-v1.md` confirmou **10 grupos de perguntas repetidas** (5 por idioma) e **80 explicações genéricas de escrita** (40 por idioma). Os roteiros `en-pilot.json` e `ru-pilot.json` agora possuem justificativa por etapa, microexplicações, feedback específico para alternativas erradas e regras explícitas de apoio. O arquivo `quality-baseline.json` e o comando `npm run learn:quality-audit` acompanham possíveis regressões sem modificar o catálogo histórico. A revisão linguística independente e o teste com estudante continuam pendentes; **nenhum piloto foi ativado**.

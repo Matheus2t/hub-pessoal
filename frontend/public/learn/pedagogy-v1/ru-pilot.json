@@ -65,14 +65,18 @@
       "id": "ru-dir-c1",
       "kind": "comprehension",
       "evidence": "comprehension",
-      "prompt": "A estação fica ao lado de qual lugar?",
+      "prompt": "Depois de virar à esquerda, você encontra uma farmácia. Por que esse é um sinal útil para achar a estação?",
       "choices": [
-        "Uma farmácia",
-        "Um hotel",
-        "Um supermercado"
+        "Porque a estação fica perto da farmácia",
+        "Porque é preciso comprar um bilhete na farmácia",
+        "Porque o metrô sai de dentro da farmácia"
       ],
       "correctIndex": 0,
-      "feedback": "'Рядом с аптекой' significa 'ao lado da farmácia'."
+      "feedback": "O diálogo associa as duas informações: primeiro você vira à esquerda, e a estação fica perto da farmácia ('рядом с аптекой').",
+      "feedbackByWrongChoice": {
+        "1": "O diálogo não menciona comprar bilhetes. A farmácia funciona como referência para encontrar a estação.",
+        "2": "'Рядом с' significa 'perto de/ao lado de', não 'dentro de'."
+      }
     },
     {
       "id": "ru-dir-c2",
@@ -85,7 +89,11 @@
         "Não precisa virar"
       ],
       "correctIndex": 1,
-      "feedback": "'Поверните налево' significa virar à esquerda."
+      "feedback": "'Поверните налево' significa virar à esquerda.",
+      "feedbackByWrongChoice": {
+        "0": "'Направо' seria à direita, mas a instrução dada usa 'налево' (à esquerda).",
+        "2": "A pessoa pede explicitamente 'поверните налево', ou seja, virar à esquerda."
+      }
     },
     {
       "id": "ru-dir-n1",
@@ -150,5 +158,100 @@
     "Validar áudio antes de afirmar listening",
     "Não inferir pronúncia ou CEFR"
   ],
-  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção"
+  "source": "Original 2T — roteiro escrito para preparação, não exibido em produção",
+  "teachingDesign": {
+    "priority": "understand and give a courteous location question, without demanding full case declension knowledge",
+    "estimatedSupportLevels": [
+      "context-only",
+      "wordGloss",
+      "sentenceStarter",
+      "modelAnswerOnRequest"
+    ],
+    "supportRule": "Allow Cyrillic reading support and optional phonetic keyboard; do not reveal an entire model before the first unaided transfer attempt.",
+    "stepIntent": [
+      {
+        "stepId": "ru-dir-c1",
+        "why": "Integrate route order and a landmark; distinguish near from inside."
+      },
+      {
+        "stepId": "ru-dir-c2",
+        "why": "Contrast left vs right in an actual direction."
+      },
+      {
+        "stepId": "ru-dir-n1",
+        "why": "Notice polite attention-getter, location question and route marker."
+      },
+      {
+        "stepId": "ru-dir-p1",
+        "why": "Build courteous request with guided vocabulary and optional phonetic editor."
+      },
+      {
+        "stepId": "ru-dir-t1",
+        "why": "Replace station with library and transfer question form without a copied answer."
+      }
+    ],
+    "languageNotes": [
+      {
+        "concept": "Извините",
+        "explanationPt": "Forma educada para chamar a atenção de um desconhecido. Uma saudação como 'Привет' é menos apropriada nesse contexto.",
+        "example": "Извините, где ближайшая станция метро?"
+      },
+      {
+        "concept": "Где e находится",
+        "explanationPt": "'Где станция метро?' é uma pergunta curta e compreensível. 'Где находится станция метро?' é uma forma mais explícita; ambas podem ser adequadas.",
+        "example": "Где находится станция метро?"
+      },
+      {
+        "concept": "Идите, поверните",
+        "explanationPt": "Formas de instrução com tratamento respeitoso (вы), comuns ao orientar desconhecidos.",
+        "example": "Идите прямо, потом поверните налево."
+      },
+      {
+        "concept": "Рядом с + instrumental",
+        "explanationPt": "Para 'ao lado de', observe a construção 'рядом с аптекой'. Não é necessário decorar todas as terminações de casos para compreender a indicação.",
+        "example": "Станция рядом с аптекой."
+      },
+      {
+        "concept": "библиотека in transfer",
+        "explanationPt": "Ao trocar o destino, pergunte por 'библиотека'. O uso de 'где находится библиотека?' é natural e não exige uma flexão nova nesse exemplo.",
+        "example": "Извините, где библиотека?"
+      }
+    ],
+    "misconceptions": [
+      {
+        "pattern": "Uses station after library requested",
+        "diagnosis": "Meaning/transfer failure",
+        "responsePt": "A estrutura de pergunta está aproveitável, mas o destino mudou. Troque 'станция' por 'библиотека'."
+      },
+      {
+        "pattern": "Confuses налево and направо",
+        "diagnosis": "Route comprehension",
+        "responsePt": "'Налево' significa esquerda; 'направо' significa direita. Use a referência da farmácia para recuperar o trajeto."
+      },
+      {
+        "pattern": "Uses привет to stop a stranger",
+        "diagnosis": "Register mismatch",
+        "responsePt": "Ao abordar um desconhecido, 'Извините' costuma ser mais adequado do que o cumprimento informal 'Привет'."
+      },
+      {
+        "pattern": "Misspells библиотека as библеотека",
+        "diagnosis": "Orthography, not necessarily intent",
+        "responsePt": "A intenção é compreensível. Corrija a grafia para 'библиотека' e tente novamente."
+      }
+    ],
+    "transferDelta": [
+      "Different destination: библиотека, not станция метро",
+      "Needs a self-authored question, not reproduction of a route direction",
+      "No example visible for initial transfer response"
+    ],
+    "editorialCaution": "Cyrillic/grammar text is a draft pending independent language review. No spoken-pronunciation evidence exists."
+  },
+  "editorialReview": {
+    "internalConsistency": "reviewed-by-project-author; not independently language-certified",
+    "requireHumanLinguisticReview": true,
+    "requirePilotLearnerTest": true,
+    "audioRecordingAvailable": false,
+    "preventRuntimeUntilApproved": true,
+    "reviewedCompetencyScope": "reading, comprehension, guided written production and transfer only; no oral assessment"
+  }
 }

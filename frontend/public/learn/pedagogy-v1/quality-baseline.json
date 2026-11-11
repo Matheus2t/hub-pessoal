@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "legacy-issues-tracked",
+  "description": "Known baseline of repeated assessment prompts and generic writing feedback. Changes must not increase these problems; legacy data/IDs are untouched.",
+  "languages": {
+    "en": {
+      "knownRepeatedQuestionGroups": [
+        [
+          "en-v2-grammar-001-q1",
+          "en-v2-test-001"
+        ],
+        [
+          "en-v2-grammar-002-q1",
+          "en-v2-test-002"
+        ],
+        [
+          "en-v2-grammar-003-q1",
+          "en-v2-test-003"
+        ],
+        [
+          "en-v2-grammar-004-q1",
+          "en-v2-test-004"
+        ],
+        [
+          "en-v2-grammar-005-q1",
+          "en-v2-test-005"
+        ]
+      ],
+      "maxGenericWritingExplanations": 40,
+      "expectedLegacyReadings": 15
+    },
+    "ru": {
+      "knownRepeatedQuestionGroups": [
+        [
+          "ru-v2-grammar-001-q1",
+          "ru-v2-test-001"
+        ],
+        [
+          "ru-v2-grammar-002-q1",
+          "ru-v2-test-002"
+        ],
+        [
+          "ru-v2-grammar-003-q1",
+          "ru-v2-test-003"
+        ],
+        [
+          "ru-v2-grammar-004-q1",
+          "ru-v2-test-004"
+        ],
+        [
+          "ru-v2-grammar-005-q1",
+          "ru-v2-test-005"
+        ]
+      ],
+      "maxGenericWritingExplanations": 40,
+      "expectedLegacyReadings": 15
+    }
+  },
+  "remediationPolicy": "Replace duplicated measurement tasks gradually with validated original scenarios and retain historical IDs. No silent migration or retagging of attempts."
+}
