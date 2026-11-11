@@ -192,7 +192,10 @@
       2
     ],
     "openResponseOutcomeWithoutReviewer": "uncertain",
-    "publicRouteRequiresExplicitPreviewFlag": true
+    "publicRouteRequiresExplicitPreviewFlag": true,
+    "previewAccess": "loopback-only",
+    "remotePreviewEnabled": false,
+    "remoteAccessRequiresServerAuthentication": true
   },
   "publicReleaseGate": [
     "independent English and Russian language review",
