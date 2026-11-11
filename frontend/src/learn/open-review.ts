@@ -30,6 +30,7 @@ export class LearnOpenResponseReview extends LightElement {
    ${packet.reviewCriteria.length?html`<div class="learn-open-review__criteria"><h4>Pontos para uma revisão humana</h4><ul>${packet.reviewCriteria.map(item=>html`<li>${item}</li>`)}</ul></div>`:''}
    <div class="learn-open-review__assistance"><h4>Apoio registrado</h4>${before.length?html`<p>Antes da resposta</p><ul>${before.map(item=>html`<li><strong>${assistanceName[item.kind]||item.kind}:</strong> ${item.value}</li>`)}</ul>`:html`<p>Nenhuma ajuda prévia foi registrada nesta tentativa.</p>`}${after.length?html`<p>Depois da resposta</p><ul>${after.map(item=>html`<li><strong>${assistanceName[item.kind]||item.kind}:</strong> ${item.value}</li>`)}</ul>`:''}</div>
    <p class="learn-open-review__limit">Não há avaliador confiável disponível. Ainda não há revisor semântico confiável autenticado. Os exemplos não são gabaritos; compartilhar a ficha é uma ação manual.</p>
+   <p class="learn-open-review__privacy">A ficha contém a resposta e o contexto. O download não envia dados ao servidor. Guarde o arquivo em local protegido, compartilhe apenas com revisor autorizado e apague-o ao terminar.</p>
    <button class="button" type="button" @click=${()=>this.download()}>Baixar ficha para revisão</button>${this.error?html`<p role="alert">${this.error}</p>`:''}
   </section>`;
  }
