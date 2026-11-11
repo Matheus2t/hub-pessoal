@@ -42,11 +42,6 @@
           "note": "Profissão/estudo"
         },
         {
-          "id": "en-phrase-004",
-          "role": "language-support",
-          "note": "Perguntar pela grafia do nome é recurso, não o objetivo da unidade"
-        },
-        {
           "id": "en-grammar-01",
           "role": "grammar-support",
           "note": "Estruturas com be"
