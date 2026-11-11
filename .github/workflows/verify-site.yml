@@ -29,6 +29,8 @@ jobs:
         run: npm run learn:validate-reading
       - name: Verify curated pilot assets and evidence limits
         run: npm run learn:validate-curation
+      - name: Validate task-specific writing and transfer rubrics
+        run: npm run learn:validate-task-rubrics
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
