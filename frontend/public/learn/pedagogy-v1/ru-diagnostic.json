@@ -121,26 +121,25 @@
       "mode": "open",
       "objectiveId": "ru-directions-03",
       "band": "A1–A2",
-      "promptPt": "Você está na rua e procura a estação. Escreva uma pergunta educada em russo para saber onde ela fica.",
-      "stimulus": "Новая ситуация: вы ищете станцию.",
+      "promptPt": "Você acabou de chegar a uma cidade e precisa encontrar um parque (парк). Escreva em russo uma pergunta curta e educada para saber onde fica. Não use o exemplo da estação.",
+      "stimulus": "Новая ситуация: вы ищете парк, а не метро.",
       "exampleAnswers": [
-        "Извините, где станция?",
-        "Подскажите, пожалуйста, где находится станция?"
+        "Извините, где парк?",
+        "Подскажите, пожалуйста, где находится парк?"
       ],
       "requiredMeaning": [
-        "Pergunta por localização",
-        "Estação como destino",
-        "Pedido compreensível no contexto"
+        "Pede localização de um parque",
+        "Formula uma pergunta compreensível adequada ao interlocutor"
       ],
       "acceptableVariations": [
-        "Pergunta direta com где",
-        "Expressão de cortesia opcional mas desejável"
+        "Construção com где",
+        "Pergunta pode incluir находится e cortesia"
       ],
       "commonPitfalls": [
-        "Pedir bilhete em vez de localização",
-        "Trocar estação por outro lugar"
+        "Manter станция como destino da aula de orientação",
+        "Usar frase afirmativa ou pedir bilhete em vez de perguntar o caminho"
       ],
-      "feedbackPt": "Pergunte onde fica a estação e deixe o destino claro para a outra pessoa.",
+      "feedbackPt": "O destino desta tarefa é parque, não estação. Verifique se há uma pergunta de localização clara.",
       "assistanceAllowed": [],
       "evidence": "independentProduction",
       "assessment": "rubricWithReview"
@@ -249,5 +248,13 @@
       "evidence": "comprehension",
       "requiresAudio": true
     }
-  ]
+  ],
+  "assessmentIntegrity": {
+    "policy": "do-not-reuse-training-scenario",
+    "pilotReference": "ru-pilot-directions-01",
+    "trainingContext": "metro station and library location",
+    "diagnosticDistinctContext": "asking for a park",
+    "risk": "The learner may recognize a rehearsed template; diagnostic must not reproduce the same situation and answer as the pilot.",
+    "reviewStatus": "editorial-review-required"
+  }
 }

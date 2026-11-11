@@ -79,12 +79,14 @@ A nova metodologia de Inglês/Russo segue as etapas 1–7 do plano de evolução
 - [Tarefas de diagnóstico e política de feedback](docs/learn-diagnostico-feedback-v1.md)
 - [Auditoria didática e melhorias das unidades-piloto](docs/learn-auditoria-didatica-v1.md)
 - [Rastreabilidade do catálogo existente por competência](docs/learn-rastreabilidade-v1.md)
+- [Leitura contextual e avaliação independente](docs/learn-leitura-e-avaliacao-v1.md)
 - [Handoff técnico e critérios para o Codex](docs/learn-handoff-codex.md)
 - Auditoria reprodutível de catálogos: `npm run learn:audit` (somente leitura).
 - Validação das propostas curriculares: `npm run learn:validate-pedagogy` (somente leitura).
 - Verificação das rubricas e tarefas de diagnóstico: `npm run learn:validate-diagnostics` (somente leitura).
 - Auditoria de repetição de questões e feedback genérico: `npm run learn:quality-audit` (somente leitura).
 - Inspeção de vínculos e itens ainda não classificados: `npm run learn:coverage` (somente leitura).
+- Validação de guias de leitura e isolamento dos diagnósticos: `npm run learn:validate-reading` (somente leitura).
 
 Não confundir exercícios completados com proficiência CEFR. Histórico, backups e funcionamento do Learn atual devem ser preservados até a validação pedagógica das unidades-piloto.
 

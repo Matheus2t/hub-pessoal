@@ -106,3 +106,10 @@ A revisão documentada em `docs/learn-auditoria-didatica-v1.md` confirmou **10 g
 ## Rastreabilidade completa do material legado — novembro de 2026
 
 O relatório `scripts/report-learn-coverage.mjs` identifica todos os 491 IDs por idioma, inclui referências a objetivos e marca os ainda não classificados. Consulte `docs/learn-rastreabilidade-v1.md` e execute `npm run learn:coverage` ou `node scripts/report-learn-coverage.mjs --json` para revisar a cobertura por modalidade. **Não transformar associação a um objetivo em evidência de competência. Não mapear conteúdo automaticamente pela presença de palavras-chave.**
+
+
+---
+
+## Leitura guiada e independência diagnóstica — 11/11/2026
+
+Foram preparados `en-reading-guide.json` e `ru-reading-guide.json` para os textos existentes de rotina (`en-reading-01`, `ru-reading-01`). Eles usam trechos exatos dos textos, ajuda sob demanda e tarefas de compreensão e aplicação em novo contexto. O diagnóstico foi separado dos cenários do piloto para reduzir repetição da avaliação. Consulte `docs/learn-leitura-e-avaliacao-v1.md` e execute `npm run learn:validate-reading`. **Todos os guias e diagnósticos permanecem inativos; teste com aprendiz e revisão linguística independente ainda pendentes.**

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "en-reading-01-guide-v1",
+  "language": "en",
+  "sourceReadingId": "en-reading-01",
+  "objectiveId": "en-routine-02",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "purposePt": "Compreender uma rotina, identificar contrastes e explicar por que uma pessoa faz algo.",
+  "levelInterpretation": {
+    "legacyLabel": "A1",
+    "proposedUse": "A1 com apoio graduado; verificar com aprendiz",
+    "notCertified": true
+  },
+  "beforeReading": {
+    "promptPt": "Você vai ler sobre duas pessoas que saem de casa juntas. Descubra qual transporte cada uma usa, sem traduzir todas as palavras.",
+    "translationInitiallyVisible": false
+  },
+  "chunks": [
+    {
+      "sourceQuote": "On Mondays she starts at ten, so she has breakfast with her brother.",
+      "focus": "because-result",
+      "explanationPt": "'So' liga o horário de início à consequência: ela consegue tomar café com o irmão.",
+      "helpOnDemand": [
+        "On Mondays = às segundas-feiras",
+        "starts at ten = começa às dez"
+      ]
+    },
+    {
+      "sourceQuote": "They leave together, but he takes the bus and she walks.",
+      "focus": "contrast",
+      "explanationPt": "'But' contrasta os meios de transporte: os dois saem juntos, mas só o irmão pega ônibus.",
+      "helpOnDemand": [
+        "leave = sair",
+        "takes the bus = pega o ônibus"
+      ]
+    },
+    {
+      "sourceQuote": "Lena puts her books in a bag to keep them dry.",
+      "focus": "purpose",
+      "explanationPt": "'To keep them dry' explica a finalidade de guardar os livros: evitar que se molhem.",
+      "helpOnDemand": [
+        "dry = seco",
+        "to keep them dry = para mantê-los secos"
+      ]
+    }
+  ],
+  "legacyQuestionIds": [
+    "en-reading-01-q1",
+    "en-reading-01-q2",
+    "en-reading-01-q3"
+  ],
+  "afterReading": {
+    "contextChange": "O colega Tiago começa a trabalhar às oito. Ele vai de bicicleta; sua irmã vai de ônibus.",
+    "newText": "Tiago starts work at eight. He rides his bike. His sister takes the bus.",
+    "closedProbe": {
+      "id": "en-reading-01-guide-new-c1",
+      "promptPt": "Na nova situação, quem pega o ônibus?",
+      "choices": [
+        "Tiago",
+        "A irmã de Tiago",
+        "Os dois"
+      ],
+      "correctIndex": 1,
+      "why": "A última frase atribui 'takes the bus' à irmã, não a Tiago."
+    },
+    "writtenApplication": {
+      "id": "en-reading-01-guide-transfer-p1",
+      "promptPt": "Escreva em inglês uma frase sobre como você ou uma pessoa fictícia vai estudar ou trabalhar. Você pode escolher o meio de transporte.",
+      "examplesAfterAttempt": [
+        "I take the bus to school.",
+        "My friend walks to work."
+      ],
+      "requiredMeaning": [
+        "Uma pessoa identificável",
+        "Uma atividade/destino com meio de transporte compreensível"
+      ],
+      "helpInitiallyVisible": false,
+      "assessment": "rubricWithReview",
+      "feedbackPrinciple": "Preserve a correct intended message; correct one meaningful issue at a time."
+    }
+  },
+  "reviewFlags": [
+    "Texto original contém relação de consequência e de finalidade que pode exigir ajuda para iniciantes.",
+    "Não avaliar compreensão oral a partir deste texto escrito.",
+    "Exemplos não devem ficar visíveis durante a transferência.",
+    "Não usar a quantidade de palavras do texto como prova de nível CEFR."
+  ],
+  "source": "Original reading remains unchanged and is linked by stable ID."
+}
