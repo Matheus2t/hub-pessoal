@@ -1,57 +1,15 @@
 {
   "schemaVersion": 1,
   "status": "legacy-issues-tracked",
-  "description": "Known baseline of repeated assessment prompts and generic writing feedback. Changes must not increase these problems; legacy data/IDs are untouched.",
+  "description": "Baseline editorial dos problemas legados ainda conhecidos. Mudanças não podem introduzir duplicações exatas nem aumentar feedback genérico; o conteúdo histórico e seus IDs são preservados.",
   "languages": {
     "en": {
-      "knownRepeatedQuestionGroups": [
-        [
-          "en-v2-grammar-001-q1",
-          "en-v2-test-001"
-        ],
-        [
-          "en-v2-grammar-002-q1",
-          "en-v2-test-002"
-        ],
-        [
-          "en-v2-grammar-003-q1",
-          "en-v2-test-003"
-        ],
-        [
-          "en-v2-grammar-004-q1",
-          "en-v2-test-004"
-        ],
-        [
-          "en-v2-grammar-005-q1",
-          "en-v2-test-005"
-        ]
-      ],
+      "knownRepeatedQuestionGroups": [],
       "maxGenericWritingExplanations": 40,
       "expectedLegacyReadings": 15
     },
     "ru": {
-      "knownRepeatedQuestionGroups": [
-        [
-          "ru-v2-grammar-001-q1",
-          "ru-v2-test-001"
-        ],
-        [
-          "ru-v2-grammar-002-q1",
-          "ru-v2-test-002"
-        ],
-        [
-          "ru-v2-grammar-003-q1",
-          "ru-v2-test-003"
-        ],
-        [
-          "ru-v2-grammar-004-q1",
-          "ru-v2-test-004"
-        ],
-        [
-          "ru-v2-grammar-005-q1",
-          "ru-v2-test-005"
-        ]
-      ],
+      "knownRepeatedQuestionGroups": [],
       "maxGenericWritingExplanations": 40,
       "expectedLegacyReadings": 15
     }
