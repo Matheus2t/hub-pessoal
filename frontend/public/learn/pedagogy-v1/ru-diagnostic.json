@@ -119,7 +119,8 @@
         "sentenceStarter"
       ],
       "evidence": "guidedProduction",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "ru-diag-p2",
@@ -156,7 +157,8 @@
         "shownInPrompt": true,
         "countsAsAssistance": true,
         "evidenceLimitPt": "A palavra do destino já foi fornecida em cirílico. Avaliar apenas a construção da pergunta e sua adequação ao contexto; não declarar recuperação lexical independente."
-      }
+      },
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "ru-diag-t1",
@@ -193,7 +195,8 @@
         "shownInPrompt": true,
         "countsAsAssistance": true,
         "evidenceLimitPt": "A palavra do destino já foi fornecida em cirílico. Avaliar apenas a construção da pergunta e sua adequação ao contexto; não declarar recuperação lexical independente."
-      }
+      },
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "ru-diag-t2",
@@ -222,7 +225,8 @@
       "feedbackPt": "A mensagem deve conter tanto a atividade de estudar quanto a referência ao período da manhã.",
       "assistanceAllowed": [],
       "evidence": "transfer",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "ru-diag-l1",
