@@ -177,6 +177,16 @@
           "id": "ru-test-09",
           "role": "existing-practice",
           "note": "Escrita de estação isolada"
+        },
+        {
+          "id": "ru-word-004",
+          "role": "lexical-support",
+          "note": "Спасибо conclui o pedido de informação com agradecimento, conforme o diálogo-piloto."
+        },
+        {
+          "id": "ru-test-02",
+          "role": "existing-practice",
+          "note": "Tradução de аптека ajuda a reconhecer o ponto de referência; não comprova compreender o trajeto."
         }
       ]
     },
