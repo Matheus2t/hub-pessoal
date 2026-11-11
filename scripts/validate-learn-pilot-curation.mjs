@@ -58,7 +58,7 @@ for(const lang of ['en','ru']){
       check(d.nextAction===undefined,lang+': unsupported nextAction on non-revision item '+d.id);
     }
   }
-  check(count.reuse>=4&&count.deferred!==0,lang+': expected reuse and explicit editorial decisions');
+  check(count.reuse>=4,lang+': expected meaningful pilot reuse decisions');
   check(count.defer>=4&&count.support_only>=4,lang+': require genuine editorial selection, not automatic linking');
   console.log(lang.toUpperCase()+': '+decisions.length+' manually reviewed candidates | '+JSON.stringify(count)+' | '+count.reuse+' reuse entries linked to objective');
 }
