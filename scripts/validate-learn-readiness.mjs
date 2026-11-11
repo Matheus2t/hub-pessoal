@@ -34,6 +34,10 @@ verify(implementation?.indexedDbVersion===3&&implementation?.backupVersion===3,'
 verify(implementation?.importsLegacyBackupVersions?.join('/')==='1/2','C1 must keep v1/v2 imports');
 verify(implementation?.additionalStores?.join('/')==='lessonEvents/lessonProgress','new evidence must use separate additive stores');
 verify(implementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&implementation?.publicRouteRequiresExplicitPreviewFlag===true,'C1 safety defaults missing');
+verify(implementation?.previewAccess==='loopback-only'&&implementation?.remotePreviewEnabled===false&&implementation?.remoteAccessRequiresServerAuthentication===true,'C1 must never enable remote preview via URL flag');
+const previewSource=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
+verify(!previewSource.includes("hostname.endsWith('.vercel.app')"),'C1 must not allow arbitrary Vercel hosts');
+verify(previewSource.includes("hostname==='localhost'")&&previewSource.includes("hostname==='127.0.0.1'"),'C1 local preview gate missing');
 for(const path of manifest.docs||[])verify(existsSync(path),'missing handoff document '+path);
 for(const path of Object.values(manifest.artifacts||{}).flat()){
  verify(existsSync(base+path),'missing declared content asset '+path);
