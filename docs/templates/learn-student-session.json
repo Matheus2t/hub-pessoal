@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "recordType": "blank-template",
+  "sessionCode": "",
+  "consent": {
+    "status": "not-collected",
+    "consentRecordStoredSeparately": true,
+    "audioVideoRecordingAllowed": false
+  },
+  "language": null,
+  "session": {
+    "date": null,
+    "orderInStudy": null,
+    "device": null,
+    "browser": null,
+    "viewport": null,
+    "theme": null,
+    "profileWasTemporary": null
+  },
+  "tasks": [],
+  "questions": [],
+  "criticalIssueObserved": false,
+  "followUpRequired": false,
+  "retention": {
+    "approvedRetentionDays": null,
+    "deleteBy": null,
+    "deletedAt": null,
+    "identifiableConsentStoredSeparately": true
+  },
+  "notes": "Do not include names, contact details, literal answers, recordings, IP addresses or browser identifiers by default. Remove accidental identifiers before saving. Never commit completed participant records."
+}
