@@ -89,3 +89,10 @@ npm run learn:validate-diagnostics
 Os validadores **não** escrevem no banco nem modificam dados existentes. As tarefas novas têm `runtimeEnabled: false` nos bancos de diagnóstico e roteiros dos pilotos, até a aprovação pedagógica e a implementação.
 
 **Próxima entrega reservada ao trabalho de engenharia:** interpretar o formato declarativo das unidades, registrar evidências em estrutura aditiva, permitir revisão/retomada e oferecer diagnóstico com resultados honestos. Evitar configurar endpoints externos de avaliação sem análise de consentimento e privacidade.
+
+
+---
+
+## Proteção da integridade do diagnóstico — revisão posterior
+
+A revisão em `docs/learn-integridade-diagnostico-v1.md` redistribuiu as alternativas corretas (2 por posição em cada idioma), vinculou uma resposta canônica a cada índice e substituiu uma questão artificial de cirílico por sinalização funcional. As respostas de exemplo das tarefas abertas exigem visualização **somente após a tentativa**. Palavras russas fornecidas no enunciado são pistas lexicais que precisam ser registradas como assistência. O Codex deve interpretar esses contratos de dados, impedir reutilização de ID depois de existirem tentativas reais e evitar deduzir proficiência de reconhecimento ou da posição de um gabarito.
