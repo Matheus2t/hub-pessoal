@@ -116,7 +116,8 @@
         "sentenceStarter"
       ],
       "evidence": "guidedProduction",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "en-diag-p2",
@@ -145,7 +146,8 @@
       "feedbackPt": "Uma mensagem útil deve indicar que você vai se atrasar, por quanto tempo e, se possível, em que compromisso.",
       "assistanceAllowed": [],
       "evidence": "independentProduction",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "en-diag-t1",
@@ -175,7 +177,8 @@
       "feedbackPt": "A apresentação só está completa quando inclui uma informação sobre você e uma pergunta pertinente ao novo ambiente de clube.",
       "assistanceAllowed": [],
       "evidence": "transfer",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "en-diag-t2",
@@ -204,7 +207,8 @@
       "feedbackPt": "Indique o destino correto e peça a informação de maneira inteligível.",
       "assistanceAllowed": [],
       "evidence": "transfer",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "modelAnswersVisible": "after-attempt"
     },
     {
       "id": "en-diag-l1",
