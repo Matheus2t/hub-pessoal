@@ -83,8 +83,8 @@
       "correctIndex": 0,
       "feedback": "Depois de dizer o que estuda, Leo devolve a pergunta para conhecer Maya. A expressão serve para manter o diálogo.",
       "feedbackByWrongChoice": {
-        "1": "Não há pedido para sair: a pergunta vem depois de Leo contar sobre o que estuda.",
-        "2": "Não aparece referência a horários. A expressão pergunta sobre a outra pessoa."
+        "1": "Leo não está se despedindo: ele acabou de contar sobre seus estudos e convida Maya a responder.",
+        "2": "O diálogo não menciona horários. 'What about you?' devolve a pergunta a quem está conversando."
       }
     },
     {
