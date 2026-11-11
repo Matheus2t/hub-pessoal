@@ -15,7 +15,8 @@ import {studyAreas} from './area-card';
 import './pilot-page';
 import './diagnostic-page';
 import './delayed-review-page';
-import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnPilotPreviewEnabled} from './pilot-preview';
+import './integration-page';
+import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnPilotPreviewEnabled} from './pilot-preview';
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
 export class LearnPage extends LightElement {
@@ -27,15 +28,15 @@ export class LearnPage extends LightElement {
   @state() private contentError=false;
   private generation=0;
   private previousActivity='';
-  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity');if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'))void this.load();if(activityChanged)this.previousActivity=this.activity}
+  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity'),c5Activities=['integration','daily','dashboard'];const entersC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.activity),leavesC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.previousActivity);if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'||entersC5||leavesC5))void this.load();if(activityChanged)this.previousActivity=this.activity}
   disconnectedCallback(){this.generation++;super.disconnectedCallback()}
   private async load(){
     const generation=++this.generation;
     this.data=undefined;this.storageError=false;this.contentError=false;this.loading=true;
     if(this.invalid){this.loading=false;return}
-    if(this.isDiagnosticPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
-    if(this.isPilotPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
-    if(this.isDelayedReviewPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
+    if(this.activity==='diagnostic'&&this.isDiagnosticPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
+    if((this.activity==='pilot-c1'||this.activity==='pilot-c2')&&this.isPilotPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
+    if(this.activity==='reviews'&&this.isDelayedReviewPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     const language=this.language as Language;
     const [progress,content]=await Promise.allSettled([snapshot(),language?loadCurriculum(language):Promise.resolve()]);
     if(generation!==this.generation||!this.isConnected)return;
@@ -45,6 +46,7 @@ export class LearnPage extends LightElement {
   private isPilotPreviewEnabled():boolean{return this.activity==='pilot-c1'?this.language==='en'&&isLearnPilotPreviewEnabled('c1'):this.activity==='pilot-c2'?this.language==='ru'&&isLearnPilotPreviewEnabled('c2'):false;}
   private isDiagnosticPreviewEnabled():boolean{return (this.language==='en'||this.language==='ru')&&isLearnDiagnosticPreviewEnabled(this.language as Language);}
   private isDelayedReviewPreviewEnabled():boolean{return (this.language==='en'||this.language==='ru')&&isLearnDelayedReviewPreviewEnabled();}
+  private isIntegrationPreviewEnabled():boolean{return (this.language==='en'||this.language==='ru')&&isLearnIntegrationPreviewEnabled();}
   private pilotId(){return this.language==='ru'?'ru-pilot-directions-01':'en-pilot-introductions-01';}
   private async refreshProgress(){const generation=this.generation;try{const data=await snapshot();if(generation===this.generation&&this.isConnected)this.data=data}catch{if(generation===this.generation&&this.isConnected)this.storageError=true}}
   render(){
@@ -52,6 +54,8 @@ export class LearnPage extends LightElement {
     if(this.activity==='pilot-c1'||this.activity==='pilot-c2')return this.isPilotPreviewEnabled()?html`<article class="learn-page learn-page--activity learn-page--pilot"><learn-pilot-player .language=${this.language as Language} .pilotId=${this.pilotId()}></learn-pilot-player></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Esta aula só abre em uma prévia controlada do Learn.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='diagnostic')return this.isDiagnosticPreviewEnabled()?html`<article class="learn-page learn-page--activity learn-page--diagnostic"><learn-diagnostic-player .language=${this.language as Language}></learn-diagnostic-player></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>O diagnóstico só abre em localhost com a flag de prévia específica.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='reviews')return this.isDelayedReviewPreviewEnabled()?html`<article class="learn-page learn-page--activity learn-page--delayed"><learn-delayed-review .language=${this.language as Language}></learn-delayed-review></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>As revisões só abrem em localhost com a flag de prévia C4.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
+    if(this.activity==='integration')return this.isIntegrationPreviewEnabled()&&this.data?html`<article class="learn-page learn-page--activity learn-page--integration"><learn-integration-hub .language=${this.language as Language} .progress=${this.data}></learn-integration-hub></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>O percurso integrado só abre em localhost com a flag específica C5.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
+    if(this.activity==='dashboard'&&this.isIntegrationPreviewEnabled())return !this.data||!this.catalog?html`<article class="learn-page learn-page--activity"><p role="status" class="learn-message">${this.loading?'Carregando acompanhamento local…':'O catálogo não está disponível. Seu histórico foi preservado.'}</p></article>`:html`<article class="learn-page learn-page--activity"><nav class="learn-internal"><a href=${`#/learn/${this.language}`}>Voltar às áreas de ${this.language==='ru'?'Russo':'Inglês'}</a><a href=${`#/learn/${this.language}/integration`}>Percurso integrado</a></nav><learn-integration-evidence .language=${this.language as Language} .progress=${this.data}></learn-integration-evidence><learn-advanced mode="dashboard" .language=${this.language as Language} .catalog=${this.catalog} .progress=${this.data}></learn-advanced></article>`;
     const language=this.language as Language,label=labels[language];
     return html`<article class=${`learn-page ${label?"learn-page--language":"learn-page--index"} ${this.activity?"learn-page--activity":"learn-page--hub"}`}>
       ${label?html`<header class="learn-hero">
@@ -67,6 +71,7 @@ export class LearnPage extends LightElement {
       ${label&&language==='ru'&&this.activity===''&&isLearnPilotPreviewEnabled('c2')?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href="#/learn/ru/pilot-c2">Aula-piloto de Russo <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDiagnosticPreviewEnabled(language as Language)?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/diagnostic`}>Diagnóstico inicial <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDelayedReviewPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/reviews`}>Revisões D+2 e D+7 <span aria-hidden="true">↗</span></a></nav>`:nothing}
+      ${label&&this.activity===''&&this.isIntegrationPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/integration`}>Percurso integrado <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${this.loading?html`<p role="status" class="learn-message">Carregando progresso local…</p>`:nothing}
       ${this.storageError?html`<div class="learn-message" role="status"><h2>Progresso local indisponível</h2><p>O navegador não permitiu acessar os dados. Nenhum progresso foi apagado. Verifique as permissões ou feche outras abas do Learn.</p><button class="button" @click=${()=>this.load()}>Tentar novamente</button></div>`:nothing}
       ${!label?html`<section class="learn-language-section" aria-labelledby="learn-select-title">

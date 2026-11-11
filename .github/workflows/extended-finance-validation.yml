@@ -23,7 +23,7 @@ jobs:
       - name: Typecheck and build
         run: npm run build
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Serve build
         run: python3 -m http.server 8123 --directory dist >/tmp/2t-finance.log 2>&1 &
       - name: Four extended calculator journeys
