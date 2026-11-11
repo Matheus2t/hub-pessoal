@@ -89,7 +89,7 @@ Cada observação precisa identificar:
 - [x] Competências observáveis e lacunas de avaliação separadas.
 - [x] Especificação mínima de tarefas e evidências escrita.
 - [x] Testes de aceitação planejados.
-- [ ] Criar itens diagnósticos originais e revisar o nível linguístico de cada um.
+- [x] Criar o banco inicial de itens diagnósticos originais (10 por idioma), **com revisão linguística/nível ainda pendente**.
 - [ ] Calibrar quantidade de tarefas, dificuldade e limites de confiança com dados de teste.
 - [ ] Definir migração aditiva e interface junto ao motor de unidades (Codex).
 - [ ] Validar com testes de usuário e auditoria de dados (etapa 6).
@@ -104,3 +104,6 @@ Cada observação precisa identificar:
 ## Continuação pedagógica — tarefas diagnósticas e feedback (10/11/2026)
 
 Foram preparados `en-diagnostic.json` e `ru-diagnostic.json`, com tarefas graduadas por competências, e o contrato `evaluation-policy.json` com rubricas e resultados incertos. O banco `feedback-casebook.json` contém exemplos e contraexemplos editoriais de respostas. Todos ficam em `frontend/public/learn/pedagogy-v1/` e permanecem **desativados em produção**, pendentes de revisão linguística e implementação. Consulte `docs/learn-diagnostico-feedback-v1.md` e execute `npm run learn:validate-diagnostics`.
+
+
+**Estado na preparação final:** banco original, proteção contra viés de posição, cenários diferenciados e regras de ajuda estão prontos. Integração no motor, calibração de dificuldade e testes com aprendizes seguem pendentes. Referências: `docs/learn-integridade-diagnostico-v1.md` e `docs/learn-codex-kickoff-v1.md`.
