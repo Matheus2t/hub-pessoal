@@ -36,7 +36,7 @@ test('error notebook preserves missing content and prioritizes recurring real di
  const rows=[attempt('error1',e.id),attempt('error2',e.id),attempt('error3',e.id),attempt('missing','removed-item')];
  expect(difficultTopics('ru',rows)).toEqual([]);expect(difficultTopics('en',rows)[0].total).toBe(4);expect(errorItems('en',rows)[0].errors).toHaveLength(3);
  await page.evaluate(async rows=>{for(const a of rows)await (window as any).LearnC.recordAttempt(a)},rows);await page.reload();await expect(page.locator('learn-errors')).toContainText('Conteúdo original indisponível');
- await page.goto('/#/learn/en/targeted');await page.getByRole('button',{name:'Revisar meus erros'}).click();await page.getByLabel('Sua resposta').fill(e.answers[0]);await page.getByRole('button',{name:'Verificar resposta'}).click();await expect(page.locator('.learn-feedback')).toContainText('correto');
+ await page.goto('/#/learn/en/targeted');await page.getByRole('button',{name:'Revisar meus erros'}).click();await page.getByLabel('Sua resposta').fill(e.answers[0]);await page.getByRole('button',{name:'Verificar resposta'}).click();await expect(page.locator('.learn-feedback')).toContainText('encontrada nas opções cadastradas');
  await page.goto('/#/learn/en/errors');await expect(page.locator('learn-errors')).toContainText('Corrigido posteriormente');await expect(page.locator('learn-errors')).toContainText('3 erros');await page.getByRole('combobox',{name:/^Histórico/}).selectOption('pending');await expect(page.locator('learn-errors')).not.toContainText('Corrigido posteriormente');
 });
 test('assessment rollback and failed finalization never expose saved results',async({page})=>{
