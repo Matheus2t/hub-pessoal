@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "id": "2t-learn-codex-readiness-20261111",
+  "status": "ready-for-disabled-engineering-prototype",
+  "runtimeEnabled": false,
+  "scope": "The assistant's editorial and requirements-preparation phase is complete. Independent language review and real learner tests remain mandatory before public release.",
+  "languages": [
+    "en",
+    "ru"
+  ],
+  "baseline": {
+    "mainAtPreparationStart": "2363e51bdf78d2c3f9464f3d583956daf0e0560e",
+    "legacyLearn": {
+      "idbName": "2t-learn",
+      "idbVersion": 2,
+      "backupVersions": [
+        1,
+        2
+      ],
+      "stores": [
+        "attempts",
+        "cards",
+        "planning"
+      ]
+    },
+    "mustPreserve": [
+      "legacy exercise IDs",
+      "Attempt",
+      "Card",
+      "PlanSettings",
+      "DailyPlan",
+      "v1/v2 backup import",
+      "existing Learn routes",
+      "other site modules"
+    ]
+  },
+  "pilots": [
+    {
+      "language": "en",
+      "id": "en-pilot-introductions-01",
+      "content": "en-pilot.json",
+      "objective": "en-introductions-01",
+      "contentVersion": 1,
+      "expectedSteps": [
+        "en-intro-c1",
+        "en-intro-c2",
+        "en-intro-n1",
+        "en-intro-p1",
+        "en-intro-t1"
+      ],
+      "openTaskIds": [
+        "en-intro-p1",
+        "en-intro-t1"
+      ],
+      "hasAudio": false,
+      "releaseApproved": false
+    },
+    {
+      "language": "ru",
+      "id": "ru-pilot-directions-01",
+      "content": "ru-pilot.json",
+      "objective": "ru-directions-03",
+      "contentVersion": 1,
+      "expectedSteps": [
+        "ru-dir-c1",
+        "ru-dir-c2",
+        "ru-dir-n1",
+        "ru-dir-p1",
+        "ru-dir-t1"
+      ],
+      "openTaskIds": [
+        "ru-dir-p1",
+        "ru-dir-t1"
+      ],
+      "requiredLexicalCue": {
+        "taskId": "ru-dir-t1",
+        "word": "библиотека"
+      },
+      "hasAudio": false,
+      "releaseApproved": false
+    }
+  ],
+  "artifacts": {
+    "curricula": [
+      "en.json",
+      "ru.json"
+    ],
+    "pilots": [
+      "en-pilot.json",
+      "ru-pilot.json"
+    ],
+    "assessment": [
+      "evaluation-policy.json",
+      "evidence-contract.json",
+      "pilot-task-rubrics.json",
+      "feedback-casebook.json"
+    ],
+    "diagnostics": [
+      "en-diagnostic.json",
+      "ru-diagnostic.json"
+    ],
+    "readingGuides": [
+      "en-reading-guide.json",
+      "ru-reading-guide.json"
+    ],
+    "delayedReview": [
+      "pilot-delayed-probes.json"
+    ],
+    "legacyCuration": [
+      "pilot-asset-curation.json",
+      "quality-baseline.json"
+    ]
+  },
+  "docs": [
+    "docs/learn-pedagogia-v1.md",
+    "docs/learn-curriculo-v1.md",
+    "docs/learn-pilotos-fechamento-editorial.md",
+    "docs/learn-evidencias-consolidadas.md",
+    "docs/learn-codex-kickoff-v1.md",
+    "docs/learn-handoff-codex.md"
+  ],
+  "nextEngineeringMilestone": {
+    "id": "C1-disabled-English-pilot",
+    "owner": "Codex",
+    "language": "en",
+    "pilotId": "en-pilot-introductions-01",
+    "description": "Implement typed declarative lesson runner, idempotent evidence persistence and compatible backups, preview-only by default.",
+    "explicitOutOfScope": [
+      "public pilot release",
+      "automatic free-text semantic grading",
+      "CEFR certification",
+      "pronunciation claims",
+      "mass catalog migration",
+      "changes outside Learn"
+    ],
+    "requiresRuntimeFlagDefault": false,
+    "requiresSeparateNewEventStore": true,
+    "requiresBackupVersionsAccepted": [
+      1,
+      2
+    ],
+    "proposedBackupVersionAfterMigration": 3,
+    "mustRunNpmScripts": [
+      "learn:audit",
+      "learn:validate-pedagogy",
+      "learn:validate-diagnostics",
+      "learn:quality-audit",
+      "learn:coverage",
+      "learn:validate-reading",
+      "learn:validate-curation",
+      "learn:validate-task-rubrics",
+      "learn:validate-delayed",
+      "learn:validate-readiness"
+    ],
+    "minimumE2EChecks": [
+      "preview flag off",
+      "English pilot can render written dialogue",
+      "two comprehension responses and distractor feedback",
+      "notice not scored",
+      "open writing remains uncertain without reviewer",
+      "lexical and revealed help recorded",
+      "resume typed draft after reload",
+      "idempotent submission",
+      "v1/v2 imports preserved",
+      "v3 roundtrip after schema migration",
+      "storage failure no false success",
+      "legacy regression green"
+    ]
+  },
+  "preEngineeringChecks": {
+    "editorialInternalReviewComplete": true,
+    "languageExpertApproval": false,
+    "realLearnerTested": false,
+    "validAudioRecordings": false,
+    "externalGradingProviderConfigured": false,
+    "publicReleaseAuthorized": false,
+    "newEngineBuilt": false
+  },
+  "publicReleaseGate": [
+    "independent English and Russian language review",
+    "real-learner pilot feedback",
+    "free-response correction/review experience verified",
+    "secure persistence and backup compatibility",
+    "automated + manual QA",
+    "explicit release decision"
+  ]
+}
