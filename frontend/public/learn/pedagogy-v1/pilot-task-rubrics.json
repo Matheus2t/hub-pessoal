@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "status": "editorial-draft",
+  "runtimeEnabled": false,
+  "description": "Structured, task-specific human-review rubrics. Example outcomes are provisional calibration hypotheses, not automated grading.",
+  "policyFile": "evaluation-policy.json",
+  "rubrics": [
+    {
+      "language": "en",
+      "taskId": "en-intro-p1",
+      "pilotId": "en-pilot-introductions-01",
+      "kind": "guidedProduction",
+      "goalPt": "Responder a uma pessoa recém-conhecida dizendo seu nome e informando o que estuda ou faz.",
+      "reviewState": "requires-linguistic-and-learner-review",
+      "correctionMode": "rubricWithReview",
+      "conditions": {
+        "modelHiddenDuringAttempt": false,
+        "hintsAllowed": true,
+        "doesNotAssess": [
+          "spoken fluency",
+          "pronunciation",
+          "CEFR level"
+        ],
+        "assistanceMustBeRecorded": true
+      },
+      "criteria": [
+        {
+          "code": "introduces-self",
+          "essential": true,
+          "descriptionPt": "Fornece uma apresentação identificável; aceita nomes fictícios e saudações equivalentes."
+        },
+        {
+          "code": "study-or-work",
+          "essential": true,
+          "descriptionPt": "Informa estudo, trabalho ou atividade própria de forma compreensível."
+        },
+        {
+          "code": "register",
+          "essential": false,
+          "descriptionPt": "Mantém cordialidade adequada a uma conversa inicial."
+        },
+        {
+          "code": "intelligibility",
+          "essential": false,
+          "descriptionPt": "Erros menores de artigo ou pontuação não anulam significado recuperável."
+        }
+      ],
+      "feedbackByIssue": [
+        {
+          "code": "missing-activity",
+          "howToHelpPt": "Você se apresentou, mas ainda não contou o que estuda ou faz.",
+          "nextAttemptPt": "Acrescente uma frase curta sobre estudo ou trabalho, mantendo seu nome."
+        },
+        {
+          "code": "unclear-identity",
+          "howToHelpPt": "A frase ainda não permite entender quem está se apresentando.",
+          "nextAttemptPt": "Escreva uma frase iniciada com 'I'm' ou 'My name is', com qualquer nome fictício."
+        },
+        {
+          "code": "word-choice",
+          "howToHelpPt": "A atividade foi mencionada, mas o verbo usado pode gerar outro significado.",
+          "nextAttemptPt": "Revise a diferença entre 'I study...' e 'I work...' e tente novamente."
+        }
+      ],
+      "calibrationExamples": [
+        {
+          "response": "Hi! I'm Júlia. I study programming.",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Duas informações solicitadas, mensagem compreensível; acento do nome não é obstáculo.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Hello, my name is Ravi. I work in IT.",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Variação lexical legítima de apresentação com trabalho.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Hi! I'm Ravi.",
+          "suggestedOutcome": "partiallySupported",
+          "reasonPt": "Apresenta identidade, mas omite atividade.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "I do the thing with work of stuff.",
+          "suggestedOutcome": "uncertain",
+          "reasonPt": "A atividade e a apresentação não podem ser estabelecidas com segurança; pedir reformulação.",
+          "requiresHumanReview": true
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "taskId": "en-intro-t1",
+      "pilotId": "en-pilot-introductions-01",
+      "kind": "transfer",
+      "goalPt": "Numa primeira reunião de projeto, apresentar-se, indicar estudo ou trabalho e fazer uma pergunta ao participante.",
+      "reviewState": "requires-linguistic-and-learner-review",
+      "correctionMode": "rubricWithReview",
+      "conditions": {
+        "modelHiddenDuringAttempt": true,
+        "hintsAllowed": false,
+        "doesNotAssess": [
+          "spoken fluency",
+          "pronunciation",
+          "CEFR level"
+        ],
+        "assistanceMustBeRecorded": true
+      },
+      "criteria": [
+        {
+          "code": "introduces-self",
+          "essential": true,
+          "descriptionPt": "Identifica-se de modo reconhecível, com liberdade de escolher nome fictício."
+        },
+        {
+          "code": "study-or-work",
+          "essential": true,
+          "descriptionPt": "Comunica atividade de estudo ou trabalho que situa a participação."
+        },
+        {
+          "code": "reciprocal-question",
+          "essential": true,
+          "descriptionPt": "Formula uma pergunta adequada que permite continuidade do diálogo."
+        },
+        {
+          "code": "meeting-appropriateness",
+          "essential": false,
+          "descriptionPt": "Adapta registro e assunto à reunião em vez de copiar a aula de curso."
+        }
+      ],
+      "feedbackByIssue": [
+        {
+          "code": "missing-question",
+          "howToHelpPt": "A apresentação está compreensível, porém você ainda não incluiu uma pergunta ao colega.",
+          "nextAttemptPt": "Acrescente uma pergunta relevante à função ou ao projeto da outra pessoa."
+        },
+        {
+          "code": "missing-introduction",
+          "howToHelpPt": "A pergunta funciona, mas falta se apresentar no início do contato.",
+          "nextAttemptPt": "Inclua seu nome e uma informação sobre sua atividade antes da pergunta."
+        },
+        {
+          "code": "confusing-question",
+          "howToHelpPt": "A pergunta ainda não é clara para o novo interlocutor.",
+          "nextAttemptPt": "Formule a pergunta de modo direto, por exemplo sobre trabalho ou participação na equipe."
+        }
+      ],
+      "calibrationExamples": [
+        {
+          "response": "Hello, I'm Ren. I study computer science. What do you work on?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Apresentação, área de estudo e pergunta contextualizada.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Hi, I'm Ana. I work with data. What's your role in this project?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Variação apropriada, sem copiar literalmente a frase de curso.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Hello, I'm Ren. I study computer science.",
+          "suggestedOutcome": "partiallySupported",
+          "reasonPt": "Duas partes cumpridas, mas sem pergunta para abrir a interação.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "I'm working the where of the project and you?",
+          "suggestedOutcome": "uncertain",
+          "reasonPt": "Não é possível estabelecer com confiança identidade nem intenção; requer reformulação humana.",
+          "requiresHumanReview": true
+        }
+      ]
+    },
+    {
+      "language": "ru",
+      "taskId": "ru-dir-p1",
+      "pilotId": "ru-pilot-directions-01",
+      "kind": "guidedProduction",
+      "goalPt": "Pedir educadamente a localização da estação de metrô em russo.",
+      "reviewState": "requires-linguistic-and-learner-review",
+      "correctionMode": "rubricWithReview",
+      "conditions": {
+        "modelHiddenDuringAttempt": false,
+        "hintsAllowed": true,
+        "doesNotAssess": [
+          "spoken fluency",
+          "pronunciation",
+          "CEFR level"
+        ],
+        "assistanceMustBeRecorded": true,
+        "phoneticKeyboardAllowed": true
+      },
+      "criteria": [
+        {
+          "code": "location-question",
+          "essential": true,
+          "descriptionPt": "É possível reconhecer uma pergunta sobre localização, por exemplo com где."
+        },
+        {
+          "code": "correct-destination",
+          "essential": true,
+          "descriptionPt": "O destino pedido é a estação de metrô, não bilhete, ônibus ou outro local."
+        },
+        {
+          "code": "courtesy",
+          "essential": false,
+          "descriptionPt": "Uma fórmula apropriada como Извините ou Подскажите, пожалуйста, atende ao tom pedido."
+        },
+        {
+          "code": "orthography",
+          "essential": false,
+          "descriptionPt": "Erros menores legíveis recebem correção, sem apagar intenção comunicativa."
+        }
+      ],
+      "feedbackByIssue": [
+        {
+          "code": "wrong-destination",
+          "howToHelpPt": "Você usou uma pergunta de localização, mas o objeto pedido não é a estação.",
+          "nextAttemptPt": "Substitua o destino por 'станция метро' e refaça a pergunta."
+        },
+        {
+          "code": "register",
+          "howToHelpPt": "A pergunta é compreensível, mas você pode abordar um desconhecido de maneira mais educada.",
+          "nextAttemptPt": "Acrescente 'Извините' antes da pergunta e tente novamente."
+        },
+        {
+          "code": "orthography",
+          "howToHelpPt": "A intenção está compreensível, mas há uma grafia a revisar.",
+          "nextAttemptPt": "Confira como se escreve 'станция метро' e reescreva a frase."
+        }
+      ],
+      "calibrationExamples": [
+        {
+          "response": "Извините, где находится станция метро?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Pergunta contextual, destino e cortesia adequados.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Подскажите, пожалуйста, где ближайшая станция метро?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Alternativa idiomática válida, com adjetivo opcional.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Где станция метро?",
+          "suggestedOutcome": "partiallySupported",
+          "reasonPt": "Pergunta e destino corretos, porém falta a cortesia solicitada pelo contexto.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Извините, где билет?",
+          "suggestedOutcome": "notSupported",
+          "reasonPt": "O destino está errado: bilhete em lugar de estação.",
+          "requiresHumanReview": true
+        }
+      ]
+    },
+    {
+      "language": "ru",
+      "taskId": "ru-dir-t1",
+      "pilotId": "ru-pilot-directions-01",
+      "kind": "transfer",
+      "goalPt": "Em situação nova, perguntar educadamente onde fica uma biblioteca em russo sem copiar a estação.",
+      "reviewState": "requires-linguistic-and-learner-review",
+      "correctionMode": "rubricWithReview",
+      "conditions": {
+        "modelHiddenDuringAttempt": true,
+        "hintsAllowed": false,
+        "doesNotAssess": [
+          "spoken fluency",
+          "pronunciation",
+          "CEFR level"
+        ],
+        "assistanceMustBeRecorded": true,
+        "phoneticKeyboardAllowed": true
+      },
+      "criteria": [
+        {
+          "code": "location-question",
+          "essential": true,
+          "descriptionPt": "Há uma pergunta de localização interpretável e pertinente à situação."
+        },
+        {
+          "code": "library-destination",
+          "essential": true,
+          "descriptionPt": "Библиотека é o destino solicitado, sem manter станция ou метро."
+        },
+        {
+          "code": "courtesy",
+          "essential": false,
+          "descriptionPt": "A fórmula de cortesia é adequada a um desconhecido."
+        },
+        {
+          "code": "orthography",
+          "essential": false,
+          "descriptionPt": "Diferenciar erro menor de grafia de troca de destino ou significado."
+        }
+      ],
+      "feedbackByIssue": [
+        {
+          "code": "wrong-destination",
+          "howToHelpPt": "A estrutura de pergunta funciona, mas o destino pertence à atividade anterior.",
+          "nextAttemptPt": "Pergunte pela biblioteca em vez da estação, usando 'библиотека'."
+        },
+        {
+          "code": "register",
+          "howToHelpPt": "A pergunta é útil, mas pede-se uma abordagem educada a um desconhecido.",
+          "nextAttemptPt": "Comece por 'Извините' ou outra fórmula natural e refaça a pergunta."
+        },
+        {
+          "code": "orthography",
+          "howToHelpPt": "Sua pergunta é compreensível, porém a palavra 'biblioteca' está grafada incorretamente.",
+          "nextAttemptPt": "Revise a forma 'библиотека' e reescreva a pergunta."
+        }
+      ],
+      "calibrationExamples": [
+        {
+          "response": "Извините, где библиотека?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Pergunta adequada de localização e novo destino.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Подскажите, пожалуйста, где находится библиотека?",
+          "suggestedOutcome": "supported",
+          "reasonPt": "Forma alternativa natural e cortês.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Где библиотека?",
+          "suggestedOutcome": "partiallySupported",
+          "reasonPt": "A informação é solicitada, mas o pedido de cortesia pode ser melhor atendido.",
+          "requiresHumanReview": true
+        },
+        {
+          "response": "Извините, где станция метро?",
+          "suggestedOutcome": "notSupported",
+          "reasonPt": "Repete o destino aprendido, sem transferir para biblioteca.",
+          "requiresHumanReview": true
+        }
+      ]
+    }
+  ],
+  "releaseGates": [
+    "Independent expert language review of each task, example and proposed feedback.",
+    "Pilot learner observations: comprehension of task instruction, acceptable variations and misconceptions.",
+    "No automatic grading of open answers merely by string similarity.",
+    "Report evidence with assistance and context; transfer requires a changed prompt and hidden model.",
+    "Keep old exercise IDs, attempts and backups unchanged."
+  ]
+}
