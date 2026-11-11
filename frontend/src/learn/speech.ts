@@ -1,16 +1,40 @@
 import type {Language} from './model';
-/** Only matching voices; the caller must show an unavailable state instead of substituting languages. */
+
+/** Local browser synthesis is a practice aid, never a validated recording. */
 export class LearnSpeech {
-  private synth=typeof speechSynthesis==='undefined'?undefined:speechSynthesis;
-  voices(language:Language):SpeechSynthesisVoice[]{return this.synth?.getVoices().filter(v=>v.lang.toLowerCase().split('-')[0]===language)??[]}
-  play(text:string,language:Language,rate=1):Promise<void>{
+  private synth=typeof globalThis.speechSynthesis==='undefined'?undefined:globalThis.speechSynthesis;
+  private current?:SpeechSynthesisUtterance;
+
+  supported():boolean{return !!this.synth;}
+  allVoices():SpeechSynthesisVoice[]{return this.synth?.getVoices()??[];}
+  voices(language:Language):SpeechSynthesisVoice[]{return this.allVoices().filter(v=>v.lang.toLowerCase().split('-')[0]===language);}
+
+  play(text:string,language:Language,rate=1,volume=1):Promise<void>{
     if(!this.synth)return Promise.reject(Error('Síntese de voz não disponível neste navegador.'));
-    const voice=this.voices(language).find(v=>v.localService)??this.voices(language)[0];
+    const voices=this.voices(language);
+    const voice=voices.find(v=>v.localService)??voices[0];
     if(!voice)return Promise.reject(Error(`Nenhuma voz compatível com ${language==='ru'?'russo':'inglês'} está instalada.`));
-    if(!text.trim()||text.length>3000||rate<.5||rate>1.5||!Number.isFinite(rate))return Promise.reject(Error('Áudio ou velocidade inválidos.'));
-    this.stop();return new Promise((resolve,reject)=>{const utterance=new SpeechSynthesisUtterance(text);utterance.voice=voice;utterance.lang=voice.lang;utterance.rate=rate;utterance.onend=()=>resolve();utterance.onerror=()=>reject(Error('Reprodução interrompida ou não disponível.'));this.synth!.speak(utterance)});
+    if(!text.trim()||text.length>3000||rate<.5||rate>1.5||!Number.isFinite(rate)||volume<0||volume>1||!Number.isFinite(volume))
+      return Promise.reject(Error('Áudio, velocidade ou volume inválidos.'));
+
+    this.stop();
+    return new Promise((resolve,reject)=>{
+      const utterance=new SpeechSynthesisUtterance(text);
+      utterance.voice=voice;
+      utterance.lang=voice.lang;
+      utterance.rate=rate;
+      utterance.volume=volume;
+      this.current=utterance;
+      utterance.onend=()=>{if(this.current===utterance)this.current=undefined;resolve();};
+      utterance.onerror=()=>{if(this.current===utterance)this.current=undefined;reject(Error('Reprodução interrompida ou não disponível.'));};
+      this.synth!.speak(utterance);
+    });
   }
-  pause(){this.synth?.pause()}
-  resume(){this.synth?.resume()}
-  stop(){this.synth?.cancel()}
+
+  setVolume(volume:number):void{
+    if(Number.isFinite(volume)&&volume>=0&&volume<=1&&this.current)this.current.volume=volume;
+  }
+  pause():void{this.synth?.pause();}
+  resume():void{this.synth?.resume();}
+  stop():void{this.synth?.cancel();this.current=undefined;}
 }

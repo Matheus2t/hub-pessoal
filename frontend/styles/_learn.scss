@@ -130,10 +130,14 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
   .learn-audio {
     display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
     margin: 20px 0; padding: 14px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--bg);
-    .button { min-height: 40px; padding: 8px 12px; font-size: 13px; }
+    .learn-audio__controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .button { min-height: 44px; padding: 8px 12px; font-size: 13px; }
     label { display: flex; align-items: center; gap: 8px; color: var(--secondary); font-size: 13px; }
     select { width: auto; padding: 8px 10px; font-size: 14px; }
-    p { flex-basis: 100%; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .learn-audio__volume { flex: 1 1 190px; min-width: min(100%,190px); }
+    input[type=range] { width: min(100%,160px); min-width: 90px; min-height: 44px; padding: 0; border: 0; background: transparent; accent-color: var(--text); }
+    output { min-width: 3.5em; color: var(--text); font-variant-numeric: tabular-nums; }
+    .learn-audio__status { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
   }
   .learn-word .learn-audio { margin: 18px 0 0; padding: 16px 0 0; border: 0; border-top: 1px solid var(--line-soft); background: transparent; border-radius: 0; }
   .learn-feedback { padding: 20px; margin-top: 24px; border-left: 3px solid var(--text); border-radius: 0 8px 8px 0; background: var(--raised); text-align: left; }
