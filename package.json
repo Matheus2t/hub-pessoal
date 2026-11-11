@@ -16,7 +16,8 @@
     "learn:validate-task-rubrics": "node scripts/validate-learn-task-rubrics.mjs",
     "learn:validate-delayed": "node scripts/validate-learn-delayed-probes.mjs",
     "learn:validate-readiness": "node scripts/validate-learn-readiness.mjs",
-    "learn:validate-audio": "node scripts/validate-learn-audio.mjs"
+    "learn:validate-audio": "node scripts/validate-learn-audio.mjs",
+    "learn:check-catalogs": "node scripts/learn/check-catalog-determinism.mjs"
   },
   "dependencies": {
     "lit": "^3.2.1"

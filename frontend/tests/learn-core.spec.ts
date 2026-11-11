@@ -1,13 +1,33 @@
 import {test,expect} from '@playwright/test';
 import {buildSync} from 'esbuild';
-import {newCard,schedule,evaluateAnswer,summarize,DAY} from '../src/learn/engine';
+import {attemptOutcome,evaluateExerciseAnswer,newCard,schedule,evaluateAnswer,summarize,DAY} from '../src/learn/engine';
 import {validateCurriculum} from '../src/learn/content';
-import {parseBackup} from '../src/learn/backup';
+import {parseBackup,validAttempt} from '../src/learn/backup';
+import {errorItems,difficultTopics} from '../src/learn/recovery';
 import type {Attempt,Backup} from '../src/learn/model';
 const attempt:Attempt={id:'attempt-1',language:'en',itemId:'hello',skill:'vocabulary',topic:'Cumprimentos',answer:'olá',expected:'olá',correct:true,at:Date.UTC(2026,9,31,12),seconds:12};
 test('normalization preserves words and explicit Russian ё policy',()=>{
  expect(evaluateAnswer(' Hello,   world! ',['hello world'])).toBe(true);
  expect(evaluateAnswer('word',['world'])).toBe(false);expect(evaluateAnswer('все',['всё'])).toBe(false);expect(evaluateAnswer('все',['всё'],true)).toBe(true);expect(evaluateAnswer('',['hello'])).toBe(false);expect(evaluateAnswer('I am fine',['I am well','I am fine'])).toBe(true);
+});
+test('writing accepts only reviewed variants and leaves unrecognized semantics uncertain',()=>{
+ const writing={skill:'writing' as const,answers:['I work from home.','I work at home.']};
+ expect(evaluateExerciseAnswer('I work at home!',writing)).toBe('correct');
+ expect(evaluateExerciseAnswer('I work from my apartment.',writing)).toBe('uncertain');
+ expect(evaluateExerciseAnswer('He work yesterday.',writing)).toBe('uncertain');
+ expect(evaluateExerciseAnswer('неверный ответ',{...writing,skill:'test'})).toBe('incorrect');
+ expect(evaluateAnswer('Где ёлка?',['Где ёлка?'])).toBe(true);
+ expect(evaluateAnswer('Где елка?',['Где ёлка?'])).toBe(false);
+});
+test('uncertain writing is valid evidence, survives backups and is excluded from error rates',()=>{
+ const uncertain:Attempt={...attempt,id:'open-uncertain',itemId:'open-item',skill:'writing',answer:'A possible paraphrase',expected:'A model answer',correct:false,assessmentOutcome:'uncertain'};
+ expect(validAttempt(uncertain)).toBe(true);expect(attemptOutcome(uncertain)).toBe('uncertain');
+ expect(parseBackup(JSON.stringify({format:'2t-learn',version:1,exportedAt:0,attempts:[uncertain],cards:[]})).attempts[0].assessmentOutcome).toBe('uncertain');
+ expect(parseBackup(JSON.stringify({format:'2t-learn',version:1,exportedAt:0,attempts:[attempt],cards:[]})).attempts[0]).toEqual(attempt);
+ const summary=summarize('en',[attempt,uncertain],[],attempt.at);expect(summary.accuracy).toBe(1);expect(summary.uncertain).toBe(1);expect(summary.incorrect).toBe(0);
+ expect(errorItems('en',[uncertain])).toEqual([]);expect(difficultTopics('en',[uncertain])).toEqual([]);
+ const historicalFalse={...uncertain,id:'legacy-false',assessmentOutcome:undefined};expect(attemptOutcome(historicalFalse)).toBe('incorrect');expect(errorItems('en',[historicalFalse])).toHaveLength(1);
+ expect(validAttempt({...uncertain,skill:'test'})).toBe(false);expect(validAttempt({...uncertain,correct:true})).toBe(false);
 });
 test('schedule forget, hard and expanding good/easy intervals',()=>{
  const start=newCard('ru','word',0);expect(start.repetitions).toBe(0);const forgotten=schedule(start,0,1000);expect(forgotten.due).toBe(601000);expect(forgotten.repetitions).toBe(0);
@@ -32,6 +52,13 @@ test('real IndexedDB transactions persist, isolate languages and require confirm
  expect(backup.attempts).toHaveLength(1);expect(backup.cards[0].repetitions).toBe(1);
  await page.evaluate(async(a)=>{const s=(window as any).LearnStore;try{await s.recordAttempt({...a,id:'invalid-transition'},()=>({broken:true}))}catch{}if((await s.snapshot()).attempts.length!==1)throw Error('Partial write escaped rollback')},attempt);
  const result=await page.evaluate(async(b)=>{const s=(window as any).LearnStore;let refused=false;try{await s.restoreBackup(JSON.stringify(b))}catch{refused=true}await s.restoreBackup(JSON.stringify(b),true);await s.restoreBackup(JSON.stringify(b),true);return {refused,count:(await s.snapshot()).attempts.length}},backup);expect(result).toEqual({refused:true,count:1});
+});
+test('uncertain open writing persists idempotently and survives v3 export',async({page})=>{
+ const code=buildSync({entryPoints:['frontend/src/learn/storage.ts'],bundle:true,format:'iife',globalName:'LearnStore',write:false,platform:'browser'}).outputFiles[0].text;
+ await page.route('**/learn-uncertain-storage.js',route=>route.fulfill({contentType:'application/javascript',body:code}));
+ await page.goto('/');await page.addScriptTag({url:'/learn-uncertain-storage.js'});
+ const exported=await page.evaluate(async()=>{const s=(window as any).LearnStore,a={id:'open-uncertain',language:'en',itemId:'en-writing-061',skill:'writing',topic:'Production',answer:'A meaning-compatible paraphrase',expected:'I work from home.',correct:false,assessmentOutcome:'uncertain',at:Date.now(),seconds:5};await s.recordAttempt(a);await s.recordAttempt(a);return JSON.stringify(await s.snapshot())});
+ const backup=parseBackup(exported);expect(backup.version).toBe(3);expect(backup.attempts).toHaveLength(1);expect(backup.attempts[0].assessmentOutcome).toBe('uncertain');
 });
 
 test('curriculum rejects duplicated IDs and unknown references',()=>{

@@ -84,3 +84,26 @@ test('browser player offers accessible playback controls and marks synthesis as 
     await expect(player).toBeVisible();
   }
 });
+
+test('player recovers when a Russian browser voice loads late and keeps the source text unchanged',async({page})=>{
+  await page.addInitScript(()=>{
+    const state:{voices:any[];changed?:()=>void;spoken?:{text:string;lang:string;voice:string}}={voices:[]};
+    class Utterance {text:string;voice:any=null;lang='';rate=1;volume=1;onend:(()=>void)|null=null;onerror:(()=>void)|null=null;constructor(text:string){this.text=text;}}
+    const synth={getVoices:()=>state.voices,addEventListener:(name:string,listener:()=>void)=>{if(name==='voiceschanged')state.changed=listener;},removeEventListener:()=>{},cancel:()=>{},pause:()=>{},resume:()=>{},speak:(utterance:Utterance)=>{state.spoken={text:utterance.text,lang:utterance.lang,voice:utterance.voice?.name||''};setTimeout(()=>utterance.onend?.(),0);}};
+    Object.defineProperty(window,'SpeechSynthesisUtterance',{configurable:true,value:Utterance});
+    Object.defineProperty(window,'speechSynthesis',{configurable:true,value:synth});
+    (window as any).__learnSpeechState=state;
+    (window as any).__loadRussianVoice=()=>{state.voices=[{name:'Russian local',lang:'ru-RU',localService:true,default:true,voiceURI:'ru-local'}];state.changed?.();};
+  });
+  await page.goto('/#/learn/ru/listening');
+  await page.getByRole('button',{name:'Iniciar prática'}).click();
+  const player=page.locator('learn-audio'),expected=await page.locator('learn-session').evaluate(el=>(el as any).exercises[0].audio as string);
+  await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeDisabled();
+  await page.evaluate(()=>(window as any).__loadRussianVoice());
+  await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeEnabled();
+  await player.getByRole('button',{name:'Ouvir / repetir'}).click();
+  await expect(page.getByRole('button',{name:'Verificar resposta'})).toBeEnabled();
+  const spoken=await page.evaluate(()=>(window as any).__learnSpeechState.spoken);
+  expect(spoken).toEqual({text:expected,lang:'ru-RU',voice:'Russian local'});
+  await expect(player).toContainText('não uma gravação validada');
+});

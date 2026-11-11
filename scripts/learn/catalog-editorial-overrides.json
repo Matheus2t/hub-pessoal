@@ -1,0 +1,2284 @@
+{
+  "format": "2t-learn-editorial-overrides",
+  "version": 1,
+  "provenance": [
+    "docs/learn-revisao-pedagogica-v1.md",
+    "docs/learn-revisao-exercicios-v2.md",
+    "docs/learn-revisao-semantica-v3.md",
+    "docs/learn-revisao-itens-474.csv"
+  ],
+  "languages": {
+    "en": {
+      "words": [
+        {
+          "id": "en-word-009",
+          "set": {
+            "translation": "boa noite"
+          },
+          "remove": [
+            "translationVariants"
+          ]
+        },
+        {
+          "id": "en-word-016",
+          "set": {
+            "translationVariants": [
+              "amiga"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-word-116",
+          "set": {
+            "translation": "aprender",
+            "exampleTranslation": "Quero aprender russo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-word-125",
+          "set": {
+            "translation": "caminhar",
+            "exampleTranslation": "Caminhamos no parque depois do jantar.",
+            "translationVariants": [
+              "andar",
+              "passear"
+            ]
+          },
+          "remove": []
+        }
+      ],
+      "phrases": [
+        {
+          "id": "en-phrase-014",
+          "set": {
+            "translation": "Tenho alergia a nozes e castanhas.",
+            "exampleTranslation": "Tenho alergia a nozes e castanhas."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-phrase-001",
+          "set": {
+            "translation": "Cumprimos o prazo.",
+            "exampleTranslation": "Cumprimos o prazo."
+          },
+          "remove": []
+        }
+      ],
+      "readings": [
+        {
+          "id": "en-reading-09",
+          "set": {
+            "text": "Four friends are preparing dinner. One friend does not eat red meat, and another cannot consume dairy products. They choose rice, vegetables and fish, with cheese served separately. Before cooking, they wash the vegetables and read the sauce label. It contains milk, so they leave it out. Everyone can share the main meal without needing a separate dish.",
+            "translation": "Quatro amigos preparam jantar. Um não come carne vermelha e outro não pode consumir laticínios. Escolhem arroz, legumes e peixe, com queijo separado. Lavam os legumes e leem o rótulo do molho. Como contém leite, não o usam. Todos conseguem compartilhar o prato principal."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-001",
+          "set": {
+            "translation": "Embora nossa equipe tivesse pouca experiência, concordamos em construir um pequeno jardim comunitário. Cada pessoa assumiu uma responsabilidade. Maya cuidou das plantas e Leo reuniu ferramentas. Nós nos encontrávamos todos os sábados. No fim do mês, o espaço vazio havia se tornado um lugar onde os vizinhos podiam conversar."
+          },
+          "remove": []
+        }
+      ],
+      "lessons": [
+        {
+          "id": "en-grammar-02",
+          "set": {
+            "explanation": "I, you, he, she, it, we e they ocupam o lugar do sujeito. It costuma retomar coisas ou animais sem gênero especificado. They pode retomar várias pessoas ou uma pessoa quando o gênero não é informado ou não é relevante."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-001",
+          "set": {
+            "explanation": "Use have/has + particípio para experiências e resultados ligados ao presente, sem situá-los em um momento passado encerrado. Com yesterday, prefira Past Simple."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-004",
+          "set": {
+            "explanation": "Em orações relativas restritivas, use who ou that para pessoas e which ou that para coisas. Não use vírgula nesta construção."
+          },
+          "remove": []
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-listening-009",
+          "set": {
+            "answers": [
+              "boa noite"
+            ],
+            "explanation": "Good evening é uma saudação usada ao chegar ou cumprimentar alguém à noite. Good night geralmente é usado em despedidas ou antes de dormir."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-016",
+          "set": {
+            "answers": [
+              "amigo",
+              "amiga"
+            ],
+            "explanation": "Friend significa amigo ou amiga; a palavra inglesa não especifica o gênero. No exemplo, alguém está esperando lá fora."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-021",
+          "set": {
+            "explanation": "One é o número um. Em português, um ou uma depende do gênero do substantivo, como um bilhete ou uma passagem."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-022",
+          "set": {
+            "explanation": "Two é o número dois; a tradução portuguesa pode ser dois ou duas conforme o substantivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-061",
+          "set": {
+            "explanation": "Imperativo: use Open the window. Please pode aparecer no início ou no fim do pedido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-062",
+          "set": {
+            "explanation": "Put e place significam colocar. Para algo apoiado numa superfície, use on the table."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-063",
+          "set": {
+            "explanation": "This chair is free ou available indica que a cadeira está desocupada; free também pode significar grátis em outro contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-064",
+          "set": {
+            "explanation": "Next to indica proximidade imediata: the bed is next to the window."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-065",
+          "set": {
+            "explanation": "Cannot e can't são formas equivalentes de negativa de can neste contexto; find my key significa encontrar minha chave."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-066",
+          "set": {
+            "explanation": "Under e underneath indicam posição abaixo de algo; ambas são naturais para a bolsa sob a cadeira."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-067",
+          "set": {
+            "explanation": "These acompanha o plural clothes; use are clean, não is clean."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-068",
+          "set": {
+            "explanation": "Take off your shoes significa tirar os sapatos. Please pode abrir ou encerrar o pedido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-069",
+          "set": {
+            "explanation": "Turn on e switch on significam acender ou ligar a luz; no imperativo, use o verbo na forma básica."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-070",
+          "set": {
+            "explanation": "The children are playing usa Present Continuous para uma ação em andamento; children é o plural irregular de child."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-071",
+          "set": {
+            "answers": [
+              "I finish work at six.",
+              "I finish my work at six."
+            ],
+            "explanation": "Finish work significa terminar o expediente; finish my work destaca concluir o próprio trabalho. At six indica horário."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-072",
+          "set": {
+            "explanation": "Nos andares de um prédio, use on the third floor; third é o ordinal de three."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-073",
+          "set": {
+            "explanation": "The meeting starts in ten minutes indica que a reunião começará daqui a dez minutos; in introduz o intervalo até o início."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-074",
+          "set": {
+            "answers": [
+              "My colleague speaks Russian.",
+              "My coworker speaks Russian."
+            ],
+            "explanation": "Colleague e coworker são alternativas naturais para colega de trabalho; speaks concorda com sujeito singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-075",
+          "set": {
+            "answers": [
+              "This job requires experience.",
+              "This position requires experience."
+            ],
+            "explanation": "Job e position podem designar cargo; requires recebe -s por acompanhar this job/position."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-076",
+          "set": {
+            "answers": [
+              "The school is opposite the library.",
+              "The school is across from the library."
+            ],
+            "explanation": "Opposite e across from indicam localização em frente a outro lugar, neste contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-077",
+          "set": {
+            "answers": [
+              "She studies at the university.",
+              "She studies at university."
+            ],
+            "explanation": "She studies at the university é natural; em inglês britânico, at university também pode indicar a experiência de cursar o ensino superior."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-078",
+          "set": {
+            "explanation": "Is reading é Present Continuous (is + verbo com -ing), usado para uma leitura em andamento."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-079",
+          "set": {
+            "explanation": "The teacher explains the rule: com he/she/it ou substantivo singular, o verbo explain recebe -s no presente simples."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-080",
+          "set": {
+            "answers": [
+              "This book has many pictures.",
+              "There are many pictures in this book.",
+              "This book has many images."
+            ],
+            "explanation": "Many acompanha plural contável; pictures e images podem traduzir imagens neste contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-081",
+          "set": {
+            "answers": [
+              "Write the answer in your notebook.",
+              "Write the answer in the notebook."
+            ],
+            "explanation": "Write é imperativo. In your notebook e in the notebook indicam o local da resposta; o possessivo depende do contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-082",
+          "set": {
+            "answers": [
+              "Our lesson lasts forty minutes.",
+              "Our class lasts forty minutes."
+            ],
+            "explanation": "Lasts indica duração: our lesson lasts forty minutes. Class pode substituir lesson em muitos contextos."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-083",
+          "set": {
+            "explanation": "I have a question e I've got a question expressam posse; about this word indica o assunto da dúvida."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-084",
+          "set": {
+            "explanation": "Correct e right são alternativas naturais para dizer que uma resposta está correta."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-085",
+          "set": {
+            "explanation": "On Friday indica dia da semana; exam e test são ambos formas possíveis de prova, conforme o contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-086",
+          "set": {
+            "explanation": "The bus stops here usa stops com sujeito singular; right here reforça exatamente aqui."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-087",
+          "set": {
+            "answers": [
+              "Our train leaves at noon.",
+              "Our train departs at noon."
+            ],
+            "explanation": "Leaves e departs indicam partida de transporte; at noon significa ao meio-dia."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-088",
+          "set": {
+            "explanation": "In the garage indica localização dentro da garagem; my car usa possessivo antes do substantivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-089",
+          "set": {
+            "answers": [
+              "He rides a bicycle to work.",
+              "He cycles to work.",
+              "He rides a bike to work.",
+              "He bikes to work."
+            ],
+            "explanation": "Ride a bike/bicycle e cycle indicam deslocamento de bicicleta; to work indica o destino."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-090",
+          "set": {
+            "answers": [
+              "Which station is next?",
+              "What is the next station?",
+              "What's the next station?"
+            ],
+            "explanation": "Which station is next? e What's the next station? perguntam qual será a próxima parada."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-091",
+          "set": {
+            "answers": [
+              "We are going to the airport.",
+              "We're going to the airport."
+            ],
+            "explanation": "We are going to the airport usa Present Continuous para um deslocamento em curso; we're é a forma contraída."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-092",
+          "set": {
+            "explanation": "Return ticket é comum no inglês britânico, e round-trip ticket no americano para ida e volta."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-093",
+          "set": {
+            "answers": [
+              "Show your passport, please.",
+              "Please show your passport."
+            ],
+            "explanation": "Show your passport é imperativo; please torna o pedido cortês e pode vir no começo ou no fim."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-094",
+          "set": {
+            "explanation": "Centre é grafia britânica e center, americana; ambas designam o centro da cidade."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-095",
+          "set": {
+            "explanation": "Quiet descreve uma rua calma, com pouco ruído ou movimento; very intensifica o adjetivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-096",
+          "set": {
+            "answers": [
+              "I am visiting this city for the first time.",
+              "I'm visiting this city for the first time."
+            ],
+            "explanation": "For the first time expressa primeira experiência; I'm é a contração de I am."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-097",
+          "set": {
+            "answers": [
+              "Can you show me on the map?",
+              "Could you show me on the map?"
+            ],
+            "explanation": "Can you show me on the map? faz um pedido; could you é uma alternativa mais polida em muitos contextos."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-098",
+          "set": {
+            "answers": [
+              "Turn left at the traffic lights.",
+              "Turn left at the traffic light."
+            ],
+            "explanation": "Traffic lights (uso britânico) e traffic light (uso americano) podem indicar o semáforo; turn left significa vire à esquerda."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-099",
+          "set": {
+            "explanation": "Turn right significa vire à direita; after the bridge situa a curva depois da ponte."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-writing-100",
+          "set": {
+            "answers": [
+              "The journey was very interesting.",
+              "The trip was very interesting."
+            ],
+            "explanation": "Journey e trip são alternativas possíveis para viagem; was indica passado de be."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-01-q1",
+          "set": {
+            "answers": [
+              "começa às dez",
+              "ela começa a trabalhar às dez",
+              "ela começa às dez",
+              "o trabalho começa às dez"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-03-q1",
+          "set": {
+            "answers": [
+              "às quartas",
+              "às quartas-feiras",
+              "quarta-feira",
+              "toda quarta-feira",
+              "todas as quartas-feiras"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-03-q2",
+          "set": {
+            "prompt": "O que Mila e seu amigo fazem depois da primeira leitura?",
+            "answers": [
+              "trocam de função",
+              "trocam de papel",
+              "trocam as funções",
+              "trocam os papéis"
+            ],
+            "explanation": "Mila lê em voz alta, o amigo anota as palavras novas e depois os dois trocam de função."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-04-q2",
+          "set": {
+            "answers": [
+              "para a avó ver as crianças",
+              "para ela ver as crianças brincando",
+              "para a avó acompanhar as crianças brincando"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-05-q1",
+          "set": {
+            "answers": [
+              "dez e meia",
+              "10h30",
+              "10:30",
+              "dez horas e trinta minutos",
+              "10h30min"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-06-q1",
+          "set": {
+            "answers": [
+              "salva num arquivo",
+              "salvando em um arquivo",
+              "salva em um arquivo",
+              "guardando o texto em um arquivo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-06-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, o telefone também",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-07-q1",
+          "set": {
+            "answers": [
+              "quatro",
+              "4",
+              "plataforma quatro",
+              "plataforma 4",
+              "na plataforma 4"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-08-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, custa o mesmo",
+              "não, o preço é igual",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-09-q1",
+          "set": {
+            "answers": [
+              "contém leite",
+              "porque contém leite",
+              "porque tem leite",
+              "o molho tem leite"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-09-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, é servido separado",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-10-q1",
+          "set": {
+            "answers": [
+              "que ele fale devagar",
+              "falar devagar",
+              "que fale mais devagar",
+              "falar mais devagar"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-10-q2",
+          "set": {
+            "answers": [
+              "dando exemplos",
+              "dá um exemplo",
+              "com exemplos",
+              "oferece um exemplo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-01",
+          "set": {
+            "explanation": "Bread significa pão."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-09",
+          "set": {
+            "explanation": "Station pode designar uma estação de trem, metrô ou outro transporte."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-10",
+          "set": {
+            "explanation": "Em cold water, o adjetivo cold vem antes do substantivo water."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-11",
+          "set": {
+            "explanation": "My é o possessivo de primeira pessoa; family significa família."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-12",
+          "set": {
+            "explanation": "A new book: new vem antes do substantivo book e a indica um substantivo contável singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-13",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-16",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-19",
+          "set": {
+            "explanation": "My brothers é sujeito plural, então use are: My brothers are teachers."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-20",
+          "set": {
+            "explanation": "Interesting começa com som vocálico; por isso, an interesting lesson."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-21",
+          "set": {
+            "explanation": "Tom é terceira pessoa do singular no presente simples, então eat recebe -s: eats."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-22",
+          "set": {
+            "explanation": "Com they, perguntas no presente simples usam o auxiliar do."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-23",
+          "set": {
+            "explanation": "Two bags é plural; a construção correta é There are two bags."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-24",
+          "set": {
+            "explanation": "Após are, use a forma com -ing para a ação em andamento: drinking."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-25",
+          "set": {
+            "explanation": "I am at home e I'm at home são naturais; I am home também ocorre para indicar presença em casa."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-27",
+          "set": {
+            "explanation": "Na negativa do presente simples com she, use does not ou doesn't seguido de work."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-28",
+          "set": {
+            "explanation": "Where is my book? usa where para perguntar localização e is com o sujeito singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-29",
+          "set": {
+            "explanation": "I have two chairs e I've got two chairs são formas correntes de indicar posse."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-001",
+          "set": {
+            "answers": [
+              "We met the deadline.",
+              "We finished the work on time.",
+              "We completed the work on time.",
+              "We finished the work by the deadline.",
+              "We completed the work by the deadline."
+            ],
+            "explanation": "We met the deadline é uma expressão idiomática para cumprir o prazo. We finished/completed the work on time explicita que o trabalho foi terminado dentro do prazo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-002",
+          "set": {
+            "answers": [
+              "This source is reliable.",
+              "This source is trustworthy."
+            ],
+            "explanation": "Reliable e trustworthy expressam confiável; trustworthy enfatiza confiança na fonte."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-003",
+          "set": {
+            "answers": [
+              "We need more evidence.",
+              "We need additional evidence."
+            ],
+            "explanation": "More evidence e additional evidence pedem mais evidências; evidence é substantivo incontável neste contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-004",
+          "set": {
+            "answers": [
+              "Although it was cold, we went out.",
+              "Even though it was cold, we went out."
+            ],
+            "explanation": "Although e even though introduzem contraste; aqui ambas antecedem it was cold."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-005",
+          "set": {
+            "answers": [
+              "She had an opportunity to study abroad.",
+              "She had the opportunity to study abroad."
+            ],
+            "explanation": "Had an opportunity e had the opportunity podem traduzir teve a oportunidade, dependendo do contexto; study abroad significa estudar no exterior."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-008",
+          "set": {
+            "answers": [
+              "Every decision has consequences.",
+              "Each decision has consequences."
+            ],
+            "explanation": "Every e each podem indicar toda/cada decisão; consequences aparece no plural."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-009",
+          "set": {
+            "answers": [
+              "We should protect the environment.",
+              "We must protect the environment."
+            ],
+            "explanation": "Should protect expressa recomendação/dever, must protect obrigação mais forte. O modal escolhido altera a intensidade."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-011",
+          "set": {
+            "answers": [
+              "She has experience in teaching.",
+              "She has teaching experience."
+            ],
+            "explanation": "Experience in teaching e teaching experience indicam experiência na área de ensino."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-012",
+          "set": {
+            "answers": [
+              "What is the purpose of this meeting?",
+              "What's the purpose of this meeting?"
+            ],
+            "explanation": "What is the purpose of this meeting? pergunta a finalidade; what's é a contração natural de what is."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-001-q1",
+          "set": {
+            "answers": [
+              "um jardim comunitário",
+              "uma horta comunitária"
+            ],
+            "explanation": "A equipe decidiu construir a small community garden: um jardim comunitário. O texto não especifica o tipo de cultivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-001-q2",
+          "set": {
+            "answers": [
+              "todos os sábados",
+              "aos sábados",
+              "todo sábado"
+            ],
+            "explanation": "We met every Saturday indica que a equipe se encontrava todos os sábados."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-001-q3",
+          "set": {
+            "explanation": "Maya looked after the plants afirma que Maya cuidava das plantas."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-002-q1",
+          "set": {
+            "answers": [
+              "autor e data",
+              "não tinha autor nem data"
+            ],
+            "explanation": "It had no author or date indica a ausência de autoria e de data na mensagem."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-002-q2",
+          "set": {
+            "answers": [
+              "no site do hospital",
+              "site do hospital"
+            ],
+            "explanation": "I looked for evidence on the hospital website: a busca foi feita no site do hospital."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-002-q3",
+          "set": {
+            "explanation": "The study was still incomplete mostra que o estudo ainda não estava concluído."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-003-q1",
+          "set": {
+            "explanation": "The service was cancelled explica a mudança: a viagem de trem prevista foi cancelada."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-003-q2",
+          "set": {
+            "answers": [
+              "de ônibus",
+              "ônibus"
+            ],
+            "explanation": "We chose a bus informa que a alternativa escolhida foi o ônibus."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-003-q3",
+          "set": {
+            "explanation": "We arrived before the wedding confirma que chegaram antes, não depois do casamento."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-004-q1",
+          "set": {
+            "answers": [
+              "há dois anos",
+              "dois anos"
+            ],
+            "explanation": "I have studied English for two years indica um período de dois anos que alcança o presente."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-004-q2",
+          "set": {
+            "answers": [
+              "um conto",
+              "conto",
+              "uma história curta"
+            ],
+            "explanation": "We discuss one short story each week: o grupo discute um conto por semana."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-004-q3",
+          "set": {
+            "explanation": "Nobody interrupts indica que os colegas não interrompem quando a pessoa procura uma palavra."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-005-q1",
+          "set": {
+            "prompt": "Em qual área as lâmpadas se apagam quando não há ninguém?",
+            "explanation": "As lâmpadas apagam quando não há ninguém no corredor; o texto identifica essa área monitorada."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-005-q2",
+          "set": {
+            "explanation": "The lights came on immediately whenever someone entered: acendem quando alguém entra."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-reading-005-q3",
+          "set": {
+            "answers": [
+              "economizar energia",
+              "poupar energia"
+            ],
+            "explanation": "The purpose was to save energy: o objetivo era economizar energia sem reduzir o conforto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-001-q1",
+          "set": {
+            "explanation": "She has finished her work expressa conclusão com resultado relevante no presente: has + particípio finished."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-001-q2",
+          "set": {
+            "explanation": "I have never seen snow descreve uma experiência de vida sem momento passado definido; never significa nunca."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-001-q3",
+          "set": {
+            "explanation": "Yesterday indica um passado encerrado. O passado simples de go é went."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-test-001",
+          "set": {
+            "prompt": "Complete no Present Perfect: They ___ just arrived at the station.",
+            "answers": [
+              "have"
+            ],
+            "explanation": "No Present Perfect, they exige have + particípio; just marca uma chegada recente ligada ao presente."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-002-q1",
+          "set": {
+            "prompt": "Complete usando rain na first conditional: If it ___, we will stay home.",
+            "explanation": "Com if na primeira condicional, rain fica no presente simples: it rains; a oração principal usa will stay."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-002-q2",
+          "set": {
+            "prompt": "Complete usando will para o resultado futuro na first conditional: If I have time, I ___ call you.",
+            "explanation": "If I have time está no presente; a oração de resultado futuro usa will + verbo na forma básica."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-002-q3",
+          "set": {
+            "prompt": "Complete com learn: If she studies, she will ___.",
+            "explanation": "Na first conditional, if she studies usa o presente; depois de will, empregue a forma básica learn."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-test-002",
+          "set": {
+            "prompt": "Complete com a forma presente de leave na first conditional: If she ___ early, she will catch the bus.",
+            "answers": [
+              "leaves"
+            ],
+            "explanation": "A oração introduzida por if pede presente: she leaves; a consequência futura usa will catch."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-003-q2",
+          "set": {
+            "prompt": "Complete com a forma de be no presente: These books ___ written in English.",
+            "explanation": "These books é plural; a passiva no presente usa are + particípio: are written."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-003-q3",
+          "set": {
+            "prompt": "Complete com o particípio de close na voz passiva: The door is ___ every night.",
+            "explanation": "A voz passiva no presente usa is + particípio: is closed; sem indicar close, outras ações seriam gramaticais."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-test-003",
+          "set": {
+            "prompt": "The emails ___ sent yesterday morning.",
+            "answers": [
+              "were"
+            ],
+            "explanation": "A voz passiva usa be + particípio. Emails está no plural e yesterday situa be no passado: were sent."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-004-q1",
+          "set": {
+            "prompt": "Complete com um pronome relativo: The woman ___ lives here is a teacher.",
+            "answers": [
+              "who",
+              "that"
+            ],
+            "explanation": "Em relativas restritivas sem vírgulas, who e that podem retomar pessoas. A pessoa é o sujeito de lives."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-004-q2",
+          "set": {
+            "prompt": "Complete com um pronome relativo: This is the book ___ I bought.",
+            "answers": [
+              "that",
+              "which"
+            ],
+            "explanation": "That e which podem retomar coisas em relativas restritivas. Na linguagem corrente, o pronome objeto também pode ser omitido, mas a atividade pede explicitamente um pronome."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-004-q3",
+          "set": {
+            "prompt": "Complete com um pronome relativo: The bus ___ stops here is late.",
+            "answers": [
+              "which",
+              "that"
+            ],
+            "explanation": "Which e that podem retomar o ônibus nesta relativa restritiva. O pronome é sujeito de stops e não pode ser omitido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-test-004",
+          "set": {
+            "prompt": "The person ___ called this morning is waiting.",
+            "answers": [
+              "who",
+              "that"
+            ],
+            "explanation": "Em uma oração relativa restritiva, who e that podem retomar uma pessoa quando são o sujeito da oração."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-005-q1",
+          "set": {
+            "prompt": "Complete no Past Continuous: They ___ waiting outside when I arrived.",
+            "explanation": "Com they, o Past Continuous usa were + verbo em -ing. When I arrived situa a cena no passado."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-005-q2",
+          "set": {
+            "prompt": "Complete com a forma -ing de read: I was ___ when you called.",
+            "explanation": "No Past Continuous, was + reading expressa atividade em andamento interrompida por when you called."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-005-q3",
+          "set": {
+            "prompt": "Complete no Past Continuous: She ___ cooking at six yesterday.",
+            "explanation": "Com she, use was + verbo em -ing para descrever uma atividade em andamento às seis de ontem."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-test-005",
+          "set": {
+            "prompt": "Complete com cook no Past Continuous: At six yesterday, I ___ dinner.",
+            "answers": [
+              "was cooking"
+            ],
+            "explanation": "No Past Continuous com I, use was cooking para indicar que cozinhar estava em andamento às seis de ontem."
+          },
+          "remove": []
+        }
+      ]
+    },
+    "ru": {
+      "words": [
+        {
+          "id": "ru-word-001",
+          "set": {},
+          "remove": [
+            "translationVariants"
+          ]
+        },
+        {
+          "id": "ru-word-009",
+          "set": {
+            "translation": "boa noite"
+          },
+          "remove": [
+            "translationVariants"
+          ]
+        }
+      ],
+      "phrases": [
+        {
+          "id": "ru-phrase-014",
+          "set": {
+            "translation": "Tenho alergia a nozes e castanhas.",
+            "exampleTranslation": "Tenho alergia a nozes e castanhas."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-phrase-015",
+          "set": {
+            "translation": "A conta, por favor?",
+            "exampleTranslation": "A conta, por favor?"
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-phrase-018",
+          "set": {
+            "word": "У вас есть такой же, но меньшего размера?",
+            "translation": "Você tem um igual, mas em tamanho menor?",
+            "example": "У вас есть такой же, но меньшего размера?",
+            "exampleTranslation": "Você tem um igual, mas em tamanho menor?"
+          },
+          "remove": []
+        }
+      ],
+      "readings": [
+        {
+          "id": "ru-reading-09",
+          "set": {
+            "text": "Четверо друзей готовят ужин. Один не ест красное мясо, а другой не может употреблять молочные продукты. Они выбирают рис, овощи и рыбу, а сыр подают отдельно. Перед готовкой они моют овощи и читают состав соуса. В нём есть молоко, поэтому они его не используют. Все могут есть общее блюдо, и отдельно готовить ничего не нужно.",
+            "translation": "Quatro amigos preparam jantar. Um não come carne vermelha e outro não pode consumir laticínios. Escolhem arroz, legumes e peixe, com queijo separado. Lavam os legumes e leem o rótulo do molho. Como contém leite, não o usam. Todos conseguem compartilhar o prato principal."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-003",
+          "set": {
+            "text": "Мы собирались ехать на поезде, но наш поезд отменили. Вместо дорогих билетов на самолёт мы купили билеты на автобус. Он отправлялся на следующее утро. Поездка заняла больше времени, хотя сиденья были удобными. Мы приехали до свадьбы и успели отдохнуть.",
+            "translation": "Íamos viajar de trem, mas nosso trem foi cancelado. Em vez de passagens aéreas caras, compramos passagens de ônibus. Ele saía na manhã seguinte. A viagem demorou mais, embora os assentos fossem confortáveis. Chegamos antes do casamento e conseguimos descansar."
+          },
+          "remove": []
+        }
+      ],
+      "lessons": [
+        {
+          "id": "ru-v2-grammar-001",
+          "set": {
+            "examples": [
+              {
+                "text": "Я читал книгу весь вечер.",
+                "translation": "Passei a noite lendo um livro."
+              },
+              {
+                "text": "Я прочитал книгу.",
+                "translation": "Eu terminei de ler o livro."
+              },
+              {
+                "text": "Она каждый день пишет письма.",
+                "translation": "Ela escreve cartas todos os dias."
+              }
+            ]
+          },
+          "remove": []
+        }
+      ],
+      "exercises": [
+        {
+          "id": "ru-listening-001",
+          "set": {
+            "answers": [
+              "olá"
+            ],
+            "explanation": "Здравствуйте é uma saudação polida, formal ou dirigida a mais de uma pessoa. Em português, olá preserva melhor esse registro do que oi."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-009",
+          "set": {
+            "answers": [
+              "boa noite"
+            ],
+            "explanation": "Добрый вечер é cumprimento usado ao encontrar alguém à noite. Спокойной ночи é a expressão habitual para desejar boa noite antes de dormir."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-021",
+          "set": {
+            "explanation": "Один é a forma masculina do numeral um. Com substantivo feminino, a forma russa é одна; em português, um ou uma depende do substantivo traduzido."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-022",
+          "set": {
+            "explanation": "Два acompanha substantivos masculinos/neutros, como два стула; com substantivos femininos usa-se две. Em português, dois ou duas depende do substantivo traduzido."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-054",
+          "set": {
+            "explanation": "Я оставил деньги дома significa deixei o dinheiro em casa. Оставил indica falante masculino; uma falante mulher diria оставила. O ditado pede a frase ouvida, não uma reformulação."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-061",
+          "set": {
+            "answers": [
+              "Откройте окно, пожалуйста.",
+              "Пожалуйста, откройте окно.",
+              "Открой окно, пожалуйста.",
+              "Пожалуйста, открой окно."
+            ],
+            "explanation": "Откройте é imperativo cortês ou plural de открыть; Открой é singular informal. Пожалуйста pode vir antes ou depois."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-062",
+          "set": {
+            "answers": [
+              "Положите ключи на стол.",
+              "Ключи положите на стол.",
+              "Положи ключи на стол."
+            ],
+            "explanation": "Положите é forma cortês ou plural de положить; o acusativo ключи indica as chaves e на стол indica movimento para a mesa."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-063",
+          "set": {
+            "explanation": "Этот стул свободен indica cadeira desocupada; стул é masculino e свободен é a forma curta do adjetivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-064",
+          "set": {
+            "answers": [
+              "Кровать стоит рядом с окном.",
+              "Кровать находится рядом с окном."
+            ],
+            "explanation": "Рядом с exige instrumental: с окном. A frase também pode usar находится para explicitar localização."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-065",
+          "set": {
+            "answers": [
+              "Я не могу найти ключ.",
+              "Я не могу найти свой ключ.",
+              "Не могу найти свой ключ."
+            ],
+            "explanation": "Не могу найти significa não consigo encontrar; свой refere-se ao possuidor da frase e pode ser omitido se o contexto já o indicar."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-066",
+          "set": {
+            "answers": [
+              "Моя сумка под стулом.",
+              "Моя сумка находится под стулом."
+            ],
+            "explanation": "Под стулом indica localização debaixo da cadeira; após под em localização estática, usa-se instrumental."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-067",
+          "set": {
+            "explanation": "Одежда é substantivo coletivo singular em russo, por isso эта одежда чистая traduz naturalmente estas roupas estão limpas."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-068",
+          "set": {
+            "answers": [
+              "Пожалуйста, снимите обувь.",
+              "Снимите обувь, пожалуйста.",
+              "Сними обувь, пожалуйста."
+            ],
+            "explanation": "Снимите обувь é um pedido cortês ou plural para tirar os calçados; сними é singular informal."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-069",
+          "set": {
+            "answers": [
+              "Включите свет, пожалуйста.",
+              "Включи свет, пожалуйста."
+            ],
+            "explanation": "Включите свет significa acenda a luz; включи é o imperativo informal singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-070",
+          "set": {
+            "explanation": "Дети é o plural irregular de ребёнок; играют é a forma do presente com sujeito plural."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-071",
+          "set": {
+            "answers": [
+              "Я заканчиваю работу в шесть.",
+              "Я заканчиваю работу в шесть часов."
+            ],
+            "explanation": "Заканчиваю é presente da primeira pessoa; в шесть e в шесть часов expressam às seis."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-072",
+          "set": {
+            "answers": [
+              "Наш офис на третьем этаже.",
+              "Наш офис находится на третьем этаже."
+            ],
+            "explanation": "На третьем этаже indica no terceiro andar; находится pode explicitar a localização."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-073",
+          "set": {
+            "answers": [
+              "Встреча начнётся через десять минут.",
+              "Собрание начнётся через десять минут."
+            ],
+            "explanation": "Через десять минут significa daqui a dez minutos. Встреча e собрание podem designar tipos diferentes de reunião."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-074",
+          "set": {
+            "explanation": "Мой коллега pode se referir a colega do sexo masculino; говорит по-русски indica que fala russo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-075",
+          "set": {
+            "answers": [
+              "Эта должность требует опыта.",
+              "Для этой должности нужен опыт."
+            ],
+            "explanation": "Требует опыта e нужен опыт expressam exigência de experiência; após требует, опыта está no genitivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-076",
+          "set": {
+            "explanation": "Напротив indica em frente a e pede genitivo: библиотеки."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-077",
+          "set": {
+            "explanation": "Она учится в университете: учится descreve o fato de estudar numa instituição; в университете usa prepositivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-078",
+          "set": {
+            "explanation": "Студент читает письмо: o presente russo pode indicar uma ação em andamento, sem auxiliar equivalente ao inglês is."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-079",
+          "set": {
+            "answers": [
+              "Учитель объясняет правило.",
+              "Преподаватель объясняет правило."
+            ],
+            "explanation": "Учитель e преподаватель são nomes possíveis para professor em contextos diferentes; объясняет está no presente singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-080",
+          "set": {
+            "answers": [
+              "В этой книге много картинок.",
+              "В этой книге много изображений.",
+              "В этой книге много иллюстраций."
+            ],
+            "explanation": "После много, o substantivo aparece no genitivo plural: картинок ou изображений."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-081",
+          "set": {
+            "answers": [
+              "Запишите ответ в тетрадь.",
+              "Напишите ответ в тетради."
+            ],
+            "explanation": "Запишите ответ в тетрадь indica registrar a resposta no caderno; напишите ответ в тетради é outra construção natural."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-082",
+          "set": {
+            "answers": [
+              "Наш урок длится сорок минут.",
+              "Наше занятие длится сорок минут."
+            ],
+            "explanation": "Длится indica duração; сорок минут significa quarenta minutos, com минут na forma exigida por сорок."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-083",
+          "set": {
+            "explanation": "У меня вопрос e у меня есть вопрос expressam tenho uma pergunta; об этом слове marca o assunto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-084",
+          "set": {
+            "explanation": "Правильный e верный podem expressar correto; ambos concordam com ответ, substantivo masculino."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-085",
+          "set": {
+            "explanation": "В пятницу significa na sexta-feira; экзамен pode receber будет para marcar explicitamente o futuro."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-086",
+          "set": {
+            "explanation": "Останавливается é a forma do presente para o ônibus parar; здесь significa aqui."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-087",
+          "set": {
+            "answers": [
+              "Наш поезд отправляется в полдень.",
+              "Наш поезд уходит в полдень."
+            ],
+            "explanation": "Отправляется e уходит podem indicar a partida do trem; в полдень significa ao meio-dia."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-088",
+          "set": {
+            "answers": [
+              "Моя машина в гараже.",
+              "Моя машина стоит в гараже."
+            ],
+            "explanation": "В гараже indica localização dentro da garagem; машина pode ser descrita também com стоит quando estacionada."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-089",
+          "set": {
+            "answers": [
+              "Он ездит на работу на велосипеде.",
+              "Он ездит на велосипеде на работу.",
+              "Он едет на работу на велосипеде."
+            ],
+            "explanation": "Ездит sugere deslocamento habitual por transporte; едет pode descrever a viagem atual ou uma direção específica."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-090",
+          "set": {
+            "answers": [
+              "Какая станция следующая?",
+              "Какая следующая станция?"
+            ],
+            "explanation": "Какая следующая станция? e Какая станция следующая? perguntam qual será a próxima estação."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-091",
+          "set": {
+            "answers": [
+              "Мы едем в аэропорт.",
+              "Мы идём в аэропорт."
+            ],
+            "explanation": "Едем indica deslocamento de transporte; идём seria adequado se o trajeto até o aeroporto fosse feito a pé."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-092",
+          "set": {
+            "explanation": "Туда и обратно é a expressão de ida e volta; мне нужен билет significa preciso de um bilhete."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-093",
+          "set": {
+            "answers": [
+              "Покажите паспорт, пожалуйста.",
+              "Пожалуйста, покажите свой паспорт.",
+              "Покажи паспорт, пожалуйста.",
+              "Пожалуйста, покажите паспорт."
+            ],
+            "explanation": "Покажите é imperativo cortês ou plural; свой indica posse relacionada ao destinatário."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-094",
+          "set": {
+            "explanation": "Гостиница e отель significam hotel; a concordância muda de наша (feminino) para наш (masculino)."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-095",
+          "set": {
+            "explanation": "Тихая concorda com улица, feminino singular; очень significa muito."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-096",
+          "set": {
+            "explanation": "Я впервые в этом городе é expressão natural para estou nesta cidade pela primeira vez; não implica o gênero de quem fala."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-097",
+          "set": {
+            "explanation": "Можете показать мне на карте? é um pedido cortês; на карте indica no mapa."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-098",
+          "set": {
+            "answers": [
+              "Поверните налево на светофоре.",
+              "Поверните налево у светофора.",
+              "Поверни налево на светофоре.",
+              "Поверни налево у светофора."
+            ],
+            "explanation": "Поверните налево é um imperativo cortês ou plural; на светофоре e у светофора podem localizar a curva junto ao semáforo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-099",
+          "set": {
+            "answers": [
+              "Поверните направо после моста.",
+              "После моста поверните направо.",
+              "Поверни направо после моста."
+            ],
+            "explanation": "После моста exige genitivo após после; поверните направо significa vire à direita."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-writing-100",
+          "set": {
+            "answers": [
+              "Поездка была очень интересной.",
+              "Путешествие было очень интересным."
+            ],
+            "explanation": "После была, o adjetivo pode aparecer no instrumental: поездка была очень интересной."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-01-q1",
+          "set": {
+            "answers": [
+              "começa às dez",
+              "ela começa a trabalhar às dez",
+              "ela começa às dez",
+              "o trabalho começa às dez"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-03-q1",
+          "set": {
+            "answers": [
+              "às quartas",
+              "às quartas-feiras",
+              "quarta-feira",
+              "toda quarta-feira",
+              "todas as quartas-feiras"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-03-q2",
+          "set": {
+            "prompt": "O que Mila e seu amigo fazem depois da primeira leitura?",
+            "answers": [
+              "trocam de função",
+              "trocam de papel",
+              "trocam as funções",
+              "trocam os papéis"
+            ],
+            "explanation": "Mila lê em voz alta, o amigo anota as palavras novas e depois os dois trocam de função."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-04-q2",
+          "set": {
+            "answers": [
+              "para a avó ver as crianças",
+              "para ela ver as crianças brincando",
+              "para a avó acompanhar as crianças brincando"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-05-q1",
+          "set": {
+            "answers": [
+              "dez e meia",
+              "10h30",
+              "10:30",
+              "dez horas e trinta minutos",
+              "10h30min"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-06-q1",
+          "set": {
+            "answers": [
+              "salva num arquivo",
+              "salvando em um arquivo",
+              "salva em um arquivo",
+              "guardando o texto em um arquivo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-06-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, o telefone também",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-07-q1",
+          "set": {
+            "answers": [
+              "quatro",
+              "4",
+              "plataforma quatro",
+              "plataforma 4",
+              "na plataforma 4"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-08-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, custa o mesmo",
+              "não, o preço é igual",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-09-q1",
+          "set": {
+            "answers": [
+              "contém leite",
+              "porque contém leite",
+              "porque tem leite",
+              "o molho tem leite"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-09-q2",
+          "set": {
+            "answers": [
+              "não",
+              "não, é servido separado",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-10-q1",
+          "set": {
+            "answers": [
+              "que ele fale devagar",
+              "falar devagar",
+              "que fale mais devagar",
+              "falar mais devagar"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-10-q2",
+          "set": {
+            "answers": [
+              "dando exemplos",
+              "dá um exemplo",
+              "com exemplos",
+              "oferece um exemplo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-01",
+          "set": {
+            "explanation": "Хлеб significa pão."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-09",
+          "set": {
+            "explanation": "Станция significa estação, por exemplo, uma parada de trem ou metrô."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-10",
+          "set": {
+            "explanation": "Холодная concorda com вода, substantivo feminino singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-11",
+          "set": {
+            "explanation": "Семья é feminino singular, por isso o possessivo é моя: моя семья."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-12",
+          "set": {
+            "explanation": "Книга é feminino singular, então use новая книга. O russo não utiliza artigos."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-13",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-16",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ],
+            "explanation": "Был только кофе indica que só havia café; хотел é forma masculina do passado do verbo querer, mas a resposta à pergunta continua sendo não."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-19",
+          "set": {
+            "explanation": "Они é o pronome de terceira pessoa do plural: eles ou elas."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-20",
+          "set": {
+            "explanation": "Сообщение é um substantivo neutro em russo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-21",
+          "set": {
+            "explanation": "Com ты, o verbo читать assume a forma читаешь no presente."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-22",
+          "set": {
+            "explanation": "Что pergunta o quê; Что это? significa O que é isto?"
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-23",
+          "set": {
+            "explanation": "Сумка vira сумку no acusativo singular, porque é objeto de вижу."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-24",
+          "set": {
+            "explanation": "Мои é a forma plural do possessivo e acompanha окна, plural de окно."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-25",
+          "set": {
+            "explanation": "Я дома é natural no presente; a cópula ser ou estar geralmente fica implícita em russo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-27",
+          "set": {
+            "explanation": "Не antecede работает na negativa; сегодня pode aparecer no início ou no fim."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-28",
+          "set": {
+            "explanation": "Книга é feminino singular, por isso o possessivo é моя: где моя книга?"
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-29",
+          "set": {
+            "explanation": "Para posse, use у меня; após два, a forma é стула."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-001",
+          "set": {
+            "answers": [
+              "Мы закончили работу в срок.",
+              "Мы закончили работу вовремя.",
+              "Мы завершили работу в срок."
+            ],
+            "explanation": "В срок e вовремя indicam cumprimento de prazo; закончили e завершили expressam conclusão no passado."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-002",
+          "set": {
+            "answers": [
+              "Этот источник надёжный.",
+              "Этот источник надёжен."
+            ],
+            "explanation": "Надёжный e надёжен são formas possíveis para uma fonte confiável; a forma curta надёжен predica uma propriedade."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-003",
+          "set": {
+            "answers": [
+              "Нам нужно больше доказательств.",
+              "Нам необходимо больше доказательств."
+            ],
+            "explanation": "Нам нужно e нам необходимо expressam necessidade; доказательств é genitivo plural após больше."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-004",
+          "set": {
+            "answers": [
+              "Хотя было холодно, мы вышли на улицу.",
+              "Хотя было холодно, мы вышли."
+            ],
+            "explanation": "Хотя было холодно introduz contraste; мы вышли e мы вышли на улицу são naturais conforme o contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-011",
+          "set": {
+            "answers": [
+              "У неё есть опыт преподавания.",
+              "У неё есть преподавательский опыт."
+            ],
+            "explanation": "Опыт преподавания e преподавательский опыт indicam experiência em ensino; у неё есть expressa posse."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-012",
+          "set": {
+            "answers": [
+              "Какова цель этой встречи?",
+              "Какая цель этой встречи?"
+            ],
+            "explanation": "Какова цель e какая цель são maneiras gramaticais de perguntar pela finalidade da reunião."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-001-q1",
+          "set": {
+            "explanation": "Мы решили сделать небольшой общественный сад: a equipe decidiu fazer um jardim comunitário."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-001-q2",
+          "set": {
+            "answers": [
+              "todos os sábados",
+              "todo sábado",
+              "aos sábados"
+            ],
+            "explanation": "Мы встречались каждую субботу indica encontros todos os sábados."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-001-q3",
+          "set": {
+            "explanation": "Майя ухаживала за растениями: Maya cuidava das plantas."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-002-q1",
+          "set": {
+            "answers": [
+              "nome do autor e data",
+              "autor e data"
+            ],
+            "explanation": "В нём не было ни имени автора, ни даты: faltavam a identificação de autoria e a data."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-002-q2",
+          "set": {
+            "answers": [
+              "no site do hospital",
+              "site do hospital"
+            ],
+            "explanation": "Я нашёл отчёт на сайте больницы: o relatório estava no site do hospital."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-002-q3",
+          "set": {
+            "explanation": "Исследование ещё не закончено informa que o estudo ainda não havia terminado."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-003-q1",
+          "set": {
+            "explanation": "Но наш поезд отменили informa diretamente que o trem planejado foi cancelado; por isso a viagem passou a ser de ônibus."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-003-q2",
+          "set": {
+            "answers": [
+              "de ônibus",
+              "ônibus"
+            ],
+            "explanation": "Мы купили билеты на автобус: viajaram de ônibus."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-003-q3",
+          "set": {
+            "explanation": "Мы приехали до свадьбы: chegaram antes do casamento."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-004-q1",
+          "set": {
+            "answers": [
+              "há dois anos",
+              "dois anos"
+            ],
+            "explanation": "Я изучаю английский уже два года indica que estuda inglês há dois anos."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-004-q2",
+          "set": {
+            "answers": [
+              "um conto",
+              "conto",
+              "uma história curta"
+            ],
+            "explanation": "Каждую неделю мы обсуждаем один рассказ: discutem um conto por semana."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-004-q3",
+          "set": {
+            "explanation": "Никто не перебивает меня: ninguém interrompe quando a pessoa procura uma palavra."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-005-q1",
+          "set": {
+            "prompt": "Em qual área as lâmpadas se apagam quando não há ninguém?",
+            "explanation": "As lâmpadas se apagam quando não há ninguém no corredor; essa é a área monitorada no texto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-005-q2",
+          "set": {
+            "explanation": "Свет сразу включается, если кто-нибудь входит: acende quando alguém entra."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-reading-005-q3",
+          "set": {
+            "answers": [
+              "economizar energia",
+              "poupar energia"
+            ],
+            "explanation": "Цель проекта — экономить энергию: a finalidade é economizar energia."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-001-q3",
+          "set": {
+            "prompt": "Complete com a forma presente de писать: Она каждый день ___ письма.",
+            "explanation": "Каждый день indica hábito. Com она, o presente de писать é пишет."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-test-001",
+          "set": {
+            "prompt": "Вчера весь вечер мы ___ одну и ту же книгу. (читать)",
+            "answers": [
+              "читали"
+            ],
+            "explanation": "Длительность действия «весь вечер» показывает процесс; с подлежащим мы нужна форма читали."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-002-q1",
+          "set": {
+            "explanation": "После нет usa-se genitivo: время muda para времени na expressão У меня нет времени."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-002-q2",
+          "set": {
+            "explanation": "Em книга моего брата, o genitivo брата indica posse: o livro do meu irmão. Meu irmão: мой брат; do meu irmão: моего брата."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-002-q3",
+          "set": {
+            "explanation": "Após нет, машина vai para o genitivo singular машины: У Анны нет машины."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-test-002",
+          "set": {
+            "prompt": "У нас нет ___ для этого. (время)",
+            "explanation": "После нет в этой конструкции требуется родительный падеж: времени."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-test-003",
+          "set": {
+            "prompt": "Передайте эту записку ___. (друг)",
+            "explanation": "Получатель действия отвечает на вопрос кому?; здесь нужен дательный падеж: другу."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-test-004",
+          "set": {
+            "prompt": "Мы встретились с ___ у станции. (друг)",
+            "explanation": "С в значении совместного действия требует творительный падеж: с другом."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-test-005",
+          "set": {
+            "prompt": "Каждое утро она ___ на работу пешком. (ходить)",
+            "answers": [
+              "ходит"
+            ],
+            "explanation": "Каждое утро выражает привычное повторяющееся движение; нужна форма ходит."
+          },
+          "remove": []
+        }
+      ]
+    }
+  }
+}

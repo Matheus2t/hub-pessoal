@@ -1,6 +1,18 @@
+import argparse
 import json
+import os
+import sys
 from pathlib import Path
-root=Path('frontend/public/learn')
+
+repo_root = Path(__file__).resolve().parents[2]
+parser = argparse.ArgumentParser(description='Build the versioned EN/RU Learn catalogs.')
+parser.add_argument('--output-root', type=Path, default=repo_root / 'frontend/public/learn',
+                    help='catalog output directory (defaults to frontend/public/learn)')
+args = parser.parse_args()
+os.chdir(repo_root)
+sys.path.insert(0, str(repo_root / 'scripts/learn'))
+root = args.output_root.resolve()
+root.mkdir(parents=True, exist_ok=True)
 rows=[];topic=part=''
 for line in Path('scripts/learn/vocabulary.tsv').read_text(encoding='utf-8-sig').splitlines():
  if line.startswith('@'):topic,part=line[1:].split('|');continue
@@ -82,4 +94,13 @@ for language in ['en','ru']:
 print('Stage C per language: 10 readings/30 questions, 10 lessons/30 exercises, 30 assessment questions.')
 
 # Additive authored B1 pilot; independent validation is in platform-v2-content.spec.ts.
-runpy.run_path('scripts/learn/v2-content.py')['apply']()
+runpy.run_path('scripts/learn/v2-content.py')['apply'](root)
+
+# Editorial decisions are versioned separately from the authored source tables,
+# then applied deterministically as the final catalog-generation step.
+from catalog_overrides import apply_editorial_overrides
+for language in ('en', 'ru'):
+ p=root/f'{language}.json'
+ catalog=json.loads(p.read_text(encoding='utf-8'))
+ catalog=apply_editorial_overrides(catalog, language)
+ p.write_text(json.dumps(catalog,ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf-8')

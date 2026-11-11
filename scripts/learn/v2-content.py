@@ -77,9 +77,9 @@ def expand(language):
   prompt,answer=questions[0];exercises.append(dict(id=f'{language}-v2-test-{i+1:03}',language=language,skill='test',level='B1',topic=title,prompt=prompt,answers=[answer],wordIds=[],explanation=explanation))
  return dict(words=words,phrases=phrases,exercises=exercises,readings=readings,lessons=lessons)
 
-def apply():
+def apply(output_root=Path('frontend/public/learn')):
  for language in ['en','ru']:
-  path=Path(f'frontend/public/learn/{language}.json');data=json.loads(path.read_text(encoding='utf-8'));extra=expand(language)
+  path=Path(output_root)/f'{language}.json';data=json.loads(path.read_text(encoding='utf-8'));extra=expand(language)
   for key,rows in extra.items():
    ids={row['id'] for row in data.get(key,[])}
    data.setdefault(key,[]).extend(row for row in rows if row['id'] not in ids)

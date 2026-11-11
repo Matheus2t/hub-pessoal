@@ -1,5 +1,6 @@
 export type Language = 'en' | 'ru';
 export type Skill = 'vocabulary' | 'listening' | 'dictation' | 'writing' | 'reading' | 'grammar' | 'test';
+export type AttemptOutcome = 'correct' | 'incorrect' | 'uncertain';
 export type Grade = 0 | 1 | 2 | 3;
 export interface Word {
   id: string; language: Language; word: string; translation: string; example: string;
@@ -9,6 +10,8 @@ export interface Word {
 export interface Attempt {
   id: string; language: Language; itemId: string; skill: Skill; topic: string;
   answer: string; expected: string; correct: boolean; at: number; seconds: number;
+  /** Additive v3 evidence; absent on historical records. Used only for unrecognized open writing. */
+  assessmentOutcome?: 'uncertain';
   grade?: Grade;
 }
 export interface Card {
