@@ -19,13 +19,25 @@ let openTaskCount=0;
 verify(manifest.schemaVersion===1&&manifest.status==='ready-for-disabled-engineering-prototype'&&manifest.runtimeEnabled===false,'manifest must describe disabled engineering preview');
 verify(manifest.languages?.join('/')==='en/ru','both independent languages required');
 verify(manifest.preEngineeringChecks?.editorialInternalReviewComplete===true,'internal handoff must be complete');
-for(const gate of ['languageExpertApproval','realLearnerTested','publicReleaseAuthorized','newEngineBuilt','validAudioRecordings']){
+for(const gate of ['languageExpertApproval','realLearnerTested','publicReleaseAuthorized','validAudioRecordings']){
  verify(manifest.preEngineeringChecks?.[gate]===false,'cannot claim '+gate+' is already done');
 }
+verify(manifest.preEngineeringChecks?.newEngineBuilt===false,'pre-engineering baseline must remain an accurate snapshot');
 verify(manifest.nextEngineeringMilestone?.id==='C1-disabled-English-pilot','first milestone must be English prototype');
 verify(manifest.nextEngineeringMilestone?.requiresRuntimeFlagDefault===false,'feature flag must default off');
 verify(manifest.nextEngineeringMilestone?.requiresSeparateNewEventStore===true,'new events must not overload old Attempt records');
 verify(manifest.nextEngineeringMilestone?.requiresBackupVersionsAccepted?.join('/')==='1/2','old backups must remain importable');
+const implementation=manifest.engineeringImplementation;
+verify(implementation?.milestoneId==='C1-disabled-English-pilot'&&implementation?.status==='implemented-disabled-prototype','C1 implementation status must be recorded');
+verify(implementation?.runtimeEnabled===false&&implementation?.lessonId==='en-pilot-introductions-01','C1 must remain disabled and bound to the English pilot');
+verify(implementation?.indexedDbVersion===3&&implementation?.backupVersion===3,'C1 additive IndexedDB/backup versions must be documented');
+verify(implementation?.importsLegacyBackupVersions?.join('/')==='1/2','C1 must keep v1/v2 imports');
+verify(implementation?.additionalStores?.join('/')==='lessonEvents/lessonProgress','new evidence must use separate additive stores');
+verify(implementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&implementation?.publicRouteRequiresExplicitPreviewFlag===true,'C1 safety defaults missing');
+verify(implementation?.previewAccess==='loopback-only'&&implementation?.remotePreviewEnabled===false&&implementation?.remoteAccessRequiresServerAuthentication===true,'C1 must never enable remote preview via URL flag');
+const previewSource=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
+verify(!previewSource.includes("hostname.endsWith('.vercel.app')"),'C1 must not allow arbitrary Vercel hosts');
+verify(previewSource.includes("hostname==='localhost'")&&previewSource.includes("hostname==='127.0.0.1'"),'C1 local preview gate missing');
 for(const path of manifest.docs||[])verify(existsSync(path),'missing handoff document '+path);
 for(const path of Object.values(manifest.artifacts||{}).flat()){
  verify(existsSync(base+path),'missing declared content asset '+path);
@@ -116,11 +128,14 @@ verify(delayed.runtimeEnabled===false,'delayed practices cannot be enabled');
 const model=readFileSync('frontend/src/learn/model.ts','utf8');
 const storage=readFileSync('frontend/src/learn/storage.ts','utf8');
 const backup=readFileSync('frontend/src/learn/backup.ts','utf8');
-verify(/version:\s*1\s*\|\s*2\b/.test(model),'legacy backup model changed; reconcile before coding migration');
-verify(/indexedDB\.open\(NAME,\s*2\)/.test(storage),'legacy IDB version changed; reconcile baseline');
-verify(/\[1,2\]\.includes\(Number\(data\.version\)\)/.test(backup),'legacy v1/v2 parser changed; reconcile baseline');
-console.log('Cross-artifact checks: '+allTaskIds.size+' distinct tasks, '+openTaskCount+' open pilot rubric links, legacy IndexedDB v2 and backups v1/v2 checked.');
+verify(/version:\s*1\s*\|\s*2\s*\|\s*3\b/.test(model),'backup model must retain v1/v2 and add v3');
+verify(/indexedDB\.open\(NAME,\s*3\)/.test(storage),'database must upgrade additively from legacy IDB v2');
+verify(/\[1,2,3\]\.includes\(Number\(data\.version\)\)/.test(backup),'backup parser must accept v1, v2 and v3');
+for(const store of manifest.baseline?.legacyLearn?.stores||[])verify(storage.includes(`contains('${store}')`),`legacy store ${store} must remain intact`);
+for(const store of implementation?.additionalStores||[])verify(storage.includes(`contains('${store}')`),`missing additive event store ${store}`);
+verify(storage.includes("transaction(['lessonEvents','lessonProgress'],'readwrite')"),'evidence and progress must commit atomically');
+console.log('Cross-artifact checks: '+allTaskIds.size+' distinct tasks, '+openTaskCount+' open pilot rubric links, legacy stores preserved in IDB v3, backups v1/v2 imported and v3 round-tripped.');
 if(errors.length){
  console.error(errors.map(e=>'ERROR: '+e).join('\n'));
  process.exitCode=1;
-}else console.log('READY: engineering can implement a disabled prototype. NOT APPROVED: public learner release or proficiency claims.');
+}else console.log('C1 STRUCTURE READY: disabled pilot, additive storage and backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');
