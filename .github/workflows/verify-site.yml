@@ -33,6 +33,8 @@ jobs:
         run: npm run learn:validate-task-rubrics
       - name: Validate delayed comprehension and transfer probes
         run: npm run learn:validate-delayed
+      - name: Validate Codex readiness contract and legacy compatibility baseline
+        run: npm run learn:validate-readiness
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
