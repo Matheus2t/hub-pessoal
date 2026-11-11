@@ -81,6 +81,7 @@ A nova metodologia de Inglês/Russo segue as etapas 1–7 do plano de evolução
 - [Rastreabilidade do catálogo existente por competência](docs/learn-rastreabilidade-v1.md)
 - [Leitura contextual e avaliação independente](docs/learn-leitura-e-avaliacao-v1.md)
 - [Curadoria de materiais para as aulas-piloto](docs/learn-curadoria-pilotos-v1.md)
+- [Rubricas específicas para escrita e transferência nas aulas-piloto](docs/learn-rubricas-pilotos-v1.md)
 - [Handoff técnico e critérios para o Codex](docs/learn-handoff-codex.md)
 - Auditoria reprodutível de catálogos: `npm run learn:audit` (somente leitura).
 - Validação das propostas curriculares: `npm run learn:validate-pedagogy` (somente leitura).
