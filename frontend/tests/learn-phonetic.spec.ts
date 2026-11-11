@@ -122,7 +122,7 @@ test('Russian writing sessions use phonetic mode for Cyrillic without touching r
   await expect(field).toHaveValue('привет');
   await field.fill(ru.exercises.find(e=>e.skill==='writing')!.answers[0]);
   await page.getByRole('button',{name:'Verificar resposta'}).click();
-  await expect(page.locator('.learn-feedback')).toContainText('correto');
+  await expect(page.locator('.learn-feedback')).toContainText('encontrada nas opções cadastradas');
 });
 
 test('IME composition, manual signs and small-screen layout remain usable',async({page})=>{
