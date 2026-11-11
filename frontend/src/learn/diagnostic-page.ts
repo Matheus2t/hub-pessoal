@@ -5,6 +5,8 @@ import type {Language,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonPro
 import {lessonData,recordLessonEvent,saveLessonProgress} from './storage';
 import {buildDiagnosticResults,loadDiagnostic,makeDiagnosticEvent,type DiagnosticBundle,type DiagnosticQuestion} from './diagnostic-content';
 import './phonetic-editor';
+import {renderOpenResponseReview} from './open-review';
+import {renderLearnFlowNav} from './flow-nav';
 
 type Phase='intro'|'task'|'feedback'|'result';
 const labels:Record<Language,string>={en:'Inglês',ru:'Russo'};
@@ -173,7 +175,7 @@ export class LearnDiagnosticPlayer extends LightElement {
   return html`<section class="learn-diagnostic__panel" aria-labelledby="diagnostic-feedback-title">
    <p class="learn-diagnostic__eyebrow">Tarefa ${this.progress?.currentStage} de ${this.bundle?.questions.length}</p>
    <h2 id="diagnostic-feedback-title" tabindex="-1" data-diagnostic-focus>${event.outcome==='notAssessed'?'Tarefa não avaliada':open?'Resposta registrada para revisão':'Resultado desta tarefa'}</h2>
-   ${open?html`<p role="status">Sua resposta ficou como <strong>incerta</strong>. Não há avaliador confiável disponível para marcar o texto como certo ou errado.</p><p>${question.feedbackPt||'Esta resposta requer revisão.'}</p>`:event.outcome==='notAssessed'?html`<p role="status">Esta tarefa ficou como não avaliada e não reduz sua recomendação.</p>`:html`<p role="status"><strong>${this.statusText(event.outcome)}.</strong> ${question.feedbackPt||''}</p>${event.outcome==='notSupported'?html`<p>Gabarito: <strong>${question.correctAnswer}</strong></p>`:nothing}`}
+   ${open?html`<p role="status">Sua resposta ficou como <strong>incerta</strong>. Não há avaliador confiável disponível para marcar o texto como certo ou errado.</p>${renderOpenResponseReview(event,{prompt:question.promptPt,context:question.stimulus,reviewCriteria:[...(question.requiredMeaning||[]),...(question.acceptableVariations||[]).map(item=>`Variação que pode ser considerada: ${item}`),...(question.commonPitfalls||[]).map(item=>`Ponto para examinar: ${item}`)]})}`:event.outcome==='notAssessed'?html`<p role="status">Esta tarefa ficou como não avaliada e não reduz sua recomendação.</p>`:html`<p role="status"><strong>${this.statusText(event.outcome)}.</strong> ${question.feedbackPt||''}</p>${event.outcome==='notSupported'?html`<p>Gabarito: <strong>${question.correctAnswer}</strong></p>`:nothing}`}
    ${open&&question.exampleAnswers?.length?html`<button class="button" ?disabled=${this.busy||this.saving==='saving'} @click=${()=>this.revealExamples(question)}>${this.examplesShown?'Exemplos exibidos':'Ver exemplos após a tentativa'}</button>${this.examplesShown?html`<ul class="learn-diagnostic__examples" lang=${this.language}>${question.exampleAnswers.map(example=>html`<li>${example}</li>` )}</ul>`:nothing}`:nothing}
    <div class="learn-diagnostic__actions"><button class="button primary" ?disabled=${this.busy} @click=${()=>this.continueAfterFeedback()}>${this.progress?.currentStage===this.bundle?.questions.length?'Ver resultados':'Continuar'}</button></div>
   </section>`;
@@ -195,6 +197,7 @@ export class LearnDiagnosticPlayer extends LightElement {
   if(!this.bundle)return nothing;
   return html`<main class="learn-diagnostic" lang="pt-BR">
    <header class="learn-diagnostic__header"><a href=${`#/learn/${this.language}`} aria-label=${`Voltar ao Learn ${labels[this.language]}`}>← ${labels[this.language]}</a><span>DIAGNÓSTICO · PRÉVIA LOCAL</span></header>
+   ${renderLearnFlowNav(this.language,'diagnostic')}
    ${this.phase==='intro'?html`<section class="learn-diagnostic__panel" aria-labelledby="diagnostic-intro-title"><p class="learn-diagnostic__eyebrow">Opcional · ${this.bundle.questions.length} tarefas</p><h1 id="diagnostic-intro-title" tabindex="-1" data-diagnostic-focus>Diagnóstico inicial de ${labels[this.language]}</h1><p>Observe o que você já consegue fazer e sugira um ponto de partida. Não é uma prova de nível; respostas abertas ficam para revisão.</p>${this.progress?.diagnosticStatus==='inProgress'?html`<p role="status">Há uma tentativa em andamento, na tarefa ${(this.progress.currentStage||0)+1}.</p><div class="learn-diagnostic__actions"><button class="button primary" ?disabled=${this.busy} @click=${()=>this.begin(false)}>Continuar diagnóstico</button><button class="button" ?disabled=${this.busy} @click=${()=>this.skipDiagnostic()}>Pular diagnóstico</button></div>`:html`<div class="learn-diagnostic__actions"><button class="button primary" ?disabled=${this.busy} @click=${()=>this.begin(true)}>Começar</button><button class="button" ?disabled=${this.busy} @click=${()=>this.skipDiagnostic()}>Pular diagnóstico</button></div>`}<p class="learn-diagnostic__limits">Inglês e Russo têm históricos separados. Listening sem gravação validada e produção oral não são avaliados.</p></section>`:
     this.phase==='task'?this.renderTask(this.currentQuestion()!):this.phase==='feedback'?this.renderFeedback():this.renderResult()}
    ${this.error?html`<p class="learn-diagnostic__error" role="alert">${this.error} O texto digitado continua na tela; tente salvar novamente.</p>`:nothing}

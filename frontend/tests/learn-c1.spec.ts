@@ -35,6 +35,20 @@ test('preview route and entry link stay disabled without the explicit flag',asyn
  await page.goto('/#/learn/en');await expect(page.locator('.learn-c1-preview-link')).toHaveCount(0);
 });
 
+test('integrated Learn navigation is loopback-preview-only, keyboard-addressable and responsive',async({page})=>{
+ await page.goto('/?learn-preview=c5-integration#/learn/en/pilot-c1');await expect(page.locator('learn-pilot-player')).toBeVisible();
+ const nav=page.getByRole('navigation',{name:'Percurso integrado'});await expect(nav).toBeVisible();await expect(nav.getByRole('link')).toHaveCount(6);
+ await expect(nav.getByRole('link',{name:'Aula-piloto'})).toHaveAttribute('aria-current','page');
+ await expect(nav.getByRole('link',{name:'Diagnóstico'})).toHaveAttribute('href','#/learn/en/diagnostic');
+ await expect(nav.getByRole('link',{name:'Revisões'})).toHaveAttribute('href','#/learn/en/reviews');
+ await nav.getByRole('link',{name:'Visão integrada'}).focus();await page.keyboard.press('Tab');await expect(nav.getByRole('link',{name:'Diagnóstico'})).toBeFocused();
+ for(const theme of ['dark','light'])for(const width of [320,390,768,1366]){
+  await page.locator('html').evaluate((element:any,value)=>element.dataset.theme=value,theme);await page.setViewportSize({width,height:900});
+  const bounds=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));expect(bounds.scroll,`flow nav overflow at ${width}px/${theme}`).toBeLessThanOrEqual(bounds.client);
+ }
+ await page.goto('/?learn-preview=c1#/learn/en/pilot-c1');await expect(page.locator('learn-flow-nav')).toHaveCount(0);
+});
+
 test('the declarative English pilot renders contextual dialogue and question-specific closed feedback',async({page})=>{
  await openPilot(page);await expect(page.getByText('Consigo me apresentar, dizer brevemente o que estudo ou faço e perguntar sobre outra pessoa.')).toBeVisible();
  await page.getByRole('button',{name:'Começar'}).click();await expect(page.locator('.learn-pilot-dialogue li')).toHaveCount(5);await expect(page.locator('.learn-pilot-dialogue')).toHaveAttribute('lang','en');
@@ -49,6 +63,8 @@ test('open answers stay uncertain even when they exactly match a model; help is 
  await page.locator('details.learn-pilot-help').filter({has:page.getByText('Ver uma frase inicial')}).locator('summary').click();
  await page.getByRole('button',{name:'Registrar tentativa'}).click();await expect(page.locator('.learn-pilot-feedback')).toContainText('avaliação incerta');
  await expect(page.locator('.learn-pilot-feedback')).toContainText('não há revisor semântico confiável');
+ const review=page.locator('learn-open-response-review');await expect(review).toContainText('Revisão contextual pendente');await expect(review).toContainText("Hi, I'm Sam. I study programming.");await expect(review).toContainText('Frase inicial');
+ const downloadPromise=page.waitForEvent('download');await review.getByRole('button',{name:'Baixar ficha para revisão'}).click();expect((await downloadPromise).suggestedFilename()).toMatch(/^2t-learn-review-en-/);
  const first=await page.evaluate(async()=>{const request=indexedDB.open('2t-learn');const db=await new Promise<IDBDatabase>((resolve,reject)=>{request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)});const tx=db.transaction('lessonEvents','readonly');const rows=await new Promise<any[]>((resolve,reject)=>{const req=tx.objectStore('lessonEvents').getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});db.close();return rows.find(event=>event.taskId==='en-intro-p1')});
  expect(first.outcome).toBe('uncertain');expect(first.assessorKind).toBe('rubricWithReview');expect(first.reviewStatus).toBe('pending');expect(first.feedback).toBeNull();expect(first.isIndependentClaimAllowed).toBe(false);expect(first.shownAssistance.some((item:any)=>item.kind==='sentenceStarter')).toBe(true);
  await page.getByRole('button',{name:'Nova tentativa'}).click();await expect(page.getByLabel('Sua resposta em inglês')).toHaveValue('');

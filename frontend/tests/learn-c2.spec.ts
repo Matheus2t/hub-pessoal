@@ -59,6 +59,7 @@ test('Russian lesson shares the runner, gives distractor feedback, and keeps ope
  await expect(page.getByRole('button',{name:/Fonético ligado/})).toHaveAttribute('aria-pressed','true');
  await page.getByRole('button',{name:'Registrar tentativa'}).click();
  await expect(page.locator('.learn-pilot-feedback')).toContainText('avaliação incerta');
+ await expect(page.locator('learn-open-response-review')).toContainText('Teclado fonético');await expect(page.locator('learn-open-response-review dd[lang="ru"]')).toContainText('щ');
  await page.getByRole('button',{name:'Continuar'}).click();
  await expect(page.getByRole('heading',{name:'Encontre a biblioteca'})).toBeVisible();
  await expect(page.getByText('foi fornecida no enunciado e será registrada como ajuda lexical')).toBeVisible();
@@ -66,6 +67,7 @@ test('Russian lesson shares the runner, gives distractor feedback, and keeps ope
  await transfer.fill('Извините, где библиотека?');
  await page.getByRole('button',{name:'Registrar tentativa'}).click();
  await expect(page.locator('.learn-pilot-feedback')).toContainText('avaliação incerta');
+ await expect(page.locator('learn-open-response-review')).toContainText('Pista de vocabulário');await expect(page.locator('learn-open-response-review dd[lang="ru"]')).toContainText('Извините, где библиотека?');
  const events=await page.evaluate(async()=>{
   const db=await new Promise<IDBDatabase>((resolve,reject)=>{const r=indexedDB.open('2t-learn');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
   const tx=db.transaction('lessonEvents','readonly'),r=tx.objectStore('lessonEvents').index('unitId').getAll('ru-pilot-directions-01');

@@ -39,6 +39,7 @@ test('closed feedback is deterministic, open answers stay uncertain, and recomme
  await notKnowAndContinue(page);await expect(page.getByRole('heading',{name:'Produção escrita'})).toBeVisible();
  await page.getByLabel('Sua resposta').fill('Hi, I am Alex. I study design.');await page.getByRole('button',{name:'Registrar resposta para revisão'}).click();
  await expect(page.locator('.learn-diagnostic')).toContainText('ficou como incerta');await expect(page.locator('.learn-diagnostic')).toContainText('Não há avaliador confiável');
+ const review=page.locator('learn-open-response-review');await expect(review).toContainText('Revisão contextual pendente');await expect(review).toContainText('Enunciado');await expect(review).toContainText('Hi, I am Alex. I study design.');
  const before=await databaseRows(page);const answerEvent=before.events.find(event=>event.taskId==='en-diag-p1');
  expect(answerEvent.outcome).toBe('uncertain');expect(answerEvent.assessorKind).toBe('rubricWithReview');expect(answerEvent.feedback).toBeNull();expect(answerEvent.response).toBe('Hi, I am Alex. I study design.');expect(answerEvent.objectiveId).toBe('en-introductions-01');expect(answerEvent.competencyId).toBe('written-production');
  await page.getByRole('button',{name:'Ver exemplos após a tentativa'}).click();await expect(page.locator('.learn-diagnostic__examples')).toBeVisible();
