@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "2t-learn-evaluation-policy-v1",
+  "status": "pedagogical-draft",
+  "intent": "Support valid learning feedback while separating observed evidence from guesses about proficiency.",
+  "evidenceKinds": [
+    "recognition",
+    "comprehension",
+    "guidedProduction",
+    "independentProduction",
+    "transfer",
+    "delayedRecall",
+    "pronunciationNotAssessed"
+  ],
+  "outcomes": [
+    "supported",
+    "partiallySupported",
+    "notSupported",
+    "uncertain",
+    "notAssessed"
+  ],
+  "assessorKinds": [
+    "deterministic",
+    "rubricWithReview",
+    "humanReview",
+    "unavailable"
+  ],
+  "assistance": [
+    "none",
+    "wordGloss",
+    "translation",
+    "sentenceStarter",
+    "modelAnswer",
+    "phoneticKeyboard"
+  ],
+  "rules": [
+    {
+      "id": "EV-01",
+      "title": "No proficiency by volume",
+      "description": "Repeated answers to the same prompt count as practice, not independent transfer, delayed retention or CEFR certification."
+    },
+    {
+      "id": "EV-02",
+      "title": "Meaning over exemplar match",
+      "description": "An open-ended answer may have valid alternative vocabulary, word order or register; do not mark it wrong merely because it differs from examples."
+    },
+    {
+      "id": "EV-03",
+      "title": "Uncertain stays uncertain",
+      "description": "If the available evidence cannot establish whether a free response satisfies a rubric, use uncertain and request review or a clearer task."
+    },
+    {
+      "id": "EV-04",
+      "title": "Record help",
+      "description": "Show and retain which hints, translations and examples were actually used. A demonstrated answer with a visible model is not independent production."
+    },
+    {
+      "id": "EV-05",
+      "title": "Focus feedback",
+      "description": "Identify what succeeded, prioritize one change with a reason, then invite a meaningful retry. Do not overwhelm beginners with every minor error."
+    },
+    {
+      "id": "EV-06",
+      "title": "Communicative stakes",
+      "description": "Treat intelligible beginner approximations differently from errors that reverse meaning or make a route/destination unsafe or ambiguous."
+    },
+    {
+      "id": "EV-07",
+      "title": "Separated skills",
+      "description": "Correct writing does not prove speaking/pronunciation; hearing synthetic TTS is not proof of natural conversational listening."
+    },
+    {
+      "id": "EV-08",
+      "title": "No retrospective mastery",
+      "description": "Legacy word drills and translations remain valid historical attempts but cannot be silently recategorized as transfer or long-term competence."
+    },
+    {
+      "id": "EV-09",
+      "title": "Non-blocking",
+      "description": "A learner can continue or retry; missing listening audio, review tooling or storage must never be silently scored as learner failure."
+    }
+  ],
+  "openResponseRubric": {
+    "criterionLevels": [
+      "met",
+      "partiallyMet",
+      "notMet",
+      "notObservable"
+    ],
+    "criteria": [
+      {
+        "id": "intent",
+        "question": "Did the learner achieve the requested communicative purpose?",
+        "essential": true
+      },
+      {
+        "id": "semanticAccuracy",
+        "question": "Is the meaning coherent and compatible with the context?",
+        "essential": true
+      },
+      {
+        "id": "form",
+        "question": "Are the target-language forms adequate for the learner's stage and do errors hinder interpretation?",
+        "essential": false
+      },
+      {
+        "id": "register",
+        "question": "Is the tone appropriate to the person and situation?",
+        "essential": false
+      },
+      {
+        "id": "independence",
+        "question": "Was the answer produced without viewing the model or relying on assistance?",
+        "essential": false
+      },
+      {
+        "id": "transfer",
+        "question": "Does the answer solve a genuinely different scenario than training?",
+        "essential": false
+      }
+    ],
+    "decisionPolicy": [
+      "If any essential criterion is notObservable, classify the overall outcome as uncertain.",
+      "If communicative intent fails, classify as notSupported with helpful contextual feedback.",
+      "Do not conflate orthography errors with failures of meaning when the intent remains clear.",
+      "Do not record independentProduction when a modelAnswer was available during response.",
+      "Record transfer only when the prompt context differs and the model was unavailable.",
+      "Require a reviewed rubric decision for free text; never infer support by literal match alone."
+    ]
+  },
+  "feedbackContract": {
+    "keys": [
+      "whatWorked",
+      "priorityIssue",
+      "whyItMatters",
+      "concreteSuggestion",
+      "retryPrompt",
+      "assessmentLimits"
+    ],
+    "priorityIssueTypes": [
+      "meaning",
+      "missingInformation",
+      "wordChoice",
+      "grammar",
+      "orthography",
+      "register",
+      "notObservable",
+      "none"
+    ],
+    "example": {
+      "whatWorked": "Sua pergunta indica que você está procurando um local.",
+      "priorityIssue": "O destino mencionado não é o solicitado no novo cenário.",
+      "whyItMatters": "A outra pessoa pode indicar um trajeto para o lugar errado.",
+      "concreteSuggestion": "Troque a referência à estação por библиотека.",
+      "retryPrompt": "Pergunte novamente onde fica a biblioteca, sem consultar a frase modelo.",
+      "assessmentLimits": "Esta tentativa não avalia sua pronúncia."
+    }
+  },
+  "safetyAndPrivacy": {
+    "defaultStorage": "local browser only; an engineering decision is required before new records are persisted",
+    "externalEvaluation": "disabled until user consent, vendor selection, cost and privacy review",
+    "speechAssessment": "unavailable",
+    "autoGradingOpenResponses": "disabled"
+  }
+}
