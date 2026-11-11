@@ -239,7 +239,7 @@
       },
       "scenarioPt": "Uma pessoa procura um museu (музей) pela primeira vez.",
       "stimulus": {
-        "text": "Музей рядом с аптекой. Идите налево.",
+        "text": "Музей рядом с аптекой. Идите прямо, потом поверните налево.",
         "type": "written",
         "mediaAvailable": false,
         "assistiveTextShownBeforeAttempt": true
