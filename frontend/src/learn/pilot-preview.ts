@@ -1,7 +1,12 @@
-/** C1 is a local-only development prototype, not a remotely accessible preview.
- * Query parameters are never an authorization boundary. */
-export function isLearnC1PreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
+export type PilotPreviewId='c1'|'c2';
+
+/** Pilot routes are available only on loopback during local development.
+ * Query parameters are an opt-in switch, never an authorization boundary. */
+export function isLearnPilotPreviewEnabled(pilot:PilotPreviewId,host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  const hostname=host.toLowerCase();
  const local=hostname==='localhost'||hostname==='127.0.0.1'||hostname==='[::1]'||hostname==='::1';
- return local&&new URLSearchParams(search).get('learn-preview')==='c1';
+ return local&&new URLSearchParams(search).get('learn-preview')===pilot;
 }
+
+export const isLearnC1PreviewEnabled=(host?:string,search?:string)=>isLearnPilotPreviewEnabled('c1',host,search);
+export const isLearnC2PreviewEnabled=(host?:string,search?:string)=>isLearnPilotPreviewEnabled('c2',host,search);

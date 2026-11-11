@@ -30,6 +30,8 @@ export function validLessonFeedback(v:unknown):v is LessonFeedback {
 }
 export function validLessonEvent(v:unknown):v is LessonEvidenceEvent {
  if(!obj(v)||!text(v.eventId,120)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||!text(v.taskId,120)||!['comprehension','notice','guidedProduction','transfer'].includes(String(v.taskKind))||typeof v.response!=='string'||v.response.length>4000||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validShownAssistance)||!num(v.startedAt,0,MAX_TIME)||!num(v.submittedAt,v.startedAt,MAX_TIME)||!['supported','partiallySupported','notSupported','uncertain','notAssessed'].includes(String(v.outcome))||!['pending','reviewed','notRequired'].includes(String(v.reviewStatus))||!['deterministic','rubricWithReview','humanReview','unavailable'].includes(String(v.assessorKind))||(v.feedback!==null&&!validLessonFeedback(v.feedback))||!text(v.sourceContext,300)||typeof v.isIndependentClaimAllowed!=='boolean')return false;
+ const pilotLanguage:Record<string,string>={'en-pilot-introductions-01':'en','ru-pilot-directions-01':'ru'};
+ if(pilotLanguage[v.unitId]&&pilotLanguage[v.unitId]!==v.language)return false;
  const expected:{[K in LessonEvidenceEvent['taskKind']]:LessonEvidenceEvent['evidenceKind']}={comprehension:'comprehension',notice:'practiceOnly',guidedProduction:'guidedProduction',transfer:'transfer'};
  const taskKind=v.taskKind as LessonEvidenceEvent['taskKind'];
  if(v.evidenceKind!==expected[taskKind]||v.sourceContext!==`${v.unitId}@${v.contentVersion}/${v.taskId}`)return false;
@@ -37,8 +39,10 @@ export function validLessonEvent(v:unknown):v is LessonEvidenceEvent {
  if(v.taskKind==='notice')return v.assessorKind==='unavailable'&&v.reviewStatus==='notRequired'&&v.outcome==='notAssessed'&&!v.isIndependentClaimAllowed;
  if(v.assessorKind!=='rubricWithReview'||v.reviewStatus!=='pending'||v.outcome!=='uncertain'||v.feedback!==null)return false;
  if(taskKind==='transfer'){
-  const hasModelOrStarter=(v.shownAssistance as LessonEvidenceEvent['shownAssistance']).some(a=>a.kind==='modelAnswer'||a.kind==='sentenceStarter');
-  return v.isIndependentClaimAllowed===!hasModelOrStarter;
+  const shown=v.shownAssistance as LessonEvidenceEvent['shownAssistance'];
+  const hasModelOrStarterOrLexicalCue=shown.some(a=>a.kind==='modelAnswer'||a.kind==='sentenceStarter'||a.kind==='lexical-cue');
+  if(v.unitId==='ru-pilot-directions-01'&&v.taskId==='ru-dir-t1'&&!shown.some(a=>a.kind==='lexical-cue'&&a.value==='библиотека'&&a.shownBeforeAttempt))return false;
+  return v.isIndependentClaimAllowed===!hasModelOrStarterOrLexicalCue;
  }
  return !v.isIndependentClaimAllowed;
 }
@@ -47,6 +51,8 @@ export function validLessonDraft(v:unknown):v is LessonDraft {
 }
 export function validLessonProgress(v:unknown):v is LessonProgress {
  if(!obj(v)||!text(v.key,300)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||v.key!==`${v.language}:${v.unitId}`||!Number.isInteger(v.currentStage)||!num(v.currentStage,0,7)||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>100||!v.shownAssistance.every(validLessonAssistance)||!Array.isArray(v.drafts)||v.drafts.length>20||!v.drafts.every(validLessonDraft)||!num(v.updatedAt,0,MAX_TIME))return false;
+ const pilotLanguage:Record<string,string>={'en-pilot-introductions-01':'en','ru-pilot-directions-01':'ru'};
+ if(pilotLanguage[v.unitId]&&pilotLanguage[v.unitId]!==v.language)return false;
  const drafts=v.drafts as LessonDraft[];
  return new Set(drafts.map(d=>d.taskId)).size===drafts.length&&new Set(drafts.map(d=>d.eventId)).size===drafts.length;
 }

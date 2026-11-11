@@ -4,7 +4,7 @@ import {parseBackup} from '../src/learn/backup';
 import {isLearnC1PreviewEnabled} from '../src/learn/pilot-preview';
 
 const previewUrl='/?learn-preview=c1#/learn/en/pilot-c1';
-async function openPilot(page:Page){await page.goto(previewUrl);await expect(page.locator('learn-c1-pilot')).toBeVisible();await expect(page.locator('#pilot-title')).toBeVisible();await expect(page.getByRole('heading',{name:'Objetivo da aula'})).toBeVisible();}
+async function openPilot(page:Page){await page.goto(previewUrl);await expect(page.locator('learn-pilot-player')).toBeVisible();await expect(page.locator('#pilot-title')).toBeVisible();await expect(page.getByRole('heading',{name:'Objetivo da aula'})).toBeVisible();}
 async function answerClosed(page:Page,answer:string){await page.getByLabel(answer,{exact:true}).check();await page.getByRole('button',{name:'Registrar resposta'}).click();}
 async function reachGuidedProduction(page:Page){
  await openPilot(page);await page.getByRole('button',{name:'Começar'}).click();await page.getByRole('button',{name:'Abrir glossário'}).click();
@@ -31,7 +31,7 @@ test('preview route and entry link stay disabled without the explicit flag',asyn
  expect(isLearnC1PreviewEnabled('localhost','?learn-preview=c1')).toBe(true);
  expect(isLearnC1PreviewEnabled('127.0.0.1','?learn-preview=c1')).toBe(true);
  expect(isLearnC1PreviewEnabled('localhost','?learn-preview=c2')).toBe(false);
- await page.goto('/#/learn/en/pilot-c1');await expect(page.getByRole('heading',{name:'Página do Learn não encontrada'})).toBeVisible();await expect(page.locator('learn-c1-pilot')).toHaveCount(0);
+ await page.goto('/#/learn/en/pilot-c1');await expect(page.getByRole('heading',{name:'Página do Learn não encontrada'})).toBeVisible();await expect(page.locator('learn-pilot-player')).toHaveCount(0);
  await page.goto('/#/learn/en');await expect(page.locator('.learn-c1-preview-link')).toHaveCount(0);
 });
 

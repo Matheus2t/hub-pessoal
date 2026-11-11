@@ -28,16 +28,24 @@ verify(manifest.nextEngineeringMilestone?.requiresRuntimeFlagDefault===false,'fe
 verify(manifest.nextEngineeringMilestone?.requiresSeparateNewEventStore===true,'new events must not overload old Attempt records');
 verify(manifest.nextEngineeringMilestone?.requiresBackupVersionsAccepted?.join('/')==='1/2','old backups must remain importable');
 const implementation=manifest.engineeringImplementation;
-verify(implementation?.milestoneId==='C1-disabled-English-pilot'&&implementation?.status==='implemented-disabled-prototype','C1 implementation status must be recorded');
-verify(implementation?.runtimeEnabled===false&&implementation?.lessonId==='en-pilot-introductions-01','C1 must remain disabled and bound to the English pilot');
-verify(implementation?.indexedDbVersion===3&&implementation?.backupVersion===3,'C1 additive IndexedDB/backup versions must be documented');
-verify(implementation?.importsLegacyBackupVersions?.join('/')==='1/2','C1 must keep v1/v2 imports');
+verify(implementation?.milestoneId==='C1-disabled-English-pilot'&&implementation?.status==='implemented-disabled-prototypes','C1/C2 implementation status must be recorded');
+verify(implementation?.runtimeEnabled===false&&implementation?.lessonId==='en-pilot-introductions-01'&&implementation?.implementedLessonIds?.join('/')==='en-pilot-introductions-01/ru-pilot-directions-01','both pilots must remain disabled and bound to their approved content');
+verify(implementation?.sharedRuntimeLanguages?.join('/')==='en/ru'&&implementation?.russianPhoneticEditorReused===true&&implementation?.russianTransferLexicalCueRecorded==='библиотека','C2 must reuse the shared runtime and record Russian support');
+verify(implementation?.indexedDbVersion===3&&implementation?.backupVersion===3,'additive IndexedDB/backup versions must be documented');
+verify(implementation?.importsLegacyBackupVersions?.join('/')==='1/2','legacy v1/v2 imports must remain available');
 verify(implementation?.additionalStores?.join('/')==='lessonEvents/lessonProgress','new evidence must use separate additive stores');
-verify(implementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&implementation?.publicRouteRequiresExplicitPreviewFlag===true,'C1 safety defaults missing');
-verify(implementation?.previewAccess==='loopback-only'&&implementation?.remotePreviewEnabled===false&&implementation?.remoteAccessRequiresServerAuthentication===true,'C1 must never enable remote preview via URL flag');
+verify(implementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&implementation?.publicRouteRequiresExplicitPreviewFlag===true,'pilot safety defaults missing');
+verify(implementation?.previewAccess==='loopback-only'&&implementation?.remotePreviewEnabled===false&&implementation?.remoteAccessRequiresServerAuthentication===true,'pilots must never enable remote preview via URL flag');
 const previewSource=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
 verify(!previewSource.includes("hostname.endsWith('.vercel.app')"),'C1 must not allow arbitrary Vercel hosts');
 verify(previewSource.includes("hostname==='localhost'")&&previewSource.includes("hostname==='127.0.0.1'"),'C1 local preview gate missing');
+verify(previewSource.includes("get('learn-preview')===pilot")&&previewSource.includes("'c1'|'c2'"),'C1/C2 must use separate explicit loopback-only preview flags');
+const runtimeSource=readFileSync('frontend/src/learn/pilot-page.ts','utf8');
+verify(runtimeSource.includes("@customElement('learn-pilot-player')")&&runtimeSource.includes('loadPilotBundle(language)'),'C1/C2 must share one declarative runner');
+verify(runtimeSource.includes("import './phonetic-editor'")&&runtimeSource.includes('onPhoneticInput'),'Russian pilot must use the existing phonetic editor');
+verify(runtimeSource.includes("kind==='lexical-cue'")&&runtimeSource.includes('promptAssistance'),'Russian provided lexical support must be recorded by the runner');
+const routes=readFileSync('frontend/src/catalog.ts','utf8');
+verify(routes.includes("isLearnPilotPreviewEnabled('c1')")&&routes.includes("isLearnPilotPreviewEnabled('c2')"),'both pilot routes must be guarded in the main catalog');
 for(const path of manifest.docs||[])verify(existsSync(path),'missing handoff document '+path);
 for(const path of Object.values(manifest.artifacts||{}).flat()){
  verify(existsSync(base+path),'missing declared content asset '+path);
@@ -138,4 +146,4 @@ console.log('Cross-artifact checks: '+allTaskIds.size+' distinct tasks, '+openTa
 if(errors.length){
  console.error(errors.map(e=>'ERROR: '+e).join('\n'));
  process.exitCode=1;
-}else console.log('C1 STRUCTURE READY: disabled pilot, additive storage and backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');
+}else console.log('C1/C2 STRUCTURE READY: shared disabled pilots, additive storage and legacy backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');
