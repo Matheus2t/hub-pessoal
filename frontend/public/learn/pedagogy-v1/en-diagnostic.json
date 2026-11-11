@@ -29,7 +29,8 @@
       ],
       "correctIndex": 1,
       "feedbackPt": "O texto diferencia morning, afternoon e after dinner. Ela trabalha à tarde.",
-      "evidence": "comprehension"
+      "evidence": "comprehension",
+      "correctAnswer": "À tarde"
     },
     {
       "id": "en-diag-r2",
@@ -46,7 +47,8 @@
       ],
       "correctIndex": 0,
       "feedbackPt": "A estação e a bilheteria estão fechadas. A indicação do ônibus é uma alternativa de transporte.",
-      "evidence": "comprehension"
+      "evidence": "comprehension",
+      "correctAnswer": "Porque a estação não está funcionando"
     },
     {
       "id": "en-diag-k1",
@@ -57,13 +59,14 @@
       "stimulus": "A classmate says: 'Nice to meet you.'",
       "promptPt": "Qual resposta combina melhor com esse primeiro encontro?",
       "choices": [
-        "Nice to meet you too.",
+        "Where is the train?",
         "I am late yesterday.",
-        "Where is the train?"
+        "Nice to meet you too."
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "feedbackPt": "'Nice to meet you too' responde educadamente ao cumprimento.",
-      "evidence": "recognition"
+      "evidence": "recognition",
+      "correctAnswer": "Nice to meet you too."
     },
     {
       "id": "en-diag-k2",
@@ -74,13 +77,14 @@
       "stimulus": "You didn't understand what your colleague just said.",
       "promptPt": "Qual expressão é mais adequada para pedir repetição?",
       "choices": [
-        "Could you repeat that, please?",
         "I have already sent it.",
+        "Could you repeat that, please?",
         "The office is upstairs."
       ],
-      "correctIndex": 0,
-      "feedbackPt": "A primeira opção pede diretamente que a outra pessoa repita a informação.",
-      "evidence": "recognition"
+      "correctIndex": 1,
+      "feedbackPt": "A expressão 'Could you repeat that, please?' pede educadamente que o colega repita o que disse.",
+      "evidence": "recognition",
+      "correctAnswer": "Could you repeat that, please?"
     },
     {
       "id": "en-diag-p1",
@@ -223,7 +227,8 @@
       "correctIndex": 0,
       "feedbackPt": "A fala diz 'I study in the morning'.",
       "evidence": "comprehension",
-      "requiresAudio": true
+      "requiresAudio": true,
+      "correctAnswer": "De manhã"
     },
     {
       "id": "en-diag-l2",
@@ -239,14 +244,15 @@
       },
       "promptPt": "Depois de seguir em frente, a pessoa deve virar para qual lado?",
       "choices": [
-        "Direita",
+        "Nenhum",
         "Esquerda",
-        "Nenhum"
+        "Direita"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "feedbackPt": "A instrução diz 'turn right after the bank'.",
       "evidence": "comprehension",
-      "requiresAudio": true
+      "requiresAudio": true,
+      "correctAnswer": "Direita"
     }
   ],
   "assessmentIntegrity": {
@@ -256,5 +262,11 @@
     "diagnosticDistinctContext": "photography club",
     "risk": "The learner may recognize a rehearsed template; diagnostic must not reproduce the same situation and answer as the pilot.",
     "reviewStatus": "editorial-review-required"
+  },
+  "assessmentQuality": {
+    "answerKey": "For closed questions, correctAnswer is checked against choices[correctIndex] to prevent accidental key drift when editing distractors.",
+    "distractorOrder": "Balanced across first, second, third positions for the current six closed items in each language.",
+    "constructValidity": "A closed item measures only its declared comprehension/recognition objective, not CEFR proficiency or open communication.",
+    "reviewer": "Structural and editorial checks only; needs an independent language and learner review before activation."
   }
 }
