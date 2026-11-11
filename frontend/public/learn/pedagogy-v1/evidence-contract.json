@@ -76,6 +76,13 @@
       "onlyIf": "new context, model hidden; lexical cue recorded"
     },
     {
+      "source": "delayed.comprehension",
+      "evidence": "comprehension",
+      "competencyUse": "written-comprehension-after-recommended-interval",
+      "assessor": "deterministic",
+      "validForIndependentProduction": false
+    },
+    {
       "source": "delayed.writtenTransfer",
       "evidence": "delayedRecall",
       "competencyUse": "written-delayed-recall-and-transfer-with-declared-assistance",
@@ -128,7 +135,8 @@
       "sentenceStarter",
       "modelAnswer",
       "phoneticKeyboard",
-      "lexical-cue"
+      "lexical-cue",
+      "writtenStimulus"
     ],
     "lexicalCueScope": "Can support construction of a phrase but cannot establish independent recall of the supplied word.",
     "modelAnswerScope": "If shown before answer, suppress independent-production or transfer competency claims for that attempt.",
@@ -179,6 +187,12 @@
     "competencyId": "One of written-comprehension, contextual-recognition, written-production, written-transfer or listening-comprehension.",
     "diagnosticSessionId": "Opaque local session identifier used for resume, separation and idempotence; does not identify a person.",
     "persistenceCompatibility": "Optional fields are added to the existing v3 lessonEvents store; backup v1/v2/v3 contracts and the IndexedDB version remain unchanged."
+  },
+  "delayedReviewEventExtension": {
+    "fields": ["probeId", "attemptId", "pilotCompletedAt", "dueAt", "recommendedDelayDays", "elapsedMs", "previousReviewAt"],
+    "comprehensionEvidence": "Deterministic closed response; records the actually observed interval after the pilot.",
+    "openResponse": "Always uncertain and pending human review; never judged by literal string equality.",
+    "persistenceCompatibility": "Optional fields in existing lessonEvents and lessonProgress stores; IndexedDB remains v3 and backup remains v3."
   },
   "recommendationRules": [
     {

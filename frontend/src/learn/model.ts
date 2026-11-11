@@ -19,14 +19,15 @@ export interface PlanSettings {language:Language;goal:number;minutes:number;mode
 export interface PlanItem {attemptId:string;itemId:string;mode:'flashcards'|'exercise';reason:string}
 export interface DailyPlan {id:string;language:Language;day:string;timezone:string;createdAt:number;goal:number;minutes:number;items:PlanItem[];activeItemId?:string}
 export type PlanningRecord = {key:string;kind:'settings';language:Language;settings:PlanSettings}|{key:string;kind:'plan';language:Language;plan:DailyPlan};
-export type LessonTaskKind = 'comprehension'|'notice'|'guidedProduction'|'transfer'|'diagnosticReading'|'diagnosticRecognition'|'diagnosticGuidedProduction'|'diagnosticIndependentProduction'|'diagnosticTransfer'|'diagnosticListening';
-export type LessonEvidenceKind = 'comprehension'|'practiceOnly'|'guidedProduction'|'transfer'|'recognition'|'independentProduction';
+export type LessonTaskKind = 'comprehension'|'notice'|'guidedProduction'|'transfer'|'diagnosticReading'|'diagnosticRecognition'|'diagnosticGuidedProduction'|'diagnosticIndependentProduction'|'diagnosticTransfer'|'diagnosticListening'|'delayedRecall';
+export type LessonEvidenceKind = 'comprehension'|'practiceOnly'|'guidedProduction'|'transfer'|'recognition'|'independentProduction'|'delayedRecall';
 export type DiagnosticCompetencyId='written-comprehension'|'contextual-recognition'|'written-production'|'written-transfer'|'listening-comprehension';
 export type LessonOutcome = 'supported'|'partiallySupported'|'notSupported'|'uncertain'|'notAssessed';
-export type LessonAssistanceKind = 'wordGloss'|'translation'|'sentenceStarter'|'modelAnswer'|'phoneticKeyboard'|'lexical-cue';
-export interface LessonAssistance {kind:LessonAssistanceKind;value:string;taskId:string;shownAt:number}
+export type LessonAssistanceKind = 'wordGloss'|'translation'|'sentenceStarter'|'modelAnswer'|'phoneticKeyboard'|'lexical-cue'|'writtenStimulus';
+export interface LessonAssistance {kind:LessonAssistanceKind;value:string;taskId:string;shownAt:number;attemptId?:string}
 export interface LessonShownAssistance extends LessonAssistance {shownBeforeAttempt:boolean}
 export interface LessonFeedback {whatWorked:string;priorityIssue:string;whyItMatters:string;concreteSuggestion:string;retryPrompt:string;assessmentLimits:string}
+export interface DelayedReviewEventData {probeId:string;attemptId:string;pilotCompletedAt:number;dueAt:number;recommendedDelayDays:2|7;elapsedMs:number;previousReviewAt?:number}
 export interface LessonEvidenceEvent {
   eventId:string;language:Language;unitId:string;contentVersion:number;taskId:string;
   taskKind:LessonTaskKind;evidenceKind:LessonEvidenceKind;
@@ -34,13 +35,16 @@ export interface LessonEvidenceEvent {
   outcome:LessonOutcome;reviewStatus:'pending'|'reviewed'|'notRequired';
   assessorKind:'deterministic'|'rubricWithReview'|'humanReview'|'unavailable';
   feedback:LessonFeedback|null;sourceContext:string;isIndependentClaimAllowed:boolean;
-  diagnosticSessionId?:string;objectiveId?:string;competencyId?:DiagnosticCompetencyId;
+  diagnosticSessionId?:string;objectiveId?:string;competencyId?:DiagnosticCompetencyId;delayedReview?:DelayedReviewEventData;
 }
 export interface LessonDraft {taskId:string;eventId:string;response:string;startedAt:number;updatedAt:number;choiceIndex?:number}
+export interface DelayedReviewAttemptProgress {attemptId:string;probeId:string;status:'inProgress'|'completed'|'notAssessed';startedAt:number;currentTaskIndex:number;completedAt?:number}
+export interface DelayedReviewProgressState {pilotCompletedAt:number;attempts:DelayedReviewAttemptProgress[]}
 export interface LessonProgress {
   key:string;language:Language;unitId:string;contentVersion:number;currentStage:number;
   shownAssistance:LessonAssistance[];drafts:LessonDraft[];updatedAt:number;
   diagnosticSessionId?:string;diagnosticStatus?:'inProgress'|'completed'|'skipped';diagnosticLastEventId?:string;
+  sessionKind?:'delayedReview';delayedReview?:DelayedReviewProgressState;
 }
 export interface Backup {
   format:'2t-learn';version:1|2|3;exportedAt:number;attempts:Attempt[];cards:Card[];

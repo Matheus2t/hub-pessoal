@@ -44,6 +44,11 @@ verify(diagnostic?.openResponseOutcomeWithoutReviewer==='uncertain'&&diagnostic?
 verify(diagnostic?.persistence?.join('/')==='lessonEvents/lessonProgress'&&diagnostic?.indexedDbVersion===3&&diagnostic?.backupVersion===3&&diagnostic?.legacyBackupVersionsAccepted?.join('/')==='1/2','C3 must preserve additive v3 persistence and legacy backup import');
 verify(diagnostic?.recordedEvidenceFields?.includes('objectiveId')&&diagnostic?.recordedEvidenceFields?.includes('competencyId')&&evidence.diagnosticEventExtension?.persistenceCompatibility?.includes('version remain unchanged'),'C3 evidence must identify objective, competency and the unchanged persistence version');
 verify(diagnostic?.previewAccess==='loopback-only'&&diagnostic?.previewFlags?.en==='diagnostic-en'&&diagnostic?.previewFlags?.ru==='diagnostic-ru','C3 preview flags must remain loopback-only and language-specific');
+const delayedImplementation=manifest.delayedReviewImplementation;
+verify(delayedImplementation?.milestoneId==='C4-spaced-consolidation'&&delayedImplementation?.runtimeEnabled===false,'C4 must remain disabled by default');
+verify(delayedImplementation?.languages?.join('/')==='en/ru'&&delayedImplementation?.probeCounts?.en===2&&delayedImplementation?.probeCounts?.ru===2&&delayedImplementation?.taskCount===8,'C4 must use the four existing probes and eight tasks');
+verify(delayedImplementation?.intervalsDays?.join('/')==='2/7'&&delayedImplementation?.scheduleAnchor?.includes('actual completion timestamp'),'C4 schedule must use real pilot completion time');
+verify(delayedImplementation?.openResponseOutcomeWithoutReviewer==='uncertain'&&delayedImplementation?.previewAccess==='loopback-only'&&delayedImplementation?.previewFlag==='c4-delayed','C4 must stay local-only and keep open answers uncertain');
 const previewSource=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
 verify(!previewSource.includes("hostname.endsWith('.vercel.app')"),'C1 must not allow arbitrary Vercel hosts');
 verify(previewSource.includes("hostname==='localhost'")&&previewSource.includes("hostname==='127.0.0.1'"),'C1 local preview gate missing');
@@ -61,6 +66,12 @@ verify(diagnosticRuntime.includes("@customElement('learn-diagnostic-player')")&&
 verify(diagnosticRuntime.includes('learn-phonetic-editor')&&diagnosticRuntime.includes('makeDiagnosticEvent'),'C3 must reuse phonetic input and the typed evidence model');
 const diagnosticContract=readFileSync('frontend/src/learn/diagnostic-content.ts','utf8');
 verify(diagnosticContract.includes("outcome==='uncertain'")&&diagnosticContract.includes("'notAssessed'")&&diagnosticContract.includes('minTasksBeforeAnyRecommendation'),'C3 must implement uncertainty, missing-media and recommendation thresholds');
+const delayedRuntime=readFileSync('frontend/src/learn/delayed-review-page.ts','utf8');
+const delayedRoute=readFileSync('frontend/src/learn/pilot-preview.ts','utf8');
+verify(delayedRuntime.includes("@customElement('learn-delayed-review')")&&delayedRuntime.includes('pilotCompletionAt')&&delayedRuntime.includes('recordLessonEvent'),'C4 runtime must derive the schedule from pilot evidence and persist reviews');
+verify(delayedRuntime.includes('makeDelayedReviewEvent')&&delayedRuntime.includes('learn-phonetic-editor')&&delayedRuntime.includes('skipRemaining'),'C4 must preserve uncertainty, Russian input and unassessed skips');
+verify(delayedRoute.includes("get('learn-preview')==='c4-delayed'")&&delayedRoute.includes("hostname==='localhost'")&&delayedRoute.includes("hostname==='127.0.0.1'"),'C4 preview route must require the exact loopback flag');
+verify(evidence.delayedReviewEventExtension?.openResponse?.includes('Always uncertain')&&evidence.delayedReviewEventExtension?.persistenceCompatibility?.includes('IndexedDB remains v3'),'C4 event contract must preserve uncertainty and v3 storage');
 for(const path of manifest.docs||[])verify(existsSync(path),'missing handoff document '+path);
 for(const path of Object.values(manifest.artifacts||{}).flat()){
  verify(existsSync(base+path),'missing declared content asset '+path);
@@ -161,4 +172,4 @@ console.log('Cross-artifact checks: '+allTaskIds.size+' distinct tasks, '+openTa
 if(errors.length){
  console.error(errors.map(e=>'ERROR: '+e).join('\n'));
  process.exitCode=1;
-}else console.log('C1/C2 + C3 STRUCTURE READY: shared disabled pilots, local-only diagnostics, additive storage and legacy backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');
+}else console.log('C1/C2 + C3 + C4 STRUCTURE READY: disabled pilots, local-only diagnostics/reviews, additive storage and legacy backup compatibility are wired. NOT APPROVED: public learner release or proficiency claims.');

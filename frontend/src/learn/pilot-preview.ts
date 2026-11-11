@@ -16,3 +16,9 @@ export function isLearnDiagnosticPreviewEnabled(language:DiagnosticPreviewLangua
  const local=hostname==='localhost'||hostname==='127.0.0.1'||hostname==='[::1]'||hostname==='::1';
  return local&&new URLSearchParams(search).get('learn-preview')===`diagnostic-${language}`;
 }
+
+export function isLearnDelayedReviewPreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
+ const hostname=host.toLowerCase();
+ const local=hostname==='localhost'||hostname==='127.0.0.1'||hostname==='[::1]'||hostname==='::1';
+ return local&&new URLSearchParams(search).get('learn-preview')==='c4-delayed';
+}
