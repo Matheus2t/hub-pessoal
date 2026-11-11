@@ -662,8 +662,51 @@ local, e **nenhum preview remoto é autorizado** por esta implementação. O pro
 `main`. Quando o projeto correto estiver acessível, uma prévia remota deverá ter
 autenticação no servidor/Vercel validada antes de qualquer habilitação.
 
-**Estado da entrega:** implementada para teste em localhost e proposta no PR #92;
-não integrada a `main` nem publicada em produção nesta etapa. Após os checks, a
-integração do código pode ser avaliada sem habilitar a aula publicamente, mas a
-implantação exata do domínio oficial continua sem confirmação pela conexão Vercel
-atual. Não iniciar Russo nem expansão curricular nesta etapa.
+**Estado da entrega na revisão C2:** PR #92 foi integrado à `main` no commit
+`16364afc86f5208a96e4eaea7c76d1294cbe57c0`. A rota C1 no domínio oficial foi
+observada como “Página do Learn não encontrada” tanto sem parâmetro como com
+`?learn-preview=c1`. A conexão Vercel disponível não identifica o projeto correto;
+portanto o SHA exato do deployment oficial não foi confirmado.
+
+## Etapa C2 — aula-piloto de Russo (11/2026)
+
+O piloto `ru-pilot-directions-01` usa o mesmo elemento e executor declarativo de
+C1 (`learn-pilot-player`), recebendo idioma e ID da aula como propriedades. O
+catálogo/roteamento aceita `#/learn/ru/pilot-c2` apenas com `?learn-preview=c2`
+em loopback (`localhost`, `127.0.0.1` ou IPv6 local). A rota não é publicada como
+atividade disponível em hosts remotos; o parâmetro não é tratado como autenticação.
+`runtimeEnabled` e `publicReleaseApproved` continuam `false` no conteúdo e no
+manifesto.
+
+O piloto contém quatro falas em russo, duas questões fechadas com feedback por
+alternativa incorreta, uma etapa de observação sem nota, produção guiada, tarefa
+de transferência e resumo. As ajudas existentes de idioma são reutilizadas, e o
+editor fonético já implementado converte a resposta para cirílico sem criar outro
+campo de armazenamento. Respostas abertas ficam sempre `uncertain`, inclusive
+quando coincidem com um exemplo; as rubricas aguardam revisão humana/linguística.
+
+Na transferência, `библиотека` aparece no enunciado. O executor registra essa pista
+como assistência lexical antes da tentativa; o evento não permite alegar produção
+independente. A disponibilidade do teclado fonético também é registrada por
+tarefa. Progresso, rascunhos e eventos usam a chave `ru:ru-pilot-directions-01`,
+separada da chave do piloto inglês. IndexedDB permanece na v3; importação v1/v2 e
+validação/round-trip v3 foram preservados, sem alteração nas stores legadas.
+
+### Validação C2
+
+- `npm run build` aprovado (inclui typecheck) após as alterações do executor.
+- Dez validadores Learn aprovados: auditoria, pedagogia, diagnósticos, qualidade,
+  cobertura, leitura, curadoria, rubricas, revisões adiadas e readiness.
+- Playwright Learn: 95/95 aprovados em 11 arquivos, incluindo os cinco testes C2,
+  sete testes C1, catálogo legado, backups, teclado fonético, temas e larguras
+  responsivas. O teste C2 cobre as larguras 320, 390, 768 e 1366 px nos dois
+  temas; fluxo e persistência foram executados no Edge local.
+- O primeiro teste Playwright foi bloqueado pelo sandbox ao iniciar o Edge; os
+  testes foram então executados com o servidor preso a loopback e Chromium/Edge
+  local autorizado. A repetição direcionada C2 passou 5/5.
+- `git diff --check` aprovado na revisão final.
+
+**Limites e liberação:** o piloto continua somente para desenvolvimento local. Não
+houve ativação pública, acesso remoto, revisão por especialista de russo, teste com
+alunos, avaliação semântica confiável ou áudio. A estrutura pode ser testada por
+desenvolvimento, mas não está aprovada como conteúdo de ensino para estudantes.

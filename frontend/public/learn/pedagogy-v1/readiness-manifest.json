@@ -178,9 +178,19 @@
   },
   "engineeringImplementation": {
     "milestoneId": "C1-disabled-English-pilot",
-    "status": "implemented-disabled-prototype",
+    "status": "implemented-disabled-prototypes",
     "runtimeEnabled": false,
     "lessonId": "en-pilot-introductions-01",
+    "implementedLessonIds": [
+      "en-pilot-introductions-01",
+      "ru-pilot-directions-01"
+    ],
+    "sharedRuntimeLanguages": [
+      "en",
+      "ru"
+    ],
+    "russianPhoneticEditorReused": true,
+    "russianTransferLexicalCueRecorded": "библиотека",
     "indexedDbVersion": 3,
     "additionalStores": [
       "lessonEvents",
