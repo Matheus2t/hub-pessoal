@@ -8,7 +8,8 @@
     "build:css": "sass frontend/styles/main.scss dist/styles.css --style=compressed && node scripts/copy-financials.cjs",
     "learn:audit": "node scripts/audit-learn-curriculum.mjs --check",
     "learn:validate-pedagogy": "node scripts/validate-learn-pedagogy.mjs",
-    "learn:validate-diagnostics": "node scripts/validate-learn-diagnostics.mjs"
+    "learn:validate-diagnostics": "node scripts/validate-learn-diagnostics.mjs",
+    "learn:quality-audit": "node scripts/audit-learn-teaching-quality.mjs --check"
   },
   "dependencies": {
     "lit": "^3.2.1"
