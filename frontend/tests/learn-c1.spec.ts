@@ -24,7 +24,13 @@ test('preview route and entry link stay disabled without the explicit flag',asyn
  expect(isLearnC1PreviewEnabled('www.matheus2t.com.br','?learn-preview=c1')).toBe(false);
  expect(isLearnC1PreviewEnabled('matheus2t.vercel.app','?learn-preview=c1')).toBe(false);
  expect(isLearnC1PreviewEnabled('preview-hub.vercel.app','')).toBe(false);
+ expect(isLearnC1PreviewEnabled('preview-hub.vercel.app','?learn-preview=c1')).toBe(false);
+ expect(isLearnC1PreviewEnabled('unprotected-branch.vercel.app','?learn-preview=c1')).toBe(false);
+ expect(isLearnC1PreviewEnabled('another-domain.example','?learn-preview=c1')).toBe(false);
+ expect(isLearnC1PreviewEnabled('localhost','')).toBe(false);
  expect(isLearnC1PreviewEnabled('localhost','?learn-preview=c1')).toBe(true);
+ expect(isLearnC1PreviewEnabled('127.0.0.1','?learn-preview=c1')).toBe(true);
+ expect(isLearnC1PreviewEnabled('localhost','?learn-preview=c2')).toBe(false);
  await page.goto('/#/learn/en/pilot-c1');await expect(page.getByRole('heading',{name:'Página do Learn não encontrada'})).toBeVisible();await expect(page.locator('learn-c1-pilot')).toHaveCount(0);
  await page.goto('/#/learn/en');await expect(page.locator('.learn-c1-preview-link')).toHaveCount(0);
 });
