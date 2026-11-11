@@ -23,13 +23,14 @@
       "stimulus": "На двери написано: «АПТЕКА».",
       "promptPt": "Que tipo de estabelecimento aparece escrito na porta?",
       "choices": [
-        "Farmácia",
         "Escola",
+        "Farmácia",
         "Estação"
       ],
-      "correctIndex": 0,
+      "correctIndex": 1,
       "feedbackPt": "АПТЕКА significa farmácia. Reconhecer a palavra escrita não prova domínio da leitura completa.",
-      "evidence": "comprehension"
+      "evidence": "comprehension",
+      "correctAnswer": "Farmácia"
     },
     {
       "id": "ru-diag-r2",
@@ -40,13 +41,14 @@
       "stimulus": "Станция рядом с парком. Идите прямо.",
       "promptPt": "Onde está a estação?",
       "choices": [
-        "Perto do parque",
+        "Atrás do hotel",
         "Dentro do ônibus",
-        "Atrás do hotel"
+        "Perto do parque"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "feedbackPt": "'Рядом с парком' indica perto do parque. A instrução de seguir em frente é adicional.",
-      "evidence": "comprehension"
+      "evidence": "comprehension",
+      "correctAnswer": "Perto do parque"
     },
     {
       "id": "ru-diag-k1",
@@ -54,16 +56,19 @@
       "mode": "closed",
       "objectiveId": "ru-cyrillic-01",
       "band": "Pre-A1/A1",
-      "stimulus": "As duas grafias são diferentes: 'мир' e 'мирь'.",
-      "promptPt": "Qual opção corresponde exatamente à palavra «мир»?",
+      "stimulus": "Você está em uma estação de metrô. Há placas em russo para entrada, saída e bilheteria.",
+      "promptPt": "Qual placa indica por onde sair da estação?",
       "choices": [
-        "мир",
-        "мирь",
-        "миръ"
+        "ВЫХОД",
+        "ВХОД",
+        "КАССА"
       ],
       "correctIndex": 0,
-      "feedbackPt": "A forma exigida termina em р, sem sinal brando (ь) nem duro (ъ).",
-      "evidence": "recognition"
+      "feedbackPt": "ВЫХОД significa saída. ВХОД indica entrada, e КАССА indica bilheteria. Esta tarefa verifica uma placa funcional, não leitura extensa.",
+      "evidence": "recognition",
+      "assessmentScope": "functional-cyrillic-sign-recognition",
+      "editorialNotePt": "Substitui a comparação artificial de мир / мирь / миръ por sinalização com finalidade prática.",
+      "correctAnswer": "ВЫХОД"
     },
     {
       "id": "ru-diag-k2",
@@ -74,13 +79,14 @@
       "stimulus": "Uma pessoa se apresenta: «Меня зовут Ольга.»",
       "promptPt": "Qual é a informação apresentada?",
       "choices": [
-        "Seu nome é Olga",
+        "Ela precisa de um bilhete",
         "Ela mora em uma estação",
-        "Ela precisa de um bilhete"
+        "Seu nome é Olga"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "feedbackPt": "'Меня зовут Ольга' significa 'Meu nome é Olga'.",
-      "evidence": "recognition"
+      "evidence": "recognition",
+      "correctAnswer": "Seu nome é Olga"
     },
     {
       "id": "ru-diag-p1",
@@ -142,7 +148,15 @@
       "feedbackPt": "O destino desta tarefa é parque, não estação. Verifique se há uma pergunta de localização clara.",
       "assistanceAllowed": [],
       "evidence": "independentProduction",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "providedSupport": {
+        "kind": "lexical-cue",
+        "targetWord": "парк",
+        "translationPt": "parque",
+        "shownInPrompt": true,
+        "countsAsAssistance": true,
+        "evidenceLimitPt": "A palavra do destino já foi fornecida em cirílico. Avaliar apenas a construção da pergunta e sua adequação ao contexto; não declarar recuperação lexical independente."
+      }
     },
     {
       "id": "ru-diag-t1",
@@ -171,7 +185,15 @@
       "feedbackPt": "Nesta situação o destino é a farmácia; mantenha a pergunta de localização, mas adapte o vocabulário.",
       "assistanceAllowed": [],
       "evidence": "transfer",
-      "assessment": "rubricWithReview"
+      "assessment": "rubricWithReview",
+      "providedSupport": {
+        "kind": "lexical-cue",
+        "targetWord": "аптека",
+        "translationPt": "farmácia",
+        "shownInPrompt": true,
+        "countsAsAssistance": true,
+        "evidenceLimitPt": "A palavra do destino já foi fornecida em cirílico. Avaliar apenas a construção da pergunta e sua adequação ao contexto; não declarar recuperação lexical independente."
+      }
     },
     {
       "id": "ru-diag-t2",
@@ -216,14 +238,15 @@
       },
       "promptPt": "Qual é o nome da pessoa?",
       "choices": [
-        "Dasha",
         "Olga",
+        "Dasha",
         "Nina"
       ],
-      "correctIndex": 0,
+      "correctIndex": 1,
       "feedbackPt": "A pessoa diz 'Меня зовут Даша'.",
       "evidence": "comprehension",
-      "requiresAudio": true
+      "requiresAudio": true,
+      "correctAnswer": "Dasha"
     },
     {
       "id": "ru-diag-l2",
@@ -246,7 +269,8 @@
       "correctIndex": 0,
       "feedbackPt": "A orientação diz 'потом направо', ou seja, depois à direita.",
       "evidence": "comprehension",
-      "requiresAudio": true
+      "requiresAudio": true,
+      "correctAnswer": "Direita"
     }
   ],
   "assessmentIntegrity": {
@@ -256,5 +280,11 @@
     "diagnosticDistinctContext": "asking for a park",
     "risk": "The learner may recognize a rehearsed template; diagnostic must not reproduce the same situation and answer as the pilot.",
     "reviewStatus": "editorial-review-required"
+  },
+  "assessmentQuality": {
+    "answerKey": "For closed questions, correctAnswer is checked against choices[correctIndex] to prevent accidental key drift when editing distractors.",
+    "distractorOrder": "Balanced across first, second, third positions for the current six closed items in each language.",
+    "constructValidity": "A closed item measures only its declared comprehension/recognition objective, not CEFR proficiency or open communication.",
+    "reviewer": "Structural and editorial checks only; needs an independent language and learner review before activation."
   }
 }
