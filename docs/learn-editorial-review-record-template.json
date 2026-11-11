@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "status": "not-submitted",
+  "artifact": {
+    "path": "",
+    "language": "",
+    "contentVersion": null,
+    "sha256": "",
+    "commit": ""
+  },
+  "reviewer": {
+    "reviewerId": "",
+    "qualification": "",
+    "privateIdentityRecordRef": ""
+  },
+  "reviewedAt": null,
+  "decision": null,
+  "scope": [],
+  "findings": [],
+  "requiredCorrections": [],
+  "adjudicationRef": null
+}
