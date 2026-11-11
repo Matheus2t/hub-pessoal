@@ -8,9 +8,9 @@
 
 Foram confrontados gabaritos com enunciados, exemplos de vocabulário, fontes das leituras A1–B1 e restrições do motor de comparação literal. Esta etapa focalizou falsos negativos, nuances de registro, gênero gramatical, ambiguidades de relativas e feedback de produção escrita.
 
-- **65 exercícios alterados neste lote:** 32 de Inglês e 33 de Russo, além de **quatro verbetes** de vocabulário e **um texto** de leitura em russo.
+- **71 exercícios alterados neste lote:** 38 de Inglês e 33 de Russo, além de **quatro verbetes** de vocabulário e **um texto** de leitura em russo.
 - **74 novas respostas literais** aceitas pelos exercícios, com **três respostas removidas/substituídas** por decisão editorial (2 de cumprimentos e 1 do cumprimento em outro idioma; ver abaixo).
-- Na comparação dos catálogos com o estado anterior à revisão pedagógica (`d22b1d0`), **209 de 474 exercícios distintos** já tiveram alguma alteração editorial somando os PRs #105, #106 e este lote: 109 EN e 100 RU. Esse número mede alteração de registros, **não** quantidade de exercícios certificados ou revisão independente concluída.
+- Na comparação dos catálogos com o estado anterior à revisão pedagógica (`d22b1d0`), **215 de 474 exercícios distintos** já tiveram alguma alteração editorial somando os PRs #105, #106 e este lote: 115 EN e 100 RU. Esse número mede alteração de registros, **não** quantidade de exercícios certificados ou revisão independente concluída.
 - A contagem continua sendo **237 exercícios por idioma**, com os mesmos IDs, níveis e modalidades.
 - Não houve validação auditiva nem teste com estudantes neste lote.
 
@@ -34,6 +34,17 @@ Foram confrontados gabaritos com enunciados, exemplos de vocabulário, fontes da
 5. **`ru-v2-reading-003`:** troca de `рейс отменили` por `наш поезд отменили`, mais específica para viagem de trem e coerente com pergunta e tradução; mantém o sentido da história.
 6. **Escrita:** variantes de `надёжен`, `преподавательский опыт`, perguntas sobre objetivo, escolhas de imperativo polido/informal e alternativas naturais de tradução. Não equivaler variedades de aspecto, caso ou registro quando o contexto altera o sentido.
 7. **Leitura:** alternativas textualmente sustentadas e entradas `não/nao` nos itens respondidos em português.
+
+### Desambiguação adicional de seis itens B1 em Inglês
+
+- `en-v2-grammar-002-q1/q2`: indicar o verbo `rain` ou a forma `will` realmente solicitada na primeira condicional; do contrário, há múltiplas construções possíveis.
+- `en-v2-grammar-003-q3`: indicar explicitamente o particípio de `close` na frase passiva, que aceitava muitas ações sem a pista lexical.
+- `en-v2-grammar-005-q2`: exigir a forma em `-ing` de `read`; antes, vários verbos eram possíveis.
+- `en-v2-test-002` e `en-v2-test-005`: explicitar `leave` e `cook` nos respectivos exercícios, evitando penalizar respostas igualmente gramaticais.
+
+### Registro individual
+
+O arquivo [`learn-revisao-itens-474.csv`](learn-revisao-itens-474.csv) traz **todos os 474 IDs**, idioma, habilidade, nível, indicação de alteração desde a primeira revisão e tipo de validação pendente. **215 registros tiveram mudança editorial; 259 não exigiram mudança nesta passagem. Nenhum dos 474 está certificado por revisão independente.** O CSV funciona como registro de acompanhamento, não como nota ou selo de qualidade.
 
 ## Regra de avaliação e limites
 
