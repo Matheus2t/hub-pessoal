@@ -6,6 +6,8 @@ import {lessonData,recordLessonEvent,saveLessonProgress} from './storage';
 import {loadPilotBundle} from './pilot-content';
 import {delayedDueAt,loadDelayedContent,makeDelayedReviewEvent,pilotCompletionAt,type DelayedContent,type DelayedProbe,type DelayedTask} from './delayed-content';
 import './phonetic-editor';
+import {renderOpenResponseReview} from './open-review';
+import {renderLearnFlowNav} from './flow-nav';
 
 const languageName={en:'Inglês',ru:'Russo'};
 const maxAttempts=20;
@@ -186,7 +188,7 @@ export class LearnDelayedReview extends LightElement {
  private renderFeedback(){
   const event=this.feedback,task=event?this.findTask(event.taskId):undefined;if(!event||!task)return nothing;
   const explanation=task.part==='reading'?task.explanationPt:'';
-  return html`<section class="learn-pilot-feedback" role="status" aria-live="polite"><h2>${event.outcome==='supported'?'Resposta compatível com o gabarito':event.outcome==='notSupported'?'Resposta diferente do gabarito':'Resposta registrada para revisão'}</h2>${explanation?html`<p>${explanation}</p>`:html`<p>A resposta aberta fica <strong>incerta</strong> porque ainda não há revisor confiável. Ela não foi marcada como correta ou incorreta.</p><button class="button" ?disabled=${this.busy} @click=${()=>this.showExamples()}>${this.examplesVisible?'Exemplos exibidos':'Ver exemplos após a tentativa'}</button>${this.examplesVisible?html`<ul class="learn-pilot-models" lang=${this.language}>${task.examplesAfterAttempt?.map(example=>html`<li>${example}</li>`)}</ul>`:nothing}`}${this.error?html`<p class="learn-pilot-error" role="alert">${this.error}</p>`:nothing}<button class="button primary" ?disabled=${this.busy} @click=${()=>this.continueAfterFeedback()}>Continuar</button></section>`;
+  return html`<section class="learn-pilot-feedback" aria-live="polite"><h2>${event.outcome==='supported'?'Resposta compatível com o gabarito':event.outcome==='notSupported'?'Resposta diferente do gabarito':'Resposta registrada para revisão'}</h2>${explanation?html`<p>${explanation}</p>`:html`${renderOpenResponseReview(event,{prompt:task.promptPt,context:this.currentProbe()?.stimulus.text,reviewCriteria:task.essentialMeaning||[]})}<button class="button" ?disabled=${this.busy} @click=${()=>this.showExamples()}>${this.examplesVisible?'Exemplos exibidos':'Ver exemplos após a tentativa'}</button>${this.examplesVisible?html`<ul class="learn-pilot-models" lang=${this.language}>${task.examplesAfterAttempt?.map(example=>html`<li>${example}</li>`)}</ul>`:nothing}`}${this.error?html`<p class="learn-pilot-error" role="alert">${this.error}</p>`:nothing}<button class="button primary" ?disabled=${this.busy} @click=${()=>this.continueAfterFeedback()}>Continuar</button></section>`;
  }
  private renderDashboard(){
   if(!this.completedAt)return html`<section class="learn-pilot-stage"><p class="learn-pilot-kicker">C4 · PRÉVIA LOCAL</p><h1>Revisões D+2 e D+7</h1><p>As revisões aparecem após a conclusão registrada da aula-piloto de ${languageName[this.language]}.</p><a class="button primary" href=${this.language==='en'?'/?learn-preview=c1#/learn/en/pilot-c1':'/?learn-preview=c2#/learn/ru/pilot-c2'}>Abrir aula-piloto</a><a class="button" href=${`/?learn-preview=c4-delayed#/learn/${this.language}`}>Voltar ao Learn</a></section>`;
@@ -197,6 +199,6 @@ export class LearnDelayedReview extends LightElement {
  render(){
   if(this.loading)return html`<section class="learn-pilot" aria-busy="true"><p role="status">Carregando revisões e progresso local…</p></section>`;
   if(this.error&&!this.content)return html`<section class="learn-pilot"><div class="learn-pilot-error" role="alert">${this.error}</div><button class="button" @click=${()=>this.load()}>Tentar novamente</button></section>`;
-  return html`<section class="learn-pilot learn-delayed" aria-label="Revisões espaçadas">${this.error?html`<p class="learn-pilot-error" role="alert">${this.error}</p>`:nothing}${this.feedback?this.renderFeedback():this.activeAttemptId?this.renderTask():this.renderDashboard()}</section>`;
+  return html`<section class="learn-pilot learn-delayed" aria-label="Revisões espaçadas">${renderLearnFlowNav(this.language,'reviews')}${this.error?html`<p class="learn-pilot-error" role="alert">${this.error}</p>`:nothing}${this.feedback?this.renderFeedback():this.activeAttemptId?this.renderTask():this.renderDashboard()}</section>`;
  }
 }

@@ -2,6 +2,7 @@ import type {Language,LessonAssistance,LessonEvidenceEvent,LessonOutcome} from '
 
 export interface DelayedTask {
  id:string;part:'reading'|'writing';promptPt:string;choices?:string[];correctIndex?:number;explanationPt?:string;
+ essentialMeaning?:string[];
  lexicalCue?:{targetWord:string;translationPt:string;purpose:string}|null;
  examplesAfterAttempt?:string[];evaluation?:string;modelHiddenDuringAttempt?:boolean;assistanceToRecord?:string[];
 }
