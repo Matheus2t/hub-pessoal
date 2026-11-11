@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "ru-reading-01-guide-v1",
+  "language": "ru",
+  "sourceReadingId": "ru-reading-01",
+  "objectiveId": "ru-routine-04",
+  "status": "editorial-review",
+  "runtimeEnabled": false,
+  "purposePt": "Compreender partes essenciais de uma rotina russa e diferenciar hábitos, transporte e causa de ações.",
+  "levelInterpretation": {
+    "legacyLabel": "A1",
+    "proposedUse": "Texto com estruturas além do repertório inicial; apresentar com apoio ou após preparação, sujeito à revisão",
+    "notCertified": true
+  },
+  "beforeReading": {
+    "promptPt": "Você vai ler sobre Lena e o irmão. Identifique primeiro quem vai a pé e quem usa ônibus. Não precisa entender todas as terminações.",
+    "translationInitiallyVisible": false
+  },
+  "chunks": [
+    {
+      "sourceQuote": "По понедельникам она начинает работать в десять, поэтому завтракает с братом.",
+      "focus": "time-and-consequence",
+      "explanationPt": "'По понедельникам' indica costume às segundas; 'поэтому' introduz a consequência de começar o trabalho às dez.",
+      "helpOnDemand": [
+        "по понедельникам = às segundas-feiras",
+        "в десять = às dez",
+        "поэтому = por isso"
+      ]
+    },
+    {
+      "sourceQuote": "Они выходят вместе, но он едет на автобусе, а она идёт пешком.",
+      "focus": "contrast-and-motion",
+      "explanationPt": "'Едет на автобусе' descreve deslocamento de ônibus; 'идёт пешком' indica que ela vai a pé. 'Но' marca o contraste.",
+      "helpOnDemand": [
+        "они = eles",
+        "он = ele",
+        "она = ela",
+        "пешком = a pé"
+      ]
+    },
+    {
+      "sourceQuote": "Лена кладёт книги в сумку, чтобы они не промокли.",
+      "focus": "purpose-and-complex-structure",
+      "explanationPt": "'Чтобы ... не промокли' indica finalidade: ela guarda os livros para que não se molhem. Por enquanto, compreender o sentido é mais importante que memorizar toda a forma verbal.",
+      "helpOnDemand": [
+        "книги = livros",
+        "в сумку = na bolsa (com ideia de colocar para dentro)",
+        "чтобы = para que"
+      ]
+    }
+  ],
+  "legacyQuestionIds": [
+    "ru-reading-01-q1",
+    "ru-reading-01-q2",
+    "ru-reading-01-q3"
+  ],
+  "afterReading": {
+    "contextChange": "Uma pessoa trabalha de manhã e viaja de ônibus; o irmão vai a pé.",
+    "newText": "Оля работает утром. Она едет на автобусе, а её брат идёт пешком.",
+    "closedProbe": {
+      "id": "ru-reading-01-guide-new-c1",
+      "promptPt": "Quem usa ônibus na nova situação?",
+      "choices": [
+        "Olya",
+        "O irmão de Olya",
+        "Os dois"
+      ],
+      "correctIndex": 0,
+      "why": "O texto diz 'Она едет на автобусе'; depois contrasta com o irmão que vai a pé."
+    },
+    "writtenApplication": {
+      "id": "ru-reading-01-guide-transfer-p1",
+      "promptPt": "Escreva em russo uma frase simples dizendo que você ou uma pessoa fictícia vai de ônibus. Pode usar o teclado fonético.",
+      "examplesAfterAttempt": [
+        "Я еду на автобусе.",
+        "Анна едет на автобусе."
+      ],
+      "requiredMeaning": [
+        "Sujeito claro",
+        "Deslocamento de ônibus expresso em russo"
+      ],
+      "helpInitiallyVisible": false,
+      "assessment": "rubricWithReview",
+      "feedbackPrinciple": "Distinguish a clear intended action from a spelling or conjugation error; offer one contextual retry."
+    }
+  },
+  "reviewFlags": [
+    "Rótulo A1 do catálogo original não deve ser aceito como certificação de dificuldade.",
+    "Construções по понедельникам, поэтому, чтобы ... не промокли e flexões requerem apoio graduado.",
+    "Não exigir domínio de casos ou aspecto a partir de uma única leitura.",
+    "Não afirmar compreensão auditiva nem pronúncia por leitura silenciosa.",
+    "Teclado fonético é ajuda de escrita e não prova leitura cirílica independente."
+  ],
+  "source": "Original reading remains unchanged and is linked by stable ID."
+}
