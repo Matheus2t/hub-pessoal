@@ -211,7 +211,7 @@
           "id": "ru-word-098",
           "decision": "reuse",
           "slot": "input-gloss",
-          "why": "Налево é indispensável para compreender a direção à esquerda.",
+          "why": "Налево é indispensável para entender a instrução concreta de virar à esquerda depois de seguir em frente.",
           "countsAsIndependentCompetence": false
         },
         {
