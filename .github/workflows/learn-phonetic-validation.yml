@@ -22,7 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install chromium
       - name: Run complete Learn regression and phonetic editor browser tests
         run: |
           python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-phonetic.log 2>&1 &
