@@ -276,6 +276,74 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
   }
   @media(prefers-reduced-motion:reduce) { .learn-language { transition: none; } }
 }
+
+learn-c1-pilot { display:block; min-width:0; }
+.learn-c1-preview-link { margin:0 0 22px; }
+.learn-c1-preview-link .button { display:inline-flex; align-items:center; gap:12px; }
+.learn-page--pilot { max-width:var(--content-width); }
+.learn-pilot { max-width:920px; margin:0 auto; min-width:0; }
+.learn-pilot-header { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; padding:0 0 20px; border-bottom:1px solid var(--line-soft); }
+.learn-pilot-header h1 { margin:0; font-size:clamp(26px,3vw,38px); font-weight:550; letter-spacing:-.045em; line-height:1.2; }
+.learn-pilot-kicker { margin:0 0 10px; color:var(--muted); font:12px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; }
+.learn-pilot-progress { margin:20px 0; }
+.learn-pilot-progress-label { display:flex; justify-content:space-between; gap:12px; color:var(--secondary); font-size:13px; }
+.learn-pilot progress { display:block; width:100%; height:6px; margin-top:10px; accent-color:var(--text); }
+.learn-pilot-content { padding:clamp(18px,3vw,32px); border:1px solid var(--line-soft); border-radius:12px; background:var(--panel); }
+.learn-pilot-stage { max-width:720px; margin:0 auto; }
+.learn-pilot-stage > h1,.learn-pilot-stage > h2 { margin:0 0 16px; font-size:clamp(24px,3vw,34px); font-weight:550; letter-spacing:-.04em; line-height:1.25; }
+.learn-pilot-stage > p { color:var(--secondary); font-size:16px; line-height:1.75; }
+.learn-pilot-stage [data-pilot-heading]:focus { outline:2px solid var(--text); outline-offset:5px; }
+.learn-pilot-objective,.learn-pilot-explanation { margin:20px 0; padding:18px 20px; border-left:3px solid var(--secondary); background:var(--raised); }
+.learn-pilot-objective h2,.learn-pilot-explanation h3 { margin:0 0 8px; font-size:15px; font-weight:600; }
+.learn-pilot-objective p,.learn-pilot-explanation p { margin:0; line-height:1.7; }
+.learn-pilot-scenario,.learn-pilot-limits,.learn-pilot-assistance-note,.learn-pilot-count { color:var(--muted); font-size:13px; line-height:1.7; }
+.learn-pilot-dialogue { display:grid; gap:10px; margin:20px 0; padding:0; list-style:none; }
+.learn-pilot-dialogue li { padding:14px 16px; border:1px solid var(--line-soft); border-radius:8px; background:var(--raised); }
+.learn-pilot-dialogue strong { color:var(--muted); font:12px var(--font-mono); text-transform:uppercase; }
+.learn-pilot-dialogue p { margin:4px 0 0; font-size:18px; line-height:1.55; }
+.learn-pilot-help-actions,.learn-pilot-actions { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+.learn-pilot-glossary { display:grid; gap:8px; margin:16px 0; }
+.learn-pilot-glossary div { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; padding:10px 0; border-bottom:1px solid var(--line-soft); }
+.learn-pilot-glossary dt { font-weight:550; }
+.learn-pilot-glossary dd { margin:0; color:var(--secondary); }
+.learn-pilot-translation { padding:16px; border:1px solid var(--line-soft); border-radius:8px; line-height:1.75; }
+.learn-pilot-choices { display:grid; gap:10px; margin:20px 0; }
+.learn-pilot-choices legend { color:var(--text); font-size:15px; }
+.learn-pilot-choice { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:1px solid var(--line-soft); border-radius:8px; background:var(--raised); cursor:pointer; }
+.learn-pilot-choice:has(input:checked) { border-color:var(--secondary); background:var(--hover); }
+.learn-pilot-choice input { width:18px; height:18px; flex:0 0 auto; margin:2px 0 0; }
+.learn-pilot-choice span { line-height:1.5; }
+.learn-pilot-label { display:block; margin:18px 0 8px; font-size:14px; font-weight:550; }
+.learn-pilot-answer { display:block; }
+.learn-pilot-count { margin:6px 0 14px; text-align:right; font-variant-numeric:tabular-nums; }
+.learn-pilot-help { margin:14px 0; padding:14px 16px; border:1px solid var(--line-soft); border-radius:8px; background:var(--raised); }
+.learn-pilot-help ul { display:grid; gap:8px; padding-left:22px; margin:12px 0; }
+.learn-pilot-help li { line-height:1.6; }
+.learn-pilot-feedback { margin-top:24px; padding:18px; border:1px solid var(--line); border-radius:9px; background:var(--raised); }
+.learn-pilot-feedback h3 { margin:0 0 12px; font-size:18px; }
+.learn-pilot-feedback p { margin:10px 0; font-size:14px; line-height:1.7; }
+.learn-pilot-rubric,.learn-pilot-models { display:grid; gap:8px; margin:14px 0; padding-left:22px; color:var(--secondary); font-size:14px; line-height:1.65; }
+.learn-pilot-summary { display:grid; gap:12px; margin:18px 0; padding-left:22px; }
+.learn-pilot-error { margin:14px 0; padding:14px 16px; border:1px solid var(--line); border-radius:8px; background:var(--raised); color:var(--text); }
+.learn-pilot-error p { margin:0 0 10px; color:inherit; }
+.learn-pilot-live { margin:8px 0; color:var(--secondary); font-size:13px; }
+.learn-pilot-nav { margin-top:16px; }
+.learn-pilot button { white-space:normal; }
+@media(max-width:600px) {
+ .learn-pilot-header { flex-direction:column; }
+ .learn-pilot-header .button { align-self:flex-start; }
+ .learn-pilot-progress-label { align-items:flex-start; flex-direction:column; gap:4px; }
+ .learn-pilot-content { padding:18px 14px; }
+ .learn-pilot-dialogue p { font-size:16px; }
+ .learn-pilot-glossary div { grid-template-columns:1fr; gap:3px; }
+ .learn-pilot-actions { align-items:stretch; flex-direction:column; }
+ .learn-pilot-actions .button { width:100%; }
+ .learn-pilot-help-actions { align-items:stretch; flex-direction:column; }
+ .learn-pilot-help-actions .button { width:100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .learn-pilot *, .learn-c1-preview-link * { scroll-behavior:auto!important; transition-duration:.001ms!important; animation-duration:.001ms!important; }
+}
 learn-host > .learn-message { max-width: var(--content-width); margin: 24px auto; padding: 24px; border: 1px solid var(--line); border-radius: 10px; }
 
 .learn-page learn-path .learn-areas { grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); }

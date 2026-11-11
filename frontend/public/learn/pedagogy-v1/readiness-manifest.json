@@ -176,6 +176,24 @@
     "publicReleaseAuthorized": false,
     "newEngineBuilt": false
   },
+  "engineeringImplementation": {
+    "milestoneId": "C1-disabled-English-pilot",
+    "status": "implemented-disabled-prototype",
+    "runtimeEnabled": false,
+    "lessonId": "en-pilot-introductions-01",
+    "indexedDbVersion": 3,
+    "additionalStores": [
+      "lessonEvents",
+      "lessonProgress"
+    ],
+    "backupVersion": 3,
+    "importsLegacyBackupVersions": [
+      1,
+      2
+    ],
+    "openResponseOutcomeWithoutReviewer": "uncertain",
+    "publicRouteRequiresExplicitPreviewFlag": true
+  },
   "publicReleaseGate": [
     "independent English and Russian language review",
     "real-learner pilot feedback",

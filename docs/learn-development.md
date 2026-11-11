@@ -599,3 +599,66 @@ no total). Nenhum teste de atividade educacional foi anunciado como implementado
 - Botão **Fonético ligado/desligado**. A preferência fica apenas no navegador (localStorage `2t-learn-phonetic-ru`); não modifica IndexedDB, modelos de backup nem algoritmos de correção.
 - Os eventos de composição/IME não são interceptados durante a composição; a entrada comprometida passa pela reconciliação do campo. O editor também aceita entradas de voz/acessibilidade e preenchimento programático.
 - A validação inclui suíte Playwright específica e regressão completa das telas Learn em dois idiomas e larguras responsivas. Inspeções de teclado físico real e diferentes IMEs ainda são dependentes do dispositivo e navegador do usuário.
+
+## Etapa C1 — aula-piloto interativa (11/2026)
+
+Esta atualização substitui as antigas notas de planejamento acima quando elas
+descrevem a implementação atual: os catálogos legados já estão preenchidos; os
+números atuais são registrados abaixo. A aula C1 é um protótipo isolado e segue
+desativada para o público. A rota de prévia exige `?learn-preview=c1`, só aceita
+localhost ou host `.vercel.app` que não seja um dos domínios oficiais, e não
+altera o estado de liberação registrado nos conteúdos e no manifesto.
+
+Implementado para `en-pilot-introductions-01`:
+- Fluxo declarativo de contexto, diálogo escrito, apoio sob demanda, duas perguntas
+  de compreensão com feedback por alternativa, explicação, observação sem nota,
+  produção guiada, transferência e resumo.
+- Os cinco IDs editoriais são verificados em ordem e contra o manifesto. A aula
+  contém cinco falas de diálogo, duas tarefas fechadas, uma observação de prática
+  sem avaliação e duas tarefas abertas.
+- Respostas abertas sempre registram `uncertain`, sem comparação literal ou nota
+  automática. As rubricas continuam aguardando revisão linguística e de alunos;
+  os exemplos aparecem após uma tentativa, e ajudas exibidas são registradas.
+- Rascunhos, etapa atual, ajudas e eventos persistem no IndexedDB. O esquema subiu
+  aditivamente para v3, com `lessonEvents` e `lessonProgress`; IDs de evento
+  tornam o salvamento idempotente e os writes mantêm a atualização transacional.
+- Backup v3 inclui evidências e progresso. Importações v1/v2 continuam aceitas,
+  com aviso e confirmação explícita antes da substituição que não contém os novos
+  registros; validação de backup v3 rejeita dados inválidos/duplicados antes de
+  qualquer escrita.
+- A rota não chama API externa nem altera o backend. Falha no IndexedDB impede a
+  aula de declarar que houve salvamento. A interface é responsiva e mantém foco
+  de teclado e nomes acessíveis.
+
+### Validação da Etapa C1
+
+- `npm run build` (inclui `tsc --noEmit`): aprovado.
+- Playwright C1: 7/7 aprovados. A regressão selecionada do Learn: 90/90
+  aprovados, incluindo os mesmos sete testes C1 e fluxos/backups legados. O teste
+  de migração legado foi atualizado para esperar DB v3; os dados v1 continuam
+  verificados após upgrade. Não houve alteração nos contratos de backup v1/v2.
+- Dez validadores do Learn aprovados: auditoria de catálogo, pedagogia, diagnóstico,
+  qualidade, cobertura, leituras, curadoria, rubricas, revisões adiadas e readiness.
+  Os validadores registram que a estrutura está íntegra, mas ainda exigem revisão
+  humana/linguística e não aprovam liberação a alunos.
+- Layout validado por Playwright em 320, 390, 768 e 1366 px, nos temas claro e
+  escuro, sem rolagem horizontal. Não foi realizada homologação com usuários.
+
+### Conteúdo e limites atuais
+
+Auditoria dos catálogos legados: Inglês e Russo têm, cada um, 162 palavras,
+62 expressões, 15 leituras, 15 lições e 237 exercícios cadastrados. Esses números
+são do Learn legado, não fazem parte do novo piloto C1. A entrega C1 contém apenas
+o piloto de Inglês descrito acima; não adiciona piloto de Russo.
+
+O piloto não tem áudio, avaliação semântica confiável nem sincronização entre
+dispositivos. A produção aberta fica sem correção e sem alegações de fluência ou
+nível CEFR. As rubricas precisam de revisão humana/linguística e testes com alunos
+antes de qualquer ativação. O preview flag controla a rota da aplicação, mas não
+é um mecanismo de autenticação para conteúdo estático; a prévia deve usar a
+proteção de acesso do deployment Vercel. O domínio oficial não deve ativar C1.
+
+**Estado da entrega:** implementada localmente para revisão em preview; ainda não
+publicada em `main`. Antes da integração, validar que o preview Vercel está
+protegido e que `matheus2t.com.br` continua sem a rota C1, inclusive se alguém
+adicionar a query de prévia. Não iniciar Russo ou expansão curricular nesta etapa.

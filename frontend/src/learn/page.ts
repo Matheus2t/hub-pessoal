@@ -12,6 +12,8 @@ import {loadCurriculum} from './catalog-loader';
 import type {Backup,Language} from './model';
 import './progress';
 import {studyAreas} from './area-card';
+import './pilot-page';
+import {isLearnC1PreviewEnabled} from './pilot-preview';
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
 export class LearnPage extends LightElement {
@@ -22,12 +24,14 @@ export class LearnPage extends LightElement {
   @state() private storageError=false;
   @state() private contentError=false;
   private generation=0;
-  protected updated(changes:PropertyValues){if(changes.has('language')||changes.has('invalid'))void this.load()}
+  private previousActivity='';
+  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity');if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity==='pilot-c1'||this.previousActivity==='pilot-c1'))void this.load();if(activityChanged)this.previousActivity=this.activity}
   disconnectedCallback(){this.generation++;super.disconnectedCallback()}
   private async load(){
     const generation=++this.generation;
     this.data=undefined;this.storageError=false;this.contentError=false;this.loading=true;
     if(this.invalid){this.loading=false;return}
+    if(this.activity==='pilot-c1'&&isLearnC1PreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     const language=this.language as Language;
     const [progress,content]=await Promise.allSettled([snapshot(),language?loadCurriculum(language):Promise.resolve()]);
     if(generation!==this.generation||!this.isConnected)return;
@@ -37,6 +41,7 @@ export class LearnPage extends LightElement {
   private async refreshProgress(){const generation=this.generation;try{const data=await snapshot();if(generation===this.generation&&this.isConnected)this.data=data}catch{if(generation===this.generation&&this.isConnected)this.storageError=true}}
   render(){
     if(this.invalid)return html`<section class="learn-message"><h1>Página do Learn não encontrada</h1><p>Escolha Inglês ou Russo para continuar.</p><a class="button" href="#/learn">Selecionar idioma</a></section>`;
+    if(this.activity==='pilot-c1')return isLearnC1PreviewEnabled()?html`<article class="learn-page learn-page--activity learn-page--pilot"><learn-c1-pilot></learn-c1-pilot></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Esta aula só abre em uma prévia controlada do Learn.</p><a class="button" href="#/learn/en">Voltar ao Inglês</a></section>`;
     const language=this.language as Language,label=labels[language];
     return html`<article class=${`learn-page ${label?"learn-page--language":"learn-page--index"} ${this.activity?"learn-page--activity":"learn-page--hub"}`}>
       ${label?html`<header class="learn-hero">
@@ -48,6 +53,7 @@ export class LearnPage extends LightElement {
         </div>
         <div class="learn-hero__art" aria-hidden="true"><span class="learn-hero__art-label">LANGUAGE / STUDY</span><span class="learn-hero__art-symbol">${label?(language==="en"?"EN":"RU"):"2T"}</span><span class="learn-hero__art-foot">ENGLISH · РУССКИЙ</span></div>
       </header>`:nothing}
+      ${label&&language==='en'&&this.activity===''&&isLearnC1PreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href="#/learn/en/pilot-c1">Aula-piloto de Inglês <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${this.loading?html`<p role="status" class="learn-message">Carregando progresso local…</p>`:nothing}
       ${this.storageError?html`<div class="learn-message" role="status"><h2>Progresso local indisponível</h2><p>O navegador não permitiu acessar os dados. Nenhum progresso foi apagado. Verifique as permissões ou feche outras abas do Learn.</p><button class="button" @click=${()=>this.load()}>Tentar novamente</button></div>`:nothing}
       ${!label?html`<section class="learn-language-section" aria-labelledby="learn-select-title">

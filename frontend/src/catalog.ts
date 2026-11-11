@@ -1,4 +1,5 @@
 import type { IconName } from "./ui";
+import { isLearnC1PreviewEnabled } from "./learn/pilot-preview";
 export type Page = "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
@@ -53,7 +54,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
 export const currentPage = (): Page =>
   /^#\/games(?:\/(?:snake|sudoku|2048|breakout|pong|palavra-secreta|digitacao|jogo-da-velha|reflexos|memoria))?$/.test(location.hash) ? 'games' :
   /^#\/call(?:\/.*|\?.*)?$/.test(location.hash) ? 'call' :
-  location.hash === '#/learn' ? 'learn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
+  location.hash === '#/learn' ? 'learn' : location.hash==='#/learn/en/pilot-c1'&&isLearnC1PreviewEnabled() ? 'learnEn' : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
   location.hash === '#/times' ? 'sports' :
   location.hash === '#/renda-fixa' ? 'fixedIncome' :
   location.hash === '#/76ers' ? '76ers' : location.hash === '#/spfc' ? 'spfc' : location.hash === '#/barcelona' ? 'barcelona' :
@@ -80,4 +81,4 @@ export function filterTools(category: string, query: string, items: readonly Too
     && `${tool.name} ${tool.category}`.toLocaleLowerCase("pt-BR").includes(search));
 }
 
-export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado',daily:'Plano diário',dashboard:'Acompanhamento',backup:'Backup',path:'Trilha de aprendizado'};
+export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado',daily:'Plano diário',dashboard:'Acompanhamento',backup:'Backup',path:'Trilha de aprendizado','pilot-c1':'Aula-piloto (prévia)'};
