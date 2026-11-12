@@ -7,6 +7,9 @@ on:
       - 'frontend/styles/_learn.scss'
       - 'frontend/styles/_learn-workspace-v20.scss'
       - 'frontend/tests/learn-workspace-v20.spec.ts'
+      - 'frontend/tests/learn-v19-integration.spec.ts'
+      - 'scripts/learn-audio-v19/**'
+      - 'package.json'
       - '.github/workflows/learn-phonetic-validation.yml'
 permissions:
   contents: read
@@ -24,6 +27,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run build
+      - name: Check private V19 preview gates
+        run: node --test scripts/learn-audio-v19/local-study-preview.test.mjs
       - run: npx playwright install chromium
       - name: Run complete Learn regression and phonetic editor browser tests
         run: |
