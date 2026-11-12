@@ -167,7 +167,11 @@
         {
           "id": "en-writing-064",
           "set": {
-            "explanation": "Next to indica proximidade imediata: the bed is next to the window."
+            "explanation": "Next to e beside descrevem posição ao lado da janela, sem indicar uma distância precisa.",
+            "answers": [
+              "The bed is next to the window.",
+              "The bed is beside the window."
+            ]
           },
           "remove": []
         },
@@ -202,7 +206,13 @@
         {
           "id": "en-writing-069",
           "set": {
-            "explanation": "Turn on e switch on significam acender ou ligar a luz; no imperativo, use o verbo na forma básica."
+            "explanation": "Turn on e switch on são verbos frasais naturais para acender a luz. No pedido, please pode aparecer no início ou no fim.",
+            "answers": [
+              "Turn on the light, please.",
+              "Switch on the light, please.",
+              "Please turn on the light.",
+              "Please switch on the light."
+            ]
           },
           "remove": []
         },
@@ -324,9 +334,11 @@
           "set": {
             "answers": [
               "Our lesson lasts forty minutes.",
-              "Our class lasts forty minutes."
+              "Our class lasts forty minutes.",
+              "Our lesson takes forty minutes.",
+              "Our class takes forty minutes."
             ],
-            "explanation": "Lasts indica duração: our lesson lasts forty minutes. Class pode substituir lesson em muitos contextos."
+            "explanation": "Lasts forty minutes e takes forty minutes expressam duração; lesson e class são aceitáveis para aula neste contexto."
           },
           "remove": []
         },
@@ -711,7 +723,8 @@
         {
           "id": "en-test-19",
           "set": {
-            "explanation": "My brothers é sujeito plural, então use are: My brothers are teachers."
+            "explanation": "My brothers é sujeito plural, então use are: My brothers are teachers.",
+            "prompt": "Complete com be no presente: My brothers ___ teachers."
           },
           "remove": []
         },
@@ -725,21 +738,24 @@
         {
           "id": "en-test-21",
           "set": {
-            "explanation": "Tom é terceira pessoa do singular no presente simples, então eat recebe -s: eats."
+            "explanation": "Tom é terceira pessoa do singular no presente simples, então eat recebe -s: eats.",
+            "prompt": "Complete com eat no presente simples (rotina): Tom ___ breakfast at seven."
           },
           "remove": []
         },
         {
           "id": "en-test-22",
           "set": {
-            "explanation": "Com they, perguntas no presente simples usam o auxiliar do."
+            "explanation": "Com they, perguntas no presente simples usam o auxiliar do.",
+            "prompt": "Complete com o auxiliar do presente simples: ___ they live near the station?"
           },
           "remove": []
         },
         {
           "id": "en-test-23",
           "set": {
-            "explanation": "Two bags é plural; a construção correta é There are two bags."
+            "explanation": "Two bags é plural; a construção correta é There are two bags.",
+            "prompt": "Complete com be no presente: There ___ two bags by the door."
           },
           "remove": []
         },
@@ -753,14 +769,26 @@
         {
           "id": "en-test-25",
           "set": {
-            "explanation": "I am at home e I'm at home são naturais; I am home também ocorre para indicar presença em casa."
+            "explanation": "I am at home e I'm at home são naturais; I am home também ocorre para indicar presença em casa.",
+            "answers": [
+              "I am at home",
+              "I'm at home",
+              "I am home",
+              "I'm home."
+            ]
           },
           "remove": []
         },
         {
           "id": "en-test-27",
           "set": {
-            "explanation": "Na negativa do presente simples com she, use does not ou doesn't seguido de work."
+            "explanation": "She does not work today usa presente simples; she isn't working today usa Present Continuous para uma situação temporária. As duas descrevem corretamente que ela não trabalha hoje, sem contexto adicional.",
+            "answers": [
+              "she does not work today",
+              "she doesn't work today",
+              "She is not working today.",
+              "She isn't working today."
+            ]
           },
           "remove": []
         },
@@ -863,9 +891,10 @@
           "set": {
             "answers": [
               "She has experience in teaching.",
-              "She has teaching experience."
+              "She has teaching experience.",
+              "She has experience teaching."
             ],
-            "explanation": "Experience in teaching e teaching experience indicam experiência na área de ensino."
+            "explanation": "Teaching experience e experience in teaching indicam experiência na área de ensino; experience aqui é um substantivo não contável."
           },
           "remove": []
         },
@@ -1023,21 +1052,24 @@
         {
           "id": "en-v2-grammar-001-q1",
           "set": {
-            "explanation": "She has finished her work expressa conclusão com resultado relevante no presente: has + particípio finished."
+            "explanation": "She has finished her work expressa conclusão com resultado relevante no presente: has + particípio finished.",
+            "prompt": "Complete no Present Perfect: She ___ finished her work."
           },
           "remove": []
         },
         {
           "id": "en-v2-grammar-001-q2",
           "set": {
-            "explanation": "I have never seen snow descreve uma experiência de vida sem momento passado definido; never significa nunca."
+            "explanation": "I have never seen snow descreve uma experiência de vida sem momento passado definido; never significa nunca.",
+            "prompt": "Complete com o particípio de see: I have never ___ snow."
           },
           "remove": []
         },
         {
           "id": "en-v2-grammar-001-q3",
           "set": {
-            "explanation": "Yesterday indica um passado encerrado. O passado simples de go é went."
+            "explanation": "Yesterday indica um passado encerrado. O passado simples de go é went.",
+            "prompt": "Complete com o passado simples de go: Yesterday I ___ to the park."
           },
           "remove": []
         },
@@ -1153,7 +1185,7 @@
         {
           "id": "en-v2-test-004",
           "set": {
-            "prompt": "The person ___ called this morning is waiting.",
+            "prompt": "Complete com um pronome relativo que seja sujeito de called: The person ___ called this morning is waiting.",
             "answers": [
               "who",
               "that"
@@ -1196,6 +1228,129 @@
             "explanation": "No Past Continuous com I, use was cooking para indicar que cozinhar estava em andamento às seis de ontem."
           },
           "remove": []
+        },
+        {
+          "id": "en-grammar-01-q1",
+          "set": {
+            "prompt": "Complete o verbo be no presente: I ___ a student."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-01-q2",
+          "set": {
+            "prompt": "Complete o verbo be no presente: She ___ at the library."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-01-q3",
+          "set": {
+            "prompt": "Complete o verbo be no presente: We ___ ready."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-04-q1",
+          "set": {
+            "prompt": "Complete com work no presente simples: He ___ in an office."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-04-q2",
+          "set": {
+            "prompt": "Complete com study no presente simples: She ___ Russian."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-04-q3",
+          "set": {
+            "prompt": "Complete com go no presente simples: They ___ by bus."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-05-q1",
+          "set": {
+            "prompt": "Complete com o auxiliar do presente simples: ___ you speak English?"
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-05-q2",
+          "set": {
+            "prompt": "Complete com o auxiliar do presente simples: She ___ not eat fish."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-08-q1",
+          "set": {
+            "prompt": "Complete com be no presente: There ___ one apple."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-08-q2",
+          "set": {
+            "prompt": "Complete com be no presente: There ___ three people outside."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-08-q3",
+          "set": {
+            "prompt": "Complete a pergunta com be no presente: ___ there a pharmacy nearby?"
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-09-q2",
+          "set": {
+            "prompt": "Complete no Present Continuous: She ___ writing a message now."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-26",
+          "set": {
+            "answers": [
+              "we read every day",
+              "We read daily."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-006",
+          "set": {
+            "explanation": "This is introduz a responsabilidade indicada; my é o possessivo de primeira pessoa antes de responsibility."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-007",
+          "set": {
+            "explanation": "Finishing/Completing the course funciona como sujeito com verbo em -ing; was an achievement descreve a conquista como fato passado.",
+            "answers": [
+              "Finishing the course was an achievement.",
+              "Completing the course was an achievement."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-writing-010",
+          "set": {
+            "explanation": "It was introduz uma situação passada; difficult e tough podem descrever uma decisão difícil, com artigo a antes de decision.",
+            "answers": [
+              "It was a difficult decision.",
+              "It was a tough decision."
+            ]
+          },
+          "remove": []
         }
       ]
     },
@@ -1216,6 +1371,13 @@
           "remove": [
             "translationVariants"
           ]
+        },
+        {
+          "id": "ru-word-075",
+          "set": {
+            "gender": "feminino"
+          },
+          "remove": []
         }
       ],
       "phrases": [
@@ -1260,6 +1422,13 @@
           "set": {
             "text": "Мы собирались ехать на поезде, но наш поезд отменили. Вместо дорогих билетов на самолёт мы купили билеты на автобус. Он отправлялся на следующее утро. Поездка заняла больше времени, хотя сиденья были удобными. Мы приехали до свадьбы и успели отдохнуть.",
             "translation": "Íamos viajar de trem, mas nosso trem foi cancelado. Em vez de passagens aéreas caras, compramos passagens de ônibus. Ele saía na manhã seguinte. A viagem demorou mais, embora os assentos fossem confortáveis. Chegamos antes do casamento e conseguimos descansar."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-05",
+          "set": {
+            "text": "Небольшая команда планирует встречу в пятницу в девять. Их коллега Роза работает в другом городе и не может приехать раньше десяти. Команда решает не начинать без неё и переносит встречу на половину одиннадцатого. О новом времени сообщают по электронной почте и просят каждого подготовить один вопрос. Теперь Роза сможет участвовать и представить свой отчёт."
           },
           "remove": []
         }
@@ -1418,9 +1587,11 @@
           "set": {
             "answers": [
               "Включите свет, пожалуйста.",
-              "Включи свет, пожалуйста."
+              "Включи свет, пожалуйста.",
+              "Пожалуйста, включите свет.",
+              "Пожалуйста, включи свет."
             ],
-            "explanation": "Включите свет significa acenda a luz; включи é o imperativo informal singular."
+            "explanation": "Включите свет é imperativo cortês ou plural; включи é singular informal. Пожалуйста pode aparecer antes ou depois da frase."
           },
           "remove": []
         },
@@ -1520,9 +1691,10 @@
             "answers": [
               "В этой книге много картинок.",
               "В этой книге много изображений.",
-              "В этой книге много иллюстраций."
+              "В этой книге много иллюстраций.",
+              "В этой книге много рисунков."
             ],
-            "explanation": "После много, o substantivo aparece no genitivo plural: картинок ou изображений."
+            "explanation": "Много pede genitivo plural: картинок, изображений, иллюстраций ou рисунков. В этой книге indica neste livro, no caso prepositivo."
           },
           "remove": []
         },
@@ -1565,7 +1737,12 @@
         {
           "id": "ru-writing-085",
           "set": {
-            "explanation": "В пятницу significa na sexta-feira; экзамен pode receber будет para marcar explicitamente o futuro."
+            "explanation": "В пятницу significa na sexta-feira; экзамен pode receber будет para marcar explicitamente o futuro.",
+            "answers": [
+              "Экзамен в пятницу.",
+              "Экзамен будет в пятницу.",
+              "В пятницу экзамен."
+            ]
           },
           "remove": []
         },
@@ -1982,7 +2159,12 @@
         {
           "id": "ru-test-27",
           "set": {
-            "explanation": "Не antecede работает na negativa; сегодня pode aparecer no início ou no fim."
+            "explanation": "Не antecede работает na negativa; сегодня pode aparecer no início ou no fim.",
+            "answers": [
+              "она не работает сегодня",
+              "сегодня она не работает",
+              "Она сегодня не работает."
+            ]
           },
           "remove": []
         },
@@ -2275,6 +2457,144 @@
               "ходит"
             ],
             "explanation": "Каждое утро выражает привычное повторяющееся движение; нужна форма ходит."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-001-q1",
+          "set": {
+            "explanation": "Читал é o passado masculino de читать (imperfectivo): весь вечер indica foco na atividade em andamento ao longo da noite."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-001-q2",
+          "set": {
+            "explanation": "Прочитал é o passado masculino perfectivo de прочитать: до конца apresenta a leitura como concluída."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-003-q1",
+          "set": {
+            "explanation": "Звоню seleciona o dativo para o destinatário da ligação: друг → другу."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-003-q2",
+          "set": {
+            "explanation": "Мне é a forma dativa de я em construções impessoais de sensação: Мне холодно (estou com frio)."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-003-q3",
+          "set": {
+            "explanation": "Дала (deu) indica a destinatária no dativo: сестра → сестре."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-004-q1",
+          "set": {
+            "explanation": "A preposição с indica companhia e exige instrumental: друг → другом, formando с другом."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-004-q2",
+          "set": {
+            "explanation": "Para indicar a profissão depois de работает, o russo usa instrumental: врач → врачом."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-004-q3",
+          "set": {
+            "explanation": "A companhia após с exige instrumental: сестра → сестрой; с сестрой significa com a irmã."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-005-q1",
+          "set": {
+            "explanation": "Сейчас indica deslocamento atual numa direção: я иду (vou a pé), em oposição ao habitual я хожу."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-005-q2",
+          "set": {
+            "explanation": "Каждый день indica deslocamento habitual: я хожу, e não я иду, que descreve uma ida em curso."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-005-q3",
+          "set": {
+            "explanation": "Сейчас e в автобусе situam uma viagem em andamento: мы едем, verbo de movimento por transporte."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-26",
+          "set": {
+            "answers": [
+              "мы читаем каждый день",
+              "Каждый день мы читаем."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-006",
+          "set": {
+            "explanation": "Это + nominativo expressa identificação: моя responsabilidade; ответственность é feminino, por isso моя."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-007",
+          "set": {
+            "explanation": "Окончание/завершение indica a conclusão do curso; no passado, было concorda com o sujeito neutro, e достижением está no instrumental.",
+            "answers": [
+              "Окончание курса было достижением.",
+              "Завершение курса было достижением."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-008",
+          "set": {
+            "explanation": "У каждого решения есть последствия expressa que toda decisão tem consequências; решения está no genitivo após каждого.",
+            "answers": [
+              "У каждого решения есть последствия.",
+              "Каждое решение имеет последствия."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-009",
+          "set": {
+            "explanation": "Мы должны защищать e нам следует защищать exprimem dever/recomendação de proteger; окружающую среду é objeto no acusativo.",
+            "answers": [
+              "Мы должны защищать окружающую среду.",
+              "Нам следует защищать окружающую среду."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-010",
+          "set": {
+            "explanation": "Это было + decisão descreve um fato passado; трудное e сложное podem qualificar uma decisão difícil.",
+            "answers": [
+              "Это было трудное решение.",
+              "Это было сложное решение."
+            ]
           },
           "remove": []
         }
