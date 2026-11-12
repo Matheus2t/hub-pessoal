@@ -64,7 +64,7 @@ export class LearnAudio extends LightElement {
       await this.speech.play(this.text,this.language,this.rate,this.volume);
       if(token===this.generation&&this.isConnected)this.dispatchEvent(new CustomEvent('heard',{bubbles:true,composed:true,detail:{source:'browser-speech-synthesis',validated:false}}));
     }catch{
-      if(token===this.generation&&this.isConnected)this.error='Não foi possível reproduzir. Verifique a voz instalada e tente novamente.';
+      if(token===this.generation&&this.isConnected)this.error=`Não foi possível reproduzir em ${this.language==='ru'?'russo':'inglês'}. Verifique as vozes do sistema e as configurações de áudio do navegador.`;
     }finally{
       if(token===this.generation&&this.isConnected){this.playing=false;this.paused=false;}
     }
@@ -76,10 +76,10 @@ export class LearnAudio extends LightElement {
   }
 
   render(){
-    const status=this.loadingVoices?'Carregando vozes disponíveis…':!this.speech.supported()?'Síntese de voz indisponível neste navegador.':!this.available?`Nenhuma voz compatível com ${this.language==='ru'?'russo':'inglês'} está instalada.`:this.playing?'Síntese local em reprodução; áudio não validado como material de avaliação.':'Síntese de voz do navegador · material de prática, não uma gravação validada.';
+    const status=!this.speech.supported()?'Síntese de voz indisponível neste navegador.':this.playing?'Síntese local em reprodução; áudio não validado como material de avaliação.':this.loadingVoices?'O navegador está carregando as vozes. Você já pode tentar ouvir.':!this.available?`O navegador não identificou uma voz de ${this.language==='ru'?'russo':'inglês'}. Use Ouvir para tentar a voz do sistema; a pronúncia pode variar.`:'Síntese de voz do navegador · material de prática, não uma gravação validada.';
     return html`<div class="learn-audio" aria-label="Reprodução de áudio para prática">
       <div class="learn-audio__controls">
-        <button class="button" aria-label="Ouvir / repetir" ?disabled=${!this.available||this.loadingVoices||this.playing} @click=${()=>void this.play()}>${this.playing?'Reproduzindo…':'Ouvir / repetir'}</button>
+        <button class="button" aria-label="Ouvir / repetir" ?disabled=${!this.speech.supported()||!this.text.trim()||this.playing} @click=${()=>void this.play()}>${this.playing?'Reproduzindo…':'Ouvir / repetir'}</button>
         <button class="button" aria-label=${this.paused?'Continuar áudio':'Pausar áudio'} aria-pressed=${this.paused} ?disabled=${!this.playing} @click=${()=>{this.paused=!this.paused;if(this.paused)this.speech.pause();else this.speech.resume()}}>${this.paused?'Continuar':'Pausar'}</button>
         <button class="button" aria-label="Parar áudio" ?disabled=${!this.playing} @click=${()=>this.stop()}>Parar</button>
       </div>

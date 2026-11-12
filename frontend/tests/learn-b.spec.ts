@@ -25,8 +25,12 @@ for(const language of ['en','ru'])test(`study, review and audio ${language}`,asy
  await page.getByRole('button',{name:'Encerrar / voltar às opções'}).click();await page.getByRole('button',{name:'Iniciar prática'}).click();await page.getByRole('button',{name:'Verificar resposta'}).click();await expect(page.getByRole('alert')).toHaveText('Digite uma resposta.');await page.getByLabel('Sua resposta').fill('definitely wrong');await page.getByRole('button',{name:'Verificar resposta'}).click();await expect(page.locator('.learn-feedback')).toContainText('resultado incerto');await expect(page.locator('.learn-feedback')).toContainText('não foi marcada como erro');
  const spoken=await page.evaluate(()=>(window as any).spoken);expect(spoken.every((s:any)=>s.lang.startsWith(language))).toBe(true);expect(await page.evaluate(()=>(window as any).cancelled)).toBeGreaterThan(0);
 });
-test('no matching voice never completes a listening attempt',async({page})=>{
- await fakeVoice(page,'en');await page.goto('/#/learn/ru/listening');await page.getByRole('button',{name:'Iniciar prática'}).click();await expect(page.locator('learn-audio')).toContainText('Nenhuma voz compatível com russo');await expect(page.getByRole('button',{name:'Ouvir / repetir'})).toBeDisabled();await expect(page.getByRole('button',{name:'Verificar resposta'})).toBeDisabled();await expect(page.locator('.learn-feedback')).toHaveCount(0);
+test('sem voz russa listada, ouvir tenta fallback sem pontuar automaticamente',async({page})=>{
+ await fakeVoice(page,'en');await page.goto('/#/learn/ru/listening');await page.getByRole('button',{name:'Iniciar prática'}).click();
+ await expect(page.locator('learn-audio')).toContainText('não identificou uma voz de russo');
+ await expect(page.getByRole('button',{name:'Ouvir / repetir'})).toBeEnabled();
+ await expect(page.getByRole('button',{name:'Verificar resposta'})).toBeDisabled();
+ await expect(page.locator('.learn-feedback')).toHaveCount(0);
 });
 test('write failures cannot produce saved feedback; retries remain idempotent',async({page})=>{
  await page.addInitScript(()=>{const original=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(...args:Parameters<IDBDatabase['transaction']>){if(args[1]==='readwrite'&&sessionStorage.getItem('deny-write')==='yes')throw Error('private storage failure');return original.apply(this,args)} as IDBDatabase['transaction']});
