@@ -79,7 +79,14 @@ test('V19 preview stays within screen in both themes and different viewports',as
    await page.goto('/?learn-preview=audio-v19#/learn/ru/audio-v19');
    await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
    await expect(page.locator('learn-recording-player')).toBeVisible();
-   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`${width}/${theme}`).toBe(true);
+   const overflow=await page.evaluate(()=>({
+    total:document.documentElement.scrollWidth,viewport:innerWidth,
+    offenders:[...document.querySelectorAll<HTMLElement>('.learn-page *')]
+      .filter(x=>x.getBoundingClientRect().right>innerWidth+1)
+      .slice(0,8).map(x=>({tag:x.tagName,klass:typeof x.className==='string'?x.className.slice(0,80):'',
+        right:Math.round(x.getBoundingClientRect().right)}))
+   }));
+   expect(overflow.total<=overflow.viewport,JSON.stringify({width,theme,overflow})).toBe(true);
   }
  }
 });
