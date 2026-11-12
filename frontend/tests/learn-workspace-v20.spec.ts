@@ -105,3 +105,56 @@ test('Learn V20.1 keeps extra tools collapsed and opens every existing route',as
  await expect(page.locator('.learn-hero__title')).toHaveText('Russo');
  await expect(page.locator('.learn-hero')).toHaveCount(1);
 });
+
+test('Learn V20.2 polish: levels compactos, chevron consistente e indicadores alinhados',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  for(const width of [320,390,768,1366]){
+    await page.setViewportSize({width,height:920});
+    for(const theme of ['dark','light'] as const){
+      await page.goto('/#/learn/ru');
+      await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
+      await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
+      const metrics=await page.evaluate(()=>{
+        const root=document.querySelector<HTMLElement>('.learn-page')!;
+        const summary=[...document.querySelectorAll<HTMLElement>('.learn-summary dl div')];
+        const levels=[...document.querySelectorAll<HTMLElement>('.learn-course__level')];
+        const arrow=document.querySelector<HTMLElement>('.learn-more__chevron')!;
+        const row=document.querySelector<HTMLElement>('.learn-course__levels')!;
+        return {
+          scrollWidth:document.documentElement.scrollWidth,
+          viewport:window.innerWidth,
+          levelCount:levels.length,
+          groupBorder:getComputedStyle(row).borderTopWidth,
+          levelInteriorBorder:getComputedStyle(levels[1]).borderLeftWidth,
+          compactGap:getComputedStyle(root).getPropertyValue('--learn-v20-gap').trim(),
+          reviewLabel:summary[1].querySelector('dt')?.textContent?.trim(),
+          valueTops:summary.map(item=>Math.round(item.querySelector('dd')!.getBoundingClientRect().top)),
+          chevronBorder:getComputedStyle(arrow).borderRightWidth
+        };
+      });
+      expect(metrics.scrollWidth<=metrics.viewport,JSON.stringify({width,theme,metrics})).toBe(true);
+      expect(metrics.levelCount).toBe(3);
+      expect(metrics.groupBorder).toBe('1px');
+      expect(metrics.levelInteriorBorder).toBe('1px');
+      expect(metrics.compactGap.length).toBeGreaterThan(0);
+      expect(metrics.reviewLabel).toBe('Revisões pendentes');
+      expect(metrics.chevronBorder).not.toBe('0px');
+      if(width<=390)expect(Math.max(...metrics.valueTops)-Math.min(...metrics.valueTops),JSON.stringify({width,theme,metrics})).toBeLessThanOrEqual(2);
+    }
+  }
+  expect(errors).toEqual([]);
+});
+
+test('Learn V20.2 secondary tools stay keyboard navigable without altering routes',async({page})=>{
+  await page.goto('/#/learn/en');
+  const disclosure=page.locator('learn-home details.learn-more');
+  const summary=disclosure.locator('summary');
+  await expect(disclosure.locator('nav')).toBeHidden();
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(disclosure).toHaveAttribute('open','');
+  await expect(disclosure.locator('nav a')).toHaveCount(5);
+  await page.keyboard.press('Enter');
+  await expect(disclosure).not.toHaveAttribute('open','');
+});

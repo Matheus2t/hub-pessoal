@@ -61,7 +61,7 @@ export class LearnHome extends LightElement {
       <section class="learn-summary" aria-label="Resumo do estudo">
         <dl>
           <div><dt>Respostas</dt><dd>${stats?stats.attempts:'—'}</dd></div>
-          <div><dt>Revisões</dt><dd>${stats?stats.due:'—'}</dd></div>
+          <div><dt>Revisões pendentes</dt><dd>${stats?stats.due:'—'}</dd></div>
           <div><dt>Palavras estudadas</dt><dd>${stats?stats.studied:'—'}</dd></div>
         </dl>
         <a href=${`#/learn/${lang}/daily`}>Plano diário${plan?` · ${planCount}/${plan.goal}`:''} <span aria-hidden="true">↗</span></a>
@@ -78,7 +78,7 @@ export class LearnHome extends LightElement {
       </section>
 
       <details class="learn-more">
-        <summary>Mais ferramentas <span aria-hidden="true">⌄</span></summary>
+        <summary>Mais ferramentas <span class="learn-more__chevron" aria-hidden="true"></span></summary>
         <nav aria-label="Ferramentas adicionais de estudo">
           ${tools.map(tool=>html`<a href=${`#/learn/${lang}/${tool.route}`}>${tool.name} <span aria-hidden="true">↗</span></a>`)}
         </nav>
