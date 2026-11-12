@@ -38,10 +38,12 @@ test('local synthesis selects only the requested language and honors rate and vo
   expect(speech.voices('ru').map(item=>item.lang)).toEqual(['ru-RU']);
 });
 
-test('volume updates the active utterance; invalid input and missing locale are rejected',async()=>{
+test('volume updates the active utterance; missing locale uses system fallback without changing validation',async()=>{
   const state=installSpeech([voice('English local','en-US',true)]),speech=new LearnSpeech();
   const done=speech.play('Hello','en');speech.setVolume(.25);expect(state.last?.volume).toBe(.25);finish(state.last!);await done;
-  await expect(speech.play('Hello','ru')).rejects.toThrow('Nenhuma voz compatível');
+  const fallback=speech.play('Hello','ru');
+  expect(state.last).toMatchObject({text:'Hello',lang:'ru-RU',voice:null});
+  finish(state.last!);await fallback;
   await expect(speech.play('Hello','en',1,1.2)).rejects.toThrow('inválidos');
   await expect(speech.play('   ','en')).rejects.toThrow('inválidos');
 });
@@ -101,7 +103,7 @@ test('player recovers when a Russian browser voice loads late and keeps the sour
   await page.goto('/#/learn/ru/listening');
   await page.getByRole('button',{name:'Iniciar prática'}).click();
   const player=page.locator('learn-audio'),expected=await page.locator('learn-session').evaluate(el=>(el as any).exercises[0].audio as string);
-  await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeDisabled();
+  await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeEnabled();
   await page.evaluate(()=>(window as any).__loadRussianVoice());
   await expect(player.getByRole('button',{name:'Ouvir / repetir'})).toBeEnabled();
   await player.getByRole('button',{name:'Ouvir / repetir'}).click();
