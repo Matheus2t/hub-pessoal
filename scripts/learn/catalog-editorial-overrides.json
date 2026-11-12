@@ -95,7 +95,7 @@
         {
           "id": "en-v2-grammar-001",
           "set": {
-            "explanation": "Use have/has + particípio para experiências e resultados ligados ao presente, sem situá-los em um momento passado encerrado. Com yesterday, prefira Past Simple."
+            "explanation": "Use have/has + particípio para experiências ou resultados relacionados ao presente, quando não se indica um momento passado concluído: I have visited London. Com referência a uma ocasião encerrada, prefira Past Simple: I visited London in 2023. O contraste com o passado simples já estudado é importante: não use have went, pois o particípio de go é gone."
           },
           "remove": []
         },
@@ -103,6 +103,27 @@
           "id": "en-v2-grammar-004",
           "set": {
             "explanation": "Em orações relativas restritivas, use who ou that para pessoas e which ou that para coisas. Não use vírgula nesta construção."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-04",
+          "set": {
+            "explanation": "Use a forma básica do presente simples com I/you/we/they. Em frases afirmativas com he/she/it, normalmente acrescente -s; algumas formas mudam, como goes e studies. Nesta lição, pratique primeiro a rotina afirmativa. Na etapa seguinte, use do/does para fazer perguntas ou negar hábitos sem manter o -s no verbo principal."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-10",
+          "set": {
+            "explanation": "O passado simples descreve ações encerradas; verbos regulares geralmente recebem -ed, e verbos irregulares têm formas próprias, como went. Nas negativas, did not pede o verbo na forma básica. Yesterday ou in 2023 situam o acontecimento num momento passado. Na etapa B1, contraste isso com o Present Perfect usado para experiências sem data passada encerrada."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-005",
+          "set": {
+            "explanation": "Use was/were + verbo em -ing para representar uma ação em andamento em um momento passado. Combine com Past Simple para destacar um evento pontual que aconteceu durante o processo: I was reading when you called. Não confunda com Present Continuous (am/is/are + -ing), que trata de ações em andamento no presente."
           },
           "remove": []
         }
@@ -2294,6 +2315,41 @@
                 "translation": "Ela escreve cartas todos os dias."
               }
             ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-02",
+          "set": {
+            "explanation": "Я, ты, он, она, оно, мы, вы e они indicam pessoas e grupos. Вы pode ser plural ou tratamento respeitoso. Para identidade e localização no presente, o verbo equivalente a ser/estar costuma ser omitido: Я студент, Мы дома. Na etapa seguinte, aprenda a usar verbos de ação no presente, como я читаю, sem acrescentar есть automaticamente."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-06",
+          "set": {
+            "explanation": "O verbo no presente varia conforme o sujeito já estudado: я читаю, ты читаешь, он/она читает, мы читаем, вы читаете, они читают. Compare Я студент (frase nominal sem есть) com Я читаю (verbo de ação conjugado). Não generalize estas terminações para todos os verbos; a negação com не e as perguntas aparecem nas lições seguintes."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-09",
+          "set": {
+            "explanation": "O nominativo identifica o sujeito; o acusativo marca muitos objetos diretos. Em substantivos femininos regulares terminados em -а, o objeto direto costuma terminar em -у: Мама читает книгу, Я вижу машину. Alguns masculinos inanimados, como стол, conservam a forma. Esta é apenas uma introdução ao sistema: genitivo, dativo e instrumental são explorados em etapas posteriores, não como regras do acusativo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-002",
+          "set": {
+            "explanation": "Depois de нет em construções de ausência, usa-se normalmente genitivo: У меня нет времени, У Анны нет машины. У + genitivo também marca o possuidor. Compare com o acusativo de objeto direto já aprendido (Я читаю книгу): книгу é acusativo, enquanto книги em У меня нет книги é genitivo. As terminações dependem da classe e do número do substantivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-grammar-005",
+          "set": {
+            "explanation": "Идти descreve deslocamento atual a pé em uma direção; ходить pode indicar hábito, várias direções ou ida e volta. Para transporte, ехать/ездить fazem distinção semelhante. Compare Сейчас я иду домой (agora, a pé) com Каждый день я хожу в школу (hábito). A conjugação no presente foi estudada antes, mas a escolha do verbo depende de direção, repetição e meio de transporte, não só do tempo verbal."
           },
           "remove": []
         }
