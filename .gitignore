@@ -16,3 +16,6 @@ dist/
 .vercel
 test-results/
 playwright-report/
+
+# Local-only Learn audio production and owner review; never ship to public builds.
+private/learn-audio-v19/
