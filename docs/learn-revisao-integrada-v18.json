@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_internal_editorial_final_review_v18",
+  "date": "2026-11-12",
+  "scope": "V11-V17 pedagogical proposals, not production or external validation",
+  "reviewKind": "internal_editorial_by_chatgpt",
+  "externalExpertReview": false,
+  "studentPilotPerformed": false,
+  "learnerCompetencyCertified": false,
+  "publicReleaseAuthorized": false,
+  "baseline": {
+    "legacyExerciseCount": 474,
+    "legacyExercisesEn": 237,
+    "legacyExercisesRu": 237,
+    "progressionStagesPerLanguage": 15,
+    "progressionV12PublicRelease": false,
+    "audioV15ApprovedRecordings": 0
+  },
+  "prs": [
+    {
+      "pr": 116,
+      "version": "V11",
+      "head": "b0fa03876cb072c75f417b0f6bae504e1be896a1",
+      "branch": "learn/pontes-revisao-editorial-v11",
+      "components": {
+        "bridgeActivities": 24,
+        "listeningBridgeScripts": 4
+      },
+      "corrections": [
+        "en-bridge-v10-02",
+        "en-bridge-v10-11",
+        "ru-bridge-v10-03",
+        "ru-bridge-v10-06"
+      ],
+      "public": false
+    },
+    {
+      "pr": 118,
+      "version": "V13",
+      "head": "716c1112c2f9b7dedaa99470bf3bf4b1c34d5560",
+      "branch": "learn/listening-a2-b1-v13-editorial",
+      "components": {
+        "scripts": 32,
+        "questions": 80
+      },
+      "corrections": [
+        "ru-listen-v13-16"
+      ],
+      "audioValidated": false,
+      "public": false
+    },
+    {
+      "pr": 119,
+      "version": "V14",
+      "head": "77247cd660af3f3c002cf47d58dfe099a76c0161",
+      "branch": "learn/ditados-a2-b1-v14-editorial",
+      "components": {
+        "dictations": 32
+      },
+      "corrections": [
+        "ru-dict-v14-01",
+        "ru-dict-v14-04",
+        "ru-dict-v14-06",
+        "ru-dict-v14-07",
+        "ru-dict-v14-11",
+        "ru-dict-v14-12"
+      ],
+      "audioValidated": false,
+      "public": false
+    },
+    {
+      "pr": 121,
+      "version": "V16",
+      "head": "fc41064c093602b965e795c3961064c9530476bf",
+      "branch": "learn/leitura-interpretacao-b1-v16",
+      "components": {
+        "texts": 10,
+        "questions": 40,
+        "transferTasks": 10
+      },
+      "corrections": [
+        "en-reading-b1-v16-04"
+      ],
+      "public": false
+    },
+    {
+      "pr": 122,
+      "version": "V17",
+      "head": "c0cdb6c9df5cc48db04898efa5ede2da3a84726e",
+      "branch": "learn/avaliacao-progressao-v17-editorial",
+      "components": {
+        "stageAssessmentDrafts": 30,
+        "levelCheckpoints": 6,
+        "syntheticPolicyCases": 16
+      },
+      "corrections": [
+        "docs/learn-avaliacao-politica-v17.json"
+      ],
+      "public": false
+    }
+  ],
+  "auditResults": {
+    "jsonParsed": true,
+    "sourceIdsUnique": true,
+    "legacyIdsPreserved": true,
+    "stageLinksValid": true,
+    "languageAndLevelLinksValid": true,
+    "quoteEvidenceSpansPresent": true,
+    "objectiveAnswerKeysValid": true,
+    "noPrematurePublicationFlags": true,
+    "syntheticPolicyCasesReviewed": 16,
+    "customStructuralReviewIssues": 0,
+    "mcqKeyDistribution": {
+      "v13": {
+        "en": {
+          "a": 8,
+          "b": 8,
+          "c": 8
+        },
+        "ru": {
+          "a": 8,
+          "b": 8,
+          "c": 8
+        }
+      },
+      "v16": {
+        "en": {
+          "a": 4,
+          "b": 3,
+          "c": 3
+        },
+        "ru": {
+          "a": 4,
+          "b": 3,
+          "c": 3
+        }
+      }
+    }
+  },
+  "mediaInventory": {
+    "v13Listening": 32,
+    "v14Dictations": 32,
+    "v11BridgeListening": 4,
+    "estimatedDistinctAudiosIfAllReleased": 68,
+    "approvedAudioCountObservedInV15": 0,
+    "audioNotProducedOrVerifiedByThisReview": true
+  },
+  "releaseModel": {
+    "team": [
+      "owner",
+      "ChatGPT",
+      "Codex"
+    ],
+    "ownerEditorialAcceptancePending": true,
+    "externalSpecialistsNotRequiredForNoncertifyingSelfStudySite": true,
+    "independentValidationNotPerformed": true,
+    "doNotClaimCefrCertifications": true,
+    "doNotAutomaticallyGradeFreeText": true,
+    "doNotMergeDraftPrsAutomatically": true,
+    "doNotPublishUntilOwnerApprovesAndAudioTestsPass": true
+  },
+  "remaining": [
+    "Owner reviews and accepts editorial changes",
+    "Generate lawful voice recordings, listen and review each of potentially 68 distinct scripts",
+    "Resolve new audio mapping and ensure listening transcript remains hidden",
+    "Integrate owner-approved drafts without deleting IDs or changing backups",
+    "Implement only validated assessment logic in V17 with uncertain fallback",
+    "Test students/devices and all technical regressions",
+    "Confirm production deployment of correct merge commit and keep drafts disabled until owner approval"
+  ],
+  "note": "This is a revision record, not an authorization to represent skill levels as externally certified."
+}
