@@ -2123,7 +2123,8 @@
               "descansa depois do jantar",
               "ela descansa depois do jantar"
             ],
-            "explanation": "Afterwards retoma depois do jantar: Nina descansa depois de estudar."
+            "explanation": "Before dinner situa o estudo antes do jantar; after dinner informa explicitamente que Nina descansa depois do jantar.",
+            "prompt": "Leia: “Nina studies before dinner and rests after dinner.” O que faz depois do jantar?"
           },
           "remove": []
         },
@@ -4211,7 +4212,8 @@
               "descansa depois do jantar",
               "ela descansa depois do jantar"
             ],
-            "explanation": "А потом отдыхает informa que Nina descansa depois de estudar, antes do qual vem до ужина."
+            "explanation": "До ужина indica que Nina estuda antes do jantar; после ужина indica que descansa depois do jantar.",
+            "prompt": "Leia: «Нина занимается до ужина, а после ужина отдыхает». O que faz depois do jantar?"
           },
           "remove": []
         },
