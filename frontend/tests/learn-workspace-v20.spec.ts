@@ -3,20 +3,19 @@ import {expect,test} from '@playwright/test';
 const viewportWidths=[320,390,768,1366] as const;
 
 for(const language of ['en','ru'] as const){
-  test(`Learn V20 workspace hierarchy and navigation — ${language}`,async({page})=>{
+  test(`Learn V20.1 minimal study grid and navigation — ${language}`,async({page})=>{
     await page.goto(`/#/learn/${language}`);
     const home=page.locator('learn-home');
     await expect(home).toBeVisible();
-    await expect(home.getByRole('heading',{name:'Organize o estudo. Depois, pratique.'})).toBeVisible();
-    await expect(home.locator('.learn-level-card')).toHaveCount(3);
-    await expect(home.locator('.learn-area-link')).toHaveCount(8);
-    await expect(home.locator('.learn-hub-nav a')).toHaveCount(6);
-    await expect(home.getByText('A1–B1 organiza objetivos de estudo.')).toBeVisible();
-    await expect(home.getByText('Novos roteiros sem gravação aprovada')).toBeVisible();
+    await expect(home.getByRole('heading',{name:'O que estudar'})).toBeVisible();
+    await expect(home.locator('.learn-course__level')).toHaveCount(3);
+    await expect(home.locator('.learn-study__tile')).toHaveCount(8);
+    await expect(home.locator('.learn-more nav')).toBeHidden();
+    await expect(home.locator('.learn-summary')).toContainText('Respostas');
+    await expect(home.locator('.learn-curriculum,.learn-level-map,.learn-workspace,.learn-home-progress')).toHaveCount(0);
     await expect(home.locator('a[href$="/progression"]')).toHaveCount(0);
-    const first=home.locator('.learn-level-card').first();
-    await expect(first).toHaveAttribute('href',`#/learn/${language}/path`);
-    await home.locator(`.learn-area-link[href="#/learn/${language}/dictation"]`).click();
+    await expect(home.locator('a[href$="/path"]')).toHaveCount(1);
+    await home.locator(`.learn-study__tile[href="#/learn/${language}/dictation"]`).click();
     await expect(page.locator('.learn-practice-setup__header')).toContainText('Ditado');
     await expect(page.getByRole('navigation',{name:'Navegação do Learn'})).toBeVisible();
     await page.getByRole('navigation',{name:'Navegação do Learn'}).getByRole('link',{name:'Plano diário'}).click();
@@ -24,18 +23,18 @@ for(const language of ['en','ru'] as const){
   });
 }
 
-test('Learn V20 stays within viewport in dark and light mode; no unreleased curriculum exposed',async({page})=>{
+test('Learn V20.1 stays within viewport in dark and light mode; no unreleased curriculum exposed',async({page})=>{
   const errors:string[]=[];
   page.on('pageerror',e=>errors.push(e.message));
   for(const width of viewportWidths){
     await page.setViewportSize({width,height:920});
     for(const theme of ['dark','light'] as const){
       await page.goto('/#/learn/ru');
-      await expect(page.locator('learn-home .learn-area-link')).toHaveCount(8);
+      await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
       await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
       const checks=await page.evaluate(()=>({
         horizontalOverflow:document.documentElement.scrollWidth>window.innerWidth,
-        hiddenMain:!document.querySelector('learn-home .learn-curriculum'),
+        hiddenMain:!document.querySelector('learn-home .learn-study'),
         leakedDraft:document.body.textContent?.includes('ru-listen-v13-01')||false,
       }));
       expect(checks,{width,theme}).toEqual({horizontalOverflow:false,hiddenMain:false,leakedDraft:false});
@@ -44,7 +43,7 @@ test('Learn V20 stays within viewport in dark and light mode; no unreleased curr
   expect(errors).toEqual([]);
 });
 
-test('Learn V20 progression keeps V12 gates, honest activity counts and collapsible details',async({page})=>{
+test('Learn V20.1 progression keeps V12 gates, honest activity counts and collapsible details',async({page})=>{
   await page.goto('/#/learn/en/progression');
   await expect(page.getByRole('heading',{name:'Prévia indisponível'})).toBeVisible();
   await expect(page.locator('.learn-progression-stage')).toHaveCount(0);
@@ -77,14 +76,32 @@ test('Learn V20 progression keeps V12 gates, honest activity counts and collapsi
   }
 });
 
-test('Learn V20 keeps landing, eight activities and local-language isolation',async({page})=>{
+test('Learn V20.1 keeps landing, eight activities and local-language isolation',async({page})=>{
   await page.goto('/#/learn');
   await expect(page.getByRole('heading',{name:'Escolha o idioma'})).toBeVisible();
   await expect(page.locator('.learn-language')).toHaveCount(2);
   await page.locator('.learn-language[href="#/learn/en"]').click();
-  await expect(page.locator('learn-home .learn-area-link')).toHaveCount(8);
+  await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
   await page.getByRole('link',{name:'Trocar idioma'}).click();
   await page.locator('.learn-language[href="#/learn/ru"]').click();
-  await expect(page.locator('learn-home .learn-area-link')).toHaveCount(8);
+  await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
   await expect(page.locator('.learn-hero__title')).toHaveText('Russo');
+});
+
+test('Learn V20.1 keeps extra tools collapsed and opens every existing route',async({page})=>{
+ await page.goto('/#/learn/ru');
+ const extra=page.locator('learn-home details.learn-more');
+ await expect(extra).not.toHaveAttribute('open','');
+ await expect(extra.locator('nav')).toBeHidden();
+ await extra.locator('summary').click();
+ await expect(extra).toHaveAttribute('open','');
+ await expect(extra.locator('nav a')).toHaveCount(5);
+ for(const route of ['daily','dashboard','errors','targeted','backup']){
+   await expect(extra.locator(`a[href="#/learn/ru/${route}"]`)).toHaveCount(1);
+ }
+ await extra.locator('summary').click();
+ await expect(extra.locator('nav')).toBeHidden();
+ await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
+ await expect(page.locator('.learn-hero__title')).toHaveText('Russo');
+ await expect(page.locator('.learn-hero')).toHaveCount(1);
 });
