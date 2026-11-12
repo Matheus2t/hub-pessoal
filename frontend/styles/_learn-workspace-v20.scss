@@ -286,7 +286,17 @@ learn-home { display:block; min-width:0; width:100%; }
   .learn-page .learn-progression-head {
     display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:12px;
   }
-  .learn-page .learn-progression-count { width:fit-content; max-width:100%; }
+  .learn-page .learn-progression-count {
+    width:fit-content; max-width:100%; justify-self:start;
+    display:flex; flex-wrap:wrap; align-items:baseline; text-align:left;
+  }
+  .learn-page .learn-progression-level > summary {
+    display:grid; grid-template-columns:auto minmax(0,1fr);
+    align-items:center; gap:9px;
+  }
+  .learn-page .learn-progression-level > summary > small {
+    min-width:0; text-align:right; overflow-wrap:anywhere;
+  }
   .learn-page .learn-progression-stage { min-width:0; overflow-wrap:anywhere; }
   .learn-page .learn-progression-actions { grid-template-columns:minmax(0,1fr); }
 }
