@@ -978,10 +978,9 @@
           "set": {
             "answers": [
               "um jardim comunitário",
-              "uma horta comunitária",
               "um pequeno jardim comunitário"
             ],
-            "explanation": "A equipe decidiu construir a small community garden: um jardim comunitário. O texto não especifica o tipo de cultivo."
+            "explanation": "O texto menciona a small community garden (um pequeno jardim comunitário). Ele não especifica que se trata de uma horta nem que sejam cultivados alimentos; a resposta deve preservar essa distinção."
           },
           "remove": []
         },
