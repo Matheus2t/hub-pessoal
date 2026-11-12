@@ -726,8 +726,17 @@ learn-home { display:block; min-width:0; width:100%; }
 }
 @media(max-width:450px) {
   .learn-page .learn-v19-preview__tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .learn-page .learn-v19-preview__tabs .button { padding-inline:12px; }
+  .learn-page .learn-v19-preview__tabs .button {
+    min-width:0; gap:5px; padding-inline:10px;
+    white-space:normal; overflow-wrap:anywhere;
+  }
   .learn-page .learn-v19-preview__head .button { width:100%; }
   .learn-page .learn-v19-preview__index,
   .learn-page .learn-v19-preview__exercise { padding:18px; }
+  .learn-page .learn-v19-preview__exercise,
+  .learn-page .learn-v19-preview__questions fieldset,
+  .learn-page .learn-v19-preview__exercise learn-recording-player { min-width:0; max-width:100%; }
+}
+@media(max-width:380px) {
+  .learn-page .learn-v19-preview__tabs { grid-template-columns:minmax(0,1fr); }
 }
