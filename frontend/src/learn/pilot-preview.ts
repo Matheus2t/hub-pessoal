@@ -8,6 +8,9 @@ function isLoopback(host:string):boolean {
 export function isLearnIntegrationPreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='c5-integration';
 }
+export function isLearnProgressionPreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='progression-v12';
+}
 function previewFlagEnabled(flag:string,host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  return isLoopback(host)&&(new URLSearchParams(search).get('learn-preview')===flag||isLearnIntegrationPreviewEnabled(host,search));
 }
