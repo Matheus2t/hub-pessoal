@@ -132,14 +132,24 @@
         {
           "id": "en-listening-021",
           "set": {
-            "explanation": "One é o número um. Em português, um ou uma depende do gênero do substantivo, como um bilhete ou uma passagem."
+            "explanation": "One representa o número 1. Em português, um ou uma depende do substantivo; o numeral isolado pode ser representado por 1.",
+            "answers": [
+              "um",
+              "uma",
+              "1"
+            ]
           },
           "remove": []
         },
         {
           "id": "en-listening-022",
           "set": {
-            "explanation": "Two é o número dois; a tradução portuguesa pode ser dois ou duas conforme o substantivo."
+            "explanation": "Two representa o número 2. Em português, dois ou duas depende do gênero do substantivo.",
+            "answers": [
+              "dois",
+              "duas",
+              "2"
+            ]
           },
           "remove": []
         },
@@ -219,7 +229,11 @@
         {
           "id": "en-writing-070",
           "set": {
-            "explanation": "The children are playing usa Present Continuous para uma ação em andamento; children é o plural irregular de child."
+            "explanation": "The children e the kids referem-se às crianças; are playing marca ação em andamento no jardim.",
+            "answers": [
+              "The children are playing in the garden.",
+              "The kids are playing in the garden."
+            ]
           },
           "remove": []
         },
@@ -244,7 +258,11 @@
         {
           "id": "en-writing-073",
           "set": {
-            "explanation": "The meeting starts in ten minutes indica que a reunião começará daqui a dez minutos; in introduz o intervalo até o início."
+            "explanation": "Starts e begins são verbos naturais para o início da reunião. In ten minutes indica daqui a dez minutos.",
+            "answers": [
+              "The meeting starts in ten minutes.",
+              "The meeting begins in ten minutes."
+            ]
           },
           "remove": []
         },
@@ -359,7 +377,12 @@
         {
           "id": "en-writing-085",
           "set": {
-            "explanation": "On Friday indica dia da semana; exam e test são ambos formas possíveis de prova, conforme o contexto."
+            "explanation": "On Friday indica dia da semana; exam e test são ambos formas possíveis de prova, conforme o contexto.",
+            "answers": [
+              "The exam is on Friday.",
+              "The test is on Friday.",
+              "The examination is on Friday."
+            ]
           },
           "remove": []
         },
@@ -375,9 +398,11 @@
           "set": {
             "answers": [
               "Our train leaves at noon.",
-              "Our train departs at noon."
+              "Our train departs at noon.",
+              "Our train departs at midday.",
+              "Our train leaves at midday."
             ],
-            "explanation": "Leaves e departs indicam partida de transporte; at noon significa ao meio-dia."
+            "explanation": "Leaves/departs indicam saída do trem. Noon e midday designam meio-dia."
           },
           "remove": []
         },
@@ -418,9 +443,11 @@
           "set": {
             "answers": [
               "We are going to the airport.",
-              "We're going to the airport."
+              "We're going to the airport.",
+              "We're on our way to the airport.",
+              "We are on our way to the airport."
             ],
-            "explanation": "We are going to the airport usa Present Continuous para um deslocamento em curso; we're é a forma contraída."
+            "explanation": "We are going to the airport descreve o deslocamento; on our way to destaca que já estamos a caminho. We're é contração de we are."
           },
           "remove": []
         },
@@ -452,7 +479,11 @@
         {
           "id": "en-writing-095",
           "set": {
-            "explanation": "Quiet descreve uma rua calma, com pouco ruído ou movimento; very intensifica o adjetivo."
+            "explanation": "Very quiet e very peaceful descrevem a tranquilidade da rua neste contexto; peaceful pode realçar a sensação de sossego.",
+            "answers": [
+              "This street is very quiet.",
+              "This street is very peaceful."
+            ]
           },
           "remove": []
         },
@@ -483,9 +514,11 @@
           "set": {
             "answers": [
               "Turn left at the traffic lights.",
-              "Turn left at the traffic light."
+              "Turn left at the traffic light.",
+              "Turn left at the stoplight.",
+              "Turn left at the traffic signal."
             ],
-            "explanation": "Traffic lights (uso britânico) e traffic light (uso americano) podem indicar o semáforo; turn left significa vire à esquerda."
+            "explanation": "Traffic light, traffic lights, stoplight e traffic signal podem designar semáforo; turn left at indica virar à esquerda nesse ponto."
           },
           "remove": []
         },
@@ -501,9 +534,11 @@
           "set": {
             "answers": [
               "The journey was very interesting.",
-              "The trip was very interesting."
+              "The trip was very interesting.",
+              "It was a very interesting trip.",
+              "It was a very interesting journey."
             ],
-            "explanation": "Journey e trip são alternativas possíveis para viagem; was indica passado de be."
+            "explanation": "Journey e trip traduzem viagem em contextos diferentes; ambas cabem aqui. Very interesting caracteriza a experiência no passado."
           },
           "remove": []
         },
@@ -849,9 +884,10 @@
           "set": {
             "answers": [
               "This source is reliable.",
-              "This source is trustworthy."
+              "This source is trustworthy.",
+              "This is a reliable source."
             ],
-            "explanation": "Reliable e trustworthy expressam confiável; trustworthy enfatiza confiança na fonte."
+            "explanation": "This source is reliable e this is a reliable source expressam a mesma confiabilidade, mudando a estrutura da frase."
           },
           "remove": []
         },
@@ -882,9 +918,10 @@
           "set": {
             "answers": [
               "She had an opportunity to study abroad.",
-              "She had the opportunity to study abroad."
+              "She had the opportunity to study abroad.",
+              "She got the chance to study abroad."
             ],
-            "explanation": "Had an opportunity e had the opportunity podem traduzir teve a oportunidade, dependendo do contexto; study abroad significa estudar no exterior."
+            "explanation": "Had the opportunity e got the chance expressam a oportunidade de estudar fora; study abroad significa estudar no exterior."
           },
           "remove": []
         },
@@ -904,9 +941,10 @@
           "set": {
             "answers": [
               "We should protect the environment.",
-              "We must protect the environment."
+              "We must protect the environment.",
+              "We ought to protect the environment."
             ],
-            "explanation": "Should protect expressa recomendação/dever, must protect obrigação mais forte. O modal escolhido altera a intensidade."
+            "explanation": "Should e ought to exprimem recomendação ou dever; must expressa obrigação mais forte. Todas podem traduzir devemos em contextos apropriados."
           },
           "remove": []
         },
@@ -927,9 +965,11 @@
           "set": {
             "answers": [
               "What is the purpose of this meeting?",
-              "What's the purpose of this meeting?"
+              "What's the purpose of this meeting?",
+              "What is the aim of this meeting?",
+              "What is the goal of this meeting?"
             ],
-            "explanation": "What is the purpose of this meeting? pergunta a finalidade; what's é a contração natural de what is."
+            "explanation": "Purpose, aim e goal podem perguntar a finalidade ou objetivo de uma reunião; what's contrai what is."
           },
           "remove": []
         },
@@ -1402,10 +1442,12 @@
         {
           "id": "en-v2-writing-007",
           "set": {
-            "explanation": "Finishing/Completing the course funciona como sujeito com verbo em -ing; was an achievement descreve a conquista como fato passado.",
+            "explanation": "Finishing e completing o curso podem funcionar como sujeito. Achievement e accomplishment indicam uma conquista.",
             "answers": [
               "Finishing the course was an achievement.",
-              "Completing the course was an achievement."
+              "Completing the course was an achievement.",
+              "Completing the course was an accomplishment.",
+              "Finishing the course was an accomplishment."
             ]
           },
           "remove": []
@@ -1416,7 +1458,8 @@
             "explanation": "It was introduz uma situação passada; difficult e tough podem descrever uma decisão difícil, com artigo a antes de decision.",
             "answers": [
               "It was a difficult decision.",
-              "It was a tough decision."
+              "It was a tough decision.",
+              "That was a difficult decision."
             ]
           },
           "remove": []
@@ -1604,6 +1647,198 @@
             ]
           },
           "remove": []
+        },
+        {
+          "id": "en-listening-001",
+          "set": {
+            "answers": [
+              "olá",
+              "oi",
+              "ola"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-002",
+          "set": {
+            "answers": [
+              "até logo",
+              "até mais",
+              "tchau",
+              "ate logo",
+              "ate mais"
+            ],
+            "explanation": "Goodbye é uma despedida. Pode equivaler a tchau, até logo ou até mais dependendo do contexto; see you tomorrow acrescenta até amanhã no exemplo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-006",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-011",
+          "set": {
+            "answers": [
+              "família",
+              "familia"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-012",
+          "set": {
+            "answers": [
+              "mãe",
+              "mae"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-014",
+          "set": {
+            "answers": [
+              "irmã",
+              "irma"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-015",
+          "set": {
+            "answers": [
+              "irmão",
+              "irmao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-018",
+          "set": {
+            "answers": [
+              "pais",
+              "mae e pai",
+              "pai e mãe",
+              "pai e mae"
+            ],
+            "explanation": "Parents significa mãe e pai ou pais, diferentemente de relatives, que significa parentes."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-023",
+          "set": {
+            "answers": [
+              "três",
+              "3",
+              "tres"
+            ],
+            "explanation": "Three representa três; é um numeral cardinal. Na atividade de significado, também é válido responder 3."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-024",
+          "set": {
+            "answers": [
+              "quatro",
+              "4"
+            ],
+            "explanation": "Four é o número 4; no exemplo four students, estudantes está no plural."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-025",
+          "set": {
+            "answers": [
+              "cinco",
+              "5"
+            ],
+            "explanation": "Five é o número 5; five minutes significa cinco minutos."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-026",
+          "set": {
+            "answers": [
+              "dez",
+              "10"
+            ],
+            "explanation": "Ten é o número 10. At ten indica horário: às dez."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-028",
+          "set": {
+            "answers": [
+              "amanhã",
+              "amanha"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-019",
+          "set": {
+            "explanation": "Name significa nome; your name pede o nome da pessoa destinatária do pedido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-034",
+          "set": {
+            "explanation": "We are spending usa be + -ing para uma atividade em curso ou planejada. The evening at home significa a noite em casa."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-038",
+          "set": {
+            "explanation": "There is é usado com milk, substantivo não contável neste contexto. In the fridge indica localização na geladeira."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-039",
+          "set": {
+            "explanation": "I would like é uma forma polida de pedir. Without sugar significa sem açúcar."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-048",
+          "set": {
+            "explanation": "There is fruit on the table usa fruit como nome coletivo/não contável; fruit pode variar conforme o contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-050",
+          "set": {
+            "explanation": "We are having lunch significa estamos almoçando; have lunch é expressão para fazer a refeição, não indica posse."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-060",
+          "set": {
+            "explanation": "Please close the door é um pedido no imperativo; close significa fechar e please suaviza o pedido."
+          },
+          "remove": []
         }
       ]
     },
@@ -1713,7 +1948,8 @@
           "id": "ru-listening-001",
           "set": {
             "answers": [
-              "olá"
+              "olá",
+              "ola"
             ],
             "explanation": "Здравствуйте é uma saudação polida, formal ou dirigida a mais de uma pessoa. Em português, olá preserva melhor esse registro do que oi."
           },
@@ -1732,14 +1968,24 @@
         {
           "id": "ru-listening-021",
           "set": {
-            "explanation": "Один é a forma masculina do numeral um. Com substantivo feminino, a forma russa é одна; em português, um ou uma depende do substantivo traduzido."
+            "explanation": "Один é a forma masculina de 1; com feminino usa-se одна. Em português, um e uma dependem do substantivo traduzido.",
+            "answers": [
+              "um",
+              "uma",
+              "1"
+            ]
           },
           "remove": []
         },
         {
           "id": "ru-listening-022",
           "set": {
-            "explanation": "Два acompanha substantivos masculinos/neutros, como два стула; com substantivos femininos usa-se две. Em português, dois ou duas depende do substantivo traduzido."
+            "explanation": "Два significa 2 e acompanha nomes masculinos/neutros; diante de substantivos femininos usa-se две. A tradução portuguesa pode ser dois ou duas.",
+            "answers": [
+              "dois",
+              "duas",
+              "2"
+            ]
           },
           "remove": []
         },
@@ -1757,7 +2003,9 @@
               "Откройте окно, пожалуйста.",
               "Пожалуйста, откройте окно.",
               "Открой окно, пожалуйста.",
-              "Пожалуйста, открой окно."
+              "Пожалуйста, открой окно.",
+              "Откройте, пожалуйста, окно.",
+              "Открой, пожалуйста, окно."
             ],
             "explanation": "Откройте é imperativo cortês ou plural de открыть; Открой é singular informal. Пожалуйста pode vir antes ou depois."
           },
@@ -1778,7 +2026,11 @@
         {
           "id": "ru-writing-063",
           "set": {
-            "explanation": "Этот стул свободен indica cadeira desocupada; стул é masculino e свободен é a forma curta do adjetivo."
+            "explanation": "Этот стул свободен e этот стул не занят indicam que a cadeira não está ocupada. Свободен é forma curta do adjetivo.",
+            "answers": [
+              "Этот стул свободен.",
+              "Этот стул не занят."
+            ]
           },
           "remove": []
         },
@@ -1787,7 +2039,8 @@
           "set": {
             "answers": [
               "Кровать стоит рядом с окном.",
-              "Кровать находится рядом с окном."
+              "Кровать находится рядом с окном.",
+              "Кровать рядом с окном."
             ],
             "explanation": "Рядом с exige instrumental: с окном. A frase também pode usar находится para explicitar localização."
           },
@@ -1829,9 +2082,10 @@
             "answers": [
               "Пожалуйста, снимите обувь.",
               "Снимите обувь, пожалуйста.",
-              "Сними обувь, пожалуйста."
+              "Сними обувь, пожалуйста.",
+              "Пожалуйста, сними обувь."
             ],
-            "explanation": "Снимите обувь é um pedido cortês ou plural para tirar os calçados; сними é singular informal."
+            "explanation": "Снимите é imperativo cortês/plural e сними é singular informal. Пожалуйста pode vir antes ou depois do pedido."
           },
           "remove": []
         },
@@ -1851,7 +2105,11 @@
         {
           "id": "ru-writing-070",
           "set": {
-            "explanation": "Дети é o plural irregular de ребёнок; играют é a forma do presente com sujeito plural."
+            "explanation": "Дети играют в саду e в саду играют дети descrevem crianças brincando no jardim. Играют concorda com o sujeito plural.",
+            "answers": [
+              "Дети играют в саду.",
+              "В саду играют дети."
+            ]
           },
           "remove": []
         },
@@ -1882,9 +2140,11 @@
           "set": {
             "answers": [
               "Встреча начнётся через десять минут.",
-              "Собрание начнётся через десять минут."
+              "Собрание начнётся через десять минут.",
+              "Через десять минут начнётся встреча.",
+              "Через десять минут начнётся собрание."
             ],
-            "explanation": "Через десять минут significa daqui a dez minutos. Встреча e собрание podem designar tipos diferentes de reunião."
+            "explanation": "Через десять минут indica daqui a dez minutos. Начнётся pode vir antes ou depois de встреча/собрание."
           },
           "remove": []
         },
@@ -1909,7 +2169,11 @@
         {
           "id": "ru-writing-076",
           "set": {
-            "explanation": "Напротив indica em frente a e pede genitivo: библиотеки."
+            "explanation": "Школа напротив библиотеки descreve localização em frente à biblioteca; находится é opcional. Напротив exige genitivo.",
+            "answers": [
+              "Школа находится напротив библиотеки.",
+              "Школа напротив библиотеки."
+            ]
           },
           "remove": []
         },
@@ -1956,9 +2220,10 @@
           "set": {
             "answers": [
               "Запишите ответ в тетрадь.",
-              "Напишите ответ в тетради."
+              "Напишите ответ в тетради.",
+              "Запиши ответ в тетрадь."
             ],
-            "explanation": "Запишите ответ в тетрадь indica registrar a resposta no caderno; напишите ответ в тетради é outra construção natural."
+            "explanation": "Запишите é imperativo plural/cortês e запиши é singular informal. В тетрадь indica a direção de registrar a resposta no caderno."
           },
           "remove": []
         },
@@ -1983,7 +2248,12 @@
         {
           "id": "ru-writing-084",
           "set": {
-            "explanation": "Правильный e верный podem expressar correto; ambos concordam com ответ, substantivo masculino."
+            "explanation": "Правильный e верный podem expressar correto; ambos concordam com ответ, substantivo masculino.",
+            "answers": [
+              "Ваш ответ правильный.",
+              "Ваш ответ верный.",
+              "Ваш ответ верен."
+            ]
           },
           "remove": []
         },
@@ -2011,7 +2281,8 @@
           "set": {
             "answers": [
               "Наш поезд отправляется в полдень.",
-              "Наш поезд уходит в полдень."
+              "Наш поезд уходит в полдень.",
+              "Наш поезд отходит в полдень."
             ],
             "explanation": "Отправляется e уходит podem indicar a partida do trem; в полдень significa ao meio-dia."
           },
@@ -2022,7 +2293,8 @@
           "set": {
             "answers": [
               "Моя машина в гараже.",
-              "Моя машина стоит в гараже."
+              "Моя машина стоит в гараже.",
+              "Моя машина находится в гараже."
             ],
             "explanation": "В гараже indica localização dentro da garagem; машина pode ser descrita também com стоит quando estacionada."
           },
@@ -2076,7 +2348,9 @@
               "Покажите паспорт, пожалуйста.",
               "Пожалуйста, покажите свой паспорт.",
               "Покажи паспорт, пожалуйста.",
-              "Пожалуйста, покажите паспорт."
+              "Пожалуйста, покажите паспорт.",
+              "Покажите, пожалуйста, паспорт.",
+              "Покажи, пожалуйста, паспорт."
             ],
             "explanation": "Покажите é imperativo cortês ou plural; свой indica posse relacionada ao destinatário."
           },
@@ -2099,14 +2373,23 @@
         {
           "id": "ru-writing-096",
           "set": {
-            "explanation": "Я впервые в этом городе é expressão natural para estou nesta cidade pela primeira vez; não implica o gênero de quem fala."
+            "explanation": "Я впервые в этом городе é expressão natural para estou nesta cidade pela primeira vez; não implica o gênero de quem fala.",
+            "answers": [
+              "Я впервые в этом городе.",
+              "Я первый раз в этом городе.",
+              "Я в этом городе впервые."
+            ]
           },
           "remove": []
         },
         {
           "id": "ru-writing-097",
           "set": {
-            "explanation": "Можете показать мне на карте? é um pedido cortês; на карте indica no mapa."
+            "explanation": "Можете показать мне на карте? é um pedido cortês; на карте indica no mapa.",
+            "answers": [
+              "Можете показать мне на карте?",
+              "Вы можете показать мне на карте?"
+            ]
           },
           "remove": []
         },
@@ -2140,7 +2423,9 @@
           "set": {
             "answers": [
               "Поездка была очень интересной.",
-              "Путешествие было очень интересным."
+              "Путешествие было очень интересным.",
+              "Это была очень интересная поездка.",
+              "Это было очень интересное путешествие."
             ],
             "explanation": "После была, o adjetivo pode aparecer no instrumental: поездка была очень интересной."
           },
@@ -2476,7 +2761,8 @@
           "set": {
             "answers": [
               "Этот источник надёжный.",
-              "Этот источник надёжен."
+              "Этот источник надёжен.",
+              "Этому источнику можно доверять."
             ],
             "explanation": "Надёжный e надёжен são formas possíveis para uma fonte confiável; a forma curta надёжен predica uma propriedade."
           },
@@ -2509,9 +2795,10 @@
           "set": {
             "answers": [
               "У неё есть опыт преподавания.",
-              "У неё есть преподавательский опыт."
+              "У неё есть преподавательский опыт.",
+              "У неё имеется опыт преподавания."
             ],
-            "explanation": "Опыт преподавания e преподавательский опыт indicam experiência em ensino; у неё есть expressa posse."
+            "explanation": "У неё есть, у неё имеется e estruturas equivalentes expressam experiência de ensino. Опыт преподавания emprega genitivo."
           },
           "remove": []
         },
@@ -2520,9 +2807,12 @@
           "set": {
             "answers": [
               "Какова цель этой встречи?",
-              "Какая цель этой встречи?"
+              "Какая цель этой встречи?",
+              "Какова цель этого собрания?",
+              "Какая цель этого собрания?",
+              "В чём цель этой встречи?"
             ],
-            "explanation": "Какова цель e какая цель são maneiras gramaticais de perguntar pela finalidade da reunião."
+            "explanation": "Какова цель, какая цель e в чём цель perguntam o objetivo; собрание e встреча podem representar reunião conforme o contexto."
           },
           "remove": []
         },
@@ -2884,10 +3174,11 @@
         {
           "id": "ru-v2-writing-007",
           "set": {
-            "explanation": "Окончание/завершение indica a conclusão do curso; no passado, было concorda com o sujeito neutro, e достижением está no instrumental.",
+            "explanation": "Окончание, завершение e закончить курс podem funcionar como expressão de conclusão. Достижением está no instrumental após было.",
             "answers": [
               "Окончание курса было достижением.",
-              "Завершение курса было достижением."
+              "Завершение курса было достижением.",
+              "Закончить курс было достижением."
             ]
           },
           "remove": []
@@ -2917,10 +3208,11 @@
         {
           "id": "ru-v2-writing-010",
           "set": {
-            "explanation": "Это было + decisão descreve um fato passado; трудное e сложное podem qualificar uma decisão difícil.",
+            "explanation": "Трудное, сложное e непростое são maneiras naturais de qualificar uma decisão difícil.",
             "answers": [
               "Это было трудное решение.",
-              "Это было сложное решение."
+              "Это было сложное решение.",
+              "Это было непростое решение."
             ]
           },
           "remove": []
@@ -3106,6 +3398,247 @@
               "sim, na próxima semana",
               "sim, na semana que vem"
             ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-v2-writing-005",
+          "set": {
+            "answers": [
+              "У неё была возможность учиться за границей.",
+              "Она получила возможность учиться за границей."
+            ],
+            "explanation": "У неё была возможность e она получила возможность expressam a oportunidade de estudar fora. Учиться за границей significa estudar no exterior."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-002",
+          "set": {
+            "answers": [
+              "até logo",
+              "até mais",
+              "tchau",
+              "ate logo",
+              "ate mais"
+            ],
+            "explanation": "До свидания é uma despedida normalmente polida; pode ser traduzida por até logo, até mais ou tchau conforme o contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-006",
+          "set": {
+            "answers": [
+              "não",
+              "nao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-011",
+          "set": {
+            "answers": [
+              "família",
+              "familia"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-012",
+          "set": {
+            "answers": [
+              "mãe",
+              "mae"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-014",
+          "set": {
+            "answers": [
+              "irmã",
+              "irma"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-015",
+          "set": {
+            "answers": [
+              "irmão",
+              "irmao"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-018",
+          "set": {
+            "answers": [
+              "pais",
+              "mae e pai",
+              "pai e mãe",
+              "pai e mae"
+            ],
+            "explanation": "Родители significa mãe e pai ou pais, não parentes em geral (родственники)."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-023",
+          "set": {
+            "answers": [
+              "três",
+              "3",
+              "tres"
+            ],
+            "explanation": "Три representa três; em три книги, o substantivo assume a forma книги. Nesta atividade de significado, 3 também é válido."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-024",
+          "set": {
+            "answers": [
+              "quatro",
+              "4"
+            ],
+            "explanation": "Четыре é o número 4; em четыре студента, студента está na forma exigida por esse numeral."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-025",
+          "set": {
+            "answers": [
+              "cinco",
+              "5"
+            ],
+            "explanation": "Пять é o número 5; em пять минут, минут está no genitivo plural."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-026",
+          "set": {
+            "answers": [
+              "dez",
+              "10"
+            ],
+            "explanation": "Десять é o número 10. В десять indica horário: às dez."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-028",
+          "set": {
+            "answers": [
+              "amanhã",
+              "amanha"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-019",
+          "set": {
+            "explanation": "Имя é nome e é substantivo neutro em russo, apesar da terminação -я."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-017",
+          "set": {
+            "explanation": "Ребёнок significa criança, mas é gramaticalmente masculino em russo. A grafia deste ditado mantém ё, diferente de е."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-035",
+          "set": {
+            "explanation": "Один час significa uma hora. Один concorda com час, que é masculino."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-036",
+          "set": {
+            "explanation": "Вода é substantivo feminino; por isso o adjetivo холодная termina em -ая."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-038",
+          "set": {
+            "explanation": "В холодильнике é localização com caso prepositivo, e есть indica existência: há leite na geladeira."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-039",
+          "set": {
+            "explanation": "Без exige genitivo: сахар → сахара; кофе без сахара é café sem açúcar."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-044",
+          "set": {
+            "explanation": "Нам нужен сыр expressa necessidade: нам é dativo e нужен concorda com сыр, masculino."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-046",
+          "set": {
+            "explanation": "Не aparece antes de ем para negar o verbo: я не ем мясо, não como carne."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-047",
+          "set": {
+            "explanation": "Вымойте é imperativo cortês ou plural; перед приготовлением usa instrumental após перед."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-048",
+          "set": {
+            "explanation": "На столе indica localização na mesa; лежат concorda com o plural фрукты."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-053",
+          "set": {
+            "explanation": "У этой сумки indica da bolsa, com genitivo; какая цена pergunta o preço."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-055",
+          "set": {
+            "explanation": "Сохраните é imperativo cortês/plural do verbo guardar; пожалуйста torna o pedido educado."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-057",
+          "set": {
+            "explanation": "Комната, маленькая e уютная são femininos singulares; но introduz contraste."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-060",
+          "set": {
+            "explanation": "Закройте é forma imperativa cortês/plural de fechar. Пожалуйста torna o pedido mais polido."
           },
           "remove": []
         }
