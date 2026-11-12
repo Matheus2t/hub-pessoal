@@ -25,7 +25,7 @@ for(const lang of ['en','ru'] as const){
     await expect.poll(()=>page.evaluate(()=>(window as any).__spoken?.lang)).toBe(lang==='en'?'en-US':'ru-RU');
     await expect.poll(()=>page.locator('learn-session').evaluate((e:any)=>({heard:e.heard,validated:e.heardValidated})))
       .toEqual({heard:true,validated:false});
-    await expect(player.getByRole('status')).toContainText('não identificou uma voz',{timeout:5000});
+    await expect(player.locator('.learn-audio__status')).toContainText('não identificou uma voz',{timeout:5000});
   });
 }
 test('Sem API de síntese, Ouvir permanece indisponível com explicação',async({page})=>{
@@ -34,5 +34,5 @@ test('Sem API de síntese, Ouvir permanece indisponível com explicação',async
   await page.getByRole('button',{name:'Iniciar prática'}).click();
   const audio=page.locator('learn-session learn-audio');
   await expect(audio.getByRole('button',{name:'Ouvir / repetir'})).toBeDisabled();
-  await expect(audio.getByRole('status')).toContainText('indisponível neste navegador');
+  await expect(audio.locator('.learn-audio__status')).toContainText('indisponível neste navegador');
 });
