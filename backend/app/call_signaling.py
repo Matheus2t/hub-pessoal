@@ -329,7 +329,13 @@ class Rooms:
         async with self.lock:
             self.limit("channel_admin" if isinstance(message, ChannelAdmin) else "channel_info", address, 18)
             if isinstance(message, ChannelAdmin):
-                self.authorize_owner(message.admin)
+                # Count failed owner credentials by the proxy-normalized client address.
+                self.limit("channel_admin_failures", address, 5, consume=False)
+                try:
+                    self.authorize_owner(message.admin)
+                except Rejected:
+                    self.limit("channel_admin_failures", address, 5)
+                    raise
         async with self.channel_lock:
             stored = await self.read_channel()
             previous, channel = stored or (None, None)
