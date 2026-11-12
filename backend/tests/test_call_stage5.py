@@ -56,10 +56,13 @@ def test_hosted_health_cors_authorization_and_closed_surface(monkeypatch):
 def test_render_limits_cannot_be_reset_with_forwarded_ips(monkeypatch):
     with TestClient(create_app(hosted(monkeypatch)), base_url=SIGNAL) as client:
         for n in range(6):
-            with client.websocket_connect(SIGNAL.replace("https:", "wss:") + "/call/ws", headers={"origin": SITE, "x-forwarded-proto": "https", "x-forwarded-for": f"203.0.113.{n}"}) as socket:
-                socket.send_json({"type": "create", "name": "Owner", "admin": "invalid"})
-                assert until(socket, "error")["code"] == ("unauthorized" if n < 5 else "rate_limited")
-
+            with client.websocket_connect(SIGNAL.replace("https:", "wss:") + "/call/ws", headers={
+                    "origin": SITE, "x-forwarded-proto": "https", "x-forwarded-for": f"203.0.113.{n}"}) as socket:
+                socket.send_json({"type": "create", "name": "Owner", "admin": "legacy-invalid"})
+                if n < 5:
+                    assert until(socket, "session")["host"]
+                else:
+                    assert until(socket, "error")["code"] == "rate_limited"
 
 def test_hosted_fails_closed_without_managed_host_or_new_secret(monkeypatch):
     monkeypatch.delenv("RENDER", raising=False)

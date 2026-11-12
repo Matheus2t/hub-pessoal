@@ -91,23 +91,40 @@ def test_proxy_headers_are_not_trusted_from_nonloopback(external_service):
     assert client.get("/call/health", headers=PROXY_HEADERS).status_code == 403
 
 
-def test_limiter_uses_connector_visitor_not_arbitrary_forwarded_for(external_service):
+def test_creation_limiter_uses_connector_visitor_not_forwarded_for(external_service):
     client, _, _ = external_service
     with ExitStack() as stack:
         def connect(ip, forwarded):
             return stack.enter_context(client.websocket_connect("wss://call-check.example/call/ws", headers={
                 **PROXY_HEADERS, "origin": PUBLIC, "cf-connecting-ip": ip, "x-forwarded-for": forwarded}))
+
         for n in range(5):
             socket = connect("198.51.100.1", f"203.0.113.{n}")
-            socket.send_json({"type": "create", "name": "Host", "admin": "invalid"})
-            assert until(socket, "error")["code"] == "unauthorized"
+            socket.send_json({"type": "create", "name": "Host", "admin": "legacy-invalid"})
+            assert until(socket, "session")["host"]
+
         socket = connect("198.51.100.1", "203.0.113.100")
-        socket.send_json({"type": "create", "name": "Host", "admin": KEY})
+        socket.send_json({"type": "create", "name": "Host"})
         assert until(socket, "error")["code"] == "rate_limited"
+
         socket = connect("198.51.100.2", "203.0.113.100")
-        socket.send_json({"type": "create", "name": "Host", "admin": KEY})
+        socket.send_json({"type": "create", "name": "Host"})
         assert until(socket, "session")["host"]
 
+
+def test_channel_admin_failures_are_limited_by_connector_address(external_service):
+    client, _, _ = external_service
+
+    def attempt(ip, forwarded):
+        with client.websocket_connect("wss://call-check.example/call/ws", headers={
+                **PROXY_HEADERS, "origin": PUBLIC, "cf-connecting-ip": ip, "x-forwarded-for": forwarded}) as socket:
+            socket.send_json({"type": "channel_admin", "admin": "invalid", "action": "status"})
+            return until(socket, "error")["code"]
+
+    for n in range(5):
+        assert attempt("198.51.100.1", f"203.0.113.{n}") == "unauthorized"
+    assert attempt("198.51.100.1", "203.0.113.100") == "rate_limited"
+    assert attempt("198.51.100.2", "203.0.113.100") == "unauthorized"
 
 @pytest.mark.parametrize("origin", ["http://example.com", "https://user:password@example.com", "https://example.com/path",
                                     "https://*.example.com", "https://example.com?token=x", "https://example.com:0",
