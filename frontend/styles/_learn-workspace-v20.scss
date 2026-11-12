@@ -344,6 +344,26 @@ learn-home { display:block; min-width:0; width:100%; }
   .learn-page .learn-progression-stage { padding:18px; }
   .learn-page .learn-chart-grid { grid-template-columns:1fr; }
 }
+@media(max-width:420px) {
+  .learn-page .learn-progression-head {
+    display:grid; grid-template-columns:minmax(0,1fr); gap:12px;
+    align-items:start;
+  }
+  .learn-page .learn-progression-head > div { min-width:0; }
+  .learn-page .learn-progression-count {
+    width:fit-content; max-width:100%; justify-self:start;
+    text-align:left; display:flex; flex-wrap:wrap; align-items:baseline;
+  }
+  .learn-page .learn-progression-level > summary {
+    display:grid; grid-template-columns:auto minmax(0,1fr);
+    align-items:center; gap:9px;
+  }
+  .learn-page .learn-progression-level > summary > small {
+    min-width:0; text-align:right; overflow-wrap:anywhere;
+  }
+  .learn-page .learn-progression-stage { overflow-wrap:anywhere; }
+  .learn-page .learn-progression-actions { min-width:0; }
+}
 @media(max-width:380px) {
   .learn-page .learn-section-heading { align-items:flex-start; flex-direction:column; gap:4px; }
   .learn-page .learn-section-heading > span { text-align:left; }
