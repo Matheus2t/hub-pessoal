@@ -90,7 +90,7 @@ export class LearnHome extends LightElement {
           <div class="learn-areas">${studyAreas.map(([heading,description],index)=>this.catalog?html`
             <a class="learn-area-link" href=${`#/learn/${lang}/${modes[index]}`}>
               <span class="learn-area-link__index">${String(index+1).padStart(2,'0')} / 08</span>
-              <span class="learn-area-link__body"><span class="learn-area-link__category">${notes[index]}</span><h3>${heading}</h3><p>${description}</p></span>
+              <div class="learn-area-link__body"><span class="learn-area-link__category">${notes[index]}</span><h3>${heading}</h3><p>${description}</p></div>
               <span class="learn-area-link__action">Abrir atividade <span aria-hidden="true">↗</span></span>
             </a>`:html`<learn-area-card .heading=${heading} .description=${description}></learn-area-card>`)}</div>
           <p class="learn-workspace__availability">Listening e ditado existentes continuam disponíveis para prática conforme o conteúdo e o áudio presente. Novos roteiros sem gravação aprovada não aparecem nesta área.</p>
