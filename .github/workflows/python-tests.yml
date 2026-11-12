@@ -24,6 +24,8 @@ jobs:
     name: pytest (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    env:
+      PYTHONPATH: backend
     strategy:
       fail-fast: false
       matrix:
