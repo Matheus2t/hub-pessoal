@@ -1,6 +1,6 @@
 # 2T Learn — revisão pedagógica v6: escrita e estímulos auditivos
 
-**Rodada:** 12/11/2026.  
+**Rodada:** 11/11/2026.  
 **Natureza:** auditoria editorial interna de texto, significado e gabaritos; **sem audição de gravações**, sem avaliação de pronúncia e sem parecer de docentes independentes.  
 **Base:** `main` com o PR #110 integrado.  
 **Escopo:** 104 exercícios de tradução/escrita e 120 exercícios com estímulos auditivos (60 Listening de vocábulos + 60 ditados), totalizando 224 itens analisados pelo texto.
