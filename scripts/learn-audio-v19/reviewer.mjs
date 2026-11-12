@@ -39,22 +39,24 @@ textarea{display:block;width:100%;min-height:60px;margin:10px 0;resize:vertical}
 <div class="warning">Nenhum arquivo daqui é servido pelo site público. Aprovar uma gravação nesta tela não autoriza sua publicação nem ativa avaliação no Learn.</div>
 <div id="summary" class="summary" aria-live="polite"></div>
 <div class="filters"><label>Idioma <select id="language"><option value="all">Todos</option><option value="en">Inglês</option><option value="ru">Russo</option></select></label>
+<label>Tipo <select id="kind"><option value="all">Todos os tipos</option><option value="bridge">Atividades-ponte</option><option value="listening">Listening</option><option value="dictation">Ditados</option></select></label>
 <label>Estado <select id="state"><option value="all">Todos</option><option>planned</option><option>generated</option><option>technical_passed</option><option>awaiting_owner_review</option><option>approved</option><option>rejected</option></select></label></div>
 <section id="cards" class="cards" aria-label="Gravações"></section></main>
 <script>
 const TOKEN=new URLSearchParams(location.search).get('token');
 const labels={planned:'Planejado',generated:'Gerado',technical_passed:'Verificação técnica aprovada',awaiting_owner_review:'Aguardando sua revisão',approved:'Aprovado pelo proprietário',rejected:'Rejeitado'};
+const kindLabels={bridge:'Atividade-ponte',listening:'Listening',dictation:'Ditado'};
 const listenedThisSession=new Set();
 let manifest;
 const api=async(url,options={})=>{const response=await fetch(url,{...options,headers:{Authorization:'Bearer '+TOKEN,'Content-Type':'application/json',...(options.headers||{})}});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'Falha local');return data};
 const el=(tag,text,className)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(className)node.className=className;return node};
-function render(){const language=document.querySelector('#language').value,state=document.querySelector('#state').value;
-const records=manifest.records.filter(r=>(language==='all'||r.language===language)&&(state==='all'||r.state===state));
+function render(){const language=document.querySelector('#language').value,kind=document.querySelector('#kind').value,state=document.querySelector('#state').value;
+const records=manifest.records.filter(r=>(language==='all'||r.language===language)&&(kind==='all'||r.kind===kind)&&(state==='all'||r.state===state));
 const counts=manifest.records.reduce((a,r)=>(a[r.state]=(a[r.state]||0)+1,a),{});const sum=document.querySelector('#summary');sum.replaceChildren();
 for(const [key,value] of Object.entries({Total:manifest.records.length,'Inglês':manifest.records.filter(r=>r.language==='en').length,Russo:manifest.records.filter(r=>r.language==='ru').length,'Aguardando revisão':counts.awaiting_owner_review||0,Aprovados:counts.approved||0}))sum.append(el('span',key+': '+value,'pill'));
 const root=document.querySelector('#cards');root.replaceChildren();
 if(!records.length){root.append(el('div','Nenhum item neste filtro.','empty'));return}
-for(const record of records){const card=el('article'),head=el('div',undefined,'card-head'),titles=el('div'),title=el('h2',record.title||record.id),meta=el('div',record.id+' · '+(record.language==='en'?'Inglês':'Russo')+' · '+(record.level||'nível não informado')+' · '+record.source,'meta');
+for(const record of records){const card=el('article'),head=el('div',undefined,'card-head'),titles=el('div'),title=el('h2',record.title||record.id),meta=el('div',record.id+' · '+(record.language==='en'?'Inglês':'Russo')+' · '+(record.level||'nível não informado')+' · '+(kindLabels[record.kind]||record.kind)+' · '+record.source,'meta');
 titles.append(title,meta);head.append(titles,el('span',labels[record.state]||record.state,'status'));card.append(head);
 const technical=record.technicalChecks?.status==='passed'?'Verificação técnica: aprovada (arquivo/codec/duração/volume/hash). Pronúncia e fidelidade ainda exigem escuta humana.':record.technicalChecks?.status==='failed'?'Verificação técnica falhou: '+record.technicalChecks.error:record.blockedReason?'Pendente: '+record.blockedReason:'Verificação técnica ainda não executada.';
 card.append(el('p',technical,'meta'));
@@ -63,6 +65,7 @@ card.append(el('div',scriptText||'','script'));
 if(record.generation?.assetPath){const audio=document.createElement('audio');audio.controls=true;audio.preload='none';audio.src='/api/audio/'+encodeURIComponent(record.id);audio.setAttribute('aria-label','Áudio '+record.id);
 audio.addEventListener('ended',()=>api('/api/listened',{method:'POST',body:JSON.stringify({id:record.id})}).then(()=>{listenedThisSession.add(record.id);audio.dataset.completed='true';render()}).catch(e=>alert(e.message)));
 card.append(audio);card.append(el('div','Duração: '+(record.generation.durationSeconds??'—')+' s · '+(record.generation.format||'—')+' · '+(record.generation.bytes??0)+' bytes · versão '+record.generation.version,'meta'));
+const voices=(record.generation.voiceModels||[]).map(voice=>voice.name+' ('+voice.locale+')').join(', ');if(voices)card.append(el('div','Voz(es): '+voices,'meta'));
 }else card.append(el('p','Ainda sem arquivo de áudio local.','meta'));
 if(record.ownerReview)card.append(el('p',(record.ownerReview.decision==='rejected'?'Motivo':'Observação')+': '+(record.ownerReview.note||'—'),'meta'));
 if(record.state==='awaiting_owner_review'&&record.generation?.assetPath){const ack=el('label',undefined,'checks'),check=document.createElement('input');check.type='checkbox';check.disabled=true;check.checked=listenedThisSession.has(record.id);ack.append(check,el('span','Ouvi o áudio integralmente e conferi pronúncia, naturalidade, clareza, velocidade, volume e fidelidade ao roteiro.'));
@@ -76,7 +79,7 @@ root.append(card);
 }}
 async function decide(id,decision,note){if(!confirm(decision==='approved'?'Registrar sua aprovação explícita para esta versão local?':'Registrar rejeição desta versão?'))return;try{await api('/api/review',{method:'POST',body:JSON.stringify({id,decision,note})});await load()}catch(e){alert(e.message)}}
 async function load(){manifest=await api('/api/manifest');render()}
-document.querySelector('#language').addEventListener('change',render);document.querySelector('#state').addEventListener('change',render);load().catch(e=>{document.querySelector('#cards').textContent=e.message});
+document.querySelector('#language').addEventListener('change',render);document.querySelector('#kind').addEventListener('change',render);document.querySelector('#state').addEventListener('change',render);load().catch(e=>{document.querySelector('#cards').textContent=e.message});
 </script></body></html>`;
 
 function send(response, status, body, headers = {}) {

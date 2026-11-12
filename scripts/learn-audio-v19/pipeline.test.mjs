@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  applyOwnerDecision, blobSha, canApplyOwnerDecision, extractRecords, retryRejected,
+  applyOwnerDecision, blobSha, canApplyOwnerDecision, extractRecords, retryRejected, verifyPinnedBytes, voicesFor,
 } from './pipeline.mjs';
 import { isAllowedHost, isLoopback, safeAsset } from './reviewer.mjs';
 
@@ -47,12 +47,13 @@ test('inventory is balanced, unique and excludes speaker labels from spoken text
   assert.ok(records.every((r) => r.publicRelease === false && r.assessmentEnabled === false));
 });
 
-test('voice policy assigns three distinct English voices and blocks unsupported Russian dialogs', () => {
+test('voice policy assigns distinct voices and uses a licensed local Russian pair for two-speaker dialogs', () => {
   const records = extractRecords(syntheticSources());
   assert.equal(records.find((r) => r.id === 'en-listen-v13-1').blockedReason, null);
   assert.deepEqual(records.find((r) => r.id === 'en-listen-v13-2').plannedVoices, ['joe', 'mike', 'kristin']);
   assert.equal(records.find((r) => r.id === 'en-listen-v13-3').blockedReason, 'licensed_distinct_en_voices_unavailable');
-  assert.equal(records.find((r) => r.id === 'ru-listen-v13-1').blockedReason, 'licensed_distinct_ru_voices_unavailable');
+  assert.deepEqual(records.find((r) => r.id === 'ru-listen-v13-1').plannedVoices, ['tera_ru_f1', 'tera_ru_m5']);
+  assert.equal(records.find((r) => r.id === 'ru-listen-v13-1').blockedReason, null);
 });
 
 test('owner approval requires explicit awaiting-review state and keeps provenance', () => {
@@ -90,4 +91,20 @@ test('review server is loopback-only and rejects paths outside private audio dir
 test('Git blob hash is deterministic and changes with source text', () => {
   assert.equal(blobSha('editorial source\n'), blobSha('editorial source\n'));
   assert.notEqual(blobSha('editorial source\n'), blobSha('altered source\n'));
+});
+
+test('pinned artifact verification rejects changed, truncated and unsupported artifacts', () => {
+  const bytes = Buffer.from('private model card fixture');
+  assert.equal(verifyPinnedBytes(bytes, blobSha(bytes.toString('utf8')), bytes.length, 'git-blob-sha1'), blobSha(bytes.toString('utf8')));
+  assert.throws(() => verifyPinnedBytes(bytes, '0'.repeat(40), bytes.length, 'git-blob-sha1'), /hash da origem oficial/);
+  assert.throws(() => verifyPinnedBytes(bytes, blobSha(bytes.toString('utf8')), bytes.length + 1, 'git-blob-sha1'), /tamanho divergente/);
+  assert.throws(() => verifyPinnedBytes(bytes, '0'.repeat(64), bytes.length, 'sha1'), /algoritmo de integridade/);
+});
+
+test('voice assignment ignores stale cache blocks and limits Russian dialogs to two speakers', () => {
+  const english = { language: 'en', blockedReason: 'modelo local ausente: joe', scriptSegments: [{ speaker: 'Narrator', text: 'Hi.' }] };
+  assert.deepEqual(voicesFor(english), { Narrator: 'joe' });
+  const russianDialog = { language: 'ru', blockedReason: 'modelo local ausente: denis', scriptSegments: [{ speaker: 'A', text: 'Привет.' }, { speaker: 'B', text: 'Здравствуйте.' }] };
+  assert.deepEqual(voicesFor(russianDialog), { A: 'tera_ru_f1', B: 'tera_ru_m5' });
+  assert.throws(() => voicesFor({ ...russianDialog, scriptSegments: [...russianDialog.scriptSegments, { speaker: 'C', text: 'Пока.' }] }), /licensed_distinct_ru_voices_unavailable/);
 });

@@ -25,11 +25,17 @@ test.beforeAll(async () => {
   mkdirSync(privateFixture, { recursive: true });
   writeFileSync(path.join(privateFixture, "manifest.json"), JSON.stringify({
     schemaVersion: 1, publicRelease: false, assessmentEnabled: false,
-    counts: { planned: 1, generated: 0, technicalPassed: 0, awaitingOwnerReview: 0, approved: 0, rejected: 0 },
+    counts: { planned: 2, generated: 0, technicalPassed: 0, awaitingOwnerReview: 0, approved: 0, rejected: 0 },
     records: [{
       id: "en-v19-fixture-01", language: "en", level: "A2", kind: "listening", source: "V13",
       title: "Fixture local de revisão", referenceText: "This is a private review fixture.",
       state: "planned", blockedReason: "fixture_only", publicRelease: false, assessmentEnabled: false,
+      generation: { version: 1, assetPath: null, format: null, durationSeconds: null, bytes: null, sha256: null },
+      technicalChecks: null, ownerReview: null,
+    }, {
+      id: "ru-v19-fixture-02", language: "ru", level: "A2", kind: "dictation", source: "V14",
+      title: "Fixture de ditado russo", referenceText: "Тестовая фраза.", state: "planned",
+      publicRelease: false, assessmentEnabled: false,
       generation: { version: 1, assetPath: null, format: null, durationSeconds: null, bytes: null, sha256: null },
       technicalChecks: null, ownerReview: null,
     }],
@@ -86,6 +92,13 @@ test("private review page requires its one-session token and serves only local d
   await expect(page.getByText("Fixture local de revisão")).toBeVisible();
   await expect(page.getByText(/Aprovar uma gravação nesta tela não autoriza sua publicação/)).toBeVisible();
   expect(await page.locator("audio").count()).toBe(0);
+  await page.locator("#language").selectOption("ru");
+  await expect(page.getByText("Fixture de ditado russo")).toBeVisible();
+  await expect(page.getByText("Fixture local de revisão")).toHaveCount(0);
+  await page.locator("#language").selectOption("all");
+  await page.locator("#kind").selectOption("dictation");
+  await expect(page.getByText("Fixture de ditado russo")).toBeVisible();
+  await expect(page.getByText("Fixture local de revisão")).toHaveCount(0);
 });
 
 test("reviewer stays within desktop/mobile viewport and respects both color schemes", async ({ page }) => {
