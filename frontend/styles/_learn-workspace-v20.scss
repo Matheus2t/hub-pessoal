@@ -525,7 +525,8 @@ learn-home { display:block; min-width:0; width:100%; }
 }
 .learn-page--activity learn-assessment > .learn-session > .learn-answer,
 .learn-page--activity learn-assessment > .learn-session > learn-phonetic-editor {
-  display:block;
+  display:grid;
+  gap:10px;
   margin-bottom:22px;
 }
 .learn-page--activity learn-assessment > .learn-session > .learn-grade + p {
