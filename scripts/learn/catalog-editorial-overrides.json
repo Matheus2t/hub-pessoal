@@ -1792,16 +1792,6 @@
           "remove": []
         },
         {
-          "id": "en-listening-030",
-          "set": {
-            "answers": [
-              "semana",
-              "1 semana"
-            ]
-          },
-          "remove": []
-        },
-        {
           "id": "en-listening-019",
           "set": {
             "explanation": "Name significa nome; your name pede o nome da pessoa destinatária do pedido."
@@ -3550,16 +3540,6 @@
             "answers": [
               "amanhã",
               "amanha"
-            ]
-          },
-          "remove": []
-        },
-        {
-          "id": "ru-listening-030",
-          "set": {
-            "answers": [
-              "semana",
-              "1 semana"
             ]
           },
           "remove": []
