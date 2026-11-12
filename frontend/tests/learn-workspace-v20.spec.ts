@@ -206,3 +206,82 @@ test('Learn V20.3: ações explícitas continuam navegando para destinos existen
   await area.getByRole('link',{name:/Plano diário/}).click();
   await expect(page).toHaveURL(/#\/learn\/en\/daily$/);
 });
+
+
+test('Learn V20.4 assessment: labels, filters, explanation and CTA have room to breathe',async({page})=>{
+  for(const width of [320,390,768,1366]){
+    await page.setViewportSize({width,height:920});
+    for(const theme of ['dark','light'] as const){
+      await page.goto('/#/learn/en/test');
+      await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+      const panel=page.locator('learn-assessment > .learn-session');
+      await expect(panel.getByRole('heading',{name:'Avaliação'})).toBeVisible();
+      await expect(panel.getByRole('button',{name:'Iniciar avaliação'})).toBeEnabled();
+      const metrics=await page.evaluate(()=>{
+        const card=document.querySelector<HTMLElement>('learn-assessment > .learn-session')!;
+        const h=card.querySelector<HTMLElement>('h2')!;
+        const filters=card.querySelector<HTMLElement>('.learn-filters')!;
+        const labels=[...filters.querySelectorAll<HTMLElement>('label')];
+        const selects=[...filters.querySelectorAll<HTMLElement>('select')];
+        const explanation=filters.nextElementSibling as HTMLElement;
+        const action=explanation.nextElementSibling as HTMLElement;
+        const footer=document.querySelector<HTMLElement>('.learn-page--activity > .learn-privacy')!;
+        const rect=(e:HTMLElement)=>e.getBoundingClientRect();
+        return {
+          scrollWidth:document.documentElement.scrollWidth,
+          viewport:innerWidth,
+          cardMinHeight:getComputedStyle(card).minHeight,
+          titleToFilters:rect(filters).top-rect(h).bottom,
+          filtersToText:rect(explanation).top-rect(filters).bottom,
+          textToAction:rect(action).top-rect(explanation).bottom,
+          footerGap:rect(footer).top-rect(card).bottom,
+          columns:getComputedStyle(filters).gridTemplateColumns.split(' ').length,
+          labelCount:labels.length,
+          selectMinHeight:Math.min(...selects.map(e=>rect(e).height)),
+          actionHeight:rect(action).height,
+          padding:parseFloat(getComputedStyle(card).paddingLeft)
+        };
+      });
+      expect(metrics.scrollWidth<=metrics.viewport,JSON.stringify({width,theme,metrics})).toBe(true);
+      expect(metrics.cardMinHeight).toBe('0px');
+      expect(metrics.titleToFilters).toBeGreaterThanOrEqual(19);
+      expect(metrics.filtersToText).toBeGreaterThanOrEqual(19);
+      expect(metrics.textToAction).toBeGreaterThanOrEqual(17);
+      expect(metrics.footerGap).toBeGreaterThanOrEqual(27);
+      expect(metrics.columns).toBe(width<=650?1:2);
+      expect(metrics.labelCount).toBe(2);
+      expect(metrics.selectMinHeight).toBeGreaterThanOrEqual(45);
+      expect(metrics.actionHeight).toBeGreaterThanOrEqual(47);
+      expect(metrics.padding).toBeGreaterThanOrEqual(20);
+    }
+  }
+});
+
+test('Learn V20.4 session preparation has spacious responsive filters without changing behavior',async({page})=>{
+  for(const width of [320,390,768,1366]){
+    await page.setViewportSize({width,height:920});
+    for(const mode of ['vocabulary','listening','dictation','flashcards']){
+      await page.goto(`/#/learn/ru/${mode}`);
+      const setup=page.locator('learn-activity .learn-practice-setup');
+      await expect(setup).toBeVisible();
+      await expect(setup.getByRole('button',{name:'Iniciar prática'})).toBeVisible();
+      const m=await page.evaluate(()=>{
+        const filters=document.querySelector<HTMLElement>('learn-activity .learn-practice-setup .learn-filters')!;
+        const labels=[...filters.querySelectorAll<HTMLElement>('label')];
+        const fields=[...filters.querySelectorAll<HTMLElement>('select,input[type="search"]')];
+        return {
+          columns:getComputedStyle(filters).gridTemplateColumns.split(' ').length,
+          gap:parseFloat(getComputedStyle(filters).rowGap),
+          minHeight:Math.min(...fields.map(el=>el.getBoundingClientRect().height)),
+          labels:labels.length,
+          overflow:document.documentElement.scrollWidth>innerWidth
+        };
+      });
+      expect(m.overflow,JSON.stringify({width,mode,m})).toBe(false);
+      expect(m.columns,JSON.stringify({width,mode,m})).toBe(width<=650?1:width<=900?2:3);
+      expect(m.gap).toBeGreaterThanOrEqual(17);
+      expect(m.minHeight).toBeGreaterThanOrEqual(45);
+      expect(m.labels).toBeGreaterThanOrEqual(4);
+    }
+  }
+});
