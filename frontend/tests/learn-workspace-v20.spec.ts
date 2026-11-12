@@ -158,3 +158,51 @@ test('Learn V20.2 secondary tools stay keyboard navigable without altering route
   await page.keyboard.press('Enter');
   await expect(disclosure).not.toHaveAttribute('open','');
 });
+
+test('Learn V20.3: cards retos e links com alvo confortável em mobile e desktop',async({page})=>{
+  for(const width of [320,390,768,1366]){
+    await page.setViewportSize({width,height:900});
+    for(const theme of ['dark','light'] as const){
+      await page.goto('/#/learn/ru');
+      await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+      await expect(page.locator('learn-home .learn-study__tile')).toHaveCount(8);
+      const measured=await page.evaluate(()=>{
+        const sel=['.learn-study__tile','.learn-course__levels','.learn-more','.learn-hero__switch','.learn-study__heading a','.learn-summary > a','.learn-more > summary'];
+        return {
+          width:document.documentElement.scrollWidth,
+          viewport:window.innerWidth,
+          controls:sel.map(q=>{
+            const element=document.querySelector<HTMLElement>(q)!;
+            const style=getComputedStyle(element);
+            return {selector:q,radius:parseFloat(style.borderTopLeftRadius),height:element.getBoundingClientRect().height,
+              border:parseFloat(style.borderTopWidth),cursor:style.cursor};
+          }),
+        };
+      });
+      expect(measured.width<=measured.viewport,JSON.stringify({width,theme,measured})).toBe(true);
+      for(const c of measured.controls){
+        expect(c.radius,JSON.stringify({width,theme,c})).toBeLessThanOrEqual(4);
+        if(/switch|heading a|summary > a|more > summary/.test(c.selector)){
+          expect(c.height,JSON.stringify({width,theme,c})).toBeGreaterThanOrEqual(43.5);
+          expect(c.cursor).toBe('pointer');
+        }
+      }
+    }
+  }
+});
+
+test('Learn V20.3: ações explícitas continuam navegando para destinos existentes',async({page})=>{
+  await page.goto('/#/learn/en');
+  const area=page.locator('learn-home');
+  const activity=area.locator('.learn-study__tile').first();
+  await activity.hover();
+  await expect(activity).toHaveCSS('cursor','pointer');
+  await activity.click();
+  await expect(page).toHaveURL(/#\/learn\/en\/vocabulary$/);
+  await page.goto('/#/learn/en');
+  await area.getByRole('link',{name:/Ver trilha/}).click();
+  await expect(page).toHaveURL(/#\/learn\/en\/path$/);
+  await page.goto('/#/learn/en');
+  await area.getByRole('link',{name:/Plano diário/}).click();
+  await expect(page).toHaveURL(/#\/learn\/en\/daily$/);
+});

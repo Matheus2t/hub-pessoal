@@ -5,6 +5,8 @@ on:
       - 'frontend/src/learn/**'
       - 'frontend/tests/learn-phonetic.spec.ts'
       - 'frontend/styles/_learn.scss'
+      - 'frontend/styles/_learn-workspace-v20.scss'
+      - 'frontend/tests/learn-workspace-v20.spec.ts'
       - '.github/workflows/learn-phonetic-validation.yml'
 permissions:
   contents: read
