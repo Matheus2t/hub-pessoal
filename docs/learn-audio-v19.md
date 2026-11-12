@@ -77,9 +77,9 @@ Abra no navegador o endereço local com token que o comando imprimir. Não compa
 
 ## Estado da branch e próximos passos
 
-O PR #125 permanece aberto como draft. A branch incorpora a main/V20 por um merge local para preservar o layout; não houve merge de volta, deploy ou alteração do site oficial. Como a regressão global tem falhas fora do Learn, o PR não deve ser marcado pronto nem integrado automaticamente.
+**Atualização posterior:** o PR #125 foi integrado à `main` apenas com a infraestrutura V19 (pipeline e revisor privado). A divergência com a `main` e as falhas globais mencionadas acima descrevem o estado anterior à integração. Nenhum MP3, modelo ou fonte editorial de rascunho foi publicado nessa entrega.
 
-Próximo passo do proprietário: iniciar o revisor local, escutar cada uma das 68 gravações em sua totalidade, aprovar/rejeitar individualmente e deixar notas para pronúncia, ritmo e correspondência ao texto. Só depois da revisão e de uma decisão explícita sobre publicação os estados poderão avançar. Nenhuma aprovação foi registrada nesta etapa.
+A revisão auditiva de cada gravação continua necessária **antes da liberação pública e da avaliação automática**, mas pode ser realizada depois da integração técnica local. Nenhuma aprovação foi registrada nesta etapa. A seção V19.2 abaixo explica como testar o Learn sem registrar aprovação ou pontuação.
 
 
 ## V19.2 — Prévia de estudo integrada (antes da escuta e sem publicação dos MP3)
