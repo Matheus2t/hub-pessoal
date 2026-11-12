@@ -1247,11 +1247,11 @@
         {
           "id": "en-v2-test-003",
           "set": {
-            "prompt": "The emails ___ sent yesterday morning.",
+            "prompt": "Complete com be no passado simples, em voz passiva: The emails ___ sent yesterday morning.",
             "answers": [
               "were"
             ],
-            "explanation": "A voz passiva usa be + particípio. Emails está no plural e yesterday situa be no passado: were sent."
+            "explanation": "Emails é plural; a passiva no passado simples exige were + sent. Yesterday morning marca o tempo da ação."
           },
           "remove": []
         },
@@ -1837,6 +1837,361 @@
           "id": "en-dictation-060",
           "set": {
             "explanation": "Please close the door é um pedido no imperativo; close significa fechar e please suaviza o pedido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-017",
+          "set": {
+            "explanation": "The child is sleeping usa is + verbo em -ing para uma ação em andamento; child é singular e children é seu plural irregular."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-032",
+          "set": {
+            "explanation": "This year significa neste ano; want to travel combina want + to + infinitivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-033",
+          "set": {
+            "explanation": "I drink coffee every morning usa presente simples para uma rotina; every morning indica frequência."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-035",
+          "set": {
+            "explanation": "The journey takes one hour usa takes para indicar duração; one hour significa uma hora."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-036",
+          "set": {
+            "explanation": "The water is cold: water é não contável neste contexto e combina com is; cold é o adjetivo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-037",
+          "set": {
+            "explanation": "The bread is fresh: bread é normalmente não contável neste contexto; fresh significa fresco."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-040",
+          "set": {
+            "explanation": "The tea is hot: tea está no singular ou é não contável, e hot descreve a temperatura."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-041",
+          "set": {
+            "explanation": "This apple is sweet: this indica esta maçã próxima no discurso; sweet é doce."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-042",
+          "set": {
+            "explanation": "The rice is ready: rice é não contável e combina com is; ready significa pronto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-043",
+          "set": {
+            "explanation": "I am cooking vegetable soup usa am + cooking para ação em andamento; vegetable caracteriza o tipo de sopa."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-044",
+          "set": {
+            "explanation": "We need cheese for breakfast: cheese é não contável no exemplo; for breakfast indica a refeição."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-045",
+          "set": {
+            "explanation": "The fish is on the plate: on indica contato com a superfície do prato; in the plate alteraria a relação espacial."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-046",
+          "set": {
+            "explanation": "I do not eat meat forma negativa do presente simples: do not + eat; meat é não contável neste contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-047",
+          "set": {
+            "explanation": "Wash the vegetables é um imperativo; before cooking usa before + verbo com -ing."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-049",
+          "set": {
+            "explanation": "Breakfast is at eight: at indica hora específica; não se usa on antes de horários."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-051",
+          "set": {
+            "explanation": "Dinner is almost ready: almost indica quase, antes de ready."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-052",
+          "set": {
+            "explanation": "The shop is closed: closed descreve o estabelecimento fechado; is concorda com shop no singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-053",
+          "set": {
+            "explanation": "What is the price of this bag? pergunta o preço usando what is e of this bag."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-054",
+          "set": {
+            "explanation": "I left my money at home: left é passado de leave; at home significa em casa, sem artigo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-055",
+          "set": {
+            "explanation": "Please keep your receipt é um pedido cortês; keep aqui significa guardar o recibo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-056",
+          "set": {
+            "explanation": "Our house is near the park: near localiza a casa perto do parque, sem exigir to neste uso."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-057",
+          "set": {
+            "explanation": "My room is small but comfortable: but estabelece contraste entre pequeno e confortável."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-058",
+          "set": {
+            "explanation": "The kitchen is downstairs: downstairs funciona como advérbio de lugar, sem preposição adicional."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-dictation-059",
+          "set": {
+            "explanation": "The bathroom is on the left: on the left é uma expressão fixa de orientação."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-03-q3",
+          "set": {
+            "prompt": "Complete com o artigo definido: I bought a book. ___ book is short.",
+            "explanation": "O livro mencionado antes já é identificável; o artigo definido the retoma a book. This ou my mudariam a construção pedida."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-06-q1",
+          "set": {
+            "prompt": "Complete com o possessivo referente a sister: I have a sister. ___ name is Nina.",
+            "explanation": "Her indica que o nome pertence à irmã; o possessivo vem antes de name."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-06-q2",
+          "set": {
+            "prompt": "Complete com o possessivo de we: We live here. This is ___ house.",
+            "explanation": "Our é o possessivo de we; concorda com quem possui, não com house."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-06-q3",
+          "set": {
+            "prompt": "Complete com o possessivo de they: They have tickets. These are ___ tickets.",
+            "explanation": "Their expressa posse de they; não confunda com there (lugar/existência) nem they're (they are)."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-07-q1",
+          "set": {
+            "prompt": "Complete com a preposição que indica contato com uma superfície: The cup is ___ the table.",
+            "explanation": "On localiza o copo sobre a superfície da mesa; above não exige contato."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-07-q2",
+          "set": {
+            "prompt": "Complete com uma preposição de dia da semana: We meet ___ Friday.",
+            "explanation": "Para indicar um dia da semana, use on Friday. Next Friday não exige preposição, mas a lacuna pede uma preposição."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-grammar-07-q3",
+          "set": {
+            "prompt": "Complete com a preposição de horário exato: The bus leaves ___ six o’clock.",
+            "explanation": "At é usado antes de uma hora exata: at six o'clock. Around six indica aproximação e não atende à instrução."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-v2-grammar-003-q1",
+          "set": {
+            "prompt": "Complete com be no passado simples, em voz passiva: The bridge ___ built in 1990.",
+            "explanation": "Na passiva no passado simples, o sujeito singular bridge pede was + built. A data situa a construção em 1990."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-14",
+          "set": {
+            "answers": [
+              "porque está chovendo",
+              "por causa da chuva",
+              "porque chove",
+              "pois está chovendo",
+              "porque está a chover"
+            ],
+            "explanation": "Because it is raining indica a causa explícita: Lia leva o guarda-chuva porque está chovendo."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-15",
+          "set": {
+            "answers": [
+              "a pé",
+              "caminhando",
+              "andando",
+              "vão a pé",
+              "eles caminham",
+              "seguem a pé"
+            ],
+            "explanation": "O ônibus está cheio (full); so we walk significa que continuam o trajeto a pé."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-17",
+          "set": {
+            "answers": [
+              "na mesa",
+              "sobre a mesa",
+              "em cima da mesa",
+              "está na mesa"
+            ],
+            "explanation": "On the table localiza o bilhete sobre a mesa; not in the bag exclui a bolsa."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-18",
+          "set": {
+            "answers": [
+              "descansa",
+              "ela descansa",
+              "descansa depois do jantar",
+              "ela descansa depois do jantar"
+            ],
+            "explanation": "Afterwards retoma depois do jantar: Nina descansa depois de estudar."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-02",
+          "set": {
+            "answers": [
+              "farmácia",
+              "farmacia"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-03",
+          "set": {
+            "answers": [
+              "amanhã",
+              "amanha"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-test-04",
+          "set": {
+            "answers": [
+              "pais",
+              "pai e mãe",
+              "pai e mae",
+              "mãe e pai",
+              "mae e pai"
+            ],
+            "explanation": "Parents indica pais (mãe e pai), não parentes em geral. Relatives é a palavra inglesa mais comum para parentes."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-07-q3",
+          "set": {
+            "answers": [
+              "para não perder o trem",
+              "para chegar ao trem a tempo",
+              "porque só tem quinze minutos",
+              "porque ela só tem quinze minutos",
+              "porque tem pouco tempo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-007",
+          "set": {
+            "explanation": "Sorry pode expressar pedido de desculpas ou chamar a atenção antes de uma pergunta, como em Sorry, where is the exit? O sentido depende do contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-010",
+          "set": {
+            "explanation": "Welcome é uma expressão de acolhimento. Em português, bem-vindo, bem-vinda, bem-vindos ou bem-vindas concordam com quem é recebido."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-listening-017",
+          "set": {
+            "explanation": "Child é o substantivo singular criança; children é o plural irregular, crianças."
           },
           "remove": []
         }
@@ -3639,6 +3994,292 @@
           "id": "ru-dictation-060",
           "set": {
             "explanation": "Закройте é forma imperativa cortês/plural de fechar. Пожалуйста torna o pedido mais polido."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-032",
+          "set": {
+            "explanation": "В этом году usa o prepositivo depois de в com sentido de tempo; хочу + infinitivo путешествовать indica desejo de viajar."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-033",
+          "set": {
+            "explanation": "Я пью é presente de пить; каждое утро expressa rotina, e каждое concorda com утро, neutro."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-034",
+          "set": {
+            "explanation": "Мы проводим é presente plural; дома significa em casa, diferente do substantivo дом."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-037",
+          "set": {
+            "explanation": "Хлеб é substantivo masculino; свежий concorda com ele no nominativo singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-040",
+          "set": {
+            "explanation": "Чай é masculino; горячий concorda com чай e indica que o chá está quente."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-041",
+          "set": {
+            "explanation": "Яблоко é neutro; сладкое concorda com яблоко no singular, e это aponta para esta maçã."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-042",
+          "set": {
+            "explanation": "Рис é masculino; готов é forma curta masculina do adjetivo готовый (pronto)."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-043",
+          "set": {
+            "explanation": "Я готовлю é primeira pessoa do presente; овощной concorda com суп, masculino, na expressão sopa de legumes."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-045",
+          "set": {
+            "explanation": "На тарелке indica localização sobre o prato; тарелке está no prepositivo após на."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-049",
+          "set": {
+            "explanation": "Завтрак в восемь usa в para indicar a hora; восемь é o número oito."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-050",
+          "set": {
+            "explanation": "Мы обедаем significa estamos almoçando ou almoçamos; вместе indica que a refeição é em conjunto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-051",
+          "set": {
+            "explanation": "Ужин é masculino; готов é forma curta do adjetivo pronto e почти significa quase."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-052",
+          "set": {
+            "explanation": "Магазин é masculino; закрыт é forma curta do particípio/adjetivo que indica fechado."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-056",
+          "set": {
+            "explanation": "Рядом с exige instrumental: парк → парком; наш concorda com дом, masculino."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-058",
+          "set": {
+            "explanation": "Кухня significa cozinha; внизу é advérbio de lugar que indica embaixo ou no andar inferior."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-dictation-059",
+          "set": {
+            "explanation": "Ванная funciona como substantivo para banheiro; слева indica à esquerda, sem preposição."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-07-q1",
+          "set": {
+            "prompt": "Complete com a partícula que nega o verbo: Я ___ работаю сегодня.",
+            "explanation": "Не precede diretamente работаю para negar a ação: я не работаю сегодня. Нет não substitui не antes do verbo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-07-q3",
+          "set": {
+            "prompt": "Complete com a partícula que nega o verbo: Она ___ читает газету.",
+            "explanation": "Не antecede читает para negar a leitura. A resposta isolada нет serve para responder não, mas não para esta construção."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-02-q3",
+          "set": {
+            "explanation": "Вы é o pronome usado para vocês e também para tratamento respeitoso no singular. A forma Вы com maiúscula ocorre em certas cartas e comunicações formais."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-03-q3",
+          "set": {
+            "explanation": "Кровать é um substantivo feminino terminado em -ь. Esta terminação também ocorre em nomes masculinos, por isso o gênero deve ser aprendido com o vocábulo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-05-q3",
+          "set": {
+            "explanation": "Имя é um substantivo neutro apesar da terminação -я. Por isso, o possessivo é моё, com ё na grafia ensinada nesta atividade."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-09-q3",
+          "set": {
+            "explanation": "Мама é o sujeito no nominativo de читает; книгу é o objeto direto no acusativo singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-grammar-10-q2",
+          "set": {
+            "explanation": "Книга é feminino: com o numeral dois usa-se две книги. Два книги seria incorreto neste contexto."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-14",
+          "set": {
+            "answers": [
+              "porque está chovendo",
+              "por causa da chuva",
+              "porque chove",
+              "pois está chovendo",
+              "porque está a chover"
+            ],
+            "explanation": "Потому что идёт дождь expressa a causa: Lia leva um guarda-chuva porque está chovendo."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-15",
+          "set": {
+            "answers": [
+              "a pé",
+              "caminhando",
+              "andando",
+              "vão a pé",
+              "eles caminham",
+              "seguem a pé"
+            ],
+            "explanation": "Автобус полный indica o ônibus cheio; поэтому мы идём пешком mostra que continuam a pé."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-17",
+          "set": {
+            "answers": [
+              "na mesa",
+              "sobre a mesa",
+              "em cima da mesa",
+              "está na mesa"
+            ],
+            "explanation": "Билет на столе indica o bilhete na mesa; а не в сумке exclui a bolsa."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-18",
+          "set": {
+            "answers": [
+              "descansa",
+              "ela descansa",
+              "descansa depois do jantar",
+              "ela descansa depois do jantar"
+            ],
+            "explanation": "А потом отдыхает informa que Nina descansa depois de estudar, antes do qual vem до ужина."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-02",
+          "set": {
+            "answers": [
+              "farmácia",
+              "farmacia"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-03",
+          "set": {
+            "answers": [
+              "amanhã",
+              "amanha"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-test-04",
+          "set": {
+            "answers": [
+              "pais",
+              "pai e mãe",
+              "pai e mae",
+              "mãe e pai",
+              "mae e pai"
+            ],
+            "explanation": "Родители significa pais (mãe e pai), não parentes em geral: родственники."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-07-q3",
+          "set": {
+            "answers": [
+              "para não perder o trem",
+              "para chegar ao trem a tempo",
+              "porque só tem quinze minutos",
+              "porque ela só tem quinze minutos",
+              "porque tem pouco tempo"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-007",
+          "set": {
+            "explanation": "Извините é forma polida de pedir desculpas ou chamar alguém antes de uma pergunta. Извини é a forma informal singular."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-010",
+          "set": {
+            "explanation": "Добро пожаловать é uma expressão fixa de acolhimento; a tradução em português varia em gênero e número conforme quem chega."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-listening-017",
+          "set": {
+            "explanation": "Ребёнок significa criança e é gramaticalmente masculino em russo, embora criança seja feminino em português."
           },
           "remove": []
         }
