@@ -72,21 +72,21 @@ export class LearnProgression extends LightElement {
         const reading = this.catalog.readings?.find(item => item.id === stage.pairedReadingId);
         const prerequisite = stage.prerequisiteNodeIds.map(id => summary.stages.find(item => item.nodeId === id)).filter((item): item is ProgressionStage => !!item);
         const status = state.complete ? 'Estudo registrado' : state.inProgress ? 'Em andamento' : isNext ? 'Próxima sugerida' : 'Disponível para estudo';
-        return html`<article class="learn-progression-stage" aria-labelledby=${`${stage.nodeId}-title`}>
+        return html`<article class="learn-progression-stage" data-status=${state.complete ? 'studied' : isNext ? 'next' : 'available'} aria-labelledby=${`${stage.nodeId}-title`}>
           <div class="learn-progression-stage__top"><span>${stage.level} · ETAPA ${String(stage.sequence).padStart(2, '0')}</span><strong>${status}</strong></div>
           <h3 id=${`${stage.nodeId}-title`}>${stage.existingLessonTitle}</h3>
           <p>${stage.existingObjective}</p>
           <p class="learn-progression-target"><strong>Você vai praticar</strong> ${stage.canDoTarget}</p>
           ${prerequisite.length ? html`<p class="learn-progression-prerequisite">Sequência sugerida após: ${prerequisite.map(item => `${item.level} · ${item.existingLessonTitle}`).join(', ')}. Esta etapa continua disponível.</p>` : nothing}
           <div class="learn-progression-contents"><span>Gramática: ${lesson?.title || stage.existingLessonTitle}</span><span>Leitura: ${reading?.title || stage.pairedReadingId}</span></div>
-          <p class="learn-progression-progress">${state.answered}/${state.total} atividades respondidas</p>
+          <div class="learn-progression-bar" role="progressbar" aria-label=${`Etapa ${stage.sequence}: atividades respondidas`} aria-valuemin="0" aria-valuemax=${state.total} aria-valuenow=${state.answered}><span style=${`width:${state.total ? state.answered / state.total * 100 : 0}%`}></span></div><p class="learn-progression-progress">${state.answered}/${state.total} atividades respondidas</p>
           <div class="learn-progression-actions"><button class="button" @click=${() => this.start(stage, 'grammar')}>${this.actionLabel(stage, 'grammar', state.answered > 0)}</button><button class="button" @click=${() => this.start(stage, 'reading')}>${this.actionLabel(stage, 'reading', state.answered > 0)}</button><a href=${`#/learn/${this.language}/grammar`}>Conteúdo</a><a href=${`#/learn/${this.language}/reading`}>Leitura</a></div>
           <details class="learn-progression-details"><summary>Verificação sugerida</summary><p>${stage.checkpointDraft}</p><p class="learn-muted">Sugestão de prática; não é uma avaliação de nível.</p></details>
-          <p class="learn-progression-caveat">${stage.linkingCaveat}</p>
+          <details class="learn-progression-details learn-progression-caveat"><summary>Sobre o pareamento desta etapa</summary><p>${stage.linkingCaveat}</p></details>
         </article>`;
       })}</div></details>`;
     })}</div>
-    <aside class="learn-progression-bridges"><strong>Atividades-ponte V11 indisponíveis</strong><p>As 24 propostas aguardam validação docente independente. Roteiros escritos não são áudio e não entram na contagem de progresso.</p></aside>`;
+    <aside class="learn-progression-bridges"><strong>Atividades-ponte V11 indisponíveis</strong><p>As 24 propostas continuam em preparação, fora do catálogo público. Roteiros escritos não são gravações aprovadas e não entram na contagem de progresso.</p></aside>`;
   }
 
   private actionLabel(stage: ProgressionStage, skill: 'grammar' | 'reading', answeredAny: boolean) {
