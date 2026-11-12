@@ -61,7 +61,20 @@ test('Learn V20 progression keeps V12 gates, honest activity counts and collapsi
   await details.locator('summary').click();
   await expect(details).toHaveAttribute('open','');
   await expect(page.getByText('Atividades-ponte V11 indisponíveis')).toBeVisible();
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  for(const width of viewportWidths){
+    await page.setViewportSize({width,height:900});
+    for(const theme of ['dark','light'] as const){
+      await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
+      const overflow=await page.evaluate(()=>({
+        doc:document.documentElement.scrollWidth,
+        viewport:window.innerWidth,
+        offenders:[...document.querySelectorAll<HTMLElement>('.learn-page *')]
+          .filter(el=>el.getBoundingClientRect().right>window.innerWidth+1)
+          .slice(0,8).map(el=>({tag:el.tagName,klass:el.className?.toString().slice(0,60),right:Math.round(el.getBoundingClientRect().right)})),
+      }));
+      expect(overflow.doc<=overflow.viewport,JSON.stringify({width,theme,overflow})).toBe(true);
+    }
+  }
 });
 
 test('Learn V20 keeps landing, eight activities and local-language isolation',async({page})=>{
