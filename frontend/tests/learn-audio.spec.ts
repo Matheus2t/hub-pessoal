@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
+import {serveBuiltSite} from './helpers/serve-built-site';
 import {LearnSpeech} from '../src/learn/speech';
 
 class FakeUtterance {
@@ -55,6 +56,7 @@ test('asset manifest keeps synthesized and missing recordings ineligible for ass
 });
 
 test('browser player offers accessible playback controls and marks synthesis as unvalidated',async({page})=>{
+  await serveBuiltSite(page);
   await page.addInitScript(()=>{
     class Utterance {text:string;voice:any=null;lang='';rate=1;volume=1;onend:(()=>void)|null=null;onerror:(()=>void)|null=null;constructor(text:string){this.text=text;}}
     let timer:number|undefined;
@@ -86,6 +88,7 @@ test('browser player offers accessible playback controls and marks synthesis as 
 });
 
 test('player recovers when a Russian browser voice loads late and keeps the source text unchanged',async({page})=>{
+  await serveBuiltSite(page);
   await page.addInitScript(()=>{
     const state:{voices:any[];changed?:()=>void;spoken?:{text:string;lang:string;voice:string}}={voices:[]};
     class Utterance {text:string;voice:any=null;lang='';rate=1;volume=1;onend:(()=>void)|null=null;onerror:(()=>void)|null=null;constructor(text:string){this.text=text;}}

@@ -20,6 +20,11 @@ export function evaluateExerciseAnswer(answer:string,exercise:Pick<Exercise,'ans
 export function attemptOutcome(attempt:Pick<Attempt,'correct'|'assessmentOutcome'>):AttemptOutcome {
   return attempt.assessmentOutcome==='uncertain'?'uncertain':attempt.correct?'correct':'incorrect';
 }
+export function attemptDisplayOutcome(attempt:Attempt):string {
+  if(attempt.audioEvidence&&!attempt.audioEvidence.validated)return attempt.audioEvidence.transcriptViewedBeforeAttempt?'Não avaliada · transcrição consultada':'Não avaliada · gravação não homologada';
+  if(attempt.audioEvidence?.transcriptViewedBeforeAttempt)return 'Assistida · transcrição consultada';
+  return attemptOutcome(attempt)==='uncertain'?'Incerta':attemptOutcome(attempt)==='correct'?'Correta':'Revisar';
+}
 export function newCard(language:Language,itemId:string,now=Date.now()):Card {
   return {language,itemId,interval:0,ease:2.5,repetitions:0,due:now,updated:now,lastGrade:null};
 }

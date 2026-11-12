@@ -11,6 +11,9 @@ export function isLearnIntegrationPreviewEnabled(host=globalThis.location?.hostn
 export function isLearnProgressionPreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='progression-v12';
 }
+export function isLearnAudioFixturePreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='audio-v15';
+}
 function previewFlagEnabled(flag:string,host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  return isLoopback(host)&&(new URLSearchParams(search).get('learn-preview')===flag||isLearnIntegrationPreviewEnabled(host,search));
 }

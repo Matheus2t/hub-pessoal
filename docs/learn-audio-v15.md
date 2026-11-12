@@ -1,0 +1,58 @@
+# 2T Learn V15 — infraestrutura de áudio
+
+## Escopo e disponibilidade
+
+V15 adiciona a infraestrutura reutilizável para gravações de Listening e ditados.
+Não incorpora nem publica as 32 atividades de Listening e 32 de ditado dos rascunhos
+editoriais V13/V14. Esses conteúdos continuam fora da experiência de estudantes.
+
+O manifesto atual contém 124 registros, todos sem URL de áudio, com avaliação auditiva
+desativada e **zero gravações homologadas**. Nenhum arquivo de fala foi criado ou
+aprovado nesta etapa. A síntese do navegador continua disponível somente como prática
+legada, identificada como não validada e nunca pontuada como acerto auditivo.
+
+## Implementação
+
+- `audio-assets.ts` valida o manifesto, exige caminhos de áudio na mesma origem e
+  bloqueia fontes externas, licenças não aprovadas e gravações não validadas.
+- A reprodução pública exige `publicRelease`; a prévia não pública exige loopback e
+  o parâmetro local exato `learn-preview=audio-v15`. Fixtures de teste são tons sem
+  fala, rotulados como teste, não são conteúdo didático e nunca habilitam avaliação.
+- `learn-recording-player` usa `<audio preload="none">`, sem autoplay. Oferece
+  reproduzir, pausar, reiniciar, repetir, progresso, volume e velocidade, anuncia erros
+  e libera a fonte ao sair ou trocar de atividade. Players simultâneos pausam os demais.
+- Uma gravação só conta como ouvida depois da reprodução completa. Listening fechado
+  só pode ser corrigido com gravação homologada; compreensão aberta permanece `uncertain`.
+  Ditado aplica normalização técnica conservadora e variantes completas explícitas; mantém
+  `е` e `ё` distintas, não remove negação e deixa variantes desconhecidas como `uncertain`.
+- Conteúdo com `audioAssetId` obrigatório não cai para síntese quando falta gravação.
+  Atividades legadas sem esse campo continuam usando síntese somente para prática.
+  Consultar transcrição é registrado como ajuda e impede evidência independente.
+- `audioEvidence` é extensão aditiva da tentativa. IndexedDB v3, registros existentes e
+  importação/exportação de backups v1, v2 e v3 foram preservados.
+- O plano diário só inclui Listening/ditado quando houver gravação aprovada e reproduzível.
+  Dashboard e histórico distinguem resultados incertos/não avaliados de acertos.
+
+## Validação local
+
+- Typecheck e build de produção: aprovados.
+- Validadores Learn: 13 aprovados, incluindo estrutura pedagógica, diagnósticos,
+  contratos de conteúdo, readiness, manifesto de áudio, catálogos e progressão V12.
+- Playwright Learn: **139/139 aprovados**, incluindo C1–C5, legado, áudio, backups,
+  persistência, layouts e temas. Os testes V15 verificam playback, pausa, retomada,
+  repetição, volume, velocidade, erros, limpeza, player único, transcript/help e
+  bloqueio de atividades sem gravação.
+- `git diff --check`: aprovado.
+- Pytest integral: **não concluído**. Os quatro testes iniciais de API passaram; a suíte
+  ficou bloqueada ao entrar em `backend/tests/test_call_channel.py::test_persistent_definition...`.
+  A pilha aponta `asyncio`/AnyIO aguardando o socketpair local durante a inicialização do
+  `TestClient` no Windows. O V15 não altera backend; esse resultado não é contado como
+  aprovação nem como defeito do código Learn.
+
+## Pendências para conteúdo real
+
+Antes de ativar Listening ou ditados: obter gravações com licença documentada, confirmar
+atribuição e proveniência, revisar idioma/locução/transcrição, integrar URLs same-origin,
+validar os arquivos e habilitar avaliação apenas para registros homologados. Sem esses
+passos, o comportamento correto permanece indisponível/não avaliado. Esta branch não
+ativa `publicRelease`, não altera o backend e não publica as experiências V13/V14.

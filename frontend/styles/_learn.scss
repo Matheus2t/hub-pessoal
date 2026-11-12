@@ -139,6 +139,27 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
     output { min-width: 3.5em; color: var(--text); font-variant-numeric: tabular-nums; }
     .learn-audio__status { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
   }
+  .learn-audio-player { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; width:100%; margin:20px 0; padding:16px; border:1px solid var(--line-soft); border-radius:8px; background:var(--bg); }
+  .learn-audio-player audio { display:none; }
+  .learn-audio-player__label,.learn-audio-player__fixture,.learn-audio-player__status { grid-column:1/-1; margin:0; color:var(--secondary); font-size:13px; line-height:1.55; }
+  .learn-audio-player__fixture { padding:9px 11px; border:1px dashed var(--line); border-radius:6px; }
+  .learn-audio-player__controls { display:flex; flex-wrap:wrap; gap:8px; grid-column:1/-1; }
+  .learn-audio-player__controls .button { min-height:42px; }
+  .learn-audio-player label { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--secondary); font-size:13px; }
+  .learn-audio-player__progress { grid-column:1/-1; }
+  .learn-audio-player input[type=range] { flex:1 1 160px; width:min(100%,320px); min-width:100px; min-height:44px; padding:0; border:0; background:transparent; accent-color:var(--text); }
+  .learn-audio-player select { width:auto; padding:7px 9px; }
+  .learn-audio-player output { min-width:5em; color:var(--text); font-variant-numeric:tabular-nums; }
+  .learn-audio-player__status[role=alert] { color:var(--text); }
+  .learn-audio-player button:focus-visible,.learn-audio-player input:focus-visible,.learn-audio-player select:focus-visible,.learn-audio-transcript summary:focus-visible,.learn-audio-options input:focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+  .learn-audio-unavailable { padding:13px 15px; border:1px solid var(--line-soft); border-left:3px solid var(--text); border-radius:6px; background:var(--raised); color:var(--secondary); font-size:13px; line-height:1.55; }
+  .learn-audio-transcript { max-width:76ch; margin:12px 0 18px; color:var(--secondary); font-size:13px; }
+  .learn-audio-transcript summary { width:max-content; max-width:100%; cursor:pointer; text-underline-offset:3px; }
+  .learn-audio-transcript p { margin:10px 0; color:var(--text); font-size:15px; line-height:1.7; white-space:pre-line; }
+  .learn-audio-options { display:grid; gap:9px; margin:12px 0; padding:12px; border:1px solid var(--line-soft); border-radius:7px; }
+  .learn-audio-options legend { padding:0 6px; color:var(--secondary); font-size:13px; }
+  .learn-audio-options label { display:flex; align-items:flex-start; gap:10px; padding:9px 10px; border:1px solid var(--line-soft); border-radius:6px; cursor:pointer; }
+  .learn-audio-options input { flex:0 0 auto; width:18px; height:18px; margin:1px 0 0; accent-color:var(--text); }
   .learn-word .learn-audio { margin: 18px 0 0; padding: 16px 0 0; border: 0; border-top: 1px solid var(--line-soft); background: transparent; border-radius: 0; }
   .learn-feedback { padding: 20px; margin-top: 24px; border-left: 3px solid var(--text); border-radius: 0 8px 8px 0; background: var(--raised); text-align: left; }
   .learn-feedback strong { display: block; font-size: 16px; font-weight: 550; }
@@ -272,6 +293,9 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
     .learn-session { padding: 18px; margin-block: 16px; }
     .learn-audio { padding: 12px; }
     .learn-audio label { flex-basis: 100%; }
+    .learn-audio-player { grid-template-columns:minmax(0,1fr); padding:12px; }
+    .learn-audio-player__controls .button { flex:1 1 125px; }
+    .learn-audio-player__progress,.learn-audio-player__label,.learn-audio-player__fixture,.learn-audio-player__status,.learn-audio-player__controls { grid-column:1; }
     .learn-prose { font-size: 16px; line-height: 1.85; }
     learn-units > .learn-prose > p[lang] { font-size: 17px; }
     learn-backup > .learn-grade { grid-template-columns: minmax(0,1fr); padding: 18px; }

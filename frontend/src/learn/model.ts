@@ -12,6 +12,8 @@ export interface Attempt {
   answer: string; expected: string; correct: boolean; at: number; seconds: number;
   /** Additive v3 evidence; absent on historical records. Used only for unrecognized open writing. */
   assessmentOutcome?: 'uncertain';
+  /** Additive provenance for future audio attempts; absent on historical records. */
+  audioEvidence?: {source:'recording'|'browser-synthesis';recordingId?:string;validated:boolean;transcriptViewedBeforeAttempt:boolean};
   grade?: Grade;
 }
 export interface Card {
