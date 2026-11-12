@@ -56,3 +56,10 @@ atribuição e proveniência, revisar idioma/locução/transcrição, integrar U
 validar os arquivos e habilitar avaliação apenas para registros homologados. Sem esses
 passos, o comportamento correto permanece indisponível/não avaliado. Esta branch não
 ativa `publicRelease`, não altera o backend e não publica as experiências V13/V14.
+
+## Investigação e CI do Pytest (PR #120)
+
+- No executor local Windows, com Python 3.13.9 (Anaconda), o teste `test_persistent_definition_outlives_ttl_empty_channel_and_fresh_server` bloqueou ao entrar no `TestClient` (`backend/tests/test_call_channel.py:20`). O stack do faulthandler ficou em `asyncio`/Proactor, dentro de `socket._fallback_socketpair()` aguardando `accept`, antes da inicialização do app.
+- Um subprocesso Python isolado que executava somente `socket.socketpair()` também excedeu cinco segundos. Isso demonstra uma limitação do executor/sandbox local, fora do FastAPI; não prova incompatibilidade geral do Windows nem substitui a execução em CI.
+- O workflow `.github/workflows/python-tests.yml` executa Python 3.12 em Ubuntu e Windows, roda os testes Call separadamente e depois a suíte integral. `pytest-timeout` é dependência somente de teste (`backend/requirements-test.txt`), com 120 s por teste e limite de 20 min por job; os relatórios JUnit são preservados como artifacts.
+- A classificação final da causa e a aprovação da suíte dependem dos resultados reais desses jobs. Não considerar o Pytest validado enquanto os checks não concluírem.
