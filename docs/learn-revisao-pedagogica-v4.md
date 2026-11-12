@@ -1,6 +1,6 @@
 # 2T Learn — quarta rodada de revisão pedagógica EN/RU
 
-**Rodada:** 12/11/2026, revisão editorial interna.  
+**Rodada:** 11/11/2026, revisão editorial interna.  
 **Base de comparação:** catálogos da `main` após integração do PR #108 e catálogo pré-revisão `d22b1d0f62861af367146035316c0222f8109077`.  
 **Estado:** correções fundamentadas por texto e gramática, **sem avaliação independente** de docentes, gravações ou estudantes.
 
