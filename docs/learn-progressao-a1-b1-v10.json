@@ -1,0 +1,908 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_progression_design_v10",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "sourceRefs": [
+    "https://www.coe.int/en/web/common-European-framework-reference-languages/table-1-cefr-3.3-common-reference-levels-global-scale",
+    "https://www.coe.int/en/web/common-european-framework-reference-languages/cefr-descriptors"
+  ],
+  "languageTracks": {
+    "en": {
+      "catalogBlobSha": "dad08983363982d8227124bcef2e49b4822352b4",
+      "existingExercises": 237,
+      "stageGuides": {
+        "A1": {
+          "label": "Base comunicativa com apoio",
+          "exit": "Reconhecer informações pessoais e cotidianas previsíveis e formular mensagens muito curtas; verificar também compreensão de instruções claras."
+        },
+        "A2": {
+          "label": "Troca de informações e situações rotineiras",
+          "exit": "Realizar pergunta/resposta, dar localização, tempo, motivação simples e manter pequena troca comunicativa sobre situação familiar."
+        },
+        "B1": {
+          "label": "Ideias conectadas, justificativa e transferência",
+          "exit": "Compreender pontos principais em contexto familiar e produzir texto simples encadeado com uma razão ou decisão verificável; avaliação humana exigida."
+        }
+      },
+      "coverage": {
+        "A1": {
+          "listening": 30,
+          "dictation": 29,
+          "writing": 35,
+          "reading": 12,
+          "grammar": 12,
+          "test": 18
+        },
+        "A2": {
+          "dictation": 1,
+          "writing": 5,
+          "reading": 18,
+          "grammar": 18,
+          "test": 12
+        },
+        "B1": {
+          "writing": 12,
+          "reading": 15,
+          "grammar": 15,
+          "test": 5
+        }
+      },
+      "units": [
+        {
+          "nodeId": "en-path-01",
+          "sequence": 1,
+          "level": "A1",
+          "existingLessonId": "en-grammar-01",
+          "existingLessonTitle": "Verb to be",
+          "existingObjective": "Relacionar sujeito e am/is/are.",
+          "canDoTarget": "Apresentar-se com am/is/are.",
+          "checkpointDraft": "Criar três frases: identidade, localização e estado.",
+          "prerequisiteNodeIds": [],
+          "pairedReadingId": "en-reading-01",
+          "readingQuestionIds": [
+            "en-reading-01-q1",
+            "en-reading-01-q2",
+            "en-reading-01-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-01-q1",
+            "en-grammar-01-q2",
+            "en-grammar-01-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-02",
+          "sequence": 2,
+          "level": "A1",
+          "existingLessonId": "en-grammar-02",
+          "existingLessonTitle": "Pronomes pessoais",
+          "existingObjective": "Substituir sujeitos por pronomes.",
+          "canDoTarget": "Retomar pessoas e objetos com pronomes de sujeito.",
+          "checkpointDraft": "Substituir três referentes em um diálogo simples.",
+          "prerequisiteNodeIds": [
+            "en-path-01"
+          ],
+          "pairedReadingId": "en-reading-02",
+          "readingQuestionIds": [
+            "en-reading-02-q1",
+            "en-reading-02-q2",
+            "en-reading-02-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-02-q1",
+            "en-grammar-02-q2",
+            "en-grammar-02-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-03",
+          "sequence": 3,
+          "level": "A1",
+          "existingLessonId": "en-grammar-03",
+          "existingLessonTitle": "Artigos a, an e the",
+          "existingObjective": "Distinguir introdução e referência definida.",
+          "canDoTarget": "Usar a/an e the com referência clara.",
+          "checkpointDraft": "Apresentar objeto e retomá-lo em duas frases.",
+          "prerequisiteNodeIds": [
+            "en-path-02"
+          ],
+          "pairedReadingId": "en-reading-03",
+          "readingQuestionIds": [
+            "en-reading-03-q1",
+            "en-reading-03-q2",
+            "en-reading-03-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-03-q1",
+            "en-grammar-03-q2",
+            "en-grammar-03-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-04",
+          "sequence": 4,
+          "level": "A1",
+          "existingLessonId": "en-grammar-04",
+          "existingLessonTitle": "Presente simples",
+          "existingObjective": "Descrever rotinas e fatos.",
+          "canDoTarget": "Falar sobre rotina e terceiro sujeito no presente simples.",
+          "checkpointDraft": "Descrever duas rotinas sem e com -s de terceira pessoa.",
+          "prerequisiteNodeIds": [
+            "en-path-03"
+          ],
+          "pairedReadingId": "en-reading-04",
+          "readingQuestionIds": [
+            "en-reading-04-q1",
+            "en-reading-04-q2",
+            "en-reading-04-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-04-q1",
+            "en-grammar-04-q2",
+            "en-grammar-04-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-05",
+          "sequence": 5,
+          "level": "A2",
+          "existingLessonId": "en-grammar-05",
+          "existingLessonTitle": "Perguntas e negativas",
+          "existingObjective": "Usar do/does com verbos de ação.",
+          "canDoTarget": "Perguntar e negar hábitos com do/does.",
+          "checkpointDraft": "Perguntar sobre horários e responder afirmando/negando.",
+          "prerequisiteNodeIds": [
+            "en-path-04"
+          ],
+          "pairedReadingId": "en-reading-05",
+          "readingQuestionIds": [
+            "en-reading-05-q1",
+            "en-reading-05-q2",
+            "en-reading-05-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-05-q1",
+            "en-grammar-05-q2",
+            "en-grammar-05-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-06",
+          "sequence": 6,
+          "level": "A2",
+          "existingLessonId": "en-grammar-06",
+          "existingLessonTitle": "Possessivos",
+          "existingObjective": "Indicar a quem algo pertence.",
+          "canDoTarget": "Expressar posse em contexto familiar.",
+          "checkpointDraft": "Escrever de quem são três objetos.",
+          "prerequisiteNodeIds": [
+            "en-path-05"
+          ],
+          "pairedReadingId": "en-reading-06",
+          "readingQuestionIds": [
+            "en-reading-06-q1",
+            "en-reading-06-q2",
+            "en-reading-06-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-06-q1",
+            "en-grammar-06-q2",
+            "en-grammar-06-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-07",
+          "sequence": 7,
+          "level": "A2",
+          "existingLessonId": "en-grammar-07",
+          "existingLessonTitle": "Preposições de lugar e tempo",
+          "existingObjective": "Usar relações espaciais e horários básicos.",
+          "canDoTarget": "Informar localização, dia e horário de encontro.",
+          "checkpointDraft": "Escrever mensagem com lugar e hora específicos.",
+          "prerequisiteNodeIds": [
+            "en-path-06"
+          ],
+          "pairedReadingId": "en-reading-07",
+          "readingQuestionIds": [
+            "en-reading-07-q1",
+            "en-reading-07-q2",
+            "en-reading-07-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-07-q1",
+            "en-grammar-07-q2",
+            "en-grammar-07-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-08",
+          "sequence": 8,
+          "level": "A2",
+          "existingLessonId": "en-grammar-08",
+          "existingLessonTitle": "There is e there are",
+          "existingObjective": "Expressar existência.",
+          "canDoTarget": "Descrever existência e quantidade de itens.",
+          "checkpointDraft": "Descrever ambiente com there is/there are.",
+          "prerequisiteNodeIds": [
+            "en-path-07"
+          ],
+          "pairedReadingId": "en-reading-08",
+          "readingQuestionIds": [
+            "en-reading-08-q1",
+            "en-reading-08-q2",
+            "en-reading-08-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-08-q1",
+            "en-grammar-08-q2",
+            "en-grammar-08-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-09",
+          "sequence": 9,
+          "level": "A2",
+          "existingLessonId": "en-grammar-09",
+          "existingLessonTitle": "Present Continuous",
+          "existingObjective": "Descrever ações em andamento.",
+          "canDoTarget": "Distinguir rotina e ação em andamento.",
+          "checkpointDraft": "Comparar every day e now em duas frases.",
+          "prerequisiteNodeIds": [
+            "en-path-08"
+          ],
+          "pairedReadingId": "en-reading-09",
+          "readingQuestionIds": [
+            "en-reading-09-q1",
+            "en-reading-09-q2",
+            "en-reading-09-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-09-q1",
+            "en-grammar-09-q2",
+            "en-grammar-09-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-10",
+          "sequence": 10,
+          "level": "A2",
+          "existingLessonId": "en-grammar-10",
+          "existingLessonTitle": "Passado simples inicial",
+          "existingObjective": "Relatar acontecimentos encerrados.",
+          "canDoTarget": "Relatar uma ação encerrada e negativa no passado.",
+          "checkpointDraft": "Contar ontem em três frases usando did not e um irregular.",
+          "prerequisiteNodeIds": [
+            "en-path-09"
+          ],
+          "pairedReadingId": "en-reading-10",
+          "readingQuestionIds": [
+            "en-reading-10-q1",
+            "en-reading-10-q2",
+            "en-reading-10-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-grammar-10-q1",
+            "en-grammar-10-q2",
+            "en-grammar-10-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-11",
+          "sequence": 11,
+          "level": "B1",
+          "existingLessonId": "en-v2-grammar-001",
+          "existingLessonTitle": "Present Perfect",
+          "existingObjective": "Relacionar uma experiência passada ao presente.",
+          "canDoTarget": "Distinguir experiência de evento datado.",
+          "checkpointDraft": "Contrastar present perfect e past simple com exemplos.",
+          "prerequisiteNodeIds": [
+            "en-path-10"
+          ],
+          "pairedReadingId": "en-v2-reading-001",
+          "readingQuestionIds": [
+            "en-v2-reading-001-q1",
+            "en-v2-reading-001-q2",
+            "en-v2-reading-001-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-v2-grammar-001-q1",
+            "en-v2-grammar-001-q2",
+            "en-v2-grammar-001-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-12",
+          "sequence": 12,
+          "level": "B1",
+          "existingLessonId": "en-v2-grammar-002",
+          "existingLessonTitle": "First conditional",
+          "existingObjective": "Expressar uma condição futura possível.",
+          "canDoTarget": "Expressar condição futura plausível.",
+          "checkpointDraft": "Propor plano com if + present e will.",
+          "prerequisiteNodeIds": [
+            "en-path-11"
+          ],
+          "pairedReadingId": "en-v2-reading-002",
+          "readingQuestionIds": [
+            "en-v2-reading-002-q1",
+            "en-v2-reading-002-q2",
+            "en-v2-reading-002-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-v2-grammar-002-q1",
+            "en-v2-grammar-002-q2",
+            "en-v2-grammar-002-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-13",
+          "sequence": 13,
+          "level": "B1",
+          "existingLessonId": "en-v2-grammar-003",
+          "existingLessonTitle": "Passive voice",
+          "existingObjective": "Destacar a ação ou seu resultado.",
+          "canDoTarget": "Focalizar resultado por voz passiva.",
+          "checkpointDraft": "Reescrever frase ativa em passiva no tempo adequado.",
+          "prerequisiteNodeIds": [
+            "en-path-12"
+          ],
+          "pairedReadingId": "en-v2-reading-003",
+          "readingQuestionIds": [
+            "en-v2-reading-003-q1",
+            "en-v2-reading-003-q2",
+            "en-v2-reading-003-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-v2-grammar-003-q1",
+            "en-v2-grammar-003-q2",
+            "en-v2-grammar-003-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-14",
+          "sequence": 14,
+          "level": "B1",
+          "existingLessonId": "en-v2-grammar-004",
+          "existingLessonTitle": "Relative clauses",
+          "existingObjective": "Identificar pessoas e coisas em uma frase.",
+          "canDoTarget": "Conectar informações usando relativas.",
+          "checkpointDraft": "Identificar pessoa e coisa com who/which/that.",
+          "prerequisiteNodeIds": [
+            "en-path-13"
+          ],
+          "pairedReadingId": "en-v2-reading-004",
+          "readingQuestionIds": [
+            "en-v2-reading-004-q1",
+            "en-v2-reading-004-q2",
+            "en-v2-reading-004-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-v2-grammar-004-q1",
+            "en-v2-grammar-004-q2",
+            "en-v2-grammar-004-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "en-path-15",
+          "sequence": 15,
+          "level": "B1",
+          "existingLessonId": "en-v2-grammar-005",
+          "existingLessonTitle": "Past Continuous",
+          "existingObjective": "Descrever uma ação em andamento no passado.",
+          "canDoTarget": "Relatar evento no passado com ação de fundo.",
+          "checkpointDraft": "Contar interrupção com was/were + -ing e past simple.",
+          "prerequisiteNodeIds": [
+            "en-path-14"
+          ],
+          "pairedReadingId": "en-v2-reading-005",
+          "readingQuestionIds": [
+            "en-v2-reading-005-q1",
+            "en-v2-reading-005-q2",
+            "en-v2-reading-005-q3"
+          ],
+          "grammarQuestionIds": [
+            "en-v2-grammar-005-q1",
+            "en-v2-grammar-005-q2",
+            "en-v2-grammar-005-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        }
+      ],
+      "identifiedGaps": [
+        "Não há Listening de A2 nem B1 no catálogo legado",
+        "Não há ditado de B1 no catálogo legado",
+        "B1 de leitura concentra perguntas factuais curtas, sem verificar suficientemente inferência e síntese",
+        "B1 de escrita se concentra em tradução, não em produção original ligada a um objetivo comunicativo",
+        "Perguntas e negativas simples aparecem como lição A2: prever uso comunicativo assistido na saída do A1",
+        "Past simple A2 e present perfect B1 exigem contraste explícito na ponte A2→B1"
+      ],
+      "bridgeTasksPath": "docs/learn-atividades-ponte-v10.json",
+      "publicAccess": "unchanged",
+      "releaseDependencies": [
+        "independent_language_review",
+        "licensed_audio_review",
+        "student_pilot_with_consent",
+        "real_open_response_adjudication",
+        "explicit_launch_decision"
+      ]
+    },
+    "ru": {
+      "catalogBlobSha": "20bde0b36caeafbe70092a7bf576acf4e843ba1d",
+      "existingExercises": 237,
+      "stageGuides": {
+        "A1": {
+          "label": "Base comunicativa com apoio",
+          "exit": "Reconhecer informações pessoais e cotidianas previsíveis e formular mensagens muito curtas; verificar também compreensão de instruções claras."
+        },
+        "A2": {
+          "label": "Troca de informações e situações rotineiras",
+          "exit": "Realizar pergunta/resposta, dar localização, tempo, motivação simples e manter pequena troca comunicativa sobre situação familiar."
+        },
+        "B1": {
+          "label": "Ideias conectadas, justificativa e transferência",
+          "exit": "Compreender pontos principais em contexto familiar e produzir texto simples encadeado com uma razão ou decisão verificável; avaliação humana exigida."
+        }
+      },
+      "coverage": {
+        "A1": {
+          "listening": 30,
+          "dictation": 29,
+          "writing": 35,
+          "reading": 12,
+          "grammar": 12,
+          "test": 18
+        },
+        "A2": {
+          "dictation": 1,
+          "writing": 5,
+          "reading": 18,
+          "grammar": 18,
+          "test": 12
+        },
+        "B1": {
+          "writing": 12,
+          "reading": 15,
+          "grammar": 15,
+          "test": 5
+        }
+      },
+      "units": [
+        {
+          "nodeId": "ru-path-01",
+          "sequence": 1,
+          "level": "A1",
+          "existingLessonId": "ru-grammar-01",
+          "existingLessonTitle": "Cirílico e leitura",
+          "existingObjective": "Reconhecer letras russas e preservar ё.",
+          "canDoTarget": "Ler cirílico, incluindo pares visuais e ё.",
+          "checkpointDraft": "Ler e copiar cinco palavras com grafia distinta ё/е.",
+          "prerequisiteNodeIds": [],
+          "pairedReadingId": "ru-reading-01",
+          "readingQuestionIds": [
+            "ru-reading-01-q1",
+            "ru-reading-01-q2",
+            "ru-reading-01-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-01-q1",
+            "ru-grammar-01-q2",
+            "ru-grammar-01-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-02",
+          "sequence": 2,
+          "level": "A1",
+          "existingLessonId": "ru-grammar-02",
+          "existingLessonTitle": "Pronomes pessoais russos",
+          "existingObjective": "Escolher o sujeito adequado.",
+          "canDoTarget": "Apresentar-se com pronomes em frases simples.",
+          "checkpointDraft": "Produzir três frases nominais sem verbo ser no presente.",
+          "prerequisiteNodeIds": [
+            "ru-path-01"
+          ],
+          "pairedReadingId": "ru-reading-02",
+          "readingQuestionIds": [
+            "ru-reading-02-q1",
+            "ru-reading-02-q2",
+            "ru-reading-02-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-02-q1",
+            "ru-grammar-02-q2",
+            "ru-grammar-02-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-03",
+          "sequence": 3,
+          "level": "A1",
+          "existingLessonId": "ru-grammar-03",
+          "existingLessonTitle": "Gênero dos substantivos",
+          "existingObjective": "Identificar padrões e exceções de gênero.",
+          "canDoTarget": "Reconhecer gênero de substantivos e exceções.",
+          "checkpointDraft": "Classificar palavras incluindo nome em -ь.",
+          "prerequisiteNodeIds": [
+            "ru-path-02"
+          ],
+          "pairedReadingId": "ru-reading-03",
+          "readingQuestionIds": [
+            "ru-reading-03-q1",
+            "ru-reading-03-q2",
+            "ru-reading-03-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-03-q1",
+            "ru-grammar-03-q2",
+            "ru-grammar-03-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-04",
+          "sequence": 4,
+          "level": "A1",
+          "existingLessonId": "ru-grammar-04",
+          "existingLessonTitle": "Singular e plural",
+          "existingObjective": "Reconhecer plurais frequentes.",
+          "canDoTarget": "Formar plurais frequentes.",
+          "checkpointDraft": "Transformar três substantivos em plural, considerando regras.",
+          "prerequisiteNodeIds": [
+            "ru-path-03"
+          ],
+          "pairedReadingId": "ru-reading-04",
+          "readingQuestionIds": [
+            "ru-reading-04-q1",
+            "ru-reading-04-q2",
+            "ru-reading-04-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-04-q1",
+            "ru-grammar-04-q2",
+            "ru-grammar-04-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-05",
+          "sequence": 5,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-05",
+          "existingLessonTitle": "Possessivos russos",
+          "existingObjective": "Concordar possessivos com o objeto.",
+          "canDoTarget": "Concordar possessivos com o objeto.",
+          "checkpointDraft": "Usar мой/моя/моё/мои em quatro contextos.",
+          "prerequisiteNodeIds": [
+            "ru-path-04"
+          ],
+          "pairedReadingId": "ru-reading-05",
+          "readingQuestionIds": [
+            "ru-reading-05-q1",
+            "ru-reading-05-q2",
+            "ru-reading-05-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-05-q1",
+            "ru-grammar-05-q2",
+            "ru-grammar-05-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-06",
+          "sequence": 6,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-06",
+          "existingLessonTitle": "Verbos no presente",
+          "existingObjective": "Escolher formas verbais frequentes.",
+          "canDoTarget": "Conjugar verbo de ação no presente.",
+          "checkpointDraft": "Descrever estudo/leitura com três sujeitos.",
+          "prerequisiteNodeIds": [
+            "ru-path-05"
+          ],
+          "pairedReadingId": "ru-reading-06",
+          "readingQuestionIds": [
+            "ru-reading-06-q1",
+            "ru-reading-06-q2",
+            "ru-reading-06-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-06-q1",
+            "ru-grammar-06-q2",
+            "ru-grammar-06-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-07",
+          "sequence": 7,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-07",
+          "existingLessonTitle": "Negação com не e нет",
+          "existingObjective": "Negar ações e existência.",
+          "canDoTarget": "Negar ação e responder não.",
+          "checkpointDraft": "Usar не com verbo e нет como resposta isolada.",
+          "prerequisiteNodeIds": [
+            "ru-path-06"
+          ],
+          "pairedReadingId": "ru-reading-07",
+          "readingQuestionIds": [
+            "ru-reading-07-q1",
+            "ru-reading-07-q2",
+            "ru-reading-07-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-07-q1",
+            "ru-grammar-07-q2",
+            "ru-grammar-07-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-08",
+          "sequence": 8,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-08",
+          "existingLessonTitle": "Perguntas em russo",
+          "existingObjective": "Reconhecer palavras interrogativas.",
+          "canDoTarget": "Fazer perguntas simples de pessoas, lugar e tempo.",
+          "checkpointDraft": "Formular três perguntas com кто/где/когда.",
+          "prerequisiteNodeIds": [
+            "ru-path-07"
+          ],
+          "pairedReadingId": "ru-reading-08",
+          "readingQuestionIds": [
+            "ru-reading-08-q1",
+            "ru-reading-08-q2",
+            "ru-reading-08-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-08-q1",
+            "ru-grammar-08-q2",
+            "ru-grammar-08-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-09",
+          "sequence": 9,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-09",
+          "existingLessonTitle": "Nominativo e acusativo inicial",
+          "existingObjective": "Distinguir sujeito e objeto direto simples.",
+          "canDoTarget": "Distinguir sujeito de objeto no acusativo inicial.",
+          "checkpointDraft": "Usar книгу/машину como objetos diretos.",
+          "prerequisiteNodeIds": [
+            "ru-path-08"
+          ],
+          "pairedReadingId": "ru-reading-09",
+          "readingQuestionIds": [
+            "ru-reading-09-q1",
+            "ru-reading-09-q2",
+            "ru-reading-09-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-09-q1",
+            "ru-grammar-09-q2",
+            "ru-grammar-09-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-10",
+          "sequence": 10,
+          "level": "A2",
+          "existingLessonId": "ru-grammar-10",
+          "existingLessonTitle": "Números e concordância básica",
+          "existingObjective": "Usar um, dois e cinco com nomes simples.",
+          "canDoTarget": "Concordar números um, dois e cinco com nomes.",
+          "checkpointDraft": "Pedir quantidades com один/одна/две/пять.",
+          "prerequisiteNodeIds": [
+            "ru-path-09"
+          ],
+          "pairedReadingId": "ru-reading-10",
+          "readingQuestionIds": [
+            "ru-reading-10-q1",
+            "ru-reading-10-q2",
+            "ru-reading-10-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-grammar-10-q1",
+            "ru-grammar-10-q2",
+            "ru-grammar-10-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-11",
+          "sequence": 11,
+          "level": "B1",
+          "existingLessonId": "ru-v2-grammar-001",
+          "existingLessonTitle": "Вид глагола",
+          "existingObjective": "Distinguir processo e resultado.",
+          "canDoTarget": "Contrastar processo e resultado por aspecto.",
+          "checkpointDraft": "Contar hábito, processo e ação concluída.",
+          "prerequisiteNodeIds": [
+            "ru-path-10"
+          ],
+          "pairedReadingId": "ru-v2-reading-001",
+          "readingQuestionIds": [
+            "ru-v2-reading-001-q1",
+            "ru-v2-reading-001-q2",
+            "ru-v2-reading-001-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-v2-grammar-001-q1",
+            "ru-v2-grammar-001-q2",
+            "ru-v2-grammar-001-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-12",
+          "sequence": 12,
+          "level": "B1",
+          "existingLessonId": "ru-v2-grammar-002",
+          "existingLessonTitle": "Родительный падеж",
+          "existingObjective": "Expressar ausência e posse.",
+          "canDoTarget": "Usar genitivo após нет e para indicar posse.",
+          "checkpointDraft": "Dizer o que não tenho e de quem é um objeto.",
+          "prerequisiteNodeIds": [
+            "ru-path-11"
+          ],
+          "pairedReadingId": "ru-v2-reading-002",
+          "readingQuestionIds": [
+            "ru-v2-reading-002-q1",
+            "ru-v2-reading-002-q2",
+            "ru-v2-reading-002-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-v2-grammar-002-q1",
+            "ru-v2-grammar-002-q2",
+            "ru-v2-grammar-002-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-13",
+          "sequence": 13,
+          "level": "B1",
+          "existingLessonId": "ru-v2-grammar-003",
+          "existingLessonTitle": "Дательный падеж",
+          "existingObjective": "Indicar destinatário e experienciador.",
+          "canDoTarget": "Marcar destinatário e sensação no dativo.",
+          "checkpointDraft": "Expressar sensação com мне e receptor de ação.",
+          "prerequisiteNodeIds": [
+            "ru-path-12"
+          ],
+          "pairedReadingId": "ru-v2-reading-003",
+          "readingQuestionIds": [
+            "ru-v2-reading-003-q1",
+            "ru-v2-reading-003-q2",
+            "ru-v2-reading-003-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-v2-grammar-003-q1",
+            "ru-v2-grammar-003-q2",
+            "ru-v2-grammar-003-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-14",
+          "sequence": 14,
+          "level": "B1",
+          "existingLessonId": "ru-v2-grammar-004",
+          "existingLessonTitle": "Творительный падеж",
+          "existingObjective": "Expressar companhia e função.",
+          "canDoTarget": "Usar instrumental para companhia e função.",
+          "checkpointDraft": "Descrever companhia com с e profissão com работает.",
+          "prerequisiteNodeIds": [
+            "ru-path-13"
+          ],
+          "pairedReadingId": "ru-v2-reading-004",
+          "readingQuestionIds": [
+            "ru-v2-reading-004-q1",
+            "ru-v2-reading-004-q2",
+            "ru-v2-reading-004-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-v2-grammar-004-q1",
+            "ru-v2-grammar-004-q2",
+            "ru-v2-grammar-004-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        },
+        {
+          "nodeId": "ru-path-15",
+          "sequence": 15,
+          "level": "B1",
+          "existingLessonId": "ru-v2-grammar-005",
+          "existingLessonTitle": "Глаголы движения",
+          "existingObjective": "Distinguir direção única e movimento habitual.",
+          "canDoTarget": "Contrastar caminho atual, habitual e por transporte.",
+          "checkpointDraft": "Explicar viagem agora versus deslocamento rotineiro.",
+          "prerequisiteNodeIds": [
+            "ru-path-14"
+          ],
+          "pairedReadingId": "ru-v2-reading-005",
+          "readingQuestionIds": [
+            "ru-v2-reading-005-q1",
+            "ru-v2-reading-005-q2",
+            "ru-v2-reading-005-q3"
+          ],
+          "grammarQuestionIds": [
+            "ru-v2-grammar-005-q1",
+            "ru-v2-grammar-005-q2",
+            "ru-v2-grammar-005-q3"
+          ],
+          "linkingCaveat": "O pareamento de leitura por nível e ordem não confirma alinhamento temático com a lição.",
+          "status": "draft_mapping_not_published"
+        }
+      ],
+      "identifiedGaps": [
+        "Não há Listening de A2 nem B1 no catálogo legado",
+        "Não há ditado de B1 no catálogo legado",
+        "B1 de leitura concentra perguntas factuais curtas, sem verificar suficientemente inferência e síntese",
+        "B1 de escrita se concentra em tradução, não em produção original ligada a um objetivo comunicativo",
+        "Conjugação verbal básica só aparece como lição A2: é preciso exposição gradual já na saída do A1",
+        "Casos B1 (genitivo/dativo/instrumental) exigem introduções contextualizadas na ponte A2→B1"
+      ],
+      "bridgeTasksPath": "docs/learn-atividades-ponte-v10.json",
+      "publicAccess": "unchanged",
+      "releaseDependencies": [
+        "independent_language_review",
+        "licensed_audio_review",
+        "student_pilot_with_consent",
+        "real_open_response_adjudication",
+        "explicit_launch_decision"
+      ]
+    }
+  }
+}
