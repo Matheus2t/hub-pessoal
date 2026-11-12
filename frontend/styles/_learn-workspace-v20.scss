@@ -161,7 +161,7 @@ learn-home { display:block; min-width:0; width:100%; }
 .learn-page .learn-more[open] > summary { border-bottom:1px solid var(--line-soft); }
 .learn-page .learn-more[open] .learn-more__chevron { transform:translateY(2px) rotate(225deg); }
 .learn-page .learn-more nav {
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
   gap:0; padding:4px 12px 8px;
 }
 .learn-page .learn-more nav a {
