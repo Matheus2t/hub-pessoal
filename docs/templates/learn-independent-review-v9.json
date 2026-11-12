@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "recordType": "empty_independent_review_template",
+  "isRealReview": false,
+  "item": {
+    "itemId": null,
+    "language": null,
+    "level": null,
+    "skill": null,
+    "sourceCatalogBlobSha": null,
+    "exactQuestionShownToReviewer": false
+  },
+  "reviewerA": {
+    "reviewerCode": null,
+    "reviewedAt": null,
+    "assessmentStatus": "not_started",
+    "naturalness": null,
+    "semanticAccuracy": null,
+    "ambiguity": null,
+    "acceptedAlternatives": [],
+    "unacceptableOvergeneralizations": [],
+    "feedbackClarity": null,
+    "levelFit": null,
+    "rationale": null,
+    "audioReviewed": false,
+    "audioAssetReference": null
+  },
+  "reviewerB": {
+    "reviewerCode": null,
+    "reviewedAt": null,
+    "assessmentStatus": "not_started",
+    "naturalness": null,
+    "semanticAccuracy": null,
+    "ambiguity": null,
+    "acceptedAlternatives": [],
+    "unacceptableOvergeneralizations": [],
+    "feedbackClarity": null,
+    "levelFit": null,
+    "rationale": null,
+    "audioReviewed": false,
+    "audioAssetReference": null
+  },
+  "adjudication": {
+    "required": null,
+    "status": "not_started",
+    "adjudicatorCode": null,
+    "outcome": null,
+    "divergenceNotes": null,
+    "decisionEvidence": null,
+    "decisionAt": null
+  },
+  "humanRubric": {
+    "meaningOrEvidenceScore": null,
+    "taskFulfillmentScore": null,
+    "cohesionAndIntelligibilityScore": null,
+    "linguisticUseScore": null,
+    "specialOutcome": "not_assessed",
+    "scoreInterpretation": "Scores 0-3 per dimension only when human-reviewed; uncertain is not numeric or a mistake"
+  },
+  "decision": {
+    "status": "awaiting_independent_review",
+    "blockPublicRelease": true,
+    "reason": null,
+    "readyForControlledPilot": false,
+    "approvedByProjectOwner": false,
+    "decisionAt": null
+  },
+  "privacy": {
+    "noStudentData": true,
+    "avoidReviewerPersonalContactsInRepository": true,
+    "sourceExamplesSyntheticOnly": true,
+    "filledPersonalRecordsMustNotBeCommitted": true
+  },
+  "notes": "Blank template only. Reviewers must independently verify the frozen source and complete documents outside the public repo where personal data or literal student responses may appear."
+}
