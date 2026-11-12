@@ -28,7 +28,7 @@ for(const l of ['en','ru'] as Language[])test(`assessment draft reload, atomic c
  if(i<qs.length-1)await page.getByRole('button',{name:'Próxima questão',exact:true}).click();}
  await expect(page.getByRole('heading',{name:'Correção',exact:true})).toHaveCount(0);await page.getByRole('button',{name:'Finalizar avaliação'}).dblclick();await expect(page.getByRole('heading',{name:'Resultado',exact:true})).toBeVisible();await expect(page.locator('learn-assessment')).toContainText('30 questões · 30 acertos · 0 erros · 100%');
  await page.reload();await storage(page);expect((await page.evaluate(async()=> (window as any).LearnC.snapshot())).attempts).toHaveLength(30);await expect(page.getByRole('heading',{name:'Resultado',exact:true})).toBeVisible();
- await page.getByRole('button',{name:'Nova avaliação'}).click();await page.goto(`/#/learn/${l==='en'?'ru':'en'}`);await expect(page.locator('.learn-progress')).toContainText('Sem respostas');
+ await page.getByRole('button',{name:'Nova avaliação'}).click();await page.goto(`/#/learn/${l==='en'?'ru':'en'}`);await expect(page.locator('.learn-summary dl div').first().locator('dd')).toHaveText('0');
 });
 test('error notebook preserves missing content and prioritizes recurring real difficulties',async({page})=>{
  await page.goto('/#/learn/en/errors');await expect(page.locator('learn-errors')).toContainText('Nenhum erro');await storage(page);const e=catalogs.en.exercises.find(e=>e.skill==='writing')!;
