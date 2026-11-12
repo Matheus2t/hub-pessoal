@@ -33,3 +33,11 @@ export function isLearnDiagnosticPreviewEnabled(language:DiagnosticPreviewLangua
 export function isLearnDelayedReviewPreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
  return previewFlagEnabled('c4-delayed',host,search);
 }
+
+/** V19 prerecorded-audio preview: only on loopback and only with explicit opt-in.
+ * The server additionally requires an HttpOnly session cookie before serving private files. */
+export function isLearnV19AudioPreviewEnabled(
+ host=globalThis.location?.hostname||'',search=globalThis.location?.search||''
+):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='audio-v19';
+}

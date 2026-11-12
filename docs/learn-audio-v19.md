@@ -77,6 +77,52 @@ Abra no navegador o endereço local com token que o comando imprimir. Não compa
 
 ## Estado da branch e próximos passos
 
-O PR #125 permanece aberto como draft. A branch incorpora a main/V20 por um merge local para preservar o layout; não houve merge de volta, deploy ou alteração do site oficial. Como a regressão global tem falhas fora do Learn, o PR não deve ser marcado pronto nem integrado automaticamente.
+**Atualização posterior:** o PR #125 foi integrado à `main` apenas com a infraestrutura V19 (pipeline e revisor privado). A divergência com a `main` e as falhas globais mencionadas acima descrevem o estado anterior à integração. Nenhum MP3, modelo ou fonte editorial de rascunho foi publicado nessa entrega.
 
-Próximo passo do proprietário: iniciar o revisor local, escutar cada uma das 68 gravações em sua totalidade, aprovar/rejeitar individualmente e deixar notas para pronúncia, ritmo e correspondência ao texto. Só depois da revisão e de uma decisão explícita sobre publicação os estados poderão avançar. Nenhuma aprovação foi registrada nesta etapa.
+A revisão auditiva de cada gravação continua necessária **antes da liberação pública e da avaliação automática**, mas pode ser realizada depois da integração técnica local. Nenhuma aprovação foi registrada nesta etapa. A seção V19.2 abaixo explica como testar o Learn sem registrar aprovação ou pontuação.
+
+
+## V19.2 — Prévia de estudo integrada (antes da escuta e sem publicação dos MP3)
+
+A infraestrutura V19 e o revisor privado foram incorporados à `main` no PR #125, sem incluir arquivos binários nem liberar roteiros. **Os 68 MP3 continuam no diretório privado do computador onde foram produzidos.**
+
+A experiência de estudo pode ser montada **antes da aprovação auditiva**. Isso permite testar a integração enquanto o proprietário não tem tempo para ouvir as gravações; **não transforma os áudios em material pedagógico validado**.
+
+### Como abrir depois, sem publicar
+
+Use o worktree que possui os arquivos privados em `private/learn-audio-v19/`. Atualize esse worktree com os commits mais recentes da `main` (resolvendo eventuais conflitos sem descartar os arquivos privados) e execute:
+
+```powershell
+npm ci
+npm run learn:preview-v19
+```
+
+O comando executa o build e inicia um servidor **exclusivamente em 127.0.0.1**, com token aleatório e cookie HttpOnly/SameSite=Strict. Abra no **mesmo computador** a URL impressa pelo comando. O navegador será levado a `/#/learn/en/audio-v19`; dentro da página há o seletor de idioma/atividade.
+
+Não copie esse endereço para outras pessoas nem coloque os MP3 em `frontend/public` ou `dist`. Feche com Ctrl+C quando terminar.
+
+### O que já funciona na prévia
+
+- Painel Learn com Listening, Ditado e Atividades-ponte, usando o inventário de **68 gravações** do manifesto privado e os roteiros editoriais privados em `private/learn-audio-v19/sources/`.
+- Reprodução pelo componente V15 (`learn-recording-player`) com controles de play/pausa/reiniciar/repetir, velocidade e volume.
+- Perguntas de Listening e texto livre de ditado para testar a interface; roteiro revelado apenas por ação explícita.
+- Sem notas, histórico, progresso, avaliação ou aprovação automática. O player emite conclusão com `validated:false` e `assessmentEligible:false`.
+- O revisor original continua sendo o único lugar para registrar uma decisão explícita de aprovação ou rejeição, depois da escuta completa.
+
+### Proteções
+
+- Rota `#/learn/{idioma}/audio-v19` só existe funcionalmente em **loopback com `?learn-preview=audio-v19`**. No domínio oficial ela informa `Prévia indisponível`.
+- O servidor local exige sessão autenticada para **cada acesso** a MP3, manifesto e arquivos do build, aceita apenas Host e endereço remoto loopback, valida caminhos permitidos e suporta Range sem cache.
+- Service worker desativado nesse servidor de prévia, para não armazenar gravações privadas no cache do navegador.
+- A prévia se recusa a iniciar se o manifesto declarar liberação pública/avaliação ativa, se houver registro ausente, ou se um áudio não tiver verificação técnica concluída.
+- As informações de licença da V19 permanecem aplicáveis; reprodução local não equivale à autorização de distribuição comercial ou pública.
+
+### O que permanece pendente
+
+1. Revisão auditiva real das 68 gravações e eventuais correções.
+2. Aprovação explícita das gravações que forem aceitas.
+3. Publicação controlada das fontes editoriais e dos MP3 autorizados em armazenamento apropriado.
+4. Ativação futura do conteúdo de Listening/Ditado no catálogo, somente após validar o vínculo questão/áudio e as regras de avaliação.
+5. Regressão de produção quando essas etapas forem ativadas.
+
+**Não afirmar que os 68 áudios já estão publicados no site.** O que foi integrado é o pipeline, o revisor e a experiência de estudo local, sem expor as gravações reais no GitHub/Vercel.

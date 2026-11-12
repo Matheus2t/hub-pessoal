@@ -631,3 +631,128 @@ learn-home { display:block; min-width:0; width:100%; }
     padding:20px;
   }
 }
+
+
+/* V19 local-only integrated study preview. Same square controls as Learn V20.4. */
+.learn-page--v19-preview { max-width:var(--content-width); margin-inline:auto; }
+.learn-page--v19-preview .learn-v19-preview { min-width:0; padding:clamp(12px,2vw,24px) 0 40px; }
+.learn-page .learn-v19-preview__head {
+  display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+  gap:16px 24px; padding-bottom:23px; border-bottom:1px solid var(--line-soft);
+}
+.learn-page .learn-v19-preview__head > div { max-width:72ch; min-width:0; }
+.learn-page .learn-v19-preview__head h1 {
+  margin:0 0 10px; font-size:clamp(27px,3vw,38px); line-height:1.2; letter-spacing:-.045em;
+}
+.learn-page .learn-v19-preview__head p {
+  margin:0; color:var(--secondary); font-size:13px; line-height:1.65;
+}
+.learn-page .learn-v19-preview__head .learn-v19-preview__kicker {
+  margin:0 0 9px; color:var(--muted); font:600 11px var(--font-mono); letter-spacing:.1em;
+}
+.learn-page .learn-v19-preview__tabs { display:flex; gap:8px; flex-wrap:wrap; margin:23px 0 21px; }
+.learn-page .learn-v19-preview__tabs .button {
+  display:inline-flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:10px 16px; min-height:44px; border:1px solid var(--line-soft);
+  border-radius:3px; background:var(--panel); color:var(--text);
+}
+.learn-page .learn-v19-preview__tabs .button[aria-pressed=true] {
+  border-color:var(--secondary); background:var(--raised); font-weight:650;
+}
+.learn-page .learn-v19-preview__tabs .button > span { font:500 12px var(--font-mono); color:var(--secondary); }
+.learn-page .learn-v19-preview__body {
+  display:grid; grid-template-columns:minmax(200px,.31fr) minmax(0,.69fr);
+  align-items:start; gap:clamp(15px,2.8vw,34px);
+}
+.learn-page .learn-v19-preview__index,
+.learn-page .learn-v19-preview__exercise {
+  min-width:0; border:1px solid var(--line-soft); border-radius:3px;
+  background:var(--panel); padding:clamp(19px,2.5vw,30px);
+}
+.learn-page .learn-v19-preview__index { display:grid; gap:13px; }
+.learn-page .learn-v19-preview__index label { font-size:13px; font-weight:570; }
+.learn-page .learn-v19-preview__index select { width:100%; min-width:0; min-height:46px; }
+.learn-page .learn-v19-preview__index p {
+  margin:0; color:var(--secondary); font-size:12px; line-height:1.6;
+}
+.learn-page .learn-v19-preview__meta {
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px 14px;
+  font:500 11px/1.6 var(--font-mono); color:var(--secondary);
+}
+.learn-page .learn-v19-preview__exercise h2 {
+  margin:13px 0 12px; font-size:clamp(21px,2.4vw,29px); font-weight:550;
+  letter-spacing:-.035em; line-height:1.3;
+}
+.learn-page .learn-v19-preview__notice {
+  margin:0 0 22px; font-size:13px; line-height:1.7; color:var(--secondary);
+}
+.learn-page .learn-v19-preview__exercise .learn-audio-player {
+  margin:0 0 22px; border-radius:3px; padding:clamp(16px,2vw,22px);
+}
+.learn-page .learn-v19-preview__instruction { margin:16px 0; font-size:14px; line-height:1.7; }
+.learn-page .learn-v19-preview__answer {
+  display:grid; gap:10px; margin:20px 0; font-size:13px; font-weight:560;
+}
+.learn-page .learn-v19-preview__answer textarea,
+.learn-page .learn-v19-preview__questions textarea {
+  display:block; width:100%; min-width:0; min-height:100px;
+  padding:13px; border:1px solid var(--line); border-radius:3px;
+  background:var(--bg); color:var(--text);
+}
+.learn-page .learn-v19-preview__questions { display:grid; gap:14px; margin:23px 0; }
+.learn-page .learn-v19-preview__questions fieldset {
+  display:grid; grid-template-columns:minmax(0,1fr);
+  gap:12px; min-width:0; min-inline-size:0;
+  width:100%; max-width:100%; box-sizing:border-box;
+  padding:18px; margin:0; border:1px solid var(--line-soft); border-radius:3px;
+}
+.learn-page .learn-v19-preview__questions legend {
+  color:var(--text); font-size:14px; line-height:1.5; font-weight:550;
+  padding:0 8px; white-space:normal;
+}
+.learn-page .learn-v19-preview__questions label {
+  display:flex; gap:9px; align-items:flex-start; padding:5px 0;
+  min-width:0; max-width:100%; overflow-wrap:anywhere;
+  color:var(--secondary); font-size:13px; line-height:1.55; cursor:pointer;
+}
+.learn-page .learn-v19-preview__questions label:has(textarea) { display:grid; }
+.learn-page .learn-v19-preview__questions input[type="radio"] {
+  flex:0 0 18px; width:18px; height:18px; min-width:18px;
+  margin:2px 0 0; accent-color:var(--text);
+}
+.learn-page .learn-v19-preview__transcript {
+  margin:15px 0 0; padding:16px 19px; border-left:2px solid var(--line);
+  background:var(--raised); font-size:14px; line-height:1.75; overflow-wrap:anywhere;
+}
+.learn-page .learn-v19-preview__footnote {
+  margin:20px 0 0; color:var(--muted); font-size:12px; line-height:1.65;
+}
+@media(max-width:820px) {
+  .learn-page .learn-v19-preview__body { grid-template-columns:minmax(0,1fr); gap:14px; }
+}
+@media(max-width:450px) {
+  .learn-page .learn-v19-preview__tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .learn-page .learn-v19-preview__tabs .button {
+    min-width:0; gap:5px; padding-inline:10px;
+    white-space:normal; overflow-wrap:anywhere;
+  }
+  .learn-page .learn-v19-preview__head .button { width:100%; }
+  .learn-page .learn-v19-preview__index,
+  .learn-page .learn-v19-preview__exercise { padding:18px; }
+  .learn-page .learn-v19-preview__exercise,
+  .learn-page .learn-v19-preview__questions fieldset,
+  .learn-page .learn-v19-preview__exercise learn-recording-player { min-width:0; max-width:100%; }
+  .learn-page--v19-preview .learn-audio-player {
+    grid-template-columns:minmax(0,1fr);
+  }
+  .learn-page--v19-preview .learn-audio-player__setting,
+  .learn-page--v19-preview .learn-audio-player__volume {
+    grid-column:1/-1; min-width:0;
+  }
+  .learn-page--v19-preview .learn-audio-player input[type=range] {
+    min-width:0; max-width:100%;
+  }
+}
+@media(max-width:380px) {
+  .learn-page .learn-v19-preview__tabs { grid-template-columns:minmax(0,1fr); }
+}

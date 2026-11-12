@@ -18,7 +18,8 @@
     "learn:validate-readiness": "node scripts/validate-learn-readiness.mjs",
     "learn:validate-audio": "node scripts/validate-learn-audio.mjs",
     "learn:check-catalogs": "node scripts/learn/check-catalog-determinism.mjs",
-    "learn:validate-progression": "node scripts/learn/validate-progression-v12.mjs"
+    "learn:validate-progression": "node scripts/learn/validate-progression-v12.mjs",
+    "learn:preview-v19": "npm run build && node scripts/learn-audio-v19/local-study-preview.mjs"
   },
   "dependencies": {
     "lit": "^3.2.1"
