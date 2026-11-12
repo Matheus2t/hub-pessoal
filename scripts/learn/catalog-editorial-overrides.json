@@ -514,7 +514,9 @@
               "começa às dez",
               "ela começa a trabalhar às dez",
               "ela começa às dez",
-              "o trabalho começa às dez"
+              "o trabalho começa às dez",
+              "porque começa às dez",
+              "porque ela começa às dez"
             ]
           },
           "remove": []
@@ -527,7 +529,8 @@
               "às quartas-feiras",
               "quarta-feira",
               "toda quarta-feira",
-              "todas as quartas-feiras"
+              "todas as quartas-feiras",
+              "todas as quartas"
             ]
           },
           "remove": []
@@ -540,7 +543,9 @@
               "trocam de função",
               "trocam de papel",
               "trocam as funções",
-              "trocam os papéis"
+              "trocam os papéis",
+              "invertem os papéis",
+              "alternam os papéis"
             ],
             "explanation": "Mila lê em voz alta, o amigo anota as palavras novas e depois os dois trocam de função."
           },
@@ -552,7 +557,9 @@
             "answers": [
               "para a avó ver as crianças",
               "para ela ver as crianças brincando",
-              "para a avó acompanhar as crianças brincando"
+              "para a avó acompanhar as crianças brincando",
+              "para que a avó veja as crianças brincando",
+              "para ver as crianças brincarem"
             ]
           },
           "remove": []
@@ -565,7 +572,9 @@
               "10h30",
               "10:30",
               "dez horas e trinta minutos",
-              "10h30min"
+              "10h30min",
+              "às dez e meia",
+              "às 10h30"
             ]
           },
           "remove": []
@@ -577,7 +586,9 @@
               "salva num arquivo",
               "salvando em um arquivo",
               "salva em um arquivo",
-              "guardando o texto em um arquivo"
+              "guardando o texto em um arquivo",
+              "ele salva a mensagem em um arquivo",
+              "salvando o texto em um arquivo"
             ]
           },
           "remove": []
@@ -588,7 +599,9 @@
             "answers": [
               "não",
               "não, o telefone também",
-              "nao"
+              "nao",
+              "não, o celular também",
+              "não, o telefone também está sem conexão"
             ]
           },
           "remove": []
@@ -601,7 +614,9 @@
               "4",
               "plataforma quatro",
               "plataforma 4",
-              "na plataforma 4"
+              "na plataforma 4",
+              "da plataforma quatro",
+              "da plataforma 4"
             ]
           },
           "remove": []
@@ -613,7 +628,8 @@
               "não",
               "não, custa o mesmo",
               "não, o preço é igual",
-              "nao"
+              "nao",
+              "não, é o mesmo preço"
             ]
           },
           "remove": []
@@ -625,8 +641,11 @@
               "contém leite",
               "porque contém leite",
               "porque tem leite",
-              "o molho tem leite"
-            ]
+              "o molho tem leite",
+              "porque o molho contém leite",
+              "porque um amigo não pode consumir laticínios"
+            ],
+            "explanation": "O rótulo informa que o molho contém leite; por isso, ele é excluído para respeitar a restrição a laticínios de um dos amigos."
           },
           "remove": []
         },
@@ -636,7 +655,8 @@
             "answers": [
               "não",
               "não, é servido separado",
-              "nao"
+              "nao",
+              "não, o queijo é servido à parte"
             ]
           },
           "remove": []
@@ -648,7 +668,9 @@
               "que ele fale devagar",
               "falar devagar",
               "que fale mais devagar",
-              "falar mais devagar"
+              "falar mais devagar",
+              "que Amir fale mais devagar",
+              "que ele fale lentamente"
             ]
           },
           "remove": []
@@ -660,7 +682,9 @@
               "dando exemplos",
               "dá um exemplo",
               "com exemplos",
-              "oferece um exemplo"
+              "oferece um exemplo",
+              "dá exemplos",
+              "oferece exemplos"
             ]
           },
           "remove": []
@@ -914,7 +938,8 @@
           "set": {
             "answers": [
               "um jardim comunitário",
-              "uma horta comunitária"
+              "uma horta comunitária",
+              "um pequeno jardim comunitário"
             ],
             "explanation": "A equipe decidiu construir a small community garden: um jardim comunitário. O texto não especifica o tipo de cultivo."
           },
@@ -926,7 +951,8 @@
             "answers": [
               "todos os sábados",
               "aos sábados",
-              "todo sábado"
+              "todo sábado",
+              "se reuniam aos sábados"
             ],
             "explanation": "We met every Saturday indica que a equipe se encontrava todos os sábados."
           },
@@ -935,7 +961,12 @@
         {
           "id": "en-v2-reading-001-q3",
           "set": {
-            "explanation": "Maya looked after the plants afirma que Maya cuidava das plantas."
+            "explanation": "Maya looked after the plants afirma que Maya cuidava das plantas.",
+            "answers": [
+              "Maya",
+              "Maia",
+              "a Maya"
+            ]
           },
           "remove": []
         },
@@ -944,7 +975,8 @@
           "set": {
             "answers": [
               "autor e data",
-              "não tinha autor nem data"
+              "não tinha autor nem data",
+              "não havia autor nem data"
             ],
             "explanation": "It had no author or date indica a ausência de autoria e de data na mensagem."
           },
@@ -955,7 +987,8 @@
           "set": {
             "answers": [
               "no site do hospital",
-              "site do hospital"
+              "site do hospital",
+              "na página do hospital"
             ],
             "explanation": "I looked for evidence on the hospital website: a busca foi feita no site do hospital."
           },
@@ -964,14 +997,24 @@
         {
           "id": "en-v2-reading-002-q3",
           "set": {
-            "explanation": "The study was still incomplete mostra que o estudo ainda não estava concluído."
+            "explanation": "The study was still incomplete mostra que o estudo ainda não estava concluído.",
+            "answers": [
+              "não",
+              "nao",
+              "não, ainda não estava completo"
+            ]
           },
           "remove": []
         },
         {
           "id": "en-v2-reading-003-q1",
           "set": {
-            "explanation": "The service was cancelled explica a mudança: a viagem de trem prevista foi cancelada."
+            "explanation": "The service was cancelled explica a mudança: a viagem de trem prevista foi cancelada.",
+            "answers": [
+              "o trem foi cancelado",
+              "porque cancelaram o trem",
+              "porque a viagem de trem foi cancelada"
+            ]
           },
           "remove": []
         },
@@ -980,7 +1023,9 @@
           "set": {
             "answers": [
               "de ônibus",
-              "ônibus"
+              "ônibus",
+              "foram de ônibus",
+              "viajaram de ônibus"
             ],
             "explanation": "We chose a bus informa que a alternativa escolhida foi o ônibus."
           },
@@ -989,7 +1034,12 @@
         {
           "id": "en-v2-reading-003-q3",
           "set": {
-            "explanation": "We arrived before the wedding confirma que chegaram antes, não depois do casamento."
+            "explanation": "We arrived before the wedding confirma que chegaram antes, não depois do casamento.",
+            "answers": [
+              "não",
+              "nao",
+              "não, chegaram antes do casamento"
+            ]
           },
           "remove": []
         },
@@ -998,7 +1048,9 @@
           "set": {
             "answers": [
               "há dois anos",
-              "dois anos"
+              "dois anos",
+              "faz dois anos",
+              "há 2 anos"
             ],
             "explanation": "I have studied English for two years indica um período de dois anos que alcança o presente."
           },
@@ -1010,7 +1062,8 @@
             "answers": [
               "um conto",
               "conto",
-              "uma história curta"
+              "uma história curta",
+              "uma história curta por semana"
             ],
             "explanation": "We discuss one short story each week: o grupo discute um conto por semana."
           },
@@ -1019,7 +1072,12 @@
         {
           "id": "en-v2-reading-004-q3",
           "set": {
-            "explanation": "Nobody interrupts indica que os colegas não interrompem quando a pessoa procura uma palavra."
+            "explanation": "Nobody interrupts indica que os colegas não interrompem quando a pessoa procura uma palavra.",
+            "answers": [
+              "não",
+              "nao",
+              "não, ninguém interrompe"
+            ]
           },
           "remove": []
         },
@@ -1027,14 +1085,23 @@
           "id": "en-v2-reading-005-q1",
           "set": {
             "prompt": "Em qual área as lâmpadas se apagam quando não há ninguém?",
-            "explanation": "As lâmpadas apagam quando não há ninguém no corredor; o texto identifica essa área monitorada."
+            "explanation": "As lâmpadas apagam quando não há ninguém no corredor; o texto identifica essa área monitorada.",
+            "answers": [
+              "no corredor",
+              "no corredor do prédio"
+            ]
           },
           "remove": []
         },
         {
           "id": "en-v2-reading-005-q2",
           "set": {
-            "explanation": "The lights came on immediately whenever someone entered: acendem quando alguém entra."
+            "explanation": "The lights came on immediately whenever someone entered: acendem quando alguém entra.",
+            "answers": [
+              "quando alguém entra",
+              "quando uma pessoa entra no corredor",
+              "assim que alguém entra"
+            ]
           },
           "remove": []
         },
@@ -1043,7 +1110,9 @@
           "set": {
             "answers": [
               "economizar energia",
-              "poupar energia"
+              "poupar energia",
+              "reduzir o consumo de energia",
+              "gastar menos energia"
             ],
             "explanation": "The purpose was to save energy: o objetivo era economizar energia sem reduzir o conforto."
           },
@@ -1348,6 +1417,190 @@
             "answers": [
               "It was a difficult decision.",
               "It was a tough decision."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-01-q2",
+          "set": {
+            "answers": [
+              "o irmão",
+              "o irmão de Lena",
+              "irmão de Lena"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-01-q3",
+          "set": {
+            "answers": [
+              "os livros",
+              "livros",
+              "os livros dela",
+              "seus livros"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-02-q1",
+          "set": {
+            "answers": [
+              "as maçãs estão caras",
+              "porque as maçãs estão caras",
+              "porque as maçãs eram caras",
+              "devido ao preço das maçãs"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-02-q2",
+          "set": {
+            "answers": [
+              "para o ônibus",
+              "para voltar de ônibus",
+              "para o ônibus de volta",
+              "para pagar o ônibus de volta",
+              "para pagar a passagem de ônibus"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-02-q3",
+          "set": {
+            "answers": [
+              "sim",
+              "sim, para a sobremesa",
+              "sim, as bananas servem para sobremesa"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-03-q3",
+          "set": {
+            "answers": [
+              "a ideia principal",
+              "a ideia central",
+              "o sentido geral do texto"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-04-q1",
+          "set": {
+            "answers": [
+              "Nina",
+              "Nina leva sopa"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-04-q3",
+          "set": {
+            "answers": [
+              "o irmão",
+              "o irmão de Nina",
+              "irmão de Nina"
+            ],
+            "explanation": "O irmão de Nina ajuda no jardim; quem conserta a cadeira é o pai. O texto não diz que o irmão seja responsável pelo jardim."
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-05-q2",
+          "set": {
+            "answers": [
+              "Rosa poderá participar",
+              "permite a participação de Rosa",
+              "para Rosa conseguir participar",
+              "para que Rosa participe"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-05-q3",
+          "set": {
+            "answers": [
+              "uma pergunta",
+              "1 pergunta",
+              "preparar uma pergunta"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-06-q3",
+          "set": {
+            "answers": [
+              "uma vez",
+              "1 vez",
+              "apenas uma vez",
+              "somente uma vez"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-07-q2",
+          "set": {
+            "answers": [
+              "outro trem ocupa a plataforma dois",
+              "há outro trem na plataforma dois",
+              "porque a plataforma dois está ocupada",
+              "porque já havia outro trem na plataforma dois"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-08-q1",
+          "set": {
+            "answers": [
+              "dormir bem",
+              "descansar",
+              "dormir",
+              "ter uma boa noite de sono"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-08-q3",
+          "set": {
+            "answers": [
+              "já terminou de estudar",
+              "porque já terminou de estudar",
+              "porque não precisa mais estudar"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-09-q3",
+          "set": {
+            "answers": [
+              "todos podem compartilhar",
+              "todos podem comer o mesmo prato",
+              "não precisam preparar um prato separado"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "en-reading-10-q3",
+          "set": {
+            "answers": [
+              "sim",
+              "sim, na próxima semana",
+              "sim, na semana que vem"
             ]
           },
           "remove": []
@@ -1900,7 +2153,9 @@
               "começa às dez",
               "ela começa a trabalhar às dez",
               "ela começa às dez",
-              "o trabalho começa às dez"
+              "o trabalho começa às dez",
+              "porque começa às dez",
+              "porque ela começa às dez"
             ]
           },
           "remove": []
@@ -1913,7 +2168,8 @@
               "às quartas-feiras",
               "quarta-feira",
               "toda quarta-feira",
-              "todas as quartas-feiras"
+              "todas as quartas-feiras",
+              "todas as quartas"
             ]
           },
           "remove": []
@@ -1926,7 +2182,9 @@
               "trocam de função",
               "trocam de papel",
               "trocam as funções",
-              "trocam os papéis"
+              "trocam os papéis",
+              "invertem os papéis",
+              "alternam os papéis"
             ],
             "explanation": "Mila lê em voz alta, o amigo anota as palavras novas e depois os dois trocam de função."
           },
@@ -1938,7 +2196,9 @@
             "answers": [
               "para a avó ver as crianças",
               "para ela ver as crianças brincando",
-              "para a avó acompanhar as crianças brincando"
+              "para a avó acompanhar as crianças brincando",
+              "para que a avó veja as crianças brincando",
+              "para ver as crianças brincarem"
             ]
           },
           "remove": []
@@ -1951,7 +2211,9 @@
               "10h30",
               "10:30",
               "dez horas e trinta minutos",
-              "10h30min"
+              "10h30min",
+              "às dez e meia",
+              "às 10h30"
             ]
           },
           "remove": []
@@ -1963,7 +2225,9 @@
               "salva num arquivo",
               "salvando em um arquivo",
               "salva em um arquivo",
-              "guardando o texto em um arquivo"
+              "guardando o texto em um arquivo",
+              "ele salva a mensagem em um arquivo",
+              "salvando o texto em um arquivo"
             ]
           },
           "remove": []
@@ -1974,7 +2238,9 @@
             "answers": [
               "não",
               "não, o telefone também",
-              "nao"
+              "nao",
+              "não, o celular também",
+              "não, o telefone também está sem conexão"
             ]
           },
           "remove": []
@@ -1987,7 +2253,9 @@
               "4",
               "plataforma quatro",
               "plataforma 4",
-              "na plataforma 4"
+              "na plataforma 4",
+              "da plataforma quatro",
+              "da plataforma 4"
             ]
           },
           "remove": []
@@ -1999,7 +2267,8 @@
               "não",
               "não, custa o mesmo",
               "não, o preço é igual",
-              "nao"
+              "nao",
+              "não, é o mesmo preço"
             ]
           },
           "remove": []
@@ -2011,8 +2280,11 @@
               "contém leite",
               "porque contém leite",
               "porque tem leite",
-              "o molho tem leite"
-            ]
+              "o molho tem leite",
+              "porque o molho contém leite",
+              "porque um amigo não pode consumir laticínios"
+            ],
+            "explanation": "O rótulo informa que o molho contém leite; por isso, ele é excluído para respeitar a restrição a laticínios de um dos amigos."
           },
           "remove": []
         },
@@ -2022,7 +2294,8 @@
             "answers": [
               "não",
               "não, é servido separado",
-              "nao"
+              "nao",
+              "não, o queijo é servido à parte"
             ]
           },
           "remove": []
@@ -2034,7 +2307,9 @@
               "que ele fale devagar",
               "falar devagar",
               "que fale mais devagar",
-              "falar mais devagar"
+              "falar mais devagar",
+              "que Amir fale mais devagar",
+              "que ele fale lentamente"
             ]
           },
           "remove": []
@@ -2046,7 +2321,9 @@
               "dando exemplos",
               "dá um exemplo",
               "com exemplos",
-              "oferece um exemplo"
+              "oferece um exemplo",
+              "dá exemplos",
+              "oferece exemplos"
             ]
           },
           "remove": []
@@ -2252,7 +2529,11 @@
         {
           "id": "ru-v2-reading-001-q1",
           "set": {
-            "explanation": "Мы решили сделать небольшой общественный сад: a equipe decidiu fazer um jardim comunitário."
+            "explanation": "Мы решили сделать небольшой общественный сад: a equipe decidiu fazer um jardim comunitário.",
+            "answers": [
+              "um jardim comunitário",
+              "um pequeno jardim comunitário"
+            ]
           },
           "remove": []
         },
@@ -2262,7 +2543,8 @@
             "answers": [
               "todos os sábados",
               "todo sábado",
-              "aos sábados"
+              "aos sábados",
+              "se reuniam aos sábados"
             ],
             "explanation": "Мы встречались каждую субботу indica encontros todos os sábados."
           },
@@ -2271,7 +2553,13 @@
         {
           "id": "ru-v2-reading-001-q3",
           "set": {
-            "explanation": "Майя ухаживала за растениями: Maya cuidava das plantas."
+            "explanation": "Майя ухаживала за растениями: Maya cuidava das plantas.",
+            "answers": [
+              "Maya",
+              "Maia",
+              "a Maya",
+              "a Maia"
+            ]
           },
           "remove": []
         },
@@ -2280,7 +2568,8 @@
           "set": {
             "answers": [
               "nome do autor e data",
-              "autor e data"
+              "autor e data",
+              "não havia autor nem data"
             ],
             "explanation": "В нём не было ни имени автора, ни даты: faltavam a identificação de autoria e a data."
           },
@@ -2291,7 +2580,8 @@
           "set": {
             "answers": [
               "no site do hospital",
-              "site do hospital"
+              "site do hospital",
+              "na página do hospital"
             ],
             "explanation": "Я нашёл отчёт на сайте больницы: o relatório estava no site do hospital."
           },
@@ -2300,14 +2590,24 @@
         {
           "id": "ru-v2-reading-002-q3",
           "set": {
-            "explanation": "Исследование ещё не закончено informa que o estudo ainda não havia terminado."
+            "explanation": "Исследование ещё не закончено informa que o estudo ainda não havia terminado.",
+            "answers": [
+              "não",
+              "nao",
+              "não, ainda não estava completo"
+            ]
           },
           "remove": []
         },
         {
           "id": "ru-v2-reading-003-q1",
           "set": {
-            "explanation": "Но наш поезд отменили informa diretamente que o trem planejado foi cancelado; por isso a viagem passou a ser de ônibus."
+            "explanation": "Но наш поезд отменили informa diretamente que o trem planejado foi cancelado; por isso a viagem passou a ser de ônibus.",
+            "answers": [
+              "o trem foi cancelado",
+              "porque cancelaram o trem",
+              "porque a viagem de trem foi cancelada"
+            ]
           },
           "remove": []
         },
@@ -2316,7 +2616,9 @@
           "set": {
             "answers": [
               "de ônibus",
-              "ônibus"
+              "ônibus",
+              "foram de ônibus",
+              "viajaram de ônibus"
             ],
             "explanation": "Мы купили билеты на автобус: viajaram de ônibus."
           },
@@ -2325,7 +2627,11 @@
         {
           "id": "ru-v2-reading-003-q3",
           "set": {
-            "explanation": "Мы приехали до свадьбы: chegaram antes do casamento."
+            "explanation": "Мы приехали до свадьбы: chegaram antes do casamento.",
+            "answers": [
+              "sim",
+              "sim, chegaram antes do casamento"
+            ]
           },
           "remove": []
         },
@@ -2334,7 +2640,9 @@
           "set": {
             "answers": [
               "há dois anos",
-              "dois anos"
+              "dois anos",
+              "faz dois anos",
+              "há 2 anos"
             ],
             "explanation": "Я изучаю английский уже два года indica que estuda inglês há dois anos."
           },
@@ -2346,7 +2654,8 @@
             "answers": [
               "um conto",
               "conto",
-              "uma história curta"
+              "uma história curta",
+              "uma história curta por semana"
             ],
             "explanation": "Каждую неделю мы обсуждаем один рассказ: discutem um conto por semana."
           },
@@ -2355,7 +2664,12 @@
         {
           "id": "ru-v2-reading-004-q3",
           "set": {
-            "explanation": "Никто не перебивает меня: ninguém interrompe quando a pessoa procura uma palavra."
+            "explanation": "Никто не перебивает меня: ninguém interrompe quando a pessoa procura uma palavra.",
+            "answers": [
+              "não",
+              "nao",
+              "não, ninguém interrompe"
+            ]
           },
           "remove": []
         },
@@ -2363,14 +2677,23 @@
           "id": "ru-v2-reading-005-q1",
           "set": {
             "prompt": "Em qual área as lâmpadas se apagam quando não há ninguém?",
-            "explanation": "As lâmpadas se apagam quando não há ninguém no corredor; essa é a área monitorada no texto."
+            "explanation": "As lâmpadas se apagam quando não há ninguém no corredor; essa é a área monitorada no texto.",
+            "answers": [
+              "no corredor",
+              "no corredor do prédio"
+            ]
           },
           "remove": []
         },
         {
           "id": "ru-v2-reading-005-q2",
           "set": {
-            "explanation": "Свет сразу включается, если кто-нибудь входит: acende quando alguém entra."
+            "explanation": "Свет сразу включается, если кто-нибудь входит: acende quando alguém entra.",
+            "answers": [
+              "quando alguém entra",
+              "quando uma pessoa entra no corredor",
+              "assim que alguém entra"
+            ]
           },
           "remove": []
         },
@@ -2379,7 +2702,9 @@
           "set": {
             "answers": [
               "economizar energia",
-              "poupar energia"
+              "poupar energia",
+              "reduzir o consumo de energia",
+              "gastar menos energia"
             ],
             "explanation": "Цель проекта — экономить энергию: a finalidade é economizar energia."
           },
@@ -2463,14 +2788,16 @@
         {
           "id": "ru-v2-grammar-001-q1",
           "set": {
-            "explanation": "Читал é o passado masculino de читать (imperfectivo): весь вечер indica foco na atividade em andamento ao longo da noite."
+            "explanation": "Читал é o passado masculino de читать (imperfectivo): весь вечер indica foco na atividade em andamento ao longo da noite.",
+            "prompt": "Complete com o passado masculino imperfectivo de читать: Я ___ книгу весь вечер."
           },
           "remove": []
         },
         {
           "id": "ru-v2-grammar-001-q2",
           "set": {
-            "explanation": "Прочитал é o passado masculino perfectivo de прочитать: до конца apresenta a leitura como concluída."
+            "explanation": "Прочитал é o passado masculino perfectivo de прочитать: до конца apresenta a leitura como concluída.",
+            "prompt": "Complete com o passado masculino perfectivo de прочитать: Я ___ книгу до конца."
           },
           "remove": []
         },
@@ -2594,6 +2921,190 @@
             "answers": [
               "Это было трудное решение.",
               "Это было сложное решение."
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-01-q2",
+          "set": {
+            "answers": [
+              "o irmão",
+              "o irmão de Lena",
+              "irmão de Lena"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-01-q3",
+          "set": {
+            "answers": [
+              "os livros",
+              "livros",
+              "os livros dela",
+              "seus livros"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-02-q1",
+          "set": {
+            "answers": [
+              "as maçãs estão caras",
+              "porque as maçãs estão caras",
+              "porque as maçãs eram caras",
+              "devido ao preço das maçãs"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-02-q2",
+          "set": {
+            "answers": [
+              "para o ônibus",
+              "para voltar de ônibus",
+              "para o ônibus de volta",
+              "para pagar o ônibus de volta",
+              "para pagar a passagem de ônibus"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-02-q3",
+          "set": {
+            "answers": [
+              "sim",
+              "sim, para a sobremesa",
+              "sim, as bananas servem para sobremesa"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-03-q3",
+          "set": {
+            "answers": [
+              "a ideia principal",
+              "a ideia central",
+              "o sentido geral do texto"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-04-q1",
+          "set": {
+            "answers": [
+              "Nina",
+              "Nina leva sopa"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-04-q3",
+          "set": {
+            "answers": [
+              "o irmão",
+              "o irmão de Nina",
+              "irmão de Nina"
+            ],
+            "explanation": "O irmão de Nina ajuda no jardim; quem conserta a cadeira é o pai. O texto não diz que o irmão seja responsável pelo jardim."
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-05-q2",
+          "set": {
+            "answers": [
+              "Rosa poderá participar",
+              "permite a participação de Rosa",
+              "para Rosa conseguir participar",
+              "para que Rosa participe"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-05-q3",
+          "set": {
+            "answers": [
+              "uma pergunta",
+              "1 pergunta",
+              "preparar uma pergunta"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-06-q3",
+          "set": {
+            "answers": [
+              "uma vez",
+              "1 vez",
+              "apenas uma vez",
+              "somente uma vez"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-07-q2",
+          "set": {
+            "answers": [
+              "outro trem ocupa a plataforma dois",
+              "há outro trem na plataforma dois",
+              "porque a plataforma dois está ocupada",
+              "porque já havia outro trem na plataforma dois"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-08-q1",
+          "set": {
+            "answers": [
+              "dormir bem",
+              "descansar",
+              "dormir",
+              "ter uma boa noite de sono"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-08-q3",
+          "set": {
+            "answers": [
+              "já terminou de estudar",
+              "porque já terminou de estudar",
+              "porque não precisa mais estudar"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-09-q3",
+          "set": {
+            "answers": [
+              "todos podem compartilhar",
+              "todos podem comer o mesmo prato",
+              "não precisam preparar um prato separado"
+            ]
+          },
+          "remove": []
+        },
+        {
+          "id": "ru-reading-10-q3",
+          "set": {
+            "answers": [
+              "sim",
+              "sim, na próxima semana",
+              "sim, na semana que vem"
             ]
           },
           "remove": []
