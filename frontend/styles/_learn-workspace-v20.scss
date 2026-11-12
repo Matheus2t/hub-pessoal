@@ -736,6 +736,16 @@ learn-home { display:block; min-width:0; width:100%; }
   .learn-page .learn-v19-preview__exercise,
   .learn-page .learn-v19-preview__questions fieldset,
   .learn-page .learn-v19-preview__exercise learn-recording-player { min-width:0; max-width:100%; }
+  .learn-page--v19-preview .learn-audio-player {
+    grid-template-columns:minmax(0,1fr);
+  }
+  .learn-page--v19-preview .learn-audio-player__setting,
+  .learn-page--v19-preview .learn-audio-player__volume {
+    grid-column:1/-1; min-width:0;
+  }
+  .learn-page--v19-preview .learn-audio-player input[type=range] {
+    min-width:0; max-width:100%;
+  }
 }
 @media(max-width:380px) {
   .learn-page .learn-v19-preview__tabs { grid-template-columns:minmax(0,1fr); }
