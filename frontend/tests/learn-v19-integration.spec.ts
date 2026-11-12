@@ -81,10 +81,15 @@ test('V19 preview stays within screen in both themes and different viewports',as
    await expect(page.locator('learn-recording-player')).toBeVisible();
    const overflow=await page.evaluate(()=>({
     total:document.documentElement.scrollWidth,viewport:innerWidth,
-    offenders:[...document.querySelectorAll<HTMLElement>('.learn-page *')]
-      .filter(x=>x.getBoundingClientRect().right>innerWidth+1)
-      .slice(0,8).map(x=>({tag:x.tagName,klass:typeof x.className==='string'?x.className.slice(0,80):'',
-        right:Math.round(x.getBoundingClientRect().right)}))
+    offenders:[...document.querySelectorAll<HTMLElement>('body *')]
+      .filter(x=>x.getBoundingClientRect().right>innerWidth+.5 ||
+         x.getBoundingClientRect().left<-.5 ||
+         x.scrollWidth>x.clientWidth+2)
+      .slice(0,15).map(x=>({tag:x.tagName,klass:typeof x.className==='string'?x.className.slice(0,80):'',
+        left:Math.round(x.getBoundingClientRect().left),
+        right:Math.round(x.getBoundingClientRect().right),
+        scroll:x.scrollWidth,client:x.clientWidth})),
+    root:{html:document.documentElement.scrollWidth,body:document.body.scrollWidth}
    }));
    expect(overflow.total<=overflow.viewport,JSON.stringify({width,theme,overflow})).toBe(true);
   }
