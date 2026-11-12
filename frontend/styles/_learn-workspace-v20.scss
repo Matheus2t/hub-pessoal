@@ -701,8 +701,10 @@ learn-home { display:block; min-width:0; width:100%; }
 }
 .learn-page .learn-v19-preview__questions { display:grid; gap:14px; margin:23px 0; }
 .learn-page .learn-v19-preview__questions fieldset {
-  display:grid; gap:12px; min-width:0; padding:18px;
-  margin:0; border:1px solid var(--line-soft); border-radius:3px;
+  display:grid; grid-template-columns:minmax(0,1fr);
+  gap:12px; min-width:0; min-inline-size:0;
+  width:100%; max-width:100%; box-sizing:border-box;
+  padding:18px; margin:0; border:1px solid var(--line-soft); border-radius:3px;
 }
 .learn-page .learn-v19-preview__questions legend {
   color:var(--text); font-size:14px; line-height:1.5; font-weight:550;
@@ -710,10 +712,14 @@ learn-home { display:block; min-width:0; width:100%; }
 }
 .learn-page .learn-v19-preview__questions label {
   display:flex; gap:9px; align-items:flex-start; padding:5px 0;
+  min-width:0; max-width:100%; overflow-wrap:anywhere;
   color:var(--secondary); font-size:13px; line-height:1.55; cursor:pointer;
 }
 .learn-page .learn-v19-preview__questions label:has(textarea) { display:grid; }
-.learn-page .learn-v19-preview__questions input[type="radio"] { flex:none; margin-top:4px; accent-color:var(--text); }
+.learn-page .learn-v19-preview__questions input[type="radio"] {
+  flex:0 0 18px; width:18px; height:18px; min-width:18px;
+  margin:2px 0 0; accent-color:var(--text);
+}
 .learn-page .learn-v19-preview__transcript {
   margin:15px 0 0; padding:16px 19px; border-left:2px solid var(--line);
   background:var(--raised); font-size:14px; line-height:1.75; overflow-wrap:anywhere;
