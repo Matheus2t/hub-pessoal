@@ -428,18 +428,19 @@
       "skill": "reading_inference",
       "objective": "Encontrar local e rotina em texto curto.",
       "stimulusText": "Это Анна. Она студентка. Каждый день она читает дома после занятий.",
-      "taskInstruction": "De acordo com o texto, onde Анна lê depois das aulas? Responda em Russo.",
-      "illustrativeAnswer": "Она читает дома.",
-      "successEvidence": "Local дома identificado corretamente; resposta curta aceita.",
+      "taskInstruction": "Um colega afirma: «Анна читает только в библиотеке» (Anna lê apenas na biblioteca). O texto sustenta essa afirmação? Responda em russo, justificando com uma informação do texto.",
+      "illustrativeAnswer": "Нет. Анна читает дома после занятий.",
+      "successEvidence": "Rejeita a afirmação de que Anna lê apenas na biblioteca, mostrando a evidência de leitura em casa; não concluir que ela nunca frequenta uma biblioteca.",
       "rubricPolicy": "human_scored_or_uncertain",
       "audioStatus": "not_applicable",
-      "teacherReviewNotes": "Questão literal de localização, não classificar como inferência profunda. Evitar penalizar resposta curta correta.",
+      "teacherReviewNotes": "V18: atividade antes cobrava apenas localizar 'дома', embora se chamasse reading_inference. Agora exige julgar uma afirmação incompatível com o texto e justificar com evidência; manter inferência limitada à afirmação 'apenas na biblioteca'.",
       "workflowStatus": "draft_requires_independent_review",
       "public": false,
       "existingCatalogExercise": false,
       "acceptedAnswerExamples": [
-        "Дома.",
-        "Анна читает дома."
+        "Нет, она читает дома.",
+        "Нет. Анна каждый день читает дома после занятий.",
+        "Нет, она читает дома после занятий."
       ],
       "reviewVersion": "v11",
       "difficultyBand": "A1_plus_to_A2_entry",
@@ -735,12 +736,13 @@
       "updatedDraftIds": [
         "en-bridge-v10-02",
         "en-bridge-v10-11",
-        "ru-bridge-v10-06"
+        "ru-bridge-v10-06",
+        "ru-bridge-v10-03"
       ],
       "externalTeacherReviewPerformed": false,
       "ownerApprovalPending": true,
       "cefrCertification": false,
-      "notes": "Corrigida pressuposição de horário inicial, hipótese meteorológica natural e uso de nome fictício; conteúdo segue não publicado."
+      "notes": "Corrigida pressuposição de horário inicial, hipótese meteorológica natural e uso de nome fictício; conteúdo segue não publicado. Questão ru-03 convertida de localização literal para avaliação justificada de afirmação contraditória."
     }
   }
 }
