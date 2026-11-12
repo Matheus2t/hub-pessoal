@@ -2158,7 +2158,7 @@
               "mãe e pai",
               "mae e pai"
             ],
-            "explanation": "Parents indica pais (mãe e pai), não parentes em geral. Relatives é a palavra inglesa mais comum para parentes."
+            "explanation": "Parents significa pais ou responsáveis parentais, sem indicar necessariamente a composição da família; pai e mãe é uma possibilidade, não a única. Relatives significa parentes em geral."
           },
           "remove": []
         },
@@ -4247,7 +4247,7 @@
               "mãe e pai",
               "mae e pai"
             ],
-            "explanation": "Родители significa pais (mãe e pai), não parentes em geral: родственники."
+            "explanation": "Родители significa pais, sem determinar a composição familiar; pai e mãe é um exemplo possível, não obrigatório. Родственники significa parentes em geral."
           },
           "remove": []
         },
