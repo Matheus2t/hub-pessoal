@@ -1,5 +1,5 @@
 import type {Language,Skill} from './model';
-import {isLearnAudioFixturePreviewEnabled} from './pilot-preview';
+import {isLearnAudioFixturePreviewEnabled,isLearnV19AudioPreviewEnabled} from './pilot-preview';
 
 export type AudioSkill=Extract<Skill,'listening'|'dictation'>;
 export interface LearnAudioAsset {
@@ -60,6 +60,13 @@ export function canPlayLearnAudio(asset:LearnAudioAsset|undefined,policy:LearnAu
   if(!asset?.assetUrl||!safeLearnAudioUrl(asset.assetUrl))return false;
   const localPreview=isLearnAudioFixturePreviewEnabled(hostname,search);
   if(asset.source==='test-fixture'&&asset.validationStatus==='fixture-unvalidated'&&asset.licenseStatus==='fixture-only')return localPreview;
+  // Technical-only recordings may play in the authenticated loopback V19 workspace.
+  // Listening completion never confers an approved recording or a graded attempt.
+  if(asset.source==='local-v19-technical'&&asset.validationStatus==='technical-passed'&&
+     asset.licenseStatus==='review-pending'&&asset.assessmentEnabled===false&&
+     !policy.audioAssessmentEnabled&&policy.publicRelease!==true){
+    return isLearnV19AudioPreviewEnabled(hostname,search);
+  }
   if(asset.validationStatus!=='approved'||asset.licenseStatus!=='approved')return false;
   return policy.publicRelease===true||localPreview;
 }
