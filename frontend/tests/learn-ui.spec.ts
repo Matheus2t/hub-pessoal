@@ -36,10 +36,10 @@ test('invalid routes do not open the database or fetch curricula',async({page})=
 });
 test('storage failure, recovery and catalogue failure stay independent',async({page})=>{
  await page.addInitScript(()=>{const original=indexedDB.open.bind(indexedDB);indexedDB.open=((...args:Parameters<IDBFactory['open']>)=>{if(sessionStorage.getItem('learn-denied')!=='no')throw Error('private technical error');return original(...args)}) as IDBFactory['open']});
- await page.goto('/#/learn/en');await expect(page.locator('.learn-message')).toContainText('Progresso local indisponível');await expect(page.locator('learn-page')).not.toContainText('private technical error');await expect(page.locator('learn-area-card')).toHaveCount(0);await expect(page.locator('.learn-area-link')).toHaveCount(8);
+ await page.goto('/#/learn/en');await expect(page.locator('.learn-message')).toContainText('Progresso local indisponível');await expect(page.locator('learn-page')).not.toContainText('private technical error');await expect(page.locator('learn-area-card')).toHaveCount(0);await expect(page.locator('.learn-study__tile')).toHaveCount(8);
  await page.evaluate(()=>sessionStorage.setItem('learn-denied','no'));await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-summary')).toBeVisible();
  await page.route('**/learn/ru.json',r=>r.fulfill({status:503,body:'Unavailable'}));await page.goto('/#/learn/ru');await expect(page.locator('.learn-message')).toContainText('Não foi possível carregar o catálogo');await expect(page.locator('.learn-summary')).toBeVisible();
- await page.unroute('**/learn/ru.json');await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-area-link')).toHaveCount(8);
+ await page.unroute('**/learn/ru.json');await page.getByRole('button',{name:'Tentar novamente',exact:true}).click();await expect(page.locator('.learn-study__tile')).toHaveCount(8);
 });
 
 test('language links support keyboard navigation and visible focus',async({page})=>{
