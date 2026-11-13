@@ -1,0 +1,51 @@
+name: Auditoria Learn mobile e acessibilidade
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/learn/session.ts'
+      - 'frontend/src/learn/phonetic-editor.ts'
+      - 'frontend/styles/_learn.scss'
+      - 'frontend/styles/_learn-workspace-v20.scss'
+      - 'frontend/tests/learn-mobile-ux-v22.spec.ts'
+      - 'frontend/tests/learn-ui.spec.ts'
+      - 'frontend/tests/learn-phonetic.spec.ts'
+      - 'frontend/tests/learn-workspace-v20.spec.ts'
+      - '.github/workflows/learn-mobile-ux-v22.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/learn/session.ts'
+      - 'frontend/src/learn/phonetic-editor.ts'
+      - 'frontend/styles/_learn.scss'
+      - 'frontend/styles/_learn-workspace-v20.scss'
+      - 'frontend/tests/learn-mobile-ux-v22.spec.ts'
+      - 'frontend/tests/learn-ui.spec.ts'
+      - 'frontend/tests/learn-phonetic.spec.ts'
+      - 'frontend/tests/learn-workspace-v20.spec.ts'
+      - '.github/workflows/learn-mobile-ux-v22.yml'
+permissions:
+  contents: read
+jobs:
+  mobile-ux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Build local e TypeScript
+        run: npm run build
+      - run: npx playwright install chromium
+      - name: Fluxos mobile, foco, navegação, russo e regressão V20
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-mobile-ux-v22.spec.ts frontend/tests/learn-ui.spec.ts frontend/tests/learn-phonetic.spec.ts frontend/tests/learn-workspace-v20.spec.ts
+      - name: Build público com prévias privadas isoladas
+        run: npm run build
+        env:
+          VERCEL: '1'
+      - name: Conferir distribuição segura do Learn
+        run: node scripts/learn/audit-learn-public-build.mjs
+      - name: Testar bloqueio de prévias em domínio público simulado
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-public-security.spec.ts
