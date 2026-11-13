@@ -437,6 +437,41 @@ test('V17 mantém respostas abertas incertas, ajuda prévia e revisão humana co
  expect(recommendV17(scenario,{schemaVersion:1,drafts:[],acceptances:[acceptance],attempts:[helped]},'f'.repeat(64)).state).toBe('insufficient_evidence');
 });
 
+test('auditoria V17: empate 2 contra 2 permanece incerto, aceita backup legado e exige quinto revisor',async()=>{
+ const scenario=v17ScenariosFor('en')[0],fingerprint=await fingerprintV17(scenario);
+ const acceptance=acceptV17Scenario(scenario,fingerprint,{id:'reviewer-a',name:'Revisor A'},100);
+ const attempt=makeV17Attempt({scenario,fingerprint,response:'An independent written response.',startedAt:200,submittedAt:300,acceptances:[acceptance]});
+ const criteria:V17CriterionRating[]=[{criterion:'task',score:3},{criterion:'meaning',score:3},{criterion:'grammarVocabulary',score:3},{criterion:'context',score:3}];
+ const feedback={whatWorked:'A mensagem aborda a situação proposta.',priorityIssue:'A expressão pode ser mais específica.',concreteSuggestion:'Revise a segunda oração para melhorar o sentido.'};
+ const add=(item:typeof attempt,id:string,score:0|1|2|3,now:number)=>addV17HumanReview(item,{
+  reviewer:{id,name:id},score,criteria,rationale:'A classificação descreve apenas a resposta e seus critérios.',feedback,now
+ });
+ expect(()=>addV17HumanReview(attempt,{reviewer:{id:'bad',name:'Bad'},score:4 as any,criteria,rationale:'A classificação descreve apenas a resposta e seus critérios.',feedback,now:400})).toThrow(/quatro critérios/);
+ expect(()=>addV17HumanReview(attempt,{reviewer:{id:'bad',name:'Bad'},score:3,criteria:[...criteria].reverse(),rationale:'A classificação descreve apenas a resposta e seus critérios.',feedback,now:400})).toThrow(/quatro critérios/);
+ let reviewed=add(attempt,'reviewer-a',3,400);
+ reviewed=add(reviewed,'reviewer-b',1,500);
+ reviewed=add(reviewed,'reviewer-c',3,600);
+ expect(reviewed.reviewStatus).toBe('reviewed');
+ reviewed=add(reviewed,'reviewer-d',1,700);
+ expect(reviewed).toMatchObject({reviewStatus:'disputed',outcome:'uncertain'});
+ expect(()=>add(reviewed,'reviewer-a',3,701)).toThrow(/outro revisor/);
+ const data:V17AssessmentData={schemaVersion:1,drafts:[],acceptances:[acceptance],attempts:[reviewed]};
+ expect(recommendV17(scenario,data,fingerprint).state).toBe('awaiting_review');
+ expect(summarizeV17(data,[scenario],new Map([[scenario.id,fingerprint]]))[0].status).toBe('uncertain');
+ const record:LessonProgress={key:'v17:en',language:'en',unitId:'v17-assessment',contentVersion:1,currentStage:0,shownAssistance:[],drafts:[],updatedAt:900,v17Assessment:data};
+ expect(validLessonProgress(record)).toBe(true);
+ const original={format:'2t-learn',version:3,exportedAt:1000,attempts:[],cards:[],planning:[],lessonEvents:[],lessonProgress:[record]};
+ expect(parseBackup(JSON.stringify(original)).lessonProgress?.[0].v17Assessment?.attempts[0].reviewStatus).toBe('disputed');
+ const legacy={...reviewed,reviewStatus:'reviewed' as const,outcome:'supported_for_observed_task' as const};
+ const legacyData:V17AssessmentData={...data,attempts:[legacy]};
+ expect(validLessonProgress({...record,v17Assessment:legacyData})).toBe(true);
+ expect(recommendV17(scenario,legacyData,fingerprint).state).toBe('awaiting_review');
+ expect(summarizeV17(legacyData,[scenario],new Map([[scenario.id,fingerprint]]))[0].status).toBe('uncertain');
+ const resolved=add(reviewed,'reviewer-e',1,800);
+ expect(resolved).toMatchObject({reviewStatus:'reviewed',outcome:'needs_practice'});
+ expect(recommendV17(scenario,{...data,attempts:[resolved]},fingerprint).state).toBe('review_recommended');
+});
+
 test('V17 salva evidências aditivas em backup v3 e preserva leitura dos formatos v1 e v2',async()=>{
  const scenario=v17ScenariosFor('ru')[0],fingerprint=await fingerprintV17(scenario),acceptance=acceptV17Scenario(scenario,fingerprint,{id:'local-reviewer',name:'Revisor local'},100);
  const draft=makeV17Draft(scenario,fingerprint,' Черновик для восстановления. ',110);
@@ -497,6 +532,28 @@ for(const language of ['en','ru'] as const){
   await expect(panel.getByText('O que funcionou',{exact:true})).toBeVisible();
  });
 }
+
+test('auditoria V17: texto digitado imediatamente antes da troca de nível é preservado',async({page})=>{
+ await serveBuiltSite(page);await page.goto('/?learn-preview=progress-v17#/learn/en/progress-v17');
+ const panel=page.locator('learn-progression-v17'),answer=panel.getByRole('textbox',{name:'Resposta para revisão humana'});
+ await expect(answer).toBeVisible();
+ const response='A brand new draft typed just before navigating to another study level.';
+ await answer.fill(response);
+ await panel.getByRole('button',{name:/A2 Comunicação cotidiana/}).click();
+ await expect(panel.getByRole('heading',{name:'Perguntas e negativas'})).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>new Promise<string|undefined>((resolve,reject)=>{
+  const open=indexedDB.open('2t-learn',3);
+  open.onerror=()=>reject(open.error);
+  open.onsuccess=()=>{
+   const db=open.result,tx=db.transaction('lessonProgress','readonly');
+   const get=tx.objectStore('lessonProgress').get('v17:en');
+   get.onsuccess=()=>{const drafts=get.result?.v17Assessment?.drafts||[];resolve(drafts.find((d:{scenarioId:string})=>d.scenarioId==='en-progress-v17-01')?.response);db.close()};
+   get.onerror=()=>reject(get.error);
+  };
+ }))).toBe(response);
+ await panel.getByRole('button',{name:/A1 Fundamentos/}).click();
+ await expect(answer).toHaveValue(response);
+});
 
 test('V17 russo usa cenário próprio e preserva os 15 estágios',async({page})=>{
  await serveBuiltSite(page);
