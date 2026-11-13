@@ -66,7 +66,8 @@ test('local route displays the guided progression and keeps bridge activities un
       await page.goto('/?learn-preview=progression-v12#/learn/en/progression');
       await expect(page.getByRole('heading', { name: 'Progressão de estudo' })).toBeVisible();
       await expect(page.locator('.learn-progression-stage')).toHaveCount(15);
-      await expect(page.getByText('Atividades-ponte V11 indisponíveis')).toBeVisible();
+      await expect(page.getByText('Atividades-ponte V11 disponíveis para prática')).toBeVisible();
+  await expect(page.getByRole('link',{name:'Abrir atividades-ponte'})).toHaveAttribute('href', /#\/learn\/(en|ru)\/bridges/);
       await expect(page.getByText(/en-bridge-v10/)).toHaveCount(0);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     }

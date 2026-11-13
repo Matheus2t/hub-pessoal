@@ -1070,3 +1070,152 @@ learn-home { display:block; min-width:0; width:100%; }
  .learn-page .learn-reading-v16__questions,
  .learn-page .learn-reading-v16__transfer { padding:17px; }
 }
+
+/* 2T Learn V17 — separate study coverage from assessed proficiency. */
+.learn-page--v17-preview { min-width:0; max-width:var(--content-width); margin-inline:auto; }
+.learn-page .learn-v17 { padding:clamp(12px,2vw,24px) 0 42px; min-width:0; }
+.learn-page .learn-v17__head {
+ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:start;
+ gap:20px; padding-bottom:24px; border-bottom:1px solid var(--line-soft);
+}
+.learn-page .learn-v17__head > div { min-width:0; max-width:70ch; }
+.learn-page .learn-v17__eyebrow {
+ margin:0 0 8px; font:600 11px/1.65 var(--font-mono);
+ letter-spacing:.09em; color:var(--secondary);
+}
+.learn-page .learn-v17__head h1 {
+ font-size:clamp(26px,3vw,36px); font-weight:590; letter-spacing:-.04em;
+ line-height:1.2; margin:0 0 12px;
+}
+.learn-page .learn-v17__head p:not(.learn-v17__eyebrow) {
+ margin:0; font-size:13px; line-height:1.8; color:var(--secondary);
+}
+.learn-page .learn-v17__overview {
+ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:23px 0;
+}
+.learn-page .learn-v17__overview > div {
+ border:1px solid var(--line-soft); background:var(--panel);
+ padding:clamp(16px,2vw,23px); border-radius:3px; min-width:0; box-sizing:border-box;
+}
+.learn-page .learn-v17__overview span {
+ display:block; font-size:12px; color:var(--secondary); line-height:1.6;
+}
+.learn-page .learn-v17__overview strong {
+ display:block; font-size:clamp(20px,2.6vw,28px); font-weight:590;
+ line-height:1.4; letter-spacing:-.03em; margin:9px 0 7px; overflow-wrap:anywhere;
+}
+.learn-page .learn-v17__overview strong small { color:var(--secondary); font-size:13px; font-weight:500; }
+.learn-page .learn-v17__overview p { margin:0; font-size:12px; line-height:1.75; color:var(--secondary); }
+.learn-page .learn-v17__notice,.learn-page .learn-v17__footer {
+ color:var(--secondary); font-size:12px; line-height:1.8; margin:0;
+}
+.learn-page .learn-v17__notice strong { color:var(--text); }
+.learn-page .learn-v17__levels {
+ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:23px 0;
+}
+.learn-page .learn-v17__levels .button {
+ display:grid; justify-items:start; min-width:0; text-align:left; gap:5px;
+ border:1px solid var(--line-soft); background:var(--panel); color:var(--text);
+ padding:15px 18px; min-height:83px; border-radius:3px;
+}
+.learn-page .learn-v17__levels .button[aria-pressed="true"] { background:var(--raised); border-color:var(--secondary); }
+.learn-page .learn-v17__levels strong { font-size:15px; }
+.learn-page .learn-v17__levels span { font-size:12px; color:var(--secondary); }
+.learn-page .learn-v17__levels small { font:500 11px/1.6 var(--font-mono); color:var(--secondary); }
+.learn-page .learn-v17__layout {
+ display:grid; grid-template-columns:minmax(225px,.29fr) minmax(0,.71fr);
+ align-items:start; gap:clamp(15px,2.7vw,28px); min-width:0;
+}
+.learn-page .learn-v17__sidebar,.learn-page .learn-v17__stage,
+.learn-page .learn-v17__scenario,.learn-page .learn-v17__checkpoint {
+ min-width:0; max-width:100%; box-sizing:border-box; border:1px solid var(--line-soft);
+ background:var(--panel); border-radius:3px; padding:clamp(18px,2.6vw,30px);
+}
+.learn-page .learn-v17__sidebar { display:grid; gap:14px; }
+.learn-page .learn-v17__sidebar > label { font-size:13px; font-weight:590; }
+.learn-page .learn-v17__sidebar select {
+ box-sizing:border-box; width:100%; min-width:0; max-width:100%; min-height:48px;
+ padding:12px; border:1px solid var(--line); color:var(--text); background:var(--bg);
+ border-radius:3px; font-size:13px;
+}
+.learn-page .learn-v17__sidebar-muted { font-size:12px; line-height:1.7; color:var(--secondary); margin:0; }
+.learn-page .learn-v17__sidebar h3 { font-size:13px; font-weight:590; margin:7px 0 0; }
+.learn-page .learn-v17__competencies { list-style:none; display:grid; gap:0; padding:0; margin:0; }
+.learn-page .learn-v17__competencies li {
+ display:flex; flex-wrap:wrap; justify-content:space-between; gap:5px 10px;
+ border-bottom:1px solid var(--line-soft); padding:9px 0; font-size:12px; line-height:1.6;
+}
+.learn-page .learn-v17__competencies small { font-size:11px; color:var(--secondary); }
+.learn-page .learn-v17__content { display:grid; gap:16px; min-width:0; }
+.learn-page .learn-v17__meta { display:flex; flex-wrap:wrap; gap:9px 15px; justify-content:space-between; color:var(--secondary); font:500 11px/1.6 var(--font-mono); }
+.learn-page .learn-v17__content h2 {
+ font-size:clamp(20px,2.6vw,27px); font-weight:590; letter-spacing:-.03em;
+ line-height:1.3; margin:12px 0 15px;
+}
+.learn-page .learn-v17__target,.learn-page .learn-v17__checkpoint > p:not(.learn-v17__notice) {
+ font-size:14px; line-height:1.75; margin:0 0 18px;
+}
+.learn-page .learn-v17__progress > div {
+ border-radius:2px; overflow:hidden; height:5px; background:var(--raised);
+}
+.learn-page .learn-v17__progress > div span { display:block; background:var(--secondary); height:100%; }
+.learn-page .learn-v17__progress p { color:var(--secondary); font-size:12px; line-height:1.7; margin:10px 0 0; }
+.learn-page .learn-v17__practice { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.learn-page .learn-v17__practice .button { min-height:43px; }
+.learn-page .learn-v17__scenario > p:not(.learn-v17__notice):not(.learn-v17__eyebrow) { font-size:14px; line-height:1.8; margin:0 0 20px; overflow-wrap:anywhere; }
+.learn-page .learn-v17__scenario label { display:grid; gap:10px; font-size:13px; font-weight:560; }
+.learn-page .learn-v17__scenario textarea {
+ display:block; width:100%; min-width:0; max-width:100%; box-sizing:border-box;
+ border:1px solid var(--line); border-radius:3px; background:var(--bg); color:var(--text);
+ font-size:14px; line-height:1.7; padding:15px; resize:vertical; min-height:130px;
+}
+.learn-page .learn-v17__scenario > .button { min-height:43px; margin:16px 0; }
+.learn-page .learn-v17__criteria { padding-left:22px; margin:0 0 17px; display:grid; gap:8px; }
+.learn-page .learn-v17__criteria li { font-size:13px; line-height:1.7; }
+.learn-page .learn-v17__checkpoint-list { display:grid; gap:8px; }
+.learn-page .learn-v17__checkpoint-list > div {
+ border:1px solid var(--line-soft); background:var(--raised);
+ border-radius:3px; padding:15px 17px;
+}
+.learn-page .learn-v17__checkpoint-list strong { font-size:13px; }
+.learn-page .learn-v17__checkpoint-list p { font-size:13px; line-height:1.7; margin:6px 0; }
+.learn-page .learn-v17__checkpoint-list small { color:var(--secondary); font-size:11px; }
+.learn-page .learn-v17__checkpoint > .learn-v17__notice { margin-top:20px; }
+.learn-page .learn-v17__footer { margin-top:20px; }
+@media(max-width:830px) {
+ .learn-page .learn-v17__layout { grid-template-columns:minmax(0,1fr); gap:14px; }
+}
+@media(max-width:600px) {
+ .learn-page .learn-v17__overview { grid-template-columns:minmax(0,1fr); gap:9px; }
+ .learn-page .learn-v17__levels .button { padding:12px 10px; }
+}
+@media(max-width:440px) {
+ .learn-page .learn-v17__head > .button { width:100%; }
+ .learn-page .learn-v17__overview strong { font-size:23px; }
+ .learn-page .learn-v17__levels .button { min-height:78px; }
+ .learn-page .learn-v17__levels span { font-size:11px; }
+ .learn-page .learn-v17__sidebar,.learn-page .learn-v17__stage,
+ .learn-page .learn-v17__scenario,.learn-page .learn-v17__checkpoint { padding:17px; }
+ .learn-page .learn-v17__practice .button { flex:1 1 auto; }
+}
+
+
+/* V17: at 320px level selectors must shrink and wrap rather than grow the page. */
+.learn-page .learn-v17__levels .button {
+ width:100%; max-width:100%; min-width:0; box-sizing:border-box;
+ grid-template-columns:minmax(0,1fr); white-space:normal; overflow-wrap:anywhere;
+}
+.learn-page .learn-v17__levels .button > * {
+ min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:left;
+}
+.learn-page .learn-v17__sidebar,
+.learn-page .learn-v17__content,
+.learn-page .learn-v17__stage,
+.learn-page .learn-v17__scenario,
+.learn-page .learn-v17__checkpoint {
+ min-width:0; overflow-wrap:anywhere;
+}
+@media(max-width:360px){
+ .learn-page .learn-v17__levels { gap:6px; }
+ .learn-page .learn-v17__levels .button { padding:11px 8px; }
+}
