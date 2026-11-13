@@ -25,16 +25,15 @@ export class LearnBridgeV11 extends LightElement {
  @state() private selectedId='';
  @state() private answer='';
  @state() private revealModel=false;
- @state() private revealAudioScript=false;
 
  protected willUpdate(changes:PropertyValues<this>){
   if(changes.has('language')&&changes.get('language')!==undefined){
    this.transition='A1_to_A2';this.selectedId='';this.answer='';
-   this.revealModel=false;this.revealAudioScript=false;
+   this.revealModel=false;
   }
  }
  private resetTask(id=''){
-  this.selectedId=id;this.answer='';this.revealModel=false;this.revealAudioScript=false;
+  this.selectedId=id;this.answer='';this.revealModel=false;
  }
  private setTransition(value:Transition){
   if(this.transition===value)return;
@@ -89,11 +88,6 @@ export class LearnBridgeV11 extends LightElement {
           <strong>Áudio ainda indisponível.</strong>
           Este roteiro ainda não possui gravação aprovada. Não é uma avaliação de Listening.
         </div>
-        <button type="button" class="button" aria-expanded=${this.revealAudioScript}
-          @click=${()=>this.revealAudioScript=!this.revealAudioScript}>
-          ${this.revealAudioScript?'Ocultar roteiro':'Consultar roteiro de referência'}
-        </button>
-        ${this.revealAudioScript?html`<div class="learn-bridge__source" lang=${this.language}>${active.stimulusText}</div>`:nothing}
         `:html`
         <div class="learn-bridge__source" lang=${this.language}>${active.stimulusText}</div>
         <label class="learn-bridge__answer">Sua resposta (rascunho nesta aba)
