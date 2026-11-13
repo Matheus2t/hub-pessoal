@@ -66,3 +66,8 @@ export function isLearnAssessmentV17PreviewEnabled(
 ):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='progress-v17';
 }
+
+/** V14 dictation uses only the authenticated local V19 audio server. */
+export function isLearnDictationV14PreviewEnabled(host=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='dictation-v14';
+}

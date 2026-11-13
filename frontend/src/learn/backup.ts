@@ -1,4 +1,4 @@
-import type {Attempt,Backup,Card,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonFeedback,LessonProgress,LessonShownAssistance,PlanningRecord,V17AssessmentData,V17AssessmentAttempt,V17HumanReview} from './model';
+import type {Attempt,Backup,Card,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonFeedback,LessonProgress,LessonShownAssistance,PlanningRecord,V14DictationData,V14DictationAttempt,V17AssessmentData,V17AssessmentAttempt,V17HumanReview} from './model';
 import {reviewConsensusV17} from './progression-v17-review-consensus';
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const text=(v:unknown,max=2000):v is string=>typeof v==='string'&&v.length>0&&v.length<=max;
@@ -136,9 +136,27 @@ function validV17Assessment(v:unknown,language:'en'|'ru'):v is V17AssessmentData
  })||new Set((v.attempts as any[]).map(a=>a.attemptId)).size!==(v.attempts as any[]).length)return false;
  return new Set((v.drafts as any[]).map(d=>`${d.scenarioId}:${d.contentFingerprint}`)).size===(v.drafts as any[]).length;
 }
+function validV14Dictation(v:unknown,language:'en'|'ru'):v is V14DictationData {
+ if(!obj(v)||v.schemaVersion!==1||v.language!==language||!Array.isArray(v.drafts)||v.drafts.length>16||!Array.isArray(v.attempts)||v.attempts.length>10000)return false;
+ const itemId=(x:unknown)=>typeof x==='string'&&new RegExp(`^${language}-dict-v14-(0[1-9]|1[0-6])$`).test(x);
+ const levelFor=(id:string)=>Number(id.slice(-2))<=8?'A2':'B1';
+ if(!v.drafts.every((d:unknown)=>obj(d)&&itemId(d.itemId)&&typeof d.response==='string'&&d.response.length<=2000&&num(d.startedAt,0,MAX_TIME)&&num(d.updatedAt,d.startedAt,MAX_TIME)))return false;
+ if(new Set((v.drafts as Array<Record<string,unknown>>).map(d=>d.itemId)).size!==v.drafts.length)return false;
+ const rate=(n:unknown)=>typeof n==='number'&&[0.5,0.75,0.9,1].includes(n);
+ if(!v.attempts.every((a:unknown)=>{
+  if(!obj(a)||!text(a.attemptId,120)||!itemId(a.itemId)||a.language!==language||a.level!==levelFor(a.itemId as string)||!text(a.linkedStageNodeId,40)||!(a.level==='A2'?new RegExp(`^${language}-path-(0[5-9]|10)$`):new RegExp(`^${language}-path-1[1-5]$`)).test(a.linkedStageNodeId)||a.contentVersion!==1||!/^([a-f0-9]{40})$/.test(String(a.editorialCommit))||!/^([a-f0-9]{40})$/.test(String(a.editorialBlobSha))||!Number.isInteger(a.audioVersion)||!num(a.audioVersion,1,100)||!/^([a-f0-9]{64})$/.test(String(a.audioSha256))||!['awaiting_owner_review','approved'].includes(String(a.audioStatus))||typeof a.response!=='string'||!a.response.trim()||a.response.length>2000||!num(a.startedAt,0,MAX_TIME)||!num(a.submittedAt,a.startedAt,MAX_TIME)||!obj(a.playback)||a.playback.completed!==true||!num(a.playback.audibleSeconds,0.5,3600)||!num(a.playback.coveragePercent,0.85,1)||!Number.isInteger(a.playback.playCount)||!num(a.playback.playCount,1,1000)||!Array.isArray(a.playback.playbackRates)||a.playback.playbackRates.length<1||a.playback.playbackRates.length>1000||!a.playback.playbackRates.every(rate)||typeof a.assessmentEnabled!=='boolean'||!['disabled','canonical','authorized_variant','unrecognized'].includes(String(a.matchKind))||!['uncertain','not_assessed','supported_for_observed_task'].includes(String(a.outcome))||!['awaiting_review','not_required','not_assessed'].includes(String(a.reviewStatus)))return false;
+  if(a.matchKind==='disabled')return a.assessmentEnabled===false&&a.outcome==='uncertain'&&a.reviewStatus==='awaiting_review';
+  if(a.matchKind==='canonical'||a.matchKind==='authorized_variant')return a.assessmentEnabled===true&&a.audioStatus==='approved'&&a.outcome==='supported_for_observed_task'&&a.reviewStatus==='not_required';
+  if(a.matchKind==='unrecognized')return a.assessmentEnabled===true&&a.audioStatus==='approved'&&a.outcome==='uncertain'&&a.reviewStatus==='awaiting_review';
+  return a.outcome==='not_assessed'&&a.reviewStatus==='not_assessed';
+ })||new Set((v.attempts as Array<Record<string,unknown>>).map(a=>a.attemptId)).size!==v.attempts.length)return false;
+ return true;
+}
 export function validLessonProgress(v:unknown):v is LessonProgress {
  if(!obj(v)||!text(v.key,300)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||!Number.isInteger(v.currentStage)||!num(v.currentStage,0,10)||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>(v.sessionKind==='delayedReview'?1000:100)||!v.shownAssistance.every(validLessonAssistance)||!Array.isArray(v.drafts)||v.drafts.length>20||!v.drafts.every(validLessonDraft)||!num(v.updatedAt,0,MAX_TIME)||(v.diagnosticSessionId!==undefined&&!text(v.diagnosticSessionId,120))||(v.diagnosticLastEventId!==undefined&&!text(v.diagnosticLastEventId,120))||(['inProgress','completed','skipped'].includes(String(v.diagnosticStatus))===false&&v.diagnosticStatus!==undefined)||(v.sessionKind!==undefined&&v.sessionKind!=='delayedReview'))return false;
+ if(v.unitId!=='v14-dictation'&&v.v14Dictation!==undefined)return false;
  if(v.unitId==='v17-assessment')return v.key===`v17:${v.language}`&&v.contentVersion===1&&v.currentStage===0&&v.shownAssistance.length===0&&v.drafts.length===0&&v.sessionKind===undefined&&v.diagnosticSessionId===undefined&&v.diagnosticStatus===undefined&&v.diagnosticLastEventId===undefined&&v.delayedReview===undefined&&validV17Assessment(v.v17Assessment,v.language as 'en'|'ru');
+ if(v.unitId==='v14-dictation')return v.key===`v14:${v.language}`&&v.contentVersion===1&&v.currentStage===0&&v.shownAssistance.length===0&&v.drafts.length===0&&v.sessionKind===undefined&&v.diagnosticSessionId===undefined&&v.diagnosticStatus===undefined&&v.diagnosticLastEventId===undefined&&v.delayedReview===undefined&&v.v17Assessment===undefined&&validV14Dictation(v.v14Dictation,v.language as 'en'|'ru');
  const isDelayed=v.sessionKind==='delayedReview';
  if(!isDelayed&&(v.key!==`${v.language}:${v.unitId}`||v.delayedReview!==undefined))return false;
  if(isDelayed){

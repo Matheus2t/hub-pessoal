@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_dictation_editorial_v14",
+  "language": "en",
+  "status": "editorial_draft_requires_independent_review",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "audioStatus": "no_audio_produced_or_reviewed",
+  "source": [
+    "docs/learn-progression-v12.md",
+    "docs/learn-progressao-a1-b1-v10.md"
+  ],
+  "methodology": {
+    "A2": "Uma frase curta com informações cotidianas previsíveis; o aluno recupera sequências, formas verbais e palavras funcionais.",
+    "B1": "Frases mais extensas, conectores, formas compostas e, pontualmente, duas frases relacionadas.",
+    "classification": "Hipótese de dificuldade, não certificação CEFR.",
+    "responseLanguage": "en",
+    "transcriptVisibleBeforeAttempt": false,
+    "assessment": "A transcrição tem como referência as palavras proferidas; paráfrase e tradução não são equivalentes. Normalização de maiúsculas, pontuação e espaços é técnica; variantes não previstas devem permanecer uncertain ou receber revisão humana.",
+    "audioRights": "Revisar direitos/licenciamento de todas as vozes e gravações antes da hospedagem.",
+    "numericPolicy": "Somente variantes numéricas completas explicitamente enumeradas são aceitas automaticamente; não transformar números arbitrários."
+  },
+  "units": [
+    {
+      "draftId": "en-dict-v14-01",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-05",
+      "titlePt": "Pergunta sobre rotina",
+      "objectivePt": "Pergunta no presente simples com do e plural.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Do your parents work on Sundays?",
+      "segmentCuesTeacherOnly": [
+        "Do",
+        "your parents",
+        "work",
+        "on Sundays"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Evitar inserir -s em work ou alterar plural de parents.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-02",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-06",
+      "titlePt": "Chaves e posse",
+      "objectivePt": "Possessivos e referência clara a objetos.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "My sister keeps her keys in a small drawer.",
+      "segmentCuesTeacherOnly": [
+        "My sister",
+        "keeps",
+        "her keys",
+        "in a small drawer"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar her, o plural keys e a flexão keeps.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-03",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-07",
+      "titlePt": "Encontro na biblioteca",
+      "objectivePt": "Local e indicação de dia/período.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "We meet outside the library on Friday morning.",
+      "segmentCuesTeacherOnly": [
+        "We meet",
+        "outside the library",
+        "on Friday morning"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Não trocar outside por inside nem Friday por outro dia.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-04",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-08",
+      "titlePt": "Assentos disponíveis",
+      "objectivePt": "There are, numeral e localização.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "There are three empty seats near the window.",
+      "segmentCuesTeacherOnly": [
+        "There are",
+        "three empty seats",
+        "near the window"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "There are 3 empty seats near the window."
+        ]
+      },
+      "protectedElementsPt": "Preservar are, three e plural seats; número '3' permitido como variante.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-05",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-09",
+      "titlePt": "Ação no momento",
+      "objectivePt": "Present continuous para ação atual.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "I am waiting for my friend near the station.",
+      "segmentCuesTeacherOnly": [
+        "I am waiting",
+        "for my friend",
+        "near the station"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Distinguir am waiting de wait.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-06",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-10",
+      "titlePt": "Visita de fim de semana",
+      "objectivePt": "Passado simples com marcador de tempo.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "I visited my grandparents last weekend.",
+      "segmentCuesTeacherOnly": [
+        "I visited",
+        "my grandparents",
+        "last weekend"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Final -ed de visited e plural grandparents são relevantes.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-07",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-07",
+      "titlePt": "Horário corrigido",
+      "objectivePt": "Horário, contraste e negação de informação.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "The shop closes at six, not at seven.",
+      "segmentCuesTeacherOnly": [
+        "The shop closes",
+        "at six",
+        "not at seven"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "The shop closes at 6, not at 7.",
+          "The shop closes at six, not at 7.",
+          "The shop closes at 6, not at seven."
+        ]
+      },
+      "protectedElementsPt": "Preservar contraste six/seven e partícula not; números 6/7 opcionais.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-08",
+      "language": "en",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "en-path-10",
+      "titlePt": "Ônibus atrasado",
+      "objectivePt": "Negação no passado e causa explícita.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "She did not take the bus because it was late.",
+      "segmentCuesTeacherOnly": [
+        "She did not take the bus",
+        "because",
+        "it was late"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar did not, infinitivo take e relação causal.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-09",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-11",
+      "titlePt": "Experiência de moradia",
+      "objectivePt": "Present perfect, duração e contraste pessoal.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "I have lived in this city for three years, but I still miss my hometown.",
+      "segmentCuesTeacherOnly": [
+        "I have lived in this city for three years",
+        "but",
+        "I still miss my hometown"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "I have lived in this city for 3 years, but I still miss my hometown."
+        ]
+      },
+      "protectedElementsPt": "Preservar have lived, for three years e but; algarismo 3 permitido.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-10",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-12",
+      "titlePt": "Condição futura",
+      "objectivePt": "First conditional com condição e resultado.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "If the weather improves tomorrow, we will have the meeting outside.",
+      "segmentCuesTeacherOnly": [
+        "If the weather improves tomorrow",
+        "we will have the meeting outside"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Não trocar a condição por afirmação categórica; manter improves e will.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-11",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-13",
+      "titlePt": "Evento cancelado",
+      "objectivePt": "Voz passiva e causa.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "The concert was cancelled because the main hall was closed for repairs.",
+      "segmentCuesTeacherOnly": [
+        "The concert was cancelled",
+        "because",
+        "the main hall was closed for repairs"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "The concert was canceled because the main hall was closed for repairs."
+        ]
+      },
+      "protectedElementsPt": "Preservar was cancelled e was closed; aceitar canceled como grafia americana.",
+      "phoneticReviewFocus": [
+        "cancelled / canceled: variante ortográfica, não mudança de pronúncia no áudio"
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-12",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-14",
+      "titlePt": "Pessoa e descrição",
+      "objectivePt": "Oração relativa identificadora e passado simples.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "The woman who works at the library gave me a useful recommendation.",
+      "segmentCuesTeacherOnly": [
+        "The woman who works at the library",
+        "gave me",
+        "a useful recommendation"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Manter who, works e gave sem reordenar sentido.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-13",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-15",
+      "titlePt": "Queda de energia",
+      "objectivePt": "Past continuous com evento pontual.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "I was checking my messages when the lights suddenly went out.",
+      "segmentCuesTeacherOnly": [
+        "I was checking my messages",
+        "when",
+        "the lights suddenly went out"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar was checking, when e went out.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-14",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-11",
+      "titlePt": "Curso pela primeira vez",
+      "objectivePt": "Experiência negativa e concessão.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "She has never taken an online course, although she wants to try one.",
+      "segmentCuesTeacherOnly": [
+        "She has never taken an online course",
+        "although",
+        "she wants to try one"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Never e although precisam ser preservados: afetam o sentido.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-15",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-12",
+      "titlePt": "Relatório e discussão",
+      "objectivePt": "Condição plausível com verbo modal.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "If you finish the report today, we can discuss the results tomorrow.",
+      "segmentCuesTeacherOnly": [
+        "If you finish the report today",
+        "we can discuss the results tomorrow"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Manter today e tomorrow, e não transformar can em obrigação.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "en-dict-v14-16",
+      "language": "en",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "en-path-15",
+      "titlePt": "Atraso de trem",
+      "objectivePt": "Sequência de ações passadas conectadas, em duas frases.",
+      "instructionPt": "Ouça o áudio e escreva, em inglês, exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "While we were waiting for the train, the driver announced another delay. We sent a message to our teacher.",
+      "segmentCuesTeacherOnly": [
+        "While we were waiting for the train",
+        "the driver announced another delay",
+        "We sent a message to our teacher"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar sequência narrativa, were waiting, announced e sent.",
+      "phoneticReviewFocus": [],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    }
+  ],
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "itemsInspected": 16,
+    "changes": [],
+    "reviewedScriptsOnly": true,
+    "audioValidated": false,
+    "externalLanguageValidationPerformed": false,
+    "releaseAllowed": false,
+    "ownerAcceptancePending": true
+  }
+}

@@ -16,7 +16,8 @@ const attempt = (id: string, language: 'en' | 'ru', itemId: string): Attempt => 
 });
 test.beforeEach(async ({ page }) => {
   const dist = resolve('dist');
-  await page.route('http://127.0.0.1:3000/**', async route => {
+  const origin = process.env.BASE_URL || 'http://127.0.0.1:8123';
+  await page.route(`${origin}/**`, async route => {
     const pathname = new URL(route.request().url()).pathname;
     const file = normalize(resolve(dist, `.${pathname === '/' ? '/index.html' : pathname}`));
     if (!file.startsWith(`${dist}${sep}`) || !existsSync(file)) return route.fulfill({ status: 404, body: 'not found' });
@@ -90,6 +91,7 @@ test('direct V12 route without the local preview flag shows only the blocked sta
 
 test('submitted activity IDs persist and resume once after reload; wrong answers do not unlock mastery', async ({ page }) => {
   await page.goto('/?learn-preview=progression-v12#/learn/en/progression');
+  await expect(page.getByRole('heading', { name: 'Progressão de estudo' })).toBeVisible();
   const first = tracks.en.stages[0];
   const [itemId, duplicateId, ruId] = [first.grammarQuestionIds[0], first.grammarQuestionIds[0], tracks.ru.stages[0].grammarQuestionIds[0]];
   const rows = [attempt('en-one', 'en', itemId), attempt('en-duplicate', 'en', duplicateId), attempt('ru-one', 'ru', ruId)];
@@ -101,6 +103,7 @@ test('submitted activity IDs persist and resume once after reload; wrong answers
     db.close();
   }, rows);
   await page.reload();
+  await expect(page.getByRole('heading', { name: 'Progressão de estudo' })).toBeVisible();
   const card = page.locator('.learn-progression-stage').first();
   await expect(card.getByText('1/6 atividades respondidas')).toBeVisible();
   await expect(card.getByText('Em andamento')).toBeVisible();

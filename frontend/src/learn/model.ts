@@ -53,6 +53,11 @@ export interface V17CriterionRating {criterion:'task'|'meaning'|'grammarVocabula
 export interface V17HumanReview {revisionId:string;reviewerId:string;reviewerName:string;reviewedAt:number;rubricVersion:1;score:Grade;criteria:V17CriterionRating[];rationale:string;whatWorked:string;priorityIssue:string;concreteSuggestion:string;outcome:'needs_practice'|'partially_supported'|'supported_for_observed_task';decision:'initial'|'correction'|'independent_review'}
 export interface V17AssessmentAttempt {attemptId:string;scenarioId:string;language:Language;level:V17Level;competency:V17Competency;contentVersion:number;contentFingerprint:string;origin?:'progression_v17_assessment';prompt:string;essentialCriteria:string[];response:string;startedAt:number;submittedAt:number;assistanceBeforeSubmission:string[];outcome:'uncertain'|'not_assessed'|'needs_practice'|'partially_supported'|'supported_for_observed_task';reviewStatus:'awaiting_review'|'reviewed'|'disputed'|'not_assessed';reviews:V17HumanReview[]}
 export interface V17AssessmentData {schemaVersion:1;drafts:V17AssessmentDraft[];acceptances:V17ScenarioAcceptance[];attempts:V17AssessmentAttempt[]}
+export type V14DictationOutcome='uncertain'|'not_assessed'|'supported_for_observed_task';
+export interface V14DictationPlayback {completed:true;audibleSeconds:number;coveragePercent:number;playCount:number;playbackRates:number[]}
+export interface V14DictationAttempt {attemptId:string;itemId:string;language:Language;level:'A2'|'B1';linkedStageNodeId:string;contentVersion:1;editorialCommit:string;editorialBlobSha:string;audioVersion:number;audioSha256:string;audioStatus:'awaiting_owner_review'|'approved';response:string;startedAt:number;submittedAt:number;playback:V14DictationPlayback;assessmentEnabled:boolean;matchKind:'disabled'|'canonical'|'authorized_variant'|'unrecognized';outcome:V14DictationOutcome;reviewStatus:'awaiting_review'|'not_required'|'not_assessed'}
+export interface V14DictationDraft {itemId:string;response:string;startedAt:number;updatedAt:number}
+export interface V14DictationData {schemaVersion:1;language:Language;attempts:V14DictationAttempt[];drafts:V14DictationDraft[]}
 export interface LessonProgress {
   key:string;language:Language;unitId:string;contentVersion:number;currentStage:number;
   shownAssistance:LessonAssistance[];drafts:LessonDraft[];updatedAt:number;
@@ -60,6 +65,8 @@ export interface LessonProgress {
   sessionKind?:'delayedReview';delayedReview?:DelayedReviewProgressState;
   /** V17 additive record stored in the existing v3 lessonProgress store. */
   v17Assessment?:V17AssessmentData;
+  /** V14 dictation evidence uses a separate keyed record; legacy history stays untouched. */
+  v14Dictation?:V14DictationData;
 }
 export interface Backup {
   format:'2t-learn';version:1|2|3;exportedAt:number;attempts:Attempt[];cards:Card[];
