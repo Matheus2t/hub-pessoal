@@ -309,6 +309,25 @@ test('V17 importa 30 cenários e 6 checkpoints distintos, sem colisão com catá
  }
 });
 
+test('V17 apresenta estímulos completos em tarefas guiadas sem fornecer gabarito',()=>{
+ const prompts=new Map(v17Scenarios.map(s=>[s.id,s.independentScenarioPt]));
+ const evidence=[
+  ['en-progress-v17-02',/Marta works in a clinic/],
+  ['en-progress-v17-05',/Eva trabalha à noite/],
+  ['en-progress-v17-14',/who.*which/],
+  ['ru-progress-v17-01',/Ёж в лесу\. Лена едет домой/],
+  ['ru-progress-v17-03',/словарь.*дверь/],
+  ['ru-progress-v17-04',/учитель/],
+  ['ru-progress-v17-07',/Ты работаешь сегодня\?.*Ты знаешь адрес\?/],
+  ['ru-progress-v17-10',/книга.*cinco exemplares/],
+ ] as const;
+ for(const [id,stimulus] of evidence){
+  expect(prompts.get(id),id).toMatch(stimulus);
+ }
+ expect(v17Scenarios.every(s=>s.public===false)).toBe(true);
+ expect(v17Scenarios.every(s=>s.essentialCriteriaPt.length===2)).toBe(true);
+});
+
 test('V17 aplica os 16 casos editoriais sintéticos sem certificação e sem falsos acertos',()=>{
  expect(cases).toHaveLength(16);
  for(const tc of cases){
