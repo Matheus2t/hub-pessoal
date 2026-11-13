@@ -1,3 +1,7 @@
+> **Relatório vigente (13/11/2026):** [Homologação integrada final do 2T Learn](./learn-final-homologation-2026-11-13.md), com matriz V11–V22, testes de 474 exercícios, EN/RU, backups v3, segurança pública e limites de acesso/deployment. **O conteúdo abaixo é registro histórico de 11/11/2026**; informações antigas sobre quantidade de feedbacks genéricos, PRs editoriais pendentes e bloqueios de revisão externa não refletem o estado atualizado. Revisão externa e pilotos foram dispensados como requisito para uso pessoal, não realizados.
+
+---
+
 # 2T Learn — homologação final e prontidão
 
 Data da verificação: 2026-11-11
