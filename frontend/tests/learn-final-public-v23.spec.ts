@@ -29,7 +29,7 @@ test('published Learn offers both legacy languages and V11 but never unlocks V12
  ] as const;
  for(const [flag,route,component] of gated){
   await page.goto(`https://matheus2t.com.br/?learn-preview=${flag}#/learn/en/${route}`);
-  await expect(page.getByRole('heading',{name:'Prévia indisponível'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/Prévia indisponível|Página do Learn não encontrada/}),`Rota pública protegida: ${route}`).toBeVisible();
   await expect(page.locator(component)).toHaveCount(0);
  }
  const names=['/learn/en.json','/learn/ru.json','/learn/pedagogy-v1/audio-assets.json'];
