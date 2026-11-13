@@ -39,6 +39,15 @@ jobs:
       - name: Build local e TypeScript
         run: npm run build
       - run: npx playwright install chromium
+      - name: Iniciar servidor HTTP para os testes reais do build
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/learn-mobile-v22-http.log 2>&1 &
+          for i in $(seq 1 25); do
+            if curl -fsS http://127.0.0.1:8123/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/learn-mobile-v22-http.log
+          exit 1
       - name: Fluxos mobile, foco, navegação, russo e regressão V20
         run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-mobile-ux-v22.spec.ts frontend/tests/learn-ui.spec.ts frontend/tests/learn-phonetic.spec.ts frontend/tests/learn-workspace-v20.spec.ts
       - name: Build público com prévias privadas isoladas
