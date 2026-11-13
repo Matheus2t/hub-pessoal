@@ -13,8 +13,8 @@ V13 permanece desativada para estudantes. Os 32 áudios estão em `awaiting_owne
 | 80 questões | 48 escolha única e 32 abertas; 40 por idioma; chaves/evidências estruturalmente válidas | Revisão pedagógica independente e piloto |
 | Pronúncia/naturalidade | Não avaliadas por ferramenta confiável nesta execução | Escuta humana por falante/revisor qualificado |
 | V12/V16/V17 | Regressões integradas aprovadas na suíte Learn atualizada | Nenhuma pendência técnica encontrada nesta regressão |
-| Testes automatizados | Typecheck, build, validadores Learn/V13, Node e Playwright completos aprovados (resultados detalhados abaixo) | Nenhuma falha de código conhecida |
-| Segurança do build público | Sem MP3 V13 ou trechos exclusivos no `dist`; endpoint de prévia dá 404 em produção; rota com flag bloqueada | Revalidar após merge/deploy |
+| Testes automatizados | Typecheck, build, validadores Learn/V13, Node e regressão Playwright do Learn aprovados | Suíte global do site não concluída; veja resultados detalhados |
+| Segurança do build público | Build sem MP3/IDs/roteiros V13; endpoint de prévia 404 e rota com flag bloqueada também após deploy | Nenhuma exposição encontrada |
 | Homologação pedagógica | Revisão preliminar de mesa: perguntas, alternativas, gabaritos e evidências conferem com os roteiros; nenhum desacordo concreto identificado | Revisão linguística externa e teste com estudantes |
 | Liberação para estudantes | **Bloqueada** | Exige aceite auditivo, revisão linguística/pedagógica, piloto e autorização explícita |
 
@@ -58,4 +58,6 @@ Foi feita leitura preliminar das 32 unidades e das 80 questões contra os roteir
 
 ## Produção e publicação
 
-O Vercel connector não lista o projeto `matheus2t` nem seus deployments (404; lista vazia), portanto não foi possível confirmar pelo painel qual deployment/commit está ativo. O domínio oficial foi verificado diretamente. O deployment acionado pela integração à `main` deve ser confirmado pelo status Vercel do commit e por nova verificação HTTP do domínio, sem liberar a V13.
+PR #140 integrado à `main`; merge commit `5a2719b234eaaeb900d45c8bdc5cb969ca66e919`. O status GitHub do commit registra `Vercel: success` (deployment `9t8MPcvZV4pJXhYtyHVVWyNqCJYd`). O Vercel connector ainda retorna 404 ao consultar projeto/deployment; por isso, os metadados detalhados do painel não puderam ser inspecionados.
+
+Após o deploy, Chromium abriu `https://matheus2t.com.br/?learn-preview=listening-v13#/learn/en/listening-v13`: HTTP 200 para o shell, mensagem `Página do Learn não encontrada`, elemento V13 ausente e zero elementos de áudio. `/learn/v13/preview.json?language=en` retornou HTTP 404. `bundle.js`, `learn.js` e `styles.css` retornaram HTTP 200; nenhum dos bundles continha IDs V13 ou referências MP3. A V13 segue bloqueada para estudantes.
