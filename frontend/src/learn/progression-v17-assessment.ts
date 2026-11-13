@@ -64,6 +64,6 @@ export function summarizeV17(data:V17AssessmentData,scenarios:readonly StageScen
   const fingerprint=fingerprints.get(s.id)||'';
   const latest=[...data.attempts].filter(a=>a.scenarioId===s.id&&a.contentFingerprint===fingerprint).sort((a,b)=>a.submittedAt-b.submittedAt).at(-1);
   const assisted=!!latest?.assistanceBeforeSubmission.length;
-  return {scenarioId:s.id,competency:s.evidenceCategory,status:latest?.reviewStatus==='reviewed'&&!reviewConsensusV17(latest.reviews).disputed?latest.outcome:latest?.reviewStatus==='disputed'?'uncertain':latest?.reviewStatus==='awaiting_review'?'awaiting_review':'not_assessed',assisted,reviewCount:latest?.reviews.length||0} as const;
+  return {scenarioId:s.id,competency:s.evidenceCategory,status:latest&&reviewConsensusV17(latest.reviews).disputed?'uncertain':latest?.reviewStatus==='reviewed'?latest.outcome:latest?.reviewStatus==='disputed'?'uncertain':latest?.reviewStatus==='awaiting_review'?'awaiting_review':'not_assessed',assisted,reviewCount:latest?.reviews.length||0} as const;
  });
 }
