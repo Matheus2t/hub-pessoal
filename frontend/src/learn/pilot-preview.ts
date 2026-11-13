@@ -50,3 +50,12 @@ export function isLearnReadingV16PreviewEnabled(
 ):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='reading-v16';
 }
+
+/** V17 pedagogical assessment proposals are not publicly released.
+ * This local opt-in is for reviewing draft scenarios only; not authentication.
+ */
+export function isLearnAssessmentV17PreviewEnabled(
+ host=globalThis.location?.hostname||'',search=globalThis.location?.search||''
+):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='progress-v17';
+}
