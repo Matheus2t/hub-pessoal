@@ -1,6 +1,6 @@
 # 2T Learn V13 — homologação técnica
 
-Data: 2026-11-13. Branch de trabalho baseada na `main` atual (`84d5d3d`).
+Data: 2026-11-13. Branch de trabalho baseada na `main` atual (`ed2ba57`).
 
 ## Resultado
 
@@ -12,7 +12,7 @@ V13 permanece desativada para estudantes. Os 32 áudios estão em `awaiting_owne
 | 32 áudios | MP3 presentes, hash/tamanho conferidos, FFprobe/FFmpeg aprovados; 17 diálogos regenerados com montagem corrigida | Escuta e aceite do proprietário; pronúncia/naturalidade não certificadas |
 | 80 questões | 48 escolha única e 32 abertas; 40 por idioma; chaves/evidências estruturalmente válidas | Revisão pedagógica independente e piloto |
 | Pronúncia/naturalidade | Não avaliadas por ferramenta confiável nesta execução | Escuta humana por falante/revisor qualificado |
-| V12/V17 | Regressões integradas aprovadas na suíte Learn | Nenhuma pendência técnica encontrada nesta regressão |
+| V12/V16/V17 | Regressões integradas aprovadas na suíte Learn atualizada | Nenhuma pendência técnica encontrada nesta regressão |
 | Testes automatizados | Typecheck, build, validadores Learn/V13, Node e Playwright completos aprovados (resultados detalhados abaixo) | Nenhuma falha de código conhecida |
 | Segurança do build público | Sem MP3 V13 ou trechos exclusivos no `dist`; endpoint de prévia dá 404 em produção; rota com flag bloqueada | Revalidar após merge/deploy |
 | Homologação pedagógica | Revisão preliminar de mesa: perguntas, alternativas, gabaritos e evidências conferem com os roteiros; nenhum desacordo concreto identificado | Revisão linguística externa e teste com estudantes |
@@ -42,10 +42,11 @@ Foi feita leitura preliminar das 32 unidades e das 80 questões contra os roteir
 
 - `npm run typecheck`: aprovado.
 - `npm run build`: aprovado.
-- 13 validadores existentes do Learn: aprovados; além deles, validador estrutural V13 aprovado (32 roteiros/80 questões).
+- 13 validadores existentes do Learn e validadores V16/V17: aprovados; validador estrutural V13 aprovado (32 roteiros/80 questões).
 - `npm run learn:validate-listening-v13`: 13 testes Node aprovados, sem skips, com a cópia privada disponível.
 - Validador técnico dos 17 novos MP3s: 17 aprovados, 0 falhas. Auditoria FFprobe/FFmpeg dos 32: 32 decodificáveis e íntegros, 0 falhas, 0 anomalias extremas de duração; sem validação auditiva.
-- Playwright completo: **187/187** aprovado; inclui V12/V17, Learn legado, segurança da rota, layout em 320/390/768/1366/1920 px nos temas claro/escuro, MP3 privado regenerado e resposta de áudio lenta.
+- Playwright Learn: **192/192** aprovado em 27 arquivos; inclui V12/V16/V17, Learn legado, segurança da rota, layout em 320/390/768/1366/1920 px nos temas claro/escuro, MP3 privado regenerado e resposta de áudio lenta.
+- Suíte Playwright global do site (502 casos) não foi concluída: foi interrompida após dois timeouts em Proventos, fora deste escopo; por isso, não é declarada aprovada. Nenhum módulo externo foi alterado.
 - `git diff --check`: aprovado após a revisão final do diff.
 
 ## Pendências para aprovação/liberação
