@@ -16,7 +16,8 @@ const attempt = (id: string, language: 'en' | 'ru', itemId: string): Attempt => 
 });
 test.beforeEach(async ({ page }) => {
   const dist = resolve('dist');
-  await page.route('http://127.0.0.1:3000/**', async route => {
+  const origin = process.env.BASE_URL || 'http://127.0.0.1:8123';
+  await page.route(`${origin}/**`, async route => {
     const pathname = new URL(route.request().url()).pathname;
     const file = normalize(resolve(dist, `.${pathname === '/' ? '/index.html' : pathname}`));
     if (!file.startsWith(`${dist}${sep}`) || !existsSync(file)) return route.fulfill({ status: 404, body: 'not found' });

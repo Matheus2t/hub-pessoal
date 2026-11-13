@@ -22,7 +22,8 @@ import './listening-v13-preview';
 import './bridge-v11';
 import './reading-b1-v16';
 import './progression-v17-page';
-import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled} from './pilot-preview';
+import './dictation-v14-page';
+import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled,isLearnDictationV14PreviewEnabled} from './pilot-preview';
 import {renderLearnFlowNav} from './flow-nav';
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
@@ -35,13 +36,14 @@ export class LearnPage extends LightElement {
   @state() private contentError=false;
   private generation=0;
   private previousActivity='';
-  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity'),c5Activities=['integration','daily','dashboard'];const entersC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.activity),leavesC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.previousActivity);if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'||this.activity==='listening-v13'||this.previousActivity==='listening-v13'||this.activity==='progression'||this.previousActivity==='progression'||entersC5||leavesC5))void this.load();if(activityChanged)this.previousActivity=this.activity}
+  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity'),c5Activities=['integration','daily','dashboard'];const entersC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.activity),leavesC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.previousActivity);if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'||this.activity==='listening-v13'||this.previousActivity==='listening-v13'||this.activity==='dictation-v14'||this.previousActivity==='dictation-v14'||this.activity==='progression'||this.previousActivity==='progression'||entersC5||leavesC5))void this.load();if(activityChanged)this.previousActivity=this.activity}
   disconnectedCallback(){this.generation++;super.disconnectedCallback()}
   private async load(){
     const generation=++this.generation;
     this.data=undefined;this.storageError=false;this.contentError=false;this.loading=true;
     if(this.invalid){this.loading=false;return}
     if(this.activity==='diagnostic'&&this.isDiagnosticPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
+    if(this.activity==='dictation-v14'){this.catalog=undefined;this.loading=false;return;}
     if((this.activity==='pilot-c1'||this.activity==='pilot-c2')&&this.isPilotPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     if(this.activity==='reviews'&&this.isDelayedReviewPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     if(this.activity==='listening-v13'&&isLearnListeningV13PreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
@@ -76,6 +78,9 @@ export class LearnPage extends LightElement {
     if(this.activity==='progress-v17')return (this.language==='en'||this.language==='ru')&&isLearnAssessmentV17PreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--v17-preview"><learn-progression-v17 .language=${this.language as Language} .progress=${this.data}></learn-progression-v17></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A avaliação V17 ainda não foi liberada publicamente. O estudo e o histórico permanecem disponíveis.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
+    if(this.activity==='dictation-v14')return (this.language==='en'||this.language==='ru')&&isLearnDictationV14PreviewEnabled()
+      ?html`<article class="learn-page learn-page--activity learn-page--dictation-v14"><learn-dictation-v14 .language=${this.language as Language}></learn-dictation-v14></article>`
+      :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Ditados V14 exigem localhost, flag específica e sessão autenticada. Nada está publicado para estudantes.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
     if(this.activity==='progression'&&!isLearnProgressionPreviewEnabled())return html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A progressão V12 continua restrita a localhost/loopback enquanto o mapeamento pedagógico não tiver liberação pública.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='dashboard'&&this.isIntegrationPreviewEnabled())return !this.data||!this.catalog?html`<article class="learn-page learn-page--activity"><p role="status" class="learn-message">${this.loading?'Carregando acompanhamento local…':'O catálogo não está disponível. Seu histórico foi preservado.'}</p></article>`:html`<article class="learn-page learn-page--activity"><nav class="learn-internal"><a href=${`#/learn/${this.language}`}>Voltar às áreas de ${this.language==='ru'?'Russo':'Inglês'}</a><a href=${`#/learn/${this.language}/integration`}>Percurso integrado</a></nav>${renderLearnFlowNav(this.language as Language,'dashboard')}<learn-integration-evidence .language=${this.language as Language} .progress=${this.data}></learn-integration-evidence><learn-advanced mode="dashboard" .language=${this.language as Language} .catalog=${this.catalog} .progress=${this.data}></learn-advanced></article>`;
     const language=this.language as Language,label=labels[language];
@@ -93,6 +98,7 @@ export class LearnPage extends LightElement {
       ${label&&language==='en'&&this.activity===''&&isLearnPilotPreviewEnabled('c1')?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href="#/learn/en/pilot-c1">Aula-piloto de Inglês <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&language==='ru'&&this.activity===''&&isLearnPilotPreviewEnabled('c2')?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href="#/learn/ru/pilot-c2">Aula-piloto de Russo <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDiagnosticPreviewEnabled(language as Language)?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/diagnostic`}>Diagnóstico inicial <span aria-hidden="true">↗</span></a></nav>`:nothing}
+      ${label&&this.activity===''&&isLearnDictationV14PreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/dictation-v14`}>Ditados A2/B1 V14 <span aria-hidden="true">↗</span></a></nav>`:nothing}
         ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDelayedReviewPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/reviews`}>Revisões D+2 e D+7 <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&isLearnListeningV13PreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/listening-v13`}>Listening A2/B1 <span aria-hidden="true">↗</span></a></nav>`:nothing}
         ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnProgressionPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/progression`}>Progressão guiada A1–B1 <span aria-hidden="true">↗</span></a></nav>`:nothing}

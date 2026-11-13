@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_dictation_editorial_v14",
+  "language": "ru",
+  "status": "editorial_draft_requires_independent_review",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "audioStatus": "no_audio_produced_or_reviewed",
+  "source": [
+    "docs/learn-progression-v12.md",
+    "docs/learn-progressao-a1-b1-v10.md"
+  ],
+  "methodology": {
+    "A2": "Uma frase curta e previsível, acompanhando presente, nomes de objetos, posse, pergunta, negação e quantidades.",
+    "B1": "Oração mais longa ou duas relações conectadas, com casos, aspecto verbal, movimento e relação lógica.",
+    "classification": "Hipótese de dificuldade, não certificação CEFR.",
+    "responseLanguage": "ru",
+    "transcriptVisibleBeforeAttempt": false,
+    "assessment": "Ditado exige transcrição no idioma-alvo, não paráfrase ou tradução. Não rejeitar cegamente grafia sem ё; examinar se a troca por е altera o sentido no contexto. Normalização de pontuação, caixa e espaços deve evitar confundir casos, negação e aspecto.",
+    "audioRights": "Revisar direitos/licenciamento de todas as vozes e gravações antes da hospedagem.",
+    "numericPolicy": "Somente variantes numéricas completas explicitamente enumeradas são aceitas automaticamente; não transformar números arbitrários.",
+    "yoPolicy": "A troca ё/е é permitida apenas nas alternativas transcritas e revisadas; outras grafias devem seguir para avaliação humana, não ser erradas automaticamente."
+  },
+  "units": [
+    {
+      "draftId": "ru-dict-v14-01",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-05",
+      "titlePt": "Possessivos no cotidiano",
+      "objectivePt": "Concordância de possessivos com substantivos femininos e masculinos.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Это моя новая сумка, а это мой старый рюкзак.",
+      "segmentCuesTeacherOnly": [
+        "Это моя новая сумка",
+        "а это мой старый рюкзак"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Diferenciar os possessivos моя/мой e os adjetivos новая/старый, preservando a concordância de cada objeto.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-02",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-06",
+      "titlePt": "Leitura depois do trabalho",
+      "objectivePt": "Presente verbal e rotina pessoal.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Я обычно читаю дома после работы.",
+      "segmentCuesTeacherOnly": [
+        "Я обычно читаю",
+        "дома",
+        "после работы"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar читаю e a expressão temporal после работы.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-03",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-07",
+      "titlePt": "Café e chá",
+      "objectivePt": "Negação com не e contraste de objetos.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Мы не покупаем кофе, мы покупаем чай.",
+      "segmentCuesTeacherOnly": [
+        "Мы не покупаем кофе",
+        "мы покупаем чай"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Manter не na primeira oração; não inverter café e chá.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-04",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-08",
+      "titlePt": "Pergunta na rua",
+      "objectivePt": "Pergunta sobre localização de serviço.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Где находится ближайшая аптека?",
+      "segmentCuesTeacherOnly": [
+        "Где находится",
+        "ближайшая аптека"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar a pergunta de localização e a concordância em ближайшая аптека.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-05",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-09",
+      "titlePt": "Compras simples",
+      "objectivePt": "Objeto direto e preposição de lugar.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Я покупаю хлеб и молоко в магазине.",
+      "segmentCuesTeacherOnly": [
+        "Я покупаю хлеб и молоко",
+        "в магазине"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar хлеб и молоко, forma покупаю e в магазине.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-06",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-10",
+      "titlePt": "Objetos na mesa",
+      "objectivePt": "Concordância de substantivos com os numerais dois e cinco.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "На столе лежат две книги и пять карандашей.",
+      "segmentCuesTeacherOnly": [
+        "На столе лежат",
+        "две книги",
+        "и пять карандашей"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "На столе лежат 2 книги и 5 карандашей.",
+          "На столе лежат две книги и 5 карандашей.",
+          "На столе лежат 2 книги и пять карандашей."
+        ]
+      },
+      "protectedElementsPt": "Diferenciar две книги de пять карандашей; aceitar 2 e 5 como algarismos.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-07",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-06",
+      "titlePt": "Mensagem à noite",
+      "objectivePt": "Verbo no presente e concordância de adjetivo com substantivo neutro.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Она пишет короткое письмо вечером.",
+      "segmentCuesTeacherOnly": [
+        "Она пишет",
+        "короткое письмо",
+        "вечером"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar пишет, короткое письмо e вечером.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-08",
+      "language": "ru",
+      "targetLevel": "A2",
+      "linkedStageNodeId": "ru-path-07",
+      "titlePt": "Dia sem aula",
+      "objectivePt": "Negação de existência e conectivo de resultado.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Сегодня у нас нет урока, поэтому мы дома.",
+      "segmentCuesTeacherOnly": [
+        "Сегодня у нас нет урока",
+        "поэтому мы дома"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar нет, урока e поэтому; genitivo em chunk lexical pode exigir ensino de apoio.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-09",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-11",
+      "titlePt": "Carta concluída",
+      "objectivePt": "Contraste entre processo e resultado (aspecto).",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Вчера я долго писал письмо, а вечером наконец написал его.",
+      "segmentCuesTeacherOnly": [
+        "Вчера я долго писал письмо",
+        "а вечером наконец написал его"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Diferenciar писал/написал e recuperar conectivo а.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-10",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-12",
+      "titlePt": "Tempo e telefone",
+      "objectivePt": "Genitivo após нет, justificativa e ação futura.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "У меня нет свободного времени сегодня, поэтому я позвоню тебе завтра.",
+      "segmentCuesTeacherOnly": [
+        "У меня нет свободного времени сегодня",
+        "поэтому",
+        "я позвоню тебе завтра"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Distinguir времени e позвоню; preservar сегодня/завтра.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-11",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-13",
+      "titlePt": "Ajudar a irmã",
+      "objectivePt": "Dativo experienciador e destinatário, justificativa.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Мне нужно помочь сестре, потому что завтра у неё важный экзамен.",
+      "segmentCuesTeacherOnly": [
+        "Мне нужно помочь сестре",
+        "потому что",
+        "завтра у неё важный экзамен"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "Мне нужно помочь сестре, потому что завтра у нее важный экзамен."
+        ]
+      },
+      "protectedElementsPt": "Preservar os dativos мне e сестре, a relação causal marcada por потому что e a variante explícita неё/нее.",
+      "phoneticReviewFocus": [
+        "Conferir acento e inteligibilidade de сестре, у неё e экзамен."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-12",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-14",
+      "titlePt": "Profissão e conversas",
+      "objectivePt": "Instrumental de profissão e de interlocutor após с.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Она работает врачом и каждый день разговаривает с пациентами.",
+      "segmentCuesTeacherOnly": [
+        "Она работает врачом",
+        "и каждый день",
+        "разговаривает с пациентами"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Preservar врачом e пациентами, não substituir casos.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-13",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-15",
+      "titlePt": "Trajeto diferente",
+      "objectivePt": "Movimento habitual por transporte e deslocamento atual.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Обычно я езжу на работу на автобусе, но сегодня иду пешком.",
+      "segmentCuesTeacherOnly": [
+        "Обычно я езжу на работу на автобусе",
+        "но сегодня",
+        "иду пешком"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Contrastar езжу e иду; preservar но.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-14",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-11",
+      "titlePt": "Filme até o final",
+      "objectivePt": "Aspecto: atividade prolongada e conclusão.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Мы смотрели фильм два часа и досмотрели его перед ужином.",
+      "segmentCuesTeacherOnly": [
+        "Мы смотрели фильм два часа",
+        "и досмотрели его",
+        "перед ужином"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "Мы смотрели фильм 2 часа и досмотрели его перед ужином."
+        ]
+      },
+      "protectedElementsPt": "Preservar смотрели/досмотрели e duração.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-15",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-12",
+      "titlePt": "Depois do cancelamento",
+      "objectivePt": "Genitivo, sequenciação e espera.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "После отмены поезда пассажиры ждали новой информации на станции.",
+      "segmentCuesTeacherOnly": [
+        "После отмены поезда",
+        "пассажиры ждали",
+        "новой информации на станции"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": []
+      },
+      "protectedElementsPt": "Casos após после, genitivo поезда e da expressão новой информации.",
+      "phoneticReviewFocus": [
+        "Conferir acento lexical, redução vocálica, finais flexionais e inteligibilidade do áudio."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    },
+    {
+      "draftId": "ru-dict-v14-16",
+      "language": "ru",
+      "targetLevel": "B1",
+      "linkedStageNodeId": "ru-path-15",
+      "titlePt": "Caminho sob chuva",
+      "objectivePt": "Movimento delimitado no passado e causa/consequência.",
+      "instructionPt": "Ouça o áudio e escreva, em russo (cirílico), exatamente o que foi dito. Não traduza.",
+      "expectedTranscript": "Когда я шёл к станции, начался дождь, поэтому я вернулся домой.",
+      "segmentCuesTeacherOnly": [
+        "Когда я шёл к станции",
+        "начался дождь",
+        "поэтому я вернулся домой"
+      ],
+      "orthographicAlternativePolicy": {
+        "ignoreTerminalPunctuation": true,
+        "ignoreCapitalization": true,
+        "collapseWhitespace": true,
+        "acceptYoAsE": "explicit_full_transcript_variants_only_otherwise_uncertain",
+        "acceptDigitWordEquivalence": "explicit_full_transcript_variants_only",
+        "acceptedFullTranscriptVariants": [
+          "Когда я шел к станции, начался дождь, поэтому я вернулся домой."
+        ]
+      },
+      "protectedElementsPt": "Preservar шёл (ё opcional quando não gera ambiguidade), начался e вернулся.",
+      "phoneticReviewFocus": [
+        "Confirmar шёл / шел como variante ortográfica apenas, não confundir com outros tempos."
+      ],
+      "assessmentPolicy": "manual_review_or_uncertain_for_unrecognized_transcription",
+      "teacherReviewStatus": "draft_requires_independent_review",
+      "audioProductionStatus": "script_only_no_audio",
+      "public": false,
+      "existingCatalogExercise": false,
+      "editorialOrigin": "new_v14",
+      "questionCount": 1
+    }
+  ],
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "itemsInspected": 16,
+    "changes": [
+      "ru-dict-v14-01.protectedElementsPt",
+      "ru-dict-v14-04.protectedElementsPt",
+      "ru-dict-v14-06.objectivePt",
+      "ru-dict-v14-07.objectivePt",
+      "ru-dict-v14-07.protectedElementsPt",
+      "ru-dict-v14-11.protectedElementsPt",
+      "ru-dict-v14-12.objectivePt"
+    ],
+    "reviewedScriptsOnly": true,
+    "audioValidated": false,
+    "externalLanguageValidationPerformed": false,
+    "releaseAllowed": false,
+    "ownerAcceptancePending": true
+  }
+}

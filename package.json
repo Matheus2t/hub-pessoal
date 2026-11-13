@@ -18,11 +18,13 @@
     "learn:validate-readiness": "node scripts/validate-learn-readiness.mjs",
     "learn:validate-audio": "node scripts/validate-learn-audio.mjs",
     "learn:validate-listening-v13": "node scripts/learn/validate-listening-v13.mjs && node --test scripts/learn/listening-v13-preview.test.mjs scripts/learn-audio-v19/pipeline.test.mjs",
+    "learn:validate-dictation-v14": "node scripts/learn/validate-dictation-v14.mjs && node --test scripts/learn/dictation-v14-core.test.mjs scripts/learn-audio-v19/dictation-v14-preview.test.mjs scripts/learn-audio-v19/dictation-v14-preview.integration.test.mjs",
     "learn:audit-listening-v13-audio": "node scripts/learn/audit-listening-v13-audio.mjs",
     "learn:preview-listening-v13": "npm run build && node scripts/learn/listening-v13-preview.mjs",
     "learn:check-catalogs": "node scripts/learn/check-catalog-determinism.mjs",
     "learn:validate-progression": "node scripts/learn/validate-progression-v12.mjs",
-    "learn:preview-v19": "npm run build && node scripts/learn-audio-v19/local-study-preview.mjs"
+    "learn:preview-v19": "npm run build && node scripts/learn-audio-v19/local-study-preview.mjs",
+    "learn:preview-dictation-v14": "npm run build && node scripts/learn-audio-v19/local-study-preview.mjs --experience=dictation-v14"
   },
   "dependencies": {
     "lit": "^3.2.1"

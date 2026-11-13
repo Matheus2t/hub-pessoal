@@ -6,7 +6,7 @@ import type {Curriculum} from './content';
 import type {Backup,Language} from './model';
 import {summarize} from './engine';
 import {currentPlan,planAttempts} from './planning';
-import {isLearnProgressionPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled} from './pilot-preview';
+import {isLearnProgressionPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled,isLearnDictationV14PreviewEnabled} from './pilot-preview';
 
 const modes = ['vocabulary','flashcards','listening','dictation','writing','reading','grammar','test'] as const;
 const descriptions = [
@@ -74,6 +74,7 @@ export class LearnHome extends LightElement {
           <a href=${`#/learn/${lang}/bridges`}>Atividades-ponte <span aria-hidden="true">↗</span></a>
           ${isLearnReadingV16PreviewEnabled()?html`<a href=${`#/learn/${lang}/reading-b1`}>Leitura B1 V16 <span aria-hidden="true">↗</span></a>`:nothing}
           ${isLearnAssessmentV17PreviewEnabled()?html`<a href=${`#/learn/${lang}/progress-v17`}>Progressão V17 · revisão <span aria-hidden="true">↗</span></a>`:nothing}
+          ${isLearnDictationV14PreviewEnabled()?html`<a href=${`#/learn/${lang}/dictation-v14`}>Ditados A2/B1 V14 · prévia local <span aria-hidden="true">↗</span></a>`:nothing}
         </div>
         <div class="learn-course__levels" aria-label="Referências curriculares A1 a B1">
           ${levels.map(level=>html`<span class="learn-course__level"><strong>${level.code}</strong><span>${level.focus}</span></span>`)}
