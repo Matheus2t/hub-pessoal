@@ -72,11 +72,14 @@ export class LearnProgressionV17 extends LightElement {
   finally{if(token===this.generation&&this.isConnected)this.loading=false;}
  }
  private selectStage(id:string){
+  // Save the previous task while its stage/language context is still active.
+  // A fast keyboard/touch navigation must not discard the debounce buffer.
+  if(this.saveTimer)void this.flushDraft();
   const scenario=v17ScenariosFor(this.language).find(item=>item.nodeId===id),fingerprint=scenario?this.fingerprints[scenario.id]:undefined;
   const saved=scenario?this.assessment.drafts.find(item=>item.scenarioId===scenario.id&&item.contentFingerprint===fingerprint):undefined;
   this.stageId=id;this.draft=saved?.response||'';this.criteriaViewedAt=saved?.criteriaViewedAt;this.showCriteria=false;this.acceptChecked=false;this.error='';
  }
- private chooseLevel(level:'A1'|'A2'|'B1'){this.selectedLevel=level;const first=this.track?.stages.find(s=>s.level===level);if(first)this.selectStage(first.nodeId);}
+ private chooseLevel(level:'A1'|'A2'|'B1'){const first=this.track?.stages.find(s=>s.level===level);if(first)this.selectStage(first.nodeId);this.selectedLevel=level;}
  private getActive(stages:ProgressionStage[]){return stages.find(s=>s.nodeId===this.stageId)||stages.find(s=>s.level===this.selectedLevel)||stages[0];}
  private scheduleDraftSave(){
   if(this.saveTimer)clearTimeout(this.saveTimer);this.saveTimer=setTimeout(()=>{void this.flushDraft()},220);
