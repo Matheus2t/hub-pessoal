@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 2,
+  "recordType": "learn_internal_editorial_review_v18_reconciled",
+  "asOf": "2026-11-12",
+  "timezone": "America/Sao_Paulo",
+  "auditType": "internal_editorial_and_source_structural_check",
+  "baselineMainSha": "f9e1b9062c42176115fde1eb127d585970384483",
+  "originalReviewPR": 123,
+  "independentExternalLanguageReviewPerformed": false,
+  "studentPilotPerformed": false,
+  "audioAuditoryApprovalPerformed": false,
+  "cefrCertification": false,
+  "approvalPolicy": "Owner may authorize noncertifying formative practice per version. Internal review does not certify language proficiency or recordings.",
+  "contentInventory": {
+    "legacyExercises": {
+      "total": 474,
+      "en": 237,
+      "ru": 237
+    },
+    "v11": {
+      "total": 24,
+      "english": 12,
+      "russian": 12,
+      "publicFormativeNonAudio": 20,
+      "unapprovedAudioScripts": 4,
+      "ownerEditorialAccepted": true,
+      "editorialPR": 116,
+      "technicalPRs": [
+        132,
+        133
+      ],
+      "publicRoutes": [
+        "#/learn/en/bridges",
+        "#/learn/ru/bridges"
+      ]
+    },
+    "v13": {
+      "scripts": 32,
+      "questions": 80,
+      "objectiveQuestions": 48,
+      "questionsByLanguage": {
+        "en": 40,
+        "ru": 40
+      },
+      "editorialPR": 118,
+      "publicAudioAssessmentAuthorized": false
+    },
+    "v14": {
+      "dictations": 32,
+      "english": 16,
+      "russian": 16,
+      "editorialPR": 119,
+      "publicAudioAssessmentAuthorized": false
+    },
+    "v16": {
+      "texts": 10,
+      "questions": 40,
+      "objectiveQuestions": 20,
+      "openQuestions": 20,
+      "transferTasks": 10,
+      "editorialPR": 121,
+      "technicalPR": 134,
+      "technicalPreviewInMain": true,
+      "publicReleaseAuthorized": false
+    },
+    "v17": {
+      "stageScenarios": 30,
+      "levelCheckpoints": 6,
+      "syntheticPolicyCases": 16,
+      "editorialPR": 122,
+      "publicReleaseAuthorized": false
+    },
+    "v19": {
+      "technicalAudioFilesCreated": 68,
+      "technicalAudioFilesPassed": 68,
+      "ownerAuditoryApprovals": 0,
+      "publicFiles": 0,
+      "storage": "private_local",
+      "publicReleaseAuthorized": false
+    }
+  },
+  "sourceTrace": {
+    "v11": {
+      "path": "docs/learn-atividades-ponte-v11.json",
+      "blobSha": "e3295b09493fb0547d7eedc6133693d4eadc9519",
+      "branch": "main"
+    },
+    "v11runtime": {
+      "path": "frontend/src/learn/bridge-v11-content.ts",
+      "blobSha": "1df2b489822e4557d0dff30cd760c2ab6470b5af",
+      "branch": "main"
+    },
+    "v13en": {
+      "path": "docs/learn-listening-v13-en.json",
+      "blobSha": "cbbb3b4c5251c0e9fad5e42838f12e46d89b3057",
+      "branch": "learn/listening-a2-b1-v13-editorial"
+    },
+    "v13ru": {
+      "path": "docs/learn-listening-v13-ru.json",
+      "blobSha": "ef6e28198a3bb0fd946f25a396150beb1b0fff7e",
+      "branch": "learn/listening-a2-b1-v13-editorial"
+    },
+    "v14en": {
+      "path": "docs/learn-ditados-v14-en.json",
+      "blobSha": "4b9d20a94493200d6cba82515ff8f147a8834be0",
+      "branch": "learn/ditados-a2-b1-v14-editorial"
+    },
+    "v14ru": {
+      "path": "docs/learn-ditados-v14-ru.json",
+      "blobSha": "6fb3fe502c8315c753535f3432dfa10f354dc654",
+      "branch": "learn/ditados-a2-b1-v14-editorial"
+    },
+    "v16en": {
+      "path": "docs/learn-leitura-b1-v16-en.json",
+      "blobSha": "647c00c7208c90b101055e29e3bfff69521284c3",
+      "branch": "learn/leitura-interpretacao-b1-v16"
+    },
+    "v16ru": {
+      "path": "docs/learn-leitura-b1-v16-ru.json",
+      "blobSha": "4156ad4246af46ec8c1e68f6216bcfdd3e4f3b02",
+      "branch": "learn/leitura-interpretacao-b1-v16"
+    },
+    "v16runtime": {
+      "path": "frontend/src/learn/reading-b1-v16-content.ts",
+      "blobSha": "5a9e208deb1b2f75e9c610ea4c5d218d3ecc3c87",
+      "branch": "main"
+    },
+    "v17stages": {
+      "path": "docs/learn-avaliacao-etapas-v17.json",
+      "blobSha": "4e7d5d6970063d53cb8f8eae4ec4c15422615b23",
+      "branch": "learn/avaliacao-progressao-v17-editorial"
+    },
+    "v17policy": {
+      "path": "docs/learn-avaliacao-politica-v17.json",
+      "blobSha": "2d94c02f7608d28017fdb225ef3a03b457a336a0",
+      "branch": "learn/avaliacao-progressao-v17-editorial"
+    },
+    "progression": {
+      "path": "frontend/public/learn/progression-v12.json",
+      "blobSha": "7cad0006f4159ce658654a03841066b1720074fc",
+      "branch": "main"
+    }
+  },
+  "structuralAudit": {
+    "inspectedCrossSourceDraftIds": 258,
+    "uniqueDraftIds": true,
+    "noLegacyExerciseIdCollision": true,
+    "objectiveKeysPresent": true,
+    "v13KeyDistributionByLanguage": {
+      "en": {
+        "a": 8,
+        "b": 8,
+        "c": 8
+      },
+      "ru": {
+        "a": 8,
+        "b": 8,
+        "c": 8
+      }
+    },
+    "v16KeyDistributionByLanguage": {
+      "en": {
+        "a": 4,
+        "b": 3,
+        "c": 3
+      },
+      "ru": {
+        "a": 4,
+        "b": 3,
+        "c": 3
+      }
+    },
+    "v16AllEvidenceSpansInSourcePassages": true,
+    "curriculumStageAndLevelReferencesConsistent": true,
+    "v11RuntimeMatchesEditorialSourceExceptOwnerReleaseFlags": true,
+    "v16RuntimeMatchesEditorialQuestionsAndTexts": true,
+    "errorsFound": 0,
+    "method": "Read GitHub JSON source and runtime snapshots, check counts/IDs, stage links, evidence spans, answer-option membership, and adopted content. Does not test language naturalness, mastery, audio quality, or student learning."
+  },
+  "findingsAndDecisions": [
+    {
+      "v": "V11",
+      "corrections": [
+        "en-bridge-v10-02",
+        "en-bridge-v10-11",
+        "ru-bridge-v10-03",
+        "ru-bridge-v10-06"
+      ],
+      "release": "owner_accepted_formative_non_audio",
+      "audioAssessed": false
+    },
+    {
+      "v": "V13",
+      "corrections": [
+        "ru-listen-v13-16"
+      ],
+      "release": "not_public",
+      "audioAssessed": false
+    },
+    {
+      "v": "V14",
+      "corrections": [
+        "ru-dict-v14-01",
+        "ru-dict-v14-04",
+        "ru-dict-v14-06",
+        "ru-dict-v14-07",
+        "ru-dict-v14-11",
+        "ru-dict-v14-12"
+      ],
+      "release": "not_public",
+      "audioAssessed": false
+    },
+    {
+      "v": "V16",
+      "corrections": [
+        "en-reading-b1-v16-04"
+      ],
+      "release": "technical_preview_only",
+      "readingAssessmentCertified": false
+    },
+    {
+      "v": "V17",
+      "corrections": [
+        "release-governance-and-evidence-limits"
+      ],
+      "release": "editorial_policy_draft",
+      "learningMasteryCertified": false
+    }
+  ],
+  "releaseGates": {
+    "unknownOpenResponse": "uncertain_or_human_review",
+    "legacyPracticeDoesNotProveMastery": true,
+    "browserTtsDoesNotProveListening": true,
+    "audioRequiresOwnerAuditoryAcceptance": true,
+    "noPublicDraftsWithoutOwnerApproval": true,
+    "noCeFrCertificationClaim": true,
+    "noAutomaticMergeOfPendingContentPRs": true
+  },
+  "integrationRegressionsAlreadyObserved": {
+    "v11PlaywrightPassed": 165,
+    "v16PlaywrightPassed": 170
+  },
+  "warning": "Recorded checks are source-level and prior CI checks. This audit alone does not publish additional content or establish external CEFR validation."
+}
