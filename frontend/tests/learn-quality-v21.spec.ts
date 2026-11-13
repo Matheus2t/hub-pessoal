@@ -20,22 +20,22 @@ test('V21 preserves 474 unique legacy exercises and zero duplicated answers',()=
   expect(item.explanation.trim().length,item.id).toBeGreaterThan(11);
  }
 });
-test('V21 accepts feminine colleague and informal Russian address as explicitly reviewed alternatives',()=>{
+test('V21 accepts formal phrasing and informal Russian address when meaning is preserved',()=>{
  for(const [id,response]of [
-  ['ru-writing-074','Моя коллега говорит по-русски.'],
+  ['ru-writing-074','Мой коллега говорит на русском языке.'],
   ['ru-writing-084','Твой ответ правильный.'],
   ['ru-writing-084','Твой ответ верный.'],
   ['ru-writing-097','Можешь показать мне на карте?'],
  ]){
   expect(evaluateExerciseAnswer(response,find('ru',id)),id).toBe('correct');
  }
- expect(evaluateExerciseAnswer('Она коллега говорит по-русски.',find('ru','ru-writing-074'))).toBe('uncertain');
+ expect(evaluateExerciseAnswer('Моя коллега говорит по-русски.',find('ru','ru-writing-074'))).toBe('uncertain');
  expect(evaluateExerciseAnswer('Ты можешь сказать, где на карте?',find('ru','ru-writing-097'))).toBe('uncertain');
 });
 test('V21 keeps unknown translations uncertain instead of declaring them incorrect',()=>{
  expect(evaluateExerciseAnswer('My colleague can speak Russian.',find('en','en-writing-074'))).toBe('uncertain');
- expect(evaluateExerciseAnswer('Моя коллега говорит на русском языке.',find('ru','ru-writing-074'))).toBe('uncertain');
- expect(evaluateExerciseAnswer('Моя коллега говорит по-русски.',find('ru','ru-writing-074'))).toBe('correct');
+ expect(evaluateExerciseAnswer('Мой коллега говорит на русском языке.',find('ru','ru-writing-074'))).toBe('correct');
+ expect(evaluateExerciseAnswer('Мой коллега говорит по-русски.',find('ru','ru-writing-074'))).toBe('correct');
 });
 test('V21 keeps ё/е distinct unless explicitly enabled by the item',()=>{
  const item=find('ru','ru-dictation-017');
