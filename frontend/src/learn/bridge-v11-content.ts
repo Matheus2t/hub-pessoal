@@ -1,6 +1,8 @@
-/** V11 — internal editorial drafts, sourced without modifications from PR #116.
- * PUBLIC RELEASE IS NOT AUTHORIZED. Only render in the gated local learning preview.
- * Do not register these items as graded curricular exercises, B1 evidence, or CEFR certification.
+/** V11 — owner-approved public formative practice, based on PR #116 source.
+ * Approval: site owner, 2026-11-12. This is NOT independent teacher review.
+ * Exactly 20 non-audio tasks are public; four listening scripts stay unassessable
+ * until real recordings are licensed, listened to and approved.
+ * No automatic scoring, CEFR certification, or progress-evidence writes.
  */
 import type {Language} from './model';
 
@@ -9,11 +11,11 @@ export interface BridgeTaskV11 {
   skill:'grammar_bridge'|'guided_writing'|'reading_inference'|'listening_script'|'integrated_writing';
   objective:string;stimulusText:string;taskInstruction:string;
   illustrativeAnswer:string;successEvidence:string;rubricPolicy:string;audioStatus:string;
-  teacherReviewNotes:string;workflowStatus:string;public:false;existingCatalogExercise:false;
+  teacherReviewNotes:string;workflowStatus:string;public:boolean;existingCatalogExercise:false;
   acceptedAnswerExamples:string[];reviewVersion:'v11';difficultyBand:string;
   scoringCriteria:string[];reviewStatus:string;
 }
-/** No task can be scored, promoted to public, or added to progress from this data. */
+/** Preserved V10 draft IDs; the public flag is enabled only for formative non-audio tasks. */
 export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
   {
     "draftId": "en-bridge-v10-01",
@@ -30,7 +32,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Questão de transformação controlada; exigir que o aluno não mantenha works depois de does.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Does she work here?"
@@ -59,7 +61,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V18: corrigida a fonte para distinguir horário de início de presença no trabalho; não aceitar apenas 'I work at nine' como prova de início às nove. Exigir duas frases e horários corretos.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "I start work at nine. My sister starts work at ten.",
@@ -90,7 +92,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "A finalidade 'to get her notebook' é uma inferência razoável, mas o texto só afirma explicitamente que o caderno está em casa; aceitar ambas.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Because her notebook is at home.",
@@ -152,7 +154,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Reduzida ambiguidade da instrução anterior, que solicitava explicação sem critério claro.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "I am working now."
@@ -181,7 +183,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Não exigir saudação ou frase idêntica ao modelo; pontuação e contrações não devem invalidar resposta compreensível.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Sure! See you at the library on Friday at 6.",
@@ -211,7 +213,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Não apresentar present perfect como sinônimo intercambiável de passado datado; ambas as frases podem ser gramaticais em contextos diferentes.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "I visited Paris in 2023 — in 2023."
@@ -240,7 +242,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V10 afirmava que escolheram ônibus para evitar voos caros sem a relação causal estar explícita. Texto V11 diz 'instead of flying', mas não obriga inferir intenção econômica.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "They took a slower bus, and they still arrived before the concert."
@@ -299,7 +301,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Não impor a recomendação positiva; aceitar recomendação negativa fundamentada. Não afirmar que o grupo garante ambiente sem interrupções.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "I would join because practising with others could help you feel less nervous."
@@ -328,7 +330,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V18: hipótese meteorológica naturalizada para 'might rain'; a saída deve construir condicional se chover, não afirmar previsão certa.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "We will stay home if it rains tomorrow.",
@@ -358,7 +360,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "A ligação coincide com o estudo, mas não se deve exigir inferência de interrupção efetiva da atividade.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "When my friend called, I was studying."
@@ -387,7 +389,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Forma isolada esperada na lacuna; se o produto aceitar frase completa, «Я читаю книгу» também deve ser considerada.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "читаю"
@@ -416,7 +418,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Não aceitar «нет» isolado como transformação equivalente da frase.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Я не читаю дома."
@@ -445,7 +447,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V18: atividade antes cobrava apenas localizar 'дома', embora se chamasse reading_inference. Agora exige julgar uma afirmação incompatível com o texto e justificar com evidência; manter inferência limitada à afirmação 'apenas na biblioteca'.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Нет, она читает дома.",
@@ -507,7 +509,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Aceitar «мое» sem trema em escrita comum; preservar «моё» como forma recomendada, sem tornar ё obrigatória na avaliação.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "мой стол, моя сумка, мое окно"
@@ -536,7 +538,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V18: atividade não deve exigir nome real nem incentivar coleta de dados pessoais. Aceitar nomes fictícios quaisquer, com saudação educada e pergunta compreensível.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Здравствуйте! Меня зовут Иван. Где школа?",
@@ -566,7 +568,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Caso específico introduzido com apoio; não transformar item isolado em prova de domínio integral do genitivo.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "времени"
@@ -595,7 +597,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "Evitar interpretar звоню como ligação recebida pelo amigo já concluída; não exigir acentos marcados nem identificar gênero do interlocutor com precisão maior do que o enunciado permite.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "A ligação é para o amigo, e quem sente frio sou eu.",
@@ -625,7 +627,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "«С сестрой» não define a relação de posse; a resposta-modelo V10 sugeria 'a irmã' sem precisar posse. Aceitar médica como tradução contextual de врач.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Ela é médica e eu vou com a irmã.",
@@ -655,7 +657,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "É interpretação contextual do aspecto com marcador de duração e потом; evitar simplificação de que todo imperfeito significa 'não concluído'.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Я читал книгу, потом прочитал её.",
@@ -716,7 +718,7 @@ export const bridgeV11Drafts:readonly BridgeTaskV11[]=[
     "audioStatus": "not_applicable",
     "teacherReviewNotes": "V10 exigia chegar a tempo sem qualquer informação que sustentasse a possibilidade. Estímulo ajustado para declarar essa possibilidade; não exigir certeza de chegada.",
     "workflowStatus": "draft_requires_independent_review",
-    "public": false,
+    "public": true,
     "existingCatalogExercise": false,
     "acceptedAnswerExamples": [
       "Поезд отменили, поэтому предлагаю автобус. Билеты на самолёт дорогие, а на автобусе можно успеть к встрече."
