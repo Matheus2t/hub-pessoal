@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "status": "legacy-issues-tracked",
-  "description": "Baseline editorial dos problemas legados ainda conhecidos. Mudanças não podem introduzir duplicações exatas nem aumentar feedback genérico; o conteúdo histórico e seus IDs são preservados.",
+  "description": "Baseline editorial dos problemas legados ainda conhecidos. Zero duplicações exatas e zero feedbacks genéricos de escrita são o teto obrigatório; catálogos e IDs históricos preservados.",
   "languages": {
     "en": {
       "knownRepeatedQuestionGroups": [],
-      "maxGenericWritingExplanations": 40,
+      "maxGenericWritingExplanations": 0,
       "expectedLegacyReadings": 15
     },
     "ru": {
       "knownRepeatedQuestionGroups": [],
-      "maxGenericWritingExplanations": 40,
+      "maxGenericWritingExplanations": 0,
       "expectedLegacyReadings": 15
     }
   },
