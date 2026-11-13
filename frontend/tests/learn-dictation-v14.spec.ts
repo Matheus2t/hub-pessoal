@@ -15,7 +15,7 @@ const progress:LessonProgress={key:'v14:en',language:'en',unitId:'v14-dictation'
 function catalog(audioAvailable=true){return {schemaVersion:1,preview:true,publicRelease:false,assessmentEnabled:false,items:['en','ru'].flatMap(language=>Array.from({length:16},(_,index)=>({
  id:`${language}-dict-v14-${String(index+1).padStart(2,'0')}`,language,level:index<8?'A2':'B1',title:`Ditado ${index+1}`,objective:'Praticar transcrição.',instruction:'Ouça e escreva o que ouviu.',linkedStageNodeId:`${language}-path-${index<8?'05':'11'}`,durationSeconds:2,audioUrl:'/learn/audio/fixture-tone.wav',audioState:'awaiting_owner_review',technicalStatus:'passed',contentVersion:1,sourceCommit:editorialCommit,sourceBlobSha:editorialBlobSha,audioVersion:1,audioSha256, audioAvailable:audioAvailable&&index===0,assessmentEnabled:false,
 })))}}
-function toneWav(){const rate=8000,samples=16000,data=Buffer.alloc(samples),wav=Buffer.alloc(44+samples);for(let i=0;i<samples;i++)data[i]=128+Math.round(28*Math.sin(2*Math.PI*440*i/rate));wav.write('RIFF',0);wav.writeUInt32LE(36+samples,4);wav.write('WAVE',8);wav.write('fmt ',12);wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);wav.writeUInt32LE(rate,24);wav.writeUInt32LE(rate,28);wav.writeUInt16LE(1,32);wav.writeUInt16LE(8,34);wav.write('data',36);wav.writeUInt32LE(samples,40);data.copy(wav,44);return wav;}
+function toneWav(){const rate=8000,samples=rate*2,data=Buffer.alloc(samples),wav=Buffer.alloc(44+samples);for(let i=0;i<samples;i++)data[i]=128+Math.round(28*Math.sin(2*Math.PI*440*i/rate));wav.write('RIFF',0);wav.writeUInt32LE(36+samples,4);wav.write('WAVE',8);wav.write('fmt ',12);wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);wav.writeUInt32LE(rate,24);wav.writeUInt32LE(rate,28);wav.writeUInt16LE(1,32);wav.writeUInt16LE(8,34);wav.write('data',36);wav.writeUInt32LE(samples,40);data.copy(wav,44);return wav;}
 function serverAttempt(payload:Record<string,unknown>){return {attempt:{attemptId:payload.attemptId,itemId:payload.itemId,language:'en',level:'A2',linkedStageNodeId:'en-path-05',contentVersion:1,editorialCommit,editorialBlobSha,audioVersion:1,audioSha256,audioStatus:'awaiting_owner_review',response:payload.response,startedAt:payload.startedAt,submittedAt:Date.now(),playback:payload.playback,assessmentEnabled:false,matchKind:'disabled',outcome:'uncertain',reviewStatus:'awaiting_review'},transcript:'Private transcript revealed after submission.'};}
 async function serveOfficialMock(page){const root=resolve('dist'),types:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.json':'application/json'};await page.route('https://matheus2t.com.br/**',async route=>{const pathname=decodeURIComponent(new URL(route.request().url()).pathname);if(pathname==='/service-worker.js')return route.fulfill({status:404,body:'disabled'});const file=resolve(root,pathname==='/'?'index.html':pathname.slice(1));if(!file.toLowerCase().startsWith(`${root.toLowerCase()}${sep}`)||!existsSync(file))return route.fulfill({status:404,body:'not found'});return route.fulfill({status:200,contentType:types[extname(file)]||'application/octet-stream',body:readFileSync(file)});});}
 
@@ -44,10 +44,7 @@ test('local dictation hides transcript until submit, persists per language and s
  await expect(root.getByText('Private transcript revealed after submission.')).toHaveCount(0);
  const answer=root.getByRole('textbox',{name:'Sua transcrição'});await answer.fill('I heard a sample.');
  const player=root.locator('learn-recording-player');await player.evaluate(element=>element.addEventListener('heard',event=>{(window as Window&{v14Heard?:unknown}).v14Heard=(event as CustomEvent).detail}));await player.getByRole('button',{name:'Reproduzir gravação'}).click();
- const media=player.locator('audio');await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeGreaterThan(0.2);
- await player.getByRole('button',{name:'Pausar gravação'}).click();await expect(root.getByRole('button',{name:'Enviar tentativa'})).toBeDisabled();
- await player.getByRole('button',{name:'Reproduzir gravação'}).click();
- await expect(player.getByText('Reprodução concluída.')).toBeVisible({timeout:7000});
+ await expect(player.getByText('Reprodução concluída.')).toBeVisible({timeout:5000});
  const heard=await page.evaluate(()=>((window as Window&{v14Heard?:{coveragePercent:number}}).v14Heard));expect(heard?.coveragePercent,JSON.stringify(heard)).toBeGreaterThanOrEqual(0.85);
  const status=await root.locator('[role="status"]').allTextContents();
  expect(status.join(' '),`status after playback: ${status.join(' | ')}`).not.toContain('Reproduza pelo menos 90%');
@@ -65,6 +62,21 @@ test('local dictation hides transcript until submit, persists per language and s
  await expect(root.getByText('0 tentativas salvas neste idioma')).toBeVisible();
  await root.getByRole('link',{name:'Inglês'}).click();
  await expect(root.getByText('1 tentativas salvas neste idioma')).toBeVisible();
+});
+
+test('player pauses and resumes without enabling submission before completion',async({page})=>{
+ await serveBuiltSite(page,{status:200,contentType:'audio/wav',body:toneWav()});
+ await page.route('**/learn/v14/dictations.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(catalog())}));
+ await page.goto('/?learn-preview=dictation-v14#/learn/en/dictation-v14');
+ const root=page.locator('learn-dictation-v14'),player=root.locator('learn-recording-player'),media=player.locator('audio');
+ await player.getByRole('button',{name:'Reproduzir gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeGreaterThan(0.2);
+ await player.getByRole('button',{name:'Pausar gravação'}).click();
+ const pausedAt=await media.evaluate(element=>(element as HTMLAudioElement).currentTime);
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeLessThanOrEqual(pausedAt+0.02);
+ await player.getByRole('button',{name:'Reproduzir gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeGreaterThan(pausedAt+0.1);
+ await expect(root.getByRole('button',{name:'Enviar tentativa'})).toBeDisabled();
 });
 
 test('drafts persist in IndexedDB v3 and remain isolated by language',async({page})=>{

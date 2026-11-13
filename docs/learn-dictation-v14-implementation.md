@@ -53,7 +53,7 @@ Measured aggregate ranges: 2.247–6.531 s; mean level −25.5 to −18.4 dB; pe
 | Validadores gerais do Learn: catálogo, pedagogia, diagnóstico, qualidade, cobertura, leitura, curadoria, rubricas, revisões, readiness, áudio, determinismo e progressão | 13 comandos aprovados; 474 exercícios e 30 etapas V12 preservados |
 | `npm run learn:validate-dictation-v14` | 32 itens balanceados; 10/10 testes Node, incluindo serviço local autenticado |
 | `npm run learn:validate-listening-v13` | 12 aprovados; 1 teste condicionado a inventário privado V13 foi skip |
-| Regressão Playwright V11/V12/V13/V16/V17/V19/V14 | 50 aprovados; 1 skip condicionado à ausência do inventário privado de áudio V13 no fixture de testes |
+| Regressão Playwright V11/V12/V13/V16/V17/V19/V14 | 53 aprovados; 1 skip condicionado à ausência do inventário privado de áudio V13 no fixture de testes |
 | `node scripts/learn/validate-dictation-v14.mjs --check-dist` | Aprovado: sem MP3s, fontes JSON editoriais, transcrições canônicas ou variantes no bundle |
 | Bloqueio público | O teste de host oficial com query de prévia confirma que o componente V14 não é criado |
 

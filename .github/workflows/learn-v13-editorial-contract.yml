@@ -1,0 +1,37 @@
+name: Validar contrato editorial V13
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-listening-v13-*.json'
+      - 'docs/learn-listening-a2-b1-v13.md'
+      - 'scripts/learn/validate-listening-v13.mjs'
+      - 'scripts/learn/listening-v13-preview.mjs'
+      - 'scripts/learn/listening-v13-preview.test.mjs'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v13-editorial-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-listening-v13-*.json'
+      - 'docs/learn-listening-a2-b1-v13.md'
+      - 'scripts/learn/validate-listening-v13.mjs'
+      - 'scripts/learn/listening-v13-preview.mjs'
+      - 'scripts/learn/listening-v13-preview.test.mjs'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v13-editorial-contract.yml'
+permissions:
+  contents: read
+jobs:
+  editorial-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar sintaxe dos contratos
+        run: node --check scripts/learn/validate-listening-v13.mjs
+      - name: Validar 32 roteiros, 80 questões, V12 e paridade de prévia
+        run: node scripts/learn/validate-listening-v13.mjs
+      - name: Testar isolamento, sanitização e acesso de prévia local
+        run: node --test scripts/learn/listening-v13-preview.test.mjs
