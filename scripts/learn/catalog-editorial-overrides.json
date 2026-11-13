@@ -2562,10 +2562,10 @@
         {
           "id": "ru-writing-074",
           "set": {
-            "explanation": "Коллега pode referir-se a um homem ou a uma mulher. Use мой коллега para um colega masculino e моя коллега para uma colega feminina; говорит по-русски significa fala russo.",
+            "explanation": "Мой коллега refere-se a um colega masculino, conforme meu colega do enunciado. Говорит по-русски e говорит на русском языке são duas formas naturais de dizer que alguém fala russo.",
             "answers": [
               "Мой коллега говорит по-русски.",
-              "Моя коллега говорит по-русски."
+              "Мой коллега говорит на русском языке."
             ]
           },
           "remove": []
