@@ -86,7 +86,7 @@ export class LearnProgression extends LightElement {
         </article>`;
       })}</div></details>`;
     })}</div>
-    <aside class="learn-progression-bridges"><strong>Atividades-ponte V11 indisponíveis</strong><p>As 24 propostas continuam em preparação, fora do catálogo público. Roteiros escritos não são gravações aprovadas e não entram na contagem de progresso.</p></aside>`;
+    <aside class="learn-progression-bridges"><strong>Atividades-ponte V11 disponíveis para prática</strong><p>As 20 atividades não auditivas já podem ser praticadas em Inglês e Russo, sem notas. As quatro atividades de Listening continuam sem áudio homologado e não entram nesta contagem de estudo.</p><a href=${`#/learn/${this.language}/bridges`}>Abrir atividades-ponte</a></aside>`;
   }
 
   private actionLabel(stage: ProgressionStage, skill: 'grammar' | 'reading', answeredAny: boolean) {
