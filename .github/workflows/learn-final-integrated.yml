@@ -1,0 +1,135 @@
+name: Homologação integrada final do 2T Learn
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/learn/**'
+      - 'frontend/public/learn/**'
+      - 'frontend/tests/learn-*.spec.ts'
+      - 'scripts/learn/**'
+      - 'scripts/learn-audio-v19/**'
+      - 'scripts/copy-financials.cjs'
+      - 'docs/learn-final-homologation-2026-11-13.md'
+      - 'docs/learn-final-homologation.md'
+      - 'docs/learn-revisao-integrada-v18.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/learn-final-integrated.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/learn/**'
+      - 'frontend/public/learn/**'
+      - 'frontend/tests/learn-*.spec.ts'
+      - 'scripts/learn/**'
+      - 'scripts/learn-audio-v19/**'
+      - 'scripts/copy-financials.cjs'
+      - 'docs/learn-final-homologation-2026-11-13.md'
+      - 'docs/learn-final-homologation.md'
+      - 'docs/learn-revisao-integrada-v18.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/learn-final-integrated.yml'
+permissions:
+  contents: read
+jobs:
+  content-and-data:
+    name: learn-content-and-data
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Compilação e tipos
+        run: npm run typecheck
+      - name: Integridade dos 474 IDs e geração determinística
+        run: |
+          npm run learn:check-catalogs
+          node scripts/learn/audit-exercise-quality-v21.mjs
+          npm run learn:quality-audit
+          npm run learn:coverage
+          npm run learn:audit
+      - name: Contratos de pedagogia, leitura, diagnóstico, backup e áudio legado
+        run: |
+          npm run learn:validate-pedagogy
+          npm run learn:validate-diagnostics
+          npm run learn:validate-reading
+          npm run learn:validate-curation
+          npm run learn:validate-task-rubrics
+          npm run learn:validate-delayed
+          npm run learn:validate-readiness
+          npm run learn:validate-audio
+      - name: Contratos de versões V12, V13, V14, V16, V17 e currículo A1–B1
+        run: |
+          node scripts/learn/validate-progression-v12.mjs
+          node scripts/learn/validate-listening-v13.mjs
+          node scripts/learn/validate-dictation-v14.mjs
+          node scripts/learn/validate-reading-b1-v16.mjs
+          node scripts/learn/validate-assessment-progression-v17.mjs
+          node scripts/learn/validate-curriculum-a1-b1-v20.mjs
+  private-local-flows:
+    name: learn-local-end-to-end
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Build local mantendo fontes e prévias restritas
+        run: npm run build
+      - name: Servidores, revisão V13 e V14, importações e áudio privado simulado
+        run: |
+          node --test scripts/learn-audio-v19/local-study-preview.test.mjs scripts/learn-audio-v19/pipeline.test.mjs scripts/learn/listening-v13-preview.test.mjs scripts/learn/dictation-v14-core.test.mjs scripts/learn-audio-v19/dictation-v14-preview.test.mjs scripts/learn-audio-v19/dictation-v14-preview.integration.test.mjs
+      - name: Instalar Chromium
+        run: npx playwright install chromium
+      - name: Iniciar site local
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-integrated-local.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8123/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/2t-learn-integrated-local.log
+          exit 1
+      - name: Regressão integrada real em Chromium, EN/RU, IndexedDB v3 e backups
+        run: |
+          LOCAL_TEST_FILES=$(find frontend/tests -maxdepth 1 -name 'learn-*.spec.ts' ! -name 'learn-public-security.spec.ts' ! -name 'learn-final-public-v23.spec.ts' -type f | sort)
+          PW_CHANNEL=chromium npx playwright test $LOCAL_TEST_FILES
+  public-build-and-security:
+    name: learn-public-release-gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Compilar exatamente no modo público (Vercel)
+        run: npm run build
+        env:
+          VERCEL: '1'
+      - name: Verificar 474 exercícios públicos e ausência de dados privados V13–V19
+        run: |
+          node scripts/learn/audit-learn-public-build.mjs
+          node scripts/learn/validate-dictation-v14.mjs --check-dist
+      - name: Instalar Chromium
+        run: npx playwright install chromium
+      - name: Iniciar site público simulado
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-integrated-public.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8123/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/2t-learn-integrated-public.log
+          exit 1
+      - name: Provar V11 disponível e bloquear V12–V19 com flags falsificadas
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-public-security.spec.ts frontend/tests/learn-final-public-v23.spec.ts
