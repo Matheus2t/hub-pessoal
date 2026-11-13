@@ -1,0 +1,861 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_stage_assessment_drafts_v17",
+  "status": "editorial_proposal",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "sourceManifest": "frontend/public/learn/progression-v12.json",
+  "sourceManifestBlobSha": "7cad0006f4159ce658654a03841066b1720074fc",
+  "stagePlans": {
+    "en": [
+      {
+        "draftId": "en-progress-v17-01",
+        "nodeId": "en-path-01",
+        "language": "en",
+        "sequence": 1,
+        "level": "A1",
+        "canDoTarget": "Apresentar-se com am/is/are.",
+        "originalCheckpointDraft": "Criar três frases: identidade, localização e estado.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-01-q1",
+          "en-grammar-01-q2",
+          "en-grammar-01-q3",
+          "en-reading-01-q1",
+          "en-reading-01-q2",
+          "en-reading-01-q3"
+        ],
+        "legacyReadingId": "en-reading-01",
+        "independentScenarioPt": "Apresente três dados de uma pessoa fictícia: identidade, local e estado.",
+        "essentialCriteriaPt": [
+          "Usa am/is/are apropriadamente.",
+          "Informações coerentes em cenário novo."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-02",
+        "nodeId": "en-path-02",
+        "language": "en",
+        "sequence": 2,
+        "level": "A1",
+        "canDoTarget": "Retomar pessoas e objetos com pronomes de sujeito.",
+        "originalCheckpointDraft": "Substituir três referentes em um diálogo simples.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-02-q1",
+          "en-grammar-02-q2",
+          "en-grammar-02-q3",
+          "en-reading-02-q1",
+          "en-reading-02-q2",
+          "en-reading-02-q3"
+        ],
+        "legacyReadingId": "en-reading-02",
+        "independentScenarioPt": "No diálogo 'Marta is a doctor. Marta works in a clinic. The clinic is busy.', reescreva a segunda e a terceira frases com pronomes de sujeito para evitar a repetição de Marta e the clinic.",
+        "essentialCriteriaPt": [
+          "Pronomes combinam com os referentes.",
+          "Referências permanecem claras."
+        ],
+        "evidenceCategory": "contextual_recognition",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-03",
+        "nodeId": "en-path-03",
+        "language": "en",
+        "sequence": 3,
+        "level": "A1",
+        "canDoTarget": "Usar a/an e the com referência clara.",
+        "originalCheckpointDraft": "Apresentar objeto e retomá-lo em duas frases.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-03-q1",
+          "en-grammar-03-q2",
+          "en-grammar-03-q3",
+          "en-reading-03-q1",
+          "en-reading-03-q2",
+          "en-reading-03-q3"
+        ],
+        "legacyReadingId": "en-reading-03",
+        "independentScenarioPt": "Apresente um objeto novo e retome-o em outra frase usando artigos.",
+        "essentialCriteriaPt": [
+          "Distingue primeira menção e retomada.",
+          "Usa a/an e the quando cabíveis."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-04",
+        "nodeId": "en-path-04",
+        "language": "en",
+        "sequence": 4,
+        "level": "A1",
+        "canDoTarget": "Falar sobre rotina e terceiro sujeito no presente simples.",
+        "originalCheckpointDraft": "Descrever duas rotinas sem e com -s de terceira pessoa.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-04-q1",
+          "en-grammar-04-q2",
+          "en-grammar-04-q3",
+          "en-reading-04-q1",
+          "en-reading-04-q2",
+          "en-reading-04-q3"
+        ],
+        "legacyReadingId": "en-reading-04",
+        "independentScenarioPt": "Descreva sua rotina e a rotina de um colega fictício.",
+        "essentialCriteriaPt": [
+          "Presente simples para hábitos.",
+          "Terceira pessoa corretamente expressa."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-05",
+        "nodeId": "en-path-05",
+        "language": "en",
+        "sequence": 5,
+        "level": "A2",
+        "canDoTarget": "Perguntar e negar hábitos com do/does.",
+        "originalCheckpointDraft": "Perguntar sobre horários e responder afirmando/negando.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-05-q1",
+          "en-grammar-05-q2",
+          "en-grammar-05-q3",
+          "en-reading-05-q1",
+          "en-reading-05-q2",
+          "en-reading-05-q3"
+        ],
+        "legacyReadingId": "en-reading-05",
+        "independentScenarioPt": "Eva trabalha à noite e não estuda pela manhã. Em inglês, faça uma pergunta sobre o hábito de trabalho dela e escreva uma frase negativa sobre o hábito de estudar.",
+        "essentialCriteriaPt": [
+          "Usa do/does com forma base.",
+          "Negação preserva o sentido e a pessoa."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-06",
+        "nodeId": "en-path-06",
+        "language": "en",
+        "sequence": 6,
+        "level": "A2",
+        "canDoTarget": "Expressar posse em contexto familiar.",
+        "originalCheckpointDraft": "Escrever de quem são três objetos.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-06-q1",
+          "en-grammar-06-q2",
+          "en-grammar-06-q3",
+          "en-reading-06-q1",
+          "en-reading-06-q2",
+          "en-reading-06-q3"
+        ],
+        "legacyReadingId": "en-reading-06",
+        "independentScenarioPt": "Explique a quem pertencem três objetos em cenário novo.",
+        "essentialCriteriaPt": [
+          "Possessivos coerentes com o possuidor.",
+          "Objetos e pessoas não se confundem."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-07",
+        "nodeId": "en-path-07",
+        "language": "en",
+        "sequence": 7,
+        "level": "A2",
+        "canDoTarget": "Informar localização, dia e horário de encontro.",
+        "originalCheckpointDraft": "Escrever mensagem com lugar e hora específicos.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-07-q1",
+          "en-grammar-07-q2",
+          "en-grammar-07-q3",
+          "en-reading-07-q1",
+          "en-reading-07-q2",
+          "en-reading-07-q3"
+        ],
+        "legacyReadingId": "en-reading-07",
+        "independentScenarioPt": "Envie convite com dia, horário e localização inéditos.",
+        "essentialCriteriaPt": [
+          "Dia e horário claros.",
+          "Preposições de tempo e lugar adequadas."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-08",
+        "nodeId": "en-path-08",
+        "language": "en",
+        "sequence": 8,
+        "level": "A2",
+        "canDoTarget": "Descrever existência e quantidade de itens.",
+        "originalCheckpointDraft": "Descrever ambiente com there is/there are.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-08-q1",
+          "en-grammar-08-q2",
+          "en-grammar-08-q3",
+          "en-reading-08-q1",
+          "en-reading-08-q2",
+          "en-reading-08-q3"
+        ],
+        "legacyReadingId": "en-reading-08",
+        "independentScenarioPt": "Descreva uma sala fictícia com quantidades diferentes.",
+        "essentialCriteriaPt": [
+          "Distingue there is/there are.",
+          "Quantidade de itens preservada."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-09",
+        "nodeId": "en-path-09",
+        "language": "en",
+        "sequence": 9,
+        "level": "A2",
+        "canDoTarget": "Distinguir rotina e ação em andamento.",
+        "originalCheckpointDraft": "Comparar every day e now em duas frases.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-09-q1",
+          "en-grammar-09-q2",
+          "en-grammar-09-q3",
+          "en-reading-09-q1",
+          "en-reading-09-q2",
+          "en-reading-09-q3"
+        ],
+        "legacyReadingId": "en-reading-09",
+        "independentScenarioPt": "Compare o que alguém faz normalmente com o que faz agora.",
+        "essentialCriteriaPt": [
+          "Hábito expresso no presente simples.",
+          "Ação atual no present continuous."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-10",
+        "nodeId": "en-path-10",
+        "language": "en",
+        "sequence": 10,
+        "level": "A2",
+        "canDoTarget": "Relatar uma ação encerrada e negativa no passado.",
+        "originalCheckpointDraft": "Contar ontem em três frases usando did not e um irregular.",
+        "legacyStudyQuestionIds": [
+          "en-grammar-10-q1",
+          "en-grammar-10-q2",
+          "en-grammar-10-q3",
+          "en-reading-10-q1",
+          "en-reading-10-q2",
+          "en-reading-10-q3"
+        ],
+        "legacyReadingId": "en-reading-10",
+        "independentScenarioPt": "Conte o que aconteceu ontem e o que não aconteceu.",
+        "essentialCriteriaPt": [
+          "Passado simples para ação fechada.",
+          "Did not com verbo base."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-11",
+        "nodeId": "en-path-11",
+        "language": "en",
+        "sequence": 11,
+        "level": "B1",
+        "canDoTarget": "Distinguir experiência de evento datado.",
+        "originalCheckpointDraft": "Contrastar present perfect e past simple com exemplos.",
+        "legacyStudyQuestionIds": [
+          "en-v2-grammar-001-q1",
+          "en-v2-grammar-001-q2",
+          "en-v2-grammar-001-q3",
+          "en-v2-reading-001-q1",
+          "en-v2-reading-001-q2",
+          "en-v2-reading-001-q3"
+        ],
+        "legacyReadingId": "en-v2-reading-001",
+        "independentScenarioPt": "Relate experiência de viagem e outro evento com data específica.",
+        "essentialCriteriaPt": [
+          "Present perfect para experiência.",
+          "Past simple para evento datado."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-12",
+        "nodeId": "en-path-12",
+        "language": "en",
+        "sequence": 12,
+        "level": "B1",
+        "canDoTarget": "Expressar condição futura plausível.",
+        "originalCheckpointDraft": "Propor plano com if + present e will.",
+        "legacyStudyQuestionIds": [
+          "en-v2-grammar-002-q1",
+          "en-v2-grammar-002-q2",
+          "en-v2-grammar-002-q3",
+          "en-v2-reading-002-q1",
+          "en-v2-reading-002-q2",
+          "en-v2-reading-002-q3"
+        ],
+        "legacyReadingId": "en-v2-reading-002",
+        "independentScenarioPt": "Diante de previsão de chuva, proponha plano com condição e resultado.",
+        "essentialCriteriaPt": [
+          "Condição plausível com if.",
+          "Resultado sem garantir ocorrência da condição."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-13",
+        "nodeId": "en-path-13",
+        "language": "en",
+        "sequence": 13,
+        "level": "B1",
+        "canDoTarget": "Focalizar resultado por voz passiva.",
+        "originalCheckpointDraft": "Reescrever frase ativa em passiva no tempo adequado.",
+        "legacyStudyQuestionIds": [
+          "en-v2-grammar-003-q1",
+          "en-v2-grammar-003-q2",
+          "en-v2-grammar-003-q3",
+          "en-v2-reading-003-q1",
+          "en-v2-reading-003-q2",
+          "en-v2-reading-003-q3"
+        ],
+        "legacyReadingId": "en-v2-reading-003",
+        "independentScenarioPt": "Explique o resultado de um reparo usando voz passiva.",
+        "essentialCriteriaPt": [
+          "Voz passiva com tempo coerente.",
+          "Foco no resultado sem alterar evento."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-14",
+        "nodeId": "en-path-14",
+        "language": "en",
+        "sequence": 14,
+        "level": "B1",
+        "canDoTarget": "Conectar informações usando relativas.",
+        "originalCheckpointDraft": "Identificar pessoa e coisa com who/which/that.",
+        "legacyStudyQuestionIds": [
+          "en-v2-grammar-004-q1",
+          "en-v2-grammar-004-q2",
+          "en-v2-grammar-004-q3",
+          "en-v2-reading-004-q1",
+          "en-v2-reading-004-q2",
+          "en-v2-reading-004-q3"
+        ],
+        "legacyReadingId": "en-v2-reading-004",
+        "independentScenarioPt": "Em inglês, descreva uma pessoa que conserta computadores usando who e uma ferramenta que mede temperatura usando which, em duas frases próprias.",
+        "essentialCriteriaPt": [
+          "Relativas conectam informações.",
+          "Referentes inequívocos."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "en-progress-v17-15",
+        "nodeId": "en-path-15",
+        "language": "en",
+        "sequence": 15,
+        "level": "B1",
+        "canDoTarget": "Relatar evento no passado com ação de fundo.",
+        "originalCheckpointDraft": "Contar interrupção com was/were + -ing e past simple.",
+        "legacyStudyQuestionIds": [
+          "en-v2-grammar-005-q1",
+          "en-v2-grammar-005-q2",
+          "en-v2-grammar-005-q3",
+          "en-v2-reading-005-q1",
+          "en-v2-reading-005-q2",
+          "en-v2-reading-005-q3"
+        ],
+        "legacyReadingId": "en-v2-reading-005",
+        "independentScenarioPt": "Conte uma ação em curso interrompida por outra e sua consequência.",
+        "essentialCriteriaPt": [
+          "Past continuous para cenário em curso.",
+          "Past simple para evento pontual."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      }
+    ],
+    "ru": [
+      {
+        "draftId": "ru-progress-v17-01",
+        "nodeId": "ru-path-01",
+        "language": "ru",
+        "sequence": 1,
+        "level": "A1",
+        "canDoTarget": "Ler cirílico, incluindo pares visuais e ё.",
+        "originalCheckpointDraft": "Ler e copiar cinco palavras com grafia distinta ё/е.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-01-q1",
+          "ru-grammar-01-q2",
+          "ru-grammar-01-q3",
+          "ru-reading-01-q1",
+          "ru-reading-01-q2",
+          "ru-reading-01-q3"
+        ],
+        "legacyReadingId": "ru-reading-01",
+        "independentScenarioPt": "Leia o bilhete 'Ёж в лесу. Лена едет домой.'. Indique em português quem está na floresta e para onde Lena vai; copie uma palavra com ё e outra com е.",
+        "essentialCriteriaPt": [
+          "Localiza duas informações explícitas no bilhete em cirílico.",
+          "Não confunde ё e е na cópia apresentada."
+        ],
+        "evidenceCategory": "written_reception",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-02",
+        "nodeId": "ru-path-02",
+        "language": "ru",
+        "sequence": 2,
+        "level": "A1",
+        "canDoTarget": "Apresentar-se com pronomes em frases simples.",
+        "originalCheckpointDraft": "Produzir três frases nominais sem verbo ser no presente.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-02-q1",
+          "ru-grammar-02-q2",
+          "ru-grammar-02-q3",
+          "ru-reading-02-q1",
+          "ru-reading-02-q2",
+          "ru-reading-02-q3"
+        ],
+        "legacyReadingId": "ru-reading-02",
+        "independentScenarioPt": "Apresente duas pessoas fictícias em frases nominais simples.",
+        "essentialCriteriaPt": [
+          "Pronomes e referentes adequados.",
+          "Não exige cópula presente indevida."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-03",
+        "nodeId": "ru-path-03",
+        "language": "ru",
+        "sequence": 3,
+        "level": "A1",
+        "canDoTarget": "Reconhecer gênero de substantivos e exceções.",
+        "originalCheckpointDraft": "Classificar palavras incluindo nome em -ь.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-03-q1",
+          "ru-grammar-03-q2",
+          "ru-grammar-03-q3",
+          "ru-reading-03-q1",
+          "ru-reading-03-q2",
+          "ru-reading-03-q3"
+        ],
+        "legacyReadingId": "ru-reading-03",
+        "independentScenarioPt": "Classifique o gênero de 'стол', 'книга', 'словарь' e 'дверь'. Explique em português por que a terminação -ь, sozinha, não determina o gênero.",
+        "essentialCriteriaPt": [
+          "Gênero dos termos propostos correto.",
+          "Não assume gênero universal em -ь."
+        ],
+        "evidenceCategory": "contextual_recognition",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-04",
+        "nodeId": "ru-path-04",
+        "language": "ru",
+        "sequence": 4,
+        "level": "A1",
+        "canDoTarget": "Formar plurais frequentes.",
+        "originalCheckpointDraft": "Transformar três substantivos em plural, considerando regras.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-04-q1",
+          "ru-grammar-04-q2",
+          "ru-grammar-04-q3",
+          "ru-reading-04-q1",
+          "ru-reading-04-q2",
+          "ru-reading-04-q3"
+        ],
+        "legacyReadingId": "ru-reading-04",
+        "independentScenarioPt": "Escreva em russo o plural das palavras 'стол', 'книга', 'окно' e 'учитель', respeitando a forma própria de cada substantivo.",
+        "essentialCriteriaPt": [
+          "Plurais frequentes corretos.",
+          "Respeita exceções ensinadas."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-05",
+        "nodeId": "ru-path-05",
+        "language": "ru",
+        "sequence": 5,
+        "level": "A2",
+        "canDoTarget": "Concordar possessivos com o objeto.",
+        "originalCheckpointDraft": "Usar мой/моя/моё/мои em quatro contextos.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-05-q1",
+          "ru-grammar-05-q2",
+          "ru-grammar-05-q3",
+          "ru-reading-05-q1",
+          "ru-reading-05-q2",
+          "ru-reading-05-q3"
+        ],
+        "legacyReadingId": "ru-reading-05",
+        "independentScenarioPt": "Escreva três avisos de pertences usando formas de мой.",
+        "essentialCriteriaPt": [
+          "Concordância de possessivo e substantivo.",
+          "Referência a cada objeto clara."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-06",
+        "nodeId": "ru-path-06",
+        "language": "ru",
+        "sequence": 6,
+        "level": "A2",
+        "canDoTarget": "Conjugar verbo de ação no presente.",
+        "originalCheckpointDraft": "Descrever estudo/leitura com três sujeitos.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-06-q1",
+          "ru-grammar-06-q2",
+          "ru-grammar-06-q3",
+          "ru-reading-06-q1",
+          "ru-reading-06-q2",
+          "ru-reading-06-q3"
+        ],
+        "legacyReadingId": "ru-reading-06",
+        "independentScenarioPt": "Descreva ações atuais de três pessoas fictícias.",
+        "essentialCriteriaPt": [
+          "Conjugação de presente adequada.",
+          "Ações associadas aos sujeitos certos."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-07",
+        "nodeId": "ru-path-07",
+        "language": "ru",
+        "sequence": 7,
+        "level": "A2",
+        "canDoTarget": "Negar ação e responder não.",
+        "originalCheckpointDraft": "Usar не com verbo e нет como resposta isolada.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-07-q1",
+          "ru-grammar-07-q2",
+          "ru-grammar-07-q3",
+          "ru-reading-07-q1",
+          "ru-reading-07-q2",
+          "ru-reading-07-q3"
+        ],
+        "legacyReadingId": "ru-reading-07",
+        "independentScenarioPt": "Responda em russo, de forma negativa, às perguntas 'Ты работаешь сегодня?' e 'Ты знаешь адрес?'. Formule respostas completas em cirílico.",
+        "essentialCriteriaPt": [
+          "Distingue не com verbo e нет na resposta.",
+          "Não exige genitivo B1 como condição."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-08",
+        "nodeId": "ru-path-08",
+        "language": "ru",
+        "sequence": 8,
+        "level": "A2",
+        "canDoTarget": "Fazer perguntas simples de pessoas, lugar e tempo.",
+        "originalCheckpointDraft": "Formular três perguntas com кто/где/когда.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-08-q1",
+          "ru-grammar-08-q2",
+          "ru-grammar-08-q3",
+          "ru-reading-08-q1",
+          "ru-reading-08-q2",
+          "ru-reading-08-q3"
+        ],
+        "legacyReadingId": "ru-reading-08",
+        "independentScenarioPt": "Pergunte quem vem, onde será a reunião e quando começa.",
+        "essentialCriteriaPt": [
+          "Perguntas de pessoa/lugar/tempo distintas.",
+          "Formulação inteligível em cirílico."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-09",
+        "nodeId": "ru-path-09",
+        "language": "ru",
+        "sequence": 9,
+        "level": "A2",
+        "canDoTarget": "Distinguir sujeito de objeto no acusativo inicial.",
+        "originalCheckpointDraft": "Usar книгу/машину como objetos diretos.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-09-q1",
+          "ru-grammar-09-q2",
+          "ru-grammar-09-q3",
+          "ru-reading-09-q1",
+          "ru-reading-09-q2",
+          "ru-reading-09-q3"
+        ],
+        "legacyReadingId": "ru-reading-09",
+        "independentScenarioPt": "Diga quem compra e o que compra numa loja fictícia.",
+        "essentialCriteriaPt": [
+          "Distingue sujeito de objeto.",
+          "Acusativo inicial adequado nos substantivos selecionados."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-10",
+        "nodeId": "ru-path-10",
+        "language": "ru",
+        "sequence": 10,
+        "level": "A2",
+        "canDoTarget": "Concordar números um, dois e cinco com nomes.",
+        "originalCheckpointDraft": "Pedir quantidades com один/одна/две/пять.",
+        "legacyStudyQuestionIds": [
+          "ru-grammar-10-q1",
+          "ru-grammar-10-q2",
+          "ru-grammar-10-q3",
+          "ru-reading-10-q1",
+          "ru-reading-10-q2",
+          "ru-reading-10-q3"
+        ],
+        "legacyReadingId": "ru-reading-10",
+        "independentScenarioPt": "Em uma papelaria, escreva em russo três pedidos do item 'книга': um exemplar, dois exemplares e cinco exemplares. Use numerais e flexões adequadas.",
+        "essentialCriteriaPt": [
+          "Quantidades expressas corretamente.",
+          "Concordância dos substantivos no contexto."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-11",
+        "nodeId": "ru-path-11",
+        "language": "ru",
+        "sequence": 11,
+        "level": "B1",
+        "canDoTarget": "Contrastar processo e resultado por aspecto.",
+        "originalCheckpointDraft": "Contar hábito, processo e ação concluída.",
+        "legacyStudyQuestionIds": [
+          "ru-v2-grammar-001-q1",
+          "ru-v2-grammar-001-q2",
+          "ru-v2-grammar-001-q3",
+          "ru-v2-reading-001-q1",
+          "ru-v2-reading-001-q2",
+          "ru-v2-reading-001-q3"
+        ],
+        "legacyReadingId": "ru-v2-reading-001",
+        "independentScenarioPt": "Relate o processo e a conclusão de uma tarefa.",
+        "essentialCriteriaPt": [
+          "Aspecto imperfectivo para processo.",
+          "Perfectivo para conclusão pertinente."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-12",
+        "nodeId": "ru-path-12",
+        "language": "ru",
+        "sequence": 12,
+        "level": "B1",
+        "canDoTarget": "Usar genitivo após нет e para indicar posse.",
+        "originalCheckpointDraft": "Dizer o que não tenho e de quem é um objeto.",
+        "legacyStudyQuestionIds": [
+          "ru-v2-grammar-002-q1",
+          "ru-v2-grammar-002-q2",
+          "ru-v2-grammar-002-q3",
+          "ru-v2-reading-002-q1",
+          "ru-v2-reading-002-q2",
+          "ru-v2-reading-002-q3"
+        ],
+        "legacyReadingId": "ru-v2-reading-002",
+        "independentScenarioPt": "Diga que não há um objeto e a quem pertence outro.",
+        "essentialCriteriaPt": [
+          "Genitivo após ausência onde exigido.",
+          "Sentido de posse não confundido."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-13",
+        "nodeId": "ru-path-13",
+        "language": "ru",
+        "sequence": 13,
+        "level": "B1",
+        "canDoTarget": "Marcar destinatário e sensação no dativo.",
+        "originalCheckpointDraft": "Expressar sensação com мне e receptor de ação.",
+        "legacyStudyQuestionIds": [
+          "ru-v2-grammar-003-q1",
+          "ru-v2-grammar-003-q2",
+          "ru-v2-grammar-003-q3",
+          "ru-v2-reading-003-q1",
+          "ru-v2-reading-003-q2",
+          "ru-v2-reading-003-q3"
+        ],
+        "legacyReadingId": "ru-v2-reading-003",
+        "independentScenarioPt": "Envie mensagem a um conhecido mencionando destinatário e sensação.",
+        "essentialCriteriaPt": [
+          "Dativo do destinatário adequado.",
+          "Expressão de sensação clara."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-14",
+        "nodeId": "ru-path-14",
+        "language": "ru",
+        "sequence": 14,
+        "level": "B1",
+        "canDoTarget": "Usar instrumental para companhia e função.",
+        "originalCheckpointDraft": "Descrever companhia com с e profissão com работает.",
+        "legacyStudyQuestionIds": [
+          "ru-v2-grammar-004-q1",
+          "ru-v2-grammar-004-q2",
+          "ru-v2-grammar-004-q3",
+          "ru-v2-reading-004-q1",
+          "ru-v2-reading-004-q2",
+          "ru-v2-reading-004-q3"
+        ],
+        "legacyReadingId": "ru-v2-reading-004",
+        "independentScenarioPt": "Descreva profissão de uma pessoa e companhia em atividade.",
+        "essentialCriteriaPt": [
+          "Instrumental para profissão.",
+          "С com forma de companhia apropriada."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      },
+      {
+        "draftId": "ru-progress-v17-15",
+        "nodeId": "ru-path-15",
+        "language": "ru",
+        "sequence": 15,
+        "level": "B1",
+        "canDoTarget": "Contrastar caminho atual, habitual e por transporte.",
+        "originalCheckpointDraft": "Explicar viagem agora versus deslocamento rotineiro.",
+        "legacyStudyQuestionIds": [
+          "ru-v2-grammar-005-q1",
+          "ru-v2-grammar-005-q2",
+          "ru-v2-grammar-005-q3",
+          "ru-v2-reading-005-q1",
+          "ru-v2-reading-005-q2",
+          "ru-v2-reading-005-q3"
+        ],
+        "legacyReadingId": "ru-v2-reading-005",
+        "independentScenarioPt": "Compare deslocamento habitual por transporte e deslocamento atual.",
+        "essentialCriteriaPt": [
+          "Movimento habitual e atual diferenciados.",
+          "Meio e contexto coerentes."
+        ],
+        "evidenceCategory": "written_production",
+        "assessmentMode": "proposed_independent_new_context",
+        "legacyStudyNotMastery": true,
+        "public": false,
+        "reviewStatus": "awaiting_independent_teacher_approval"
+      }
+    ]
+  },
+  "limitations": [
+    "30 stages are mappings, not validated tests",
+    "Legacy 6 items per stage only measure study completion",
+    "New scenarios require independent review and pilot before assessing",
+    "No hard prerequisite gates"
+  ]
+}

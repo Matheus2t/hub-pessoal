@@ -1,0 +1,31 @@
+name: Validar contrato editorial V17
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-avaliacao-*-v17.*'
+      - 'scripts/learn/validate-assessment-progression-v17.mjs'
+      - 'frontend/src/learn/progression-v17-content.ts'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v17-editorial-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-avaliacao-*-v17.*'
+      - 'scripts/learn/validate-assessment-progression-v17.mjs'
+      - 'frontend/src/learn/progression-v17-content.ts'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v17-editorial-contract.yml'
+permissions:
+  contents: read
+jobs:
+  editorial-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar sintaxe do validador
+        run: node --check scripts/learn/validate-assessment-progression-v17.mjs
+      - name: Validar 474 itens, 30 etapas, 6 checkpoints e 16 casos sintéticos
+        run: node scripts/learn/validate-assessment-progression-v17.mjs
