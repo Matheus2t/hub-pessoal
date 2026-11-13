@@ -47,5 +47,14 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npx playwright install chromium
+      - name: Iniciar servidor local para testes V12 de navegação
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-curriculum-server.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8123/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/2t-learn-curriculum-server.log
+          exit 1
       - name: Regressão de progressão e avaliação A1-B1
         run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-progression-v12.spec.ts frontend/tests/learn-progress-v17.spec.ts
