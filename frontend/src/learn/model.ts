@@ -45,11 +45,21 @@ export interface LessonEvidenceEvent {
 export interface LessonDraft {taskId:string;eventId:string;response:string;startedAt:number;updatedAt:number;choiceIndex?:number}
 export interface DelayedReviewAttemptProgress {attemptId:string;probeId:string;status:'inProgress'|'completed'|'notAssessed';startedAt:number;currentTaskIndex:number;completedAt?:number}
 export interface DelayedReviewProgressState {pilotCompletedAt:number;attempts:DelayedReviewAttemptProgress[]}
+export type V17Level='A1'|'A2'|'B1';
+export type V17Competency='written_reception'|'written_production'|'spoken_reception'|'spoken_production'|'interaction'|'contextual_recognition'|'retention_transfer';
+export interface V17AssessmentDraft {draftId:string;scenarioId:string;contentFingerprint:string;response:string;startedAt:number;updatedAt:number;criteriaViewedAt?:number}
+export interface V17ScenarioAcceptance {scenarioId:string;contentFingerprint:string;acceptedAt:number;reviewerId:string;reviewerName:string}
+export interface V17CriterionRating {criterion:'task'|'meaning'|'grammarVocabulary'|'context';score:Grade}
+export interface V17HumanReview {revisionId:string;reviewerId:string;reviewerName:string;reviewedAt:number;rubricVersion:1;score:Grade;criteria:V17CriterionRating[];rationale:string;whatWorked:string;priorityIssue:string;concreteSuggestion:string;outcome:'needs_practice'|'partially_supported'|'supported_for_observed_task';decision:'initial'|'correction'|'independent_review'}
+export interface V17AssessmentAttempt {attemptId:string;scenarioId:string;language:Language;level:V17Level;competency:V17Competency;contentVersion:number;contentFingerprint:string;origin?:'progression_v17_assessment';prompt:string;essentialCriteria:string[];response:string;startedAt:number;submittedAt:number;assistanceBeforeSubmission:string[];outcome:'uncertain'|'not_assessed'|'needs_practice'|'partially_supported'|'supported_for_observed_task';reviewStatus:'awaiting_review'|'reviewed'|'disputed'|'not_assessed';reviews:V17HumanReview[]}
+export interface V17AssessmentData {schemaVersion:1;drafts:V17AssessmentDraft[];acceptances:V17ScenarioAcceptance[];attempts:V17AssessmentAttempt[]}
 export interface LessonProgress {
   key:string;language:Language;unitId:string;contentVersion:number;currentStage:number;
   shownAssistance:LessonAssistance[];drafts:LessonDraft[];updatedAt:number;
   diagnosticSessionId?:string;diagnosticStatus?:'inProgress'|'completed'|'skipped';diagnosticLastEventId?:string;
   sessionKind?:'delayedReview';delayedReview?:DelayedReviewProgressState;
+  /** V17 additive record stored in the existing v3 lessonProgress store. */
+  v17Assessment?:V17AssessmentData;
 }
 export interface Backup {
   format:'2t-learn';version:1|2|3;exportedAt:number;attempts:Attempt[];cards:Card[];
