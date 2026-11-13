@@ -1,0 +1,51 @@
+name: Auditar progressão curricular A1-B1
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-progressao-a1-b1-v10.json'
+      - 'docs/learn-a1-b1-curricular-audit-2026-11-13.md'
+      - 'frontend/public/learn/progression-v12.json'
+      - 'frontend/public/learn/en.json'
+      - 'frontend/public/learn/ru.json'
+      - 'scripts/learn/build-progression-v12.mjs'
+      - 'scripts/learn/validate-progression-v12.mjs'
+      - 'scripts/learn/validate-curriculum-a1-b1-v20.mjs'
+      - '.github/workflows/learn-a1-b1-curricular-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-progressao-a1-b1-v10.json'
+      - 'docs/learn-a1-b1-curricular-audit-2026-11-13.md'
+      - 'frontend/public/learn/progression-v12.json'
+      - 'frontend/public/learn/en.json'
+      - 'frontend/public/learn/ru.json'
+      - 'scripts/learn/build-progression-v12.mjs'
+      - 'scripts/learn/validate-progression-v12.mjs'
+      - 'scripts/learn/validate-curriculum-a1-b1-v20.mjs'
+      - '.github/workflows/learn-a1-b1-curricular-audit.yml'
+permissions:
+  contents: read
+jobs:
+  curriculum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Validar sintaxe da auditoria
+        run: node --check scripts/learn/validate-curriculum-a1-b1-v20.mjs
+      - name: Validar 30 etapas, 180 vínculos e 474 exercícios
+        run: node scripts/learn/validate-curriculum-a1-b1-v20.mjs
+      - name: Validar projeção V10-V12, ligações e preservação do legado
+        run: node scripts/learn/validate-progression-v12.mjs
+      - name: Validar compatibilidade com contrato pedagógico V17
+        run: node scripts/learn/validate-assessment-progression-v17.mjs
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx playwright install chromium
+      - name: Regressão de progressão e avaliação A1-B1
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-progression-v12.spec.ts frontend/tests/learn-progress-v17.spec.ts
