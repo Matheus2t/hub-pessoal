@@ -1,0 +1,470 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_assessment_policy_v17",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "status": "editorial_proposal_requires_independent_review",
+  "references": {
+    "framework": "https://www.coe.int/en/web/common-european-framework-reference-languages/cefr-descriptors",
+    "progression": "frontend/public/learn/progression-v12.json",
+    "stageAssessment": "docs/learn-avaliacao-etapas-v17.json",
+    "audio": "docs/learn-audio-v15.md",
+    "legacyCatalogEn": "frontend/public/learn/en.json",
+    "legacyCatalogRu": "frontend/public/learn/ru.json"
+  },
+  "trackedDimensions": [
+    {
+      "id": "study_progress",
+      "states": [
+        "not_started",
+        "in_progress",
+        "activities_answered"
+      ],
+      "source": "submitted distinct item IDs scoped by language and stage",
+      "rule": "Incorrect and uncertain still count only as activity answered, never mastery",
+      "canBeCalledMastery": false
+    },
+    {
+      "id": "task_performance",
+      "states": [
+        "not_assessed",
+        "awaiting_review",
+        "needs_practice",
+        "partially_supported",
+        "supported_for_observed_task"
+      ],
+      "source": "approved task, reviewed results, provenance and independently shown scenario",
+      "rule": "No generic accuracy percentage or single legacy answer may confer A1/A2/B1",
+      "canBeCalledMastery": false
+    },
+    {
+      "id": "study_recommendation",
+      "states": [
+        "explore_current",
+        "review_recommended",
+        "next_activity_suggested",
+        "insufficient_evidence"
+      ],
+      "source": "feedback from approved task and status of missing evidence",
+      "rule": "Never block legacy modules or other levels; recommendation is reversible",
+      "canBeCalledMastery": false
+    }
+  ],
+  "competencies": [
+    {
+      "id": "written_reception",
+      "evidence": "new unseen text, meaningful comprehension or inference",
+      "invalidIf": "answer-only drill or translation revealed"
+    },
+    {
+      "id": "written_production",
+      "evidence": "original message in target language reviewed with task-specific rubric",
+      "invalidIf": "model answer seen before attempt, no qualified review"
+    },
+    {
+      "id": "spoken_reception",
+      "evidence": "approved recording listened to with transcript hidden, relevant comprehension",
+      "invalidIf": "browser TTS, missing approved recording, transcript shown"
+    },
+    {
+      "id": "spoken_production",
+      "evidence": "spoken response recorded/observed and assessed by qualified human",
+      "invalidIf": "no spoken output"
+    },
+    {
+      "id": "interaction",
+      "evidence": "responsive interaction with person, evidence of contingency",
+      "invalidIf": "static scripted answers only"
+    },
+    {
+      "id": "contextual_recognition",
+      "evidence": "approved meaningful contextual grammar and vocabulary tasks",
+      "invalidIf": "only repeatedly memorised isolated items"
+    },
+    {
+      "id": "retention_transfer",
+      "evidence": "meaningful change of context and later unaided opportunity",
+      "invalidIf": "same memorised exercise repeated"
+    }
+  ],
+  "sourceRequirements": {
+    "required": [
+      "taskId",
+      "language",
+      "contentVersion",
+      "competencyId",
+      "sourceType",
+      "submittedAt",
+      "assistanceBeforeSubmission",
+      "assessmentMethod",
+      "reviewStatus",
+      "outcome",
+      "independentContext"
+    ],
+    "sourceTypes": [
+      "legacy_attempt",
+      "approved_new_checkpoint",
+      "approved_reading_task",
+      "approved_recorded_listening",
+      "human_reviewed_writing",
+      "human_reviewed_speaking",
+      "human_observed_interaction"
+    ],
+    "legacyAttempt": "practice_study_only",
+    "newItemMustBeTeacherApproved": false,
+    "changesToSourceInvalidatePriorAssessment": true,
+    "repeatPromptNotIndependent": true,
+    "scoringBeforeTeacherApproval": false,
+    "helpBeforeAttemptRemovesIndependentEvidence": true,
+    "unknownOpenAnswer": "uncertain_not_wrong",
+    "audioWithoutApprovedAsset": "not_assessed",
+    "newItemRequiresOwnerEditorialAcceptanceForPractice": true
+  },
+  "rubric": {
+    "0": {
+      "outcome": "needs_practice",
+      "descriptionPt": "Resposta incompatível, contraditória ou fora da tarefa com justificativa de avaliação."
+    },
+    "1": {
+      "outcome": "needs_practice",
+      "descriptionPt": "Fatos ou formas isoladas; não resolve a tarefa em novo cenário."
+    },
+    "2": {
+      "outcome": "partially_supported",
+      "descriptionPt": "Comunica parte central, mas falta ligação essencial ou há erro que limita o sentido."
+    },
+    "3": {
+      "outcome": "supported_for_observed_task",
+      "descriptionPt": "Cumpre o objetivo com evidência e relações necessárias, inteligível sem ajuda de modelo."
+    },
+    "uncertain": {
+      "outcome": "awaiting_review",
+      "descriptionPt": "Possível resposta válida, mas não classificada com confiança; exige revisão humana."
+    },
+    "notAssessed": {
+      "outcome": "not_assessed",
+      "descriptionPt": "Sem evidência elegível, áudio não aprovado, gabarito exposto ou competência indisponível."
+    }
+  },
+  "humanReview": {
+    "perItem": "internal_editorial_review_and_owner_acceptance_for_practice_content; unrecognized learner free responses require capable human review or remain uncertain",
+    "forLevelSummary": "do_not_claim_actual_CEFR_level_without_external_validation; do_not_derive_from_course_checkpoints",
+    "disagreements": "hold_in_awaiting_review_until_resolved",
+    "rubricIsProvisional": true,
+    "externalReviewPerformed": false,
+    "ownerApprovalIsNotIndependentExternalValidation": true
+  },
+  "recommendationRules": [
+    {
+      "id": "R1",
+      "condition": "onlyLegacyAttempts",
+      "state": "next_activity_suggested",
+      "messagePt": "Estudo registrado; experimente uma tarefa inédita para verificar aplicação, sem bloqueio."
+    },
+    {
+      "id": "R2",
+      "condition": "uncertainOrPendingOpenReview",
+      "state": "insufficient_evidence",
+      "messagePt": "Sua resposta aguarda revisão. Ela não é erro nem aprovação."
+    },
+    {
+      "id": "R3",
+      "condition": "independentReviewedTaskSupported",
+      "state": "next_activity_suggested",
+      "messagePt": "Boa evidência nesta tarefa; experimente outro contexto, sem atribuição automática de nível."
+    },
+    {
+      "id": "R4",
+      "condition": "reviewedTaskNeedsPractice",
+      "state": "review_recommended",
+      "messagePt": "Revisar este ponto pode ajudar. Outras etapas continuam disponíveis."
+    },
+    {
+      "id": "R5",
+      "condition": "samePromptRepeated",
+      "state": "insufficient_evidence",
+      "messagePt": "Repetição ajuda na prática, mas não conta como transferência independente."
+    },
+    {
+      "id": "R6",
+      "condition": "approvedListeningUnavailable",
+      "state": "insufficient_evidence",
+      "messagePt": "Compreensão auditiva não avaliada com áudio homologado; estudo continua aberto."
+    },
+    {
+      "id": "R7",
+      "condition": "provenanceMissingOrStale",
+      "state": "insufficient_evidence",
+      "messagePt": "Histórico de estudo preservado; falta evidência verificável para esta competência."
+    }
+  ],
+  "claimLimits": {
+    "neverDisplay": [
+      "A1 certificado",
+      "A2 certificado",
+      "B1 certificado",
+      "fluente",
+      "domínio comprovado pelo percentual"
+    ],
+    "allowed": [
+      "Estudo: 6 de 6 atividades respondidas.",
+      "Desempenho observado nesta tarefa: com apoio / sem apoio.",
+      "Produção escrita: aguardando revisão.",
+      "Compreensão auditiva: não avaliada — gravação homologada indisponível.",
+      "Próxima atividade recomendada; acesso livre às demais."
+    ],
+    "listMissingCompetenciesSeparately": true,
+    "noOverallLevelWithoutExternalValidation": true,
+    "noConversionFromPercentToCefr": true
+  },
+  "levelCheckpoints": [
+    {
+      "draftId": "en-checkpoint-v17-a1",
+      "language": "en",
+      "level": "A1",
+      "afterStageNodeId": "en-path-04",
+      "objectivePt": "Compreender informação imediata em bilhete curto; produzir apresentação e rotina muito simples.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Ler texto inédito e localizar pessoa, lugar e ação.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Escrever 3 frases sobre pessoa e rotina fictícia sem modelo.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Aplicar mesmas estruturas em situação com referentes trocados.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    },
+    {
+      "draftId": "en-checkpoint-v17-a2",
+      "language": "en",
+      "level": "A2",
+      "afterStageNodeId": "en-path-10",
+      "objectivePt": "Compreender mensagens práticas e comunicar planos com local, horário e razão simples.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Interpretar atualização de horário/local e motivo num diálogo escrito inédito.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Escrever recado de 3–5 frases, com resposta a mudança de plano.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Resolver nova situação cotidiana sem copiar texto anterior.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    },
+    {
+      "draftId": "en-checkpoint-v17-b1",
+      "language": "en",
+      "level": "B1",
+      "afterStageNodeId": "en-path-15",
+      "objectivePt": "Relacionar ideias principais e ressalvas em texto familiar; justificar decisão em escrita conectada.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Interpretar texto inédito: intenção, decisão, evidência e limite factual.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Escrever mensagem conectada com problema, opção, justificativa e consequência.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Transferir solução a cenário diferente com incerteza explícita.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    },
+    {
+      "draftId": "ru-checkpoint-v17-a1",
+      "language": "ru",
+      "level": "A1",
+      "afterStageNodeId": "ru-path-04",
+      "objectivePt": "Reconhecer cirílico básico e mensagens imediatas; produzir frases nominais inteligíveis.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Ler bilhete inédito em cirílico e identificar pessoa, local e objeto.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Apresentar 2 pessoas e objetos em frases simples, sem cópula artificial.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Aplicar gênero e plural a objetos inéditos do mesmo repertório.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    },
+    {
+      "draftId": "ru-checkpoint-v17-a2",
+      "language": "ru",
+      "level": "A2",
+      "afterStageNodeId": "ru-path-10",
+      "objectivePt": "Entender e produzir mensagens curtas sobre rotina, perguntas, hora e objetos.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Interpretar aviso novo de localização/horário, sem exigir casos B1.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Escrever mensagem em cirílico pedindo local e hora, indicando quantidades.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Adaptar a mensagem após mudança simples no plano sem modelo.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    },
+    {
+      "draftId": "ru-checkpoint-v17-b1",
+      "language": "ru",
+      "level": "B1",
+      "afterStageNodeId": "ru-path-15",
+      "objectivePt": "Relacionar causas e limitações de texto novo e justificar decisão com estruturas contextualizadas.",
+      "tasks": [
+        {
+          "kind": "written_reception",
+          "promptPt": "Interpretar texto inédito separando razão, decisão e ressalva.",
+          "reference": "new_non_legacy_text_teacher_approved"
+        },
+        {
+          "kind": "written_production",
+          "promptPt": "Escrever relato breve e conectado, com aspecto/caso/movimento pertinentes.",
+          "reference": "human_reviewed_independent_task"
+        },
+        {
+          "kind": "retention_transfer",
+          "promptPt": "Transferir decisão para situação nova sem inventar desfecho ou garantia.",
+          "reference": "new_context_plus_delayed_followup"
+        }
+      ],
+      "spokenReception": {
+        "status": "not_assessed_until_validated_recording",
+        "futureTask": "Ouvir áudio original aprovado do nível sem transcrição antecipada; identificar sentido principal e detalhe."
+      },
+      "spokenProduction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Avaliação oral com humano e rubrica antes de alegar competência oral."
+      },
+      "interaction": {
+        "status": "not_assessed_in_current_product",
+        "futureTask": "Troca comunicativa com interlocutor e respostas contingentes, observadas."
+      },
+      "public": false,
+      "reviewStatus": "awaiting_independent_teacher_approval"
+    }
+  ],
+  "releaseGovernance": {
+    "internalReviewRound": "v18",
+    "internalReviewPerformedBy": "ChatGPT editorial",
+    "independentReviewPerformed": false,
+    "externalExpertsRequiredForOwnerRunPracticeSite": false,
+    "externalValidationRequiredToMakeOfficialCEFRClaim": true,
+    "ownerAcceptsEditorialRiskBeforeRelease": true,
+    "publicReleaseAuthorized": false,
+    "studentAttemptsUnknownOpenAnswersStayUncertain": true,
+    "spokenSkillsRemainNotAssessedWithoutEvidence": true
+  },
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "stagesReviewed": 30,
+    "levelCheckpointsReviewed": 6,
+    "syntheticCasesReviewed": 16,
+    "scope": "policy coherence and limitations, not empirical learner calibration",
+    "ownerAcceptancePending": true
+  }
+}

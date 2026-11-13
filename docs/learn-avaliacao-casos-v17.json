@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_progression_assessment_synthetic_cases_v17",
+  "status": "synthetic_editorial_only",
+  "public": false,
+  "appliedToRealLearners": false,
+  "noStoredPersonalData": true,
+  "policyRef": "docs/learn-avaliacao-politica-v17.json",
+  "cases": [
+    {
+      "id": "v17-case-01",
+      "language": "en",
+      "labelPt": "Acerto em exercício legado não é domínio",
+      "facts": {
+        "sourceType": "legacy_attempt",
+        "correct": true,
+        "distinctItemIds": 6,
+        "allStageQuestionsAnswered": true
+      },
+      "expected": {
+        "study": "activities_answered",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "V12 mede estudo; não consegue validar competência independente por seis respostas."
+    },
+    {
+      "id": "v17-case-02",
+      "language": "ru",
+      "labelPt": "Repetições não multiplicam conclusão",
+      "facts": {
+        "sourceType": "legacy_attempt",
+        "sameItemIdRepeated": 7,
+        "distinctItemIds": 1,
+        "stageQuestionCount": 6
+      },
+      "expected": {
+        "study": "in_progress",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Somente IDs distintos por idioma são registrados em cobertura."
+    },
+    {
+      "id": "v17-case-03",
+      "language": "en",
+      "labelPt": "Tentativa incerta conta como estudo",
+      "facts": {
+        "sourceType": "legacy_attempt",
+        "outcome": "uncertain",
+        "sixDistinctItemsAnswered": true
+      },
+      "expected": {
+        "study": "activities_answered",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Resposta incerta não é acerto nem erro nem comprova domínio."
+    },
+    {
+      "id": "v17-case-04",
+      "language": "ru",
+      "labelPt": "Outro idioma não conta para trilha atual",
+      "facts": {
+        "targetLanguage": "ru",
+        "sourceLanguage": "en",
+        "sourceType": "legacy_attempt",
+        "distinctItemIds": 6
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Separação por idioma precisa ser mantida."
+    },
+    {
+      "id": "v17-case-05",
+      "language": "en",
+      "labelPt": "Browser TTS não é avaliação de listening",
+      "facts": {
+        "sourceType": "approved_recorded_listening",
+        "recordingValidated": false,
+        "source": "browser-synthesis",
+        "transcriptViewedBeforeAttempt": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Ouvir TTS não homologado não é evidência auditiva validada."
+    },
+    {
+      "id": "v17-case-06",
+      "language": "ru",
+      "labelPt": "Transcrição antecipada contamina escuta",
+      "facts": {
+        "sourceType": "approved_recorded_listening",
+        "recordingValidated": true,
+        "transcriptViewedBeforeAttempt": true
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Compreensão pode decorrer do texto lido."
+    },
+    {
+      "id": "v17-case-07",
+      "language": "en",
+      "labelPt": "Resposta aberta plausível não reconhecida",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "reviewStatus": "pending",
+        "outcome": "uncertain",
+        "independentContext": true
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "awaiting_review",
+        "claim": "no_level_claim"
+      },
+      "reason": "Encaminhar para revisão; não pontuar como erro."
+    },
+    {
+      "id": "v17-case-08",
+      "language": "ru",
+      "labelPt": "Tarefa revisada sem ajuda é evidência local",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": true,
+        "assistanceShown": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "supported_for_observed_task",
+        "claim": "no_level_claim"
+      },
+      "reason": "Apoia apenas a tarefa e competência observadas, não o nível inteiro."
+    },
+    {
+      "id": "v17-case-09",
+      "language": "en",
+      "labelPt": "Modelo mostrado antes tira independência",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": true,
+        "assistanceShown": true
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Ajuda prévia pode manter valor de prática, mas não prova desempenho independente."
+    },
+    {
+      "id": "v17-case-10",
+      "language": "ru",
+      "labelPt": "Rascunho sem aprovação não pode aprovar aluno",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": false,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": true,
+        "assistanceShown": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "PR editorial é proposta, não instrumento homologado."
+    },
+    {
+      "id": "v17-case-11",
+      "language": "en",
+      "labelPt": "Revisores discordam",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "disagreement",
+        "ratings": [
+          3,
+          1
+        ],
+        "independentContext": true,
+        "assistanceShown": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "awaiting_review",
+        "claim": "no_level_claim"
+      },
+      "reason": "Divergência humana exige adjudicação."
+    },
+    {
+      "id": "v17-case-12",
+      "language": "ru",
+      "labelPt": "Novo snapshot invalida aprovação antiga",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "sourceVersion": "old",
+        "currentVersion": "new",
+        "independentContext": true
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Parecer de versão anterior não deve autorizar evidência nova."
+    },
+    {
+      "id": "v17-case-13",
+      "language": "en",
+      "labelPt": "Repetir mesmo enunciado não mede transferência",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": false,
+        "assistanceShown": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "not_assessed",
+        "claim": "no_level_claim"
+      },
+      "reason": "Sem novo contexto não há demonstração independente de transferência."
+    },
+    {
+      "id": "v17-case-14",
+      "language": "ru",
+      "labelPt": "Falta fala espontânea mesmo com B1 escrito",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": true,
+        "assistanceShown": false,
+        "spokenProduction": "not_assessed"
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "supported_for_observed_task",
+        "claim": "no_level_claim"
+      },
+      "reason": "A produção escrita não permite afirmar fluência oral ou competência B1 global."
+    },
+    {
+      "id": "v17-case-15",
+      "language": "en",
+      "labelPt": "Resposta revisada insuficiente pede revisão sem bloquear",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "needs_practice",
+        "independentContext": true,
+        "assistanceShown": false
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "needs_practice",
+        "recommendation": "review_recommended",
+        "claim": "no_level_claim"
+      },
+      "reason": "Feedback orienta revisão, com acesso livre."
+    },
+    {
+      "id": "v17-case-16",
+      "language": "ru",
+      "labelPt": "Qualquer competência faltante permanece não avaliada",
+      "facts": {
+        "sourceType": "approved_new_checkpoint",
+        "teacherApproved": true,
+        "reviewStatus": "reviewed",
+        "outcome": "supported",
+        "independentContext": true,
+        "assistanceShown": false,
+        "spokenReception": "not_assessed"
+      },
+      "expected": {
+        "study": "not_started",
+        "performance": "supported_for_observed_task",
+        "claim": "no_level_claim"
+      },
+      "reason": "Uma habilidade sem instrumento válido não pode ser estimada a partir de outras."
+    }
+  ]
+}
