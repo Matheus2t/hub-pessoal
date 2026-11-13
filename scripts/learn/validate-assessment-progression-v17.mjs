@@ -22,7 +22,7 @@ const fixtures=read('docs/learn-avaliacao-casos-v17.json');
 // module, accesses learners, or turns editorial examples into assessments.
 const runtimeSource=readFileSync(resolve(root,'frontend/src/learn/progression-v17-content.ts'),'utf8');
 const runtimeArray=name=>{
- const exp=new RegExp('export const '+name+':[^=]*=([\\s\\S]*?) as [A-Za-z]+\\[\\];');
+ const exp=new RegExp('export const '+name+':[^=]*=([\\s\\S]*?) as [A-Za-z0-9_]+\\[\\];');
  const found=runtimeSource.match(exp);
  if(!found){bad('runtime',name+' literal array missing');return [];}
  try{return JSON.parse(found[1]);}
