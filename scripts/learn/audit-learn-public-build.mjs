@@ -53,19 +53,16 @@ export function verifyLearnPublicAssets(rootFolder=ROOT){
  const learnBundle=resolve(rootFolder,'learn.js');
  assert.ok(existsSync(learnBundle),'Bundle principal do Learn ausente');
  const bundle=readFileSync(learnBundle,'utf8');
- // Known limitation: local-only V16/V17 editorial proposals are currently
- // bundled in the public JavaScript. Route gates protect UI, NOT secret answers.
- // Do not declare those draft contents confidential until isolated server-side.
+ // V16/V17 proposals are preview-only and must not ship in public JavaScript.
  const publicBundleEditorialData={
   v16:bundle.includes('en-reading-b1-v16-01')||bundle.includes('ru-reading-b1-v16-01'),
   v17:bundle.includes('en-progress-v17-01')||bundle.includes('ru-progress-v17-01'),
  };
- if(publicBundleEditorialData.v16||publicBundleEditorialData.v17){
-  console.warn('SECURITY NOTE: V16/V17 editorial source still embedded in public learn.js; not confidential. Requires separate private delivery before any graded release.');
- }
+ assert.equal(publicBundleEditorialData.v16,false,'Propostas V16 de acesso local não podem estar no bundle público.');
+ assert.equal(publicBundleEditorialData.v17,false,'Propostas V17 de acesso local não podem estar no bundle público.');
  return {ok:true,files:names,catalogExercises:474,recordingsPublished:0,publicBundleEditorialData};
 }
-if(process.argv[1]?.endsWith('/audit-learn-public-build.mjs')){
+if(process.argv[1]?.replaceAll('\\','/').endsWith('/audit-learn-public-build.mjs')){
  try{console.log(JSON.stringify(verifyLearnPublicAssets(),null,2));}
  catch(error){console.error(error?.stack||error);process.exitCode=1;}
 }

@@ -52,3 +52,17 @@ Registrar aqui somente resultados observados após os validadores e testes finai
 - Política de retenção/privacidade e autenticação de revisores adequada ao uso institucional. O login atual protege somente o navegador local e não prova identidade profissional.
 - Aprovação editorial explícita dos cenários e conteúdos ainda provisórios.
 - Acesso ao projeto Vercel `matheus2t` para confirmar a implantação correta e o bloqueio no domínio oficial após a integração. Nenhuma experiência deve ser liberada publicamente nesta entrega.
+
+## Revalidação de isolamento do bundle (13/11/2026)
+
+Na preparação técnica final, a auditoria do bundle encontrou os cenários editoriais V16/V17 embutidos no JavaScript público, apesar das rotas bloqueadas. O build público foi corrigido para excluir os módulos e cenários V16/V17; o build local continua incluindo-os para prévia restrita. O scanner agora falha se encontrar seus IDs no `dist/learn.js` público.
+
+- `npm run typecheck` e builds local e de produção (`VERCEL=1 npm run build`): aprovados.
+- `npm run learn:audit-public-build`: aprovado; `v16:false`, `v17:false`, 474 exercícios legados e zero gravações publicados.
+- `node scripts/learn/validate-assessment-progression-v17.mjs`: aprovado; 30 etapas, 6 checkpoints e 16 casos contratuais.
+- `npx playwright test frontend/tests/learn-progress-v17.spec.ts`: 15/15 aprovados.
+- `npx playwright test frontend/tests/learn-public-security.spec.ts` contra o build público: 2/2 aprovados, inclusive parâmetros forjados para V13/V16/V17/V19.
+- Regressão Learn (27 arquivos): 203 aprovados, 1 ignorado por exigir o inventário privado de áudio V13 ausente neste ambiente.
+- Ajustado o teste de segurança para comparar caminhos corretamente no Windows e a expectativa do teste de falha de áudio para corresponder ao fixture HTTP 404.
+
+Esta revalidação é local e automatizada. O acesso ao projeto/deployment Vercel `matheus2t` não estava disponível pelo conector; portanto, não confirma SHA de produção nem um deployment. V17 continua sem liberação pública. Revisão linguística independente, piloto com estudantes e autenticação de revisores adequada a uso institucional permanecem pendentes.
