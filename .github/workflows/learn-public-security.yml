@@ -1,0 +1,49 @@
+name: Auditar segurança do Learn público
+on:
+  pull_request:
+    paths:
+      - 'scripts/copy-financials.cjs'
+      - 'scripts/learn/audit-learn-public-build.mjs'
+      - 'frontend/public/learn/**'
+      - 'frontend/src/learn/pilot-preview.ts'
+      - 'frontend/src/learn/progression-v17-review-auth.ts'
+      - 'frontend/tests/learn-public-security.spec.ts'
+      - 'scripts/learn/listening-v13-preview.mjs'
+      - 'scripts/learn-audio-v19/local-study-preview.mjs'
+      - '.github/workflows/learn-public-security.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/copy-financials.cjs'
+      - 'scripts/learn/audit-learn-public-build.mjs'
+      - 'frontend/public/learn/**'
+      - 'frontend/src/learn/pilot-preview.ts'
+      - 'frontend/src/learn/progression-v17-review-auth.ts'
+      - 'frontend/tests/learn-public-security.spec.ts'
+      - 'scripts/learn/listening-v13-preview.mjs'
+      - 'scripts/learn-audio-v19/local-study-preview.mjs'
+      - '.github/workflows/learn-public-security.yml'
+permissions:
+  contents: read
+jobs:
+  public-learn-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Build público como na Vercel
+        run: npm run build
+        env:
+          VERCEL: '1'
+      - name: Auditar arquivos distribuídos
+        run: node scripts/learn/audit-learn-public-build.mjs
+      - name: Testar servidor de prévia V13 com sessão local
+        run: node --test scripts/learn/listening-v13-preview.test.mjs
+      - run: npx playwright install chromium
+      - name: Testar acesso público e bloqueio de prévias
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-public-security.spec.ts
