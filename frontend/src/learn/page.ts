@@ -25,6 +25,7 @@ import './progression-v17-page';
 import './dictation-v14-page';
 import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled,isLearnDictationV14PreviewEnabled} from './pilot-preview';
 import {renderLearnFlowNav} from './flow-nav';
+declare const __2T_PUBLIC_BUILD__: boolean;
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
 export class LearnPage extends LightElement {
@@ -66,7 +67,7 @@ export class LearnPage extends LightElement {
     if(this.activity==='reviews')return this.isDelayedReviewPreviewEnabled()?html`<article class="learn-page learn-page--activity learn-page--delayed"><learn-delayed-review .language=${this.language as Language}></learn-delayed-review></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>As revisões só abrem em localhost com a flag de prévia C4.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='integration')return this.isIntegrationPreviewEnabled()&&this.data?html`<article class="learn-page learn-page--activity learn-page--integration"><learn-integration-hub .language=${this.language as Language} .progress=${this.data}></learn-integration-hub></article>`:html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>O percurso integrado só abre em localhost com a flag específica C5.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='bridges')return html`<article class="learn-page learn-page--activity learn-page--bridge-v11"><learn-bridge-v11 .language=${this.language as Language}></learn-bridge-v11></article>`;
-    if(this.activity==='reading-b1')return (this.language==='en'||this.language==='ru')&&isLearnReadingV16PreviewEnabled()
+    if(this.activity==='reading-b1')return !__2T_PUBLIC_BUILD__&&(this.language==='en'||this.language==='ru')&&isLearnReadingV16PreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--reading-v16"><learn-reading-v16 .language=${this.language as Language}></learn-reading-v16></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A leitura B1 V16 ainda aguarda revisão final e não está liberada publicamente.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
     if(this.activity==='audio-v19')return (this.language==='en'||this.language==='ru')&&isLearnV19AudioPreviewEnabled()
@@ -75,7 +76,7 @@ export class LearnPage extends LightElement {
     if(this.activity==='listening-v13')return (this.language==='en'||this.language==='ru')&&isLearnListeningV13PreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--listening-v13"><learn-listening-v13-preview .language=${this.language as Language}></learn-listening-v13-preview></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Listening V13 está restrito ao servidor local autenticado e não está publicado.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao Learn</a></section>`;
-    if(this.activity==='progress-v17')return (this.language==='en'||this.language==='ru')&&isLearnAssessmentV17PreviewEnabled()
+    if(this.activity==='progress-v17')return !__2T_PUBLIC_BUILD__&&(this.language==='en'||this.language==='ru')&&isLearnAssessmentV17PreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--v17-preview"><learn-progression-v17 .language=${this.language as Language} .progress=${this.data}></learn-progression-v17></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A avaliação V17 ainda não foi liberada publicamente. O estudo e o histórico permanecem disponíveis.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
     if(this.activity==='dictation-v14')return (this.language==='en'||this.language==='ru')&&isLearnDictationV14PreviewEnabled()

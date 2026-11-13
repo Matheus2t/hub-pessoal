@@ -122,14 +122,17 @@ test('recording player is user-started, responsive, adjustable and releases medi
 
 test('media load failure is announced and no automatic retry is started',async({page})=>{
   await serveBuiltSite(page,{status:404,contentType:'text/plain',body:'missing'});
+  let requests=0;page.on('request',request=>{if(new URL(request.url()).pathname==='/learn/audio/fixture-tone.wav')requests++});
   await page.goto('/?learn-preview=audio-v15');
   await page.evaluate(()=>import('/learn.js'));
   await page.evaluate(({asset,policy})=>{const element=document.createElement('learn-recording-player') as HTMLElement&{asset:LearnAudioAsset;policy:LearnAudioPolicy};element.asset=asset;element.policy=policy;document.body.append(element)}, {asset:fixture,policy:noAudioPolicy});
   const player=page.locator('learn-recording-player').last();
   await player.getByRole('button',{name:'Reproduzir gravação'}).click();
-  await expect(player.getByRole('alert')).toContainText('O navegador bloqueou a reprodução');
+  await expect(player.getByRole('alert')).toContainText('não pôde ser carregada');
+  expect(requests).toBe(1);
   await player.locator('audio').evaluate(element=>element.dispatchEvent(new Event('error')));
   await expect(player.getByRole('alert')).toContainText('não pôde ser carregada');
+  expect(requests).toBe(1);
 });
 
 test('only one recording player can reproduce at a time',async({page})=>{

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {existsSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {isAbsolute,relative,resolve,sep} from 'node:path';
 import {serveBuiltSite} from './helpers/serve-built-site';
 
 /** These tests require an actual public (VERCEL=1/LEARN_PUBLIC_BUILD=1) dist. */
@@ -39,7 +39,8 @@ test('public hostname and forged preview parameters never unlock V13, V16, V17 o
  await page.route('https://matheus2t.com.br/**',async route=>{
   const pathname=decodeURIComponent(new URL(route.request().url()).pathname);
   const candidate=resolve(root,pathname==='/'?'index.html':pathname.slice(1));
-  if(!candidate.startsWith(root+'/')||!existsSync(candidate))return route.fulfill({status:404,body:'Not found'});
+  const relativeCandidate=relative(root,candidate);
+  if(relativeCandidate==='..'||relativeCandidate.startsWith(`..${sep}`)||isAbsolute(relativeCandidate)||!existsSync(candidate))return route.fulfill({status:404,body:'Not found'});
   const {readFileSync}=await import('node:fs');
   const ext=candidate.slice(candidate.lastIndexOf('.'));
   return route.fulfill({status:200,contentType:types[ext]||'application/octet-stream',body:readFileSync(candidate)});
