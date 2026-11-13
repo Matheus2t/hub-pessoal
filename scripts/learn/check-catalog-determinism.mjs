@@ -26,9 +26,10 @@ function generate(outputRoot) {
   throw new Error(`Could not run the Python catalog generator. ${failures.join(' | ')}`);
 }
 
-function summarize(expectedPath, generatedPath, language) {
-  const expected = JSON.parse(readFileSync(expectedPath, 'utf8'));
-  const generated = JSON.parse(readFileSync(generatedPath, 'utf8'));
+function summarize(expected, generated, language) {
+  // Callers pass parsed catalog objects; do not attempt to read them as paths.
+  // Broken diagnostics must not hide the actual first catalog drift.
+
   console.error(`Catalog mismatch (${language}):`);
   for (const collection of collections) {
     const left = new Map(expected[collection].map(item => [item.id, item]));
