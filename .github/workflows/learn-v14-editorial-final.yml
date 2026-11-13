@@ -36,9 +36,14 @@ jobs:
       - run: npm ci
       - name: Verificar fonte editorial, 32 IDs, 30 nós V12, variantes e gates
         run: node scripts/learn/validate-dictation-v14.mjs
+      - name: Compilar prévia local para integração do servidor V14
+        run: npm run build
       - name: Testar correção conservadora e sessão privada V14
         run: node --test scripts/learn/dictation-v14-core.test.mjs scripts/learn-audio-v19/dictation-v14-preview.test.mjs scripts/learn-audio-v19/dictation-v14-preview.integration.test.mjs
-      - name: Compilar distribuição pública
+      - run: npx playwright install chromium
+      - name: Executar regressão local V14 com isolamento EN/RU e backup
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-dictation-v14.spec.ts
+      - name: Recompilar distribuição pública sem módulos privados
         run: npm run build
         env:
           VERCEL: '1'
@@ -46,6 +51,3 @@ jobs:
         run: |
           node scripts/learn/validate-dictation-v14.mjs --check-dist
           node scripts/learn/audit-learn-public-build.mjs
-      - run: npx playwright install chromium
-      - name: Executar regressão V14 com isolamento EN/RU e backup
-        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-dictation-v14.spec.ts
