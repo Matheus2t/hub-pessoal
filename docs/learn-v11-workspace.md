@@ -19,7 +19,7 @@ As páginas são acessíveis sem flags ou parâmetros de prévia e aparecem como
 
 - 12 atividades por idioma, seis na transição A1→A2 e seis na A2→B1.
 - 20 tarefas de gramática, escrita e leitura com espaço de resposta livre, estímulo, modelos exemplificativos e critérios de revisão.
-- Quatro roteiros de Listening **visíveis apenas como referência textual**, claramente identificados como sem áudio aprovado: nenhuma reprodução, nenhuma avaliação auditiva.
+- Quatro atividades de Listening **identificadas como aguardando áudio**, sem expor o roteiro completo, sem reprodução e sem avaliação auditiva.
 - Nenhuma resposta é avaliada automaticamente, gravada em IndexedDB, contabilizada na progressão ou armazenada no histórico. Os **474 exercícios** existentes e os backups v1/v2/v3 permanecem inalterados.
 - Conteúdo adicional para prática; não substitui lições, diagnóstico nem demonstra domínio A1–B1.
 
