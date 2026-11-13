@@ -1,0 +1,59 @@
+name: Auditoria dos 474 exercícios do Learn
+on:
+  pull_request:
+    paths:
+      - 'frontend/public/learn/en.json'
+      - 'frontend/public/learn/ru.json'
+      - 'frontend/public/learn/pedagogy-v1/quality-baseline.json'
+      - 'scripts/learn/catalog-editorial-overrides.json'
+      - 'scripts/learn/catalog_overrides.py'
+      - 'scripts/learn/build-catalogs.py'
+      - 'scripts/learn/check-catalog-determinism.mjs'
+      - 'scripts/learn/audit-exercise-quality-v21.mjs'
+      - 'scripts/audit-learn-teaching-quality.mjs'
+      - 'frontend/src/learn/engine.ts'
+      - 'frontend/tests/learn-quality-v21.spec.ts'
+      - '.github/workflows/learn-exercise-quality-v21.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/public/learn/en.json'
+      - 'frontend/public/learn/ru.json'
+      - 'frontend/public/learn/pedagogy-v1/quality-baseline.json'
+      - 'scripts/learn/catalog-editorial-overrides.json'
+      - 'scripts/learn/catalog_overrides.py'
+      - 'scripts/learn/build-catalogs.py'
+      - 'scripts/learn/check-catalog-determinism.mjs'
+      - 'scripts/learn/audit-exercise-quality-v21.mjs'
+      - 'scripts/audit-learn-teaching-quality.mjs'
+      - 'frontend/src/learn/engine.ts'
+      - 'frontend/tests/learn-quality-v21.spec.ts'
+      - '.github/workflows/learn-exercise-quality-v21.yml'
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Conferir catálogo reproduzível e todos os 474 IDs
+        run: npm run learn:check-catalogs
+      - name: Auditar 474 exercícios e variantes por idioma
+        run: node scripts/learn/audit-exercise-quality-v21.mjs
+      - name: Verificar que nenhum feedback genérico ou duplicação retornou
+        run: npm run learn:quality-audit
+      - name: Validar referências, conteúdo e unidades
+        run: npm run learn:audit
+      - run: npm run typecheck
+      - name: Testar correção determinística e resposta incerta
+        run: npx playwright test frontend/tests/learn-quality-v21.spec.ts
+      - name: Validar build público sem regressões
+        run: npm run build
+        env:
+          VERCEL: '1'

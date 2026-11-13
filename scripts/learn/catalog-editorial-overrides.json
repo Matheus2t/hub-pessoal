@@ -1752,7 +1752,7 @@
               "pai e mãe",
               "pai e mae"
             ],
-            "explanation": "Parents significa mãe e pai ou pais, diferentemente de relatives, que significa parentes."
+            "explanation": "Parents significa pais ou responsáveis parentais. A expressão mãe e pai é um exemplo possível, mas a palavra não determina a composição da família. Relatives significa parentes em geral."
           },
           "remove": []
         },
@@ -2562,7 +2562,11 @@
         {
           "id": "ru-writing-074",
           "set": {
-            "explanation": "Мой коллега pode se referir a colega do sexo masculino; говорит по-русски indica que fala russo."
+            "explanation": "Мой коллега refere-se a um colega masculino, conforme meu colega do enunciado. Говорит по-русски e говорит на русском языке são duas formas naturais de dizer que alguém fala russo.",
+            "answers": [
+              "Мой коллега говорит по-русски.",
+              "Мой коллега говорит на русском языке."
+            ]
           },
           "remove": []
         },
@@ -2659,11 +2663,13 @@
         {
           "id": "ru-writing-084",
           "set": {
-            "explanation": "Правильный e верный podem expressar correto; ambos concordam com ответ, substantivo masculino.",
+            "explanation": "Ваш é a forma de tratamento formal ou plural; твой é informal singular. Правильный e верный concordam com ответ, substantivo masculino; верен é forma curta possível.",
             "answers": [
               "Ваш ответ правильный.",
               "Ваш ответ верный.",
-              "Ваш ответ верен."
+              "Ваш ответ верен.",
+              "Твой ответ правильный.",
+              "Твой ответ верный."
             ]
           },
           "remove": []
@@ -2796,10 +2802,11 @@
         {
           "id": "ru-writing-097",
           "set": {
-            "explanation": "Можете показать мне на карте? é um pedido cortês; на карте indica no mapa.",
+            "explanation": "Можете (ou Вы можете) é pedido cortês/plural; можешь é pedido informal singular. На карте indica no mapa e não muda o sentido principal.",
             "answers": [
               "Можете показать мне на карте?",
-              "Вы можете показать мне на карте?"
+              "Вы можете показать мне на карте?",
+              "Можешь показать мне на карте?"
             ]
           },
           "remove": []
@@ -3896,7 +3903,7 @@
               "pai e mãe",
               "pai e mae"
             ],
-            "explanation": "Родители significa mãe e pai ou pais, não parentes em geral (родственники)."
+            "explanation": "Родители significa pais ou responsáveis parentais, sem pressupor que sejam necessariamente um homem e uma mulher. Родственники refere-se a parentes em geral."
           },
           "remove": []
         },
