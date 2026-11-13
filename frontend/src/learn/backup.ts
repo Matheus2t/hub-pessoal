@@ -1,4 +1,4 @@
-import type {Attempt,Backup,Card,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonFeedback,LessonProgress,LessonShownAssistance,PlanningRecord} from './model';
+import type {Attempt,Backup,Card,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonFeedback,LessonProgress,LessonShownAssistance,PlanningRecord,V17AssessmentData,V17AssessmentAttempt,V17HumanReview} from './model';
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const text=(v:unknown,max=2000):v is string=>typeof v==='string'&&v.length>0&&v.length<=max;
 const num=(v:unknown,min:number,max:number):v is number=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
@@ -99,8 +99,39 @@ export function validLessonEvent(v:unknown):v is LessonEvidenceEvent {
 export function validLessonDraft(v:unknown):v is LessonDraft {
  return obj(v)&&text(v.taskId,120)&&text(v.eventId,120)&&typeof v.response==='string'&&v.response.length<=4000&&num(v.startedAt,0,MAX_TIME)&&num(v.updatedAt,v.startedAt,MAX_TIME)&&(v.choiceIndex===undefined||Number.isInteger(v.choiceIndex)&&num(v.choiceIndex,0,20));
 }
+const v17Competencies=['written_reception','written_production','spoken_reception','spoken_production','interaction','contextual_recognition','retention_transfer'];
+const v17OutcomeForScore=(score:unknown)=>Number(score)<=1?'needs_practice':Number(score)===2?'partially_supported':'supported_for_observed_task';
+function validV17Review(v:unknown):v is V17HumanReview {
+ if(!obj(v)||!text(v.revisionId,120)||!text(v.reviewerId,120)||!text(v.reviewerName,60)||!num(v.reviewedAt,0,MAX_TIME)||v.rubricVersion!==1||!Number.isInteger(v.score)||!num(v.score,0,3)||!text(v.rationale,1200)||v.rationale.trim().length<12||!text(v.whatWorked,700)||v.whatWorked.trim().length<8||!text(v.priorityIssue,700)||v.priorityIssue.trim().length<8||!text(v.concreteSuggestion,700)||v.concreteSuggestion.trim().length<8||!['initial','correction','independent_review'].includes(String(v.decision))||v.outcome!==v17OutcomeForScore(v.score)||!Array.isArray(v.criteria)||v.criteria.length!==4)return false;
+ const expected=['task','meaning','grammarVocabulary','context'];
+ return v.criteria.every((entry:unknown,index:number)=>obj(entry)&&entry.criterion===expected[index]&&Number.isInteger(entry.score)&&num(entry.score,0,3));
+}
+function validV17Assessment(v:unknown,language:'en'|'ru'):v is V17AssessmentData {
+ if(!obj(v)||v.schemaVersion!==1||!Array.isArray(v.drafts)||v.drafts.length>30||!Array.isArray(v.acceptances)||v.acceptances.length>30||!Array.isArray(v.attempts)||v.attempts.length>300)return false;
+ const fingerprint=(value:unknown)=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+ const validScenario=(value:unknown)=>typeof value==='string'&&new RegExp(`^${language}-progress-v17-(0[1-9]|1[0-5])$`).test(value);
+ if(!v.drafts.every((d:unknown)=>obj(d)&&text(d.draftId,120)&&validScenario(d.scenarioId)&&fingerprint(d.contentFingerprint)&&typeof d.response==='string'&&d.response.length<=2300&&num(d.startedAt,0,MAX_TIME)&&num(d.updatedAt,d.startedAt,MAX_TIME)&&(d.criteriaViewedAt===undefined||num(d.criteriaViewedAt,0,MAX_TIME))))return false;
+ const accepted=(v.acceptances as unknown[]);
+ if(!accepted.every((a:unknown)=>obj(a)&&validScenario(a.scenarioId)&&fingerprint(a.contentFingerprint)&&num(a.acceptedAt,0,MAX_TIME)&&text(a.reviewerId,120)&&text(a.reviewerName,60))||new Set(accepted.map((a:any)=>`${a.scenarioId}:${a.contentFingerprint}`)).size!==accepted.length)return false;
+ if(!v.attempts.every((a:unknown)=>{
+  if(!obj(a)||!text(a.attemptId,120)||!validScenario(a.scenarioId)||a.language!==language||(a.origin!==undefined&&a.origin!=='progression_v17_assessment')||!['A1','A2','B1'].includes(String(a.level))||!v17Competencies.includes(String(a.competency))||!Number.isInteger(a.contentVersion)||a.contentVersion!==1||!fingerprint(a.contentFingerprint)||!text(a.prompt,1500)||!Array.isArray(a.essentialCriteria)||a.essentialCriteria.length<1||a.essentialCriteria.length>8||!a.essentialCriteria.every((x:unknown)=>text(x,500))||typeof a.response!=='string'||!a.response.trim()||a.response.length>2300||!num(a.startedAt,0,MAX_TIME)||!num(a.submittedAt,a.startedAt,MAX_TIME)||!Array.isArray(a.assistanceBeforeSubmission)||a.assistanceBeforeSubmission.length>20||!a.assistanceBeforeSubmission.every((x:unknown)=>text(x,120))||!['awaiting_review','reviewed','disputed','not_assessed'].includes(String(a.reviewStatus))||!['uncertain','not_assessed','needs_practice','partially_supported','supported_for_observed_task'].includes(String(a.outcome))||!Array.isArray(a.reviews)||a.reviews.length>30||!a.reviews.every(validV17Review))return false;
+  if(!accepted.some((x:any)=>x.scenarioId===a.scenarioId&&x.contentFingerprint===a.contentFingerprint))return false;
+  const reviews=a.reviews as V17HumanReview[],ids=reviews.map(r=>r.revisionId);if(new Set(ids).size!==ids.length)return false;
+  const reviewerIds=new Set<string>();let previousReviewAt=0;
+  for(let index=0;index<reviews.length;index++){const review=reviews[index],expected=index===0?'initial':reviewerIds.has(review.reviewerId)?'correction':'independent_review';if(review.decision!==expected||review.reviewedAt<previousReviewAt)return false;reviewerIds.add(review.reviewerId);previousReviewAt=review.reviewedAt;}
+  const distinct=new Map<string,number>();for(const review of reviews)distinct.set(review.reviewerId,review.score);
+  const counts=new Map<number,number>();for(const score of distinct.values())counts.set(score,(counts.get(score)||0)+1);
+  const consensus=[...counts].find(([,count])=>count>=2)?.[0],conflict=distinct.size>1&&consensus===undefined;
+  if(a.reviewStatus==='awaiting_review')return reviews.length===0&&a.outcome==='uncertain';
+  if(a.reviewStatus==='not_assessed')return reviews.length===0&&a.outcome==='not_assessed';
+  if(a.reviewStatus==='disputed')return conflict&&a.outcome==='uncertain';
+  return reviews.length>0&&!conflict&&a.outcome===v17OutcomeForScore(consensus??[...distinct.values()].at(-1));
+ })||new Set((v.attempts as any[]).map(a=>a.attemptId)).size!==(v.attempts as any[]).length)return false;
+ return new Set((v.drafts as any[]).map(d=>`${d.scenarioId}:${d.contentFingerprint}`)).size===(v.drafts as any[]).length;
+}
 export function validLessonProgress(v:unknown):v is LessonProgress {
  if(!obj(v)||!text(v.key,300)||!lang(v.language)||!text(v.unitId,120)||!num(v.contentVersion,1,100)||!Number.isInteger(v.contentVersion)||!Number.isInteger(v.currentStage)||!num(v.currentStage,0,10)||!Array.isArray(v.shownAssistance)||v.shownAssistance.length>(v.sessionKind==='delayedReview'?1000:100)||!v.shownAssistance.every(validLessonAssistance)||!Array.isArray(v.drafts)||v.drafts.length>20||!v.drafts.every(validLessonDraft)||!num(v.updatedAt,0,MAX_TIME)||(v.diagnosticSessionId!==undefined&&!text(v.diagnosticSessionId,120))||(v.diagnosticLastEventId!==undefined&&!text(v.diagnosticLastEventId,120))||(['inProgress','completed','skipped'].includes(String(v.diagnosticStatus))===false&&v.diagnosticStatus!==undefined)||(v.sessionKind!==undefined&&v.sessionKind!=='delayedReview'))return false;
+ if(v.unitId==='v17-assessment')return v.key===`v17:${v.language}`&&v.contentVersion===1&&v.currentStage===0&&v.shownAssistance.length===0&&v.drafts.length===0&&v.sessionKind===undefined&&v.diagnosticSessionId===undefined&&v.diagnosticStatus===undefined&&v.diagnosticLastEventId===undefined&&v.delayedReview===undefined&&validV17Assessment(v.v17Assessment,v.language as 'en'|'ru');
  const isDelayed=v.sessionKind==='delayedReview';
  if(!isDelayed&&(v.key!==`${v.language}:${v.unitId}`||v.delayedReview!==undefined))return false;
  if(isDelayed){

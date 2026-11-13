@@ -31,6 +31,15 @@ const runtimeArray=name=>{
 const runtimeScenarios=runtimeArray('v17Scenarios');
 const runtimeCheckpoints=runtimeArray('v17Checkpoints');
 const runtimeCompetencies=runtimeArray('v17Competencies');
+const implementationFiles={
+ assessment:readFileSync(resolve(root,'frontend/src/learn/progression-v17-assessment.ts'),'utf8'),
+ storage:readFileSync(resolve(root,'frontend/src/learn/progression-v17-storage.ts'),'utf8'),
+ auth:readFileSync(resolve(root,'frontend/src/learn/progression-v17-review-auth.ts'),'utf8'),
+ page:readFileSync(resolve(root,'frontend/src/learn/progression-v17-page.ts'),'utf8'),
+ backup:readFileSync(resolve(root,'frontend/src/learn/backup.ts'),'utf8'),
+ preview:readFileSync(resolve(root,'frontend/src/learn/pilot-preview.ts'),'utf8'),
+ db:readFileSync(resolve(root,'frontend/src/learn/storage.ts'),'utf8'),
+};
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 if(runtimeScenarios.length!==30||runtimeCheckpoints.length!==6||runtimeCompetencies.length!==7)
  bad('runtime','expected 30 scenarios, 6 checkpoints and 7 competencies');
@@ -151,6 +160,14 @@ for(const c of fixtures.cases||[]){
  if(c.expected.claim!=='no_level_claim')bad(c.id,'unexpected level claim');
 }
 if(caseTotal!==16||ids.size!==16)bad('fixtures','expected 16 unique cases');
-const result={ok:fail.length===0,legacyExercises:legacyTotal,stages:stageTotal,levelCheckpoints:levelTotal,syntheticCases:caseTotal,scope:'editorial_contract_only'};
+for(const name of ['fingerprintV17','makeV17Attempt','addV17HumanReview','recommendV17','summarizeV17'])if(!implementationFiles.assessment.includes(`function ${name}`))bad('implementation',`assessment runtime missing ${name}`);
+for(const name of ['saveV17Draft','acceptV17ScenarioLocally','submitV17Draft','recordV17Review'])if(!implementationFiles.storage.includes(`function ${name}`))bad('implementation',`persistent V17 flow missing ${name}`);
+for(const name of ['PBKDF2','localStorage','isLearnAssessmentV17PreviewEnabled'])if(!implementationFiles.auth.includes(name))bad('security',`local reviewer gate missing ${name}`);
+if(!implementationFiles.page.includes('isLearnAssessmentV17PreviewEnabled')||!implementationFiles.page.includes('Resposta registrada como incerta'))bad('implementation','V17 page must remain local-only and preserve uncertain answers');
+if(!implementationFiles.backup.includes("v.unitId==='v17-assessment'")||!implementationFiles.backup.includes('validV17Assessment'))bad('backup','V17 lessonProgress records must be schema-validated');
+if(!implementationFiles.backup.includes('[1,2,3].includes(Number(data.version))'))bad('backup','legacy backup v1/v2/v3 import compatibility changed');
+if(!implementationFiles.db.includes('indexedDB.open(NAME,3)'))bad('storage','existing IndexedDB v3 must remain unchanged');
+if(!implementationFiles.preview.includes("isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='progress-v17'"))bad('security','V17 preview must require loopback plus exact opt-in flag');
+const result={ok:fail.length===0,legacyExercises:legacyTotal,stages:stageTotal,levelCheckpoints:levelTotal,syntheticCases:caseTotal,scope:'editorial_and_local_assessment_contract'};
 if(fail.length){result.errors=fail;console.error(JSON.stringify(result,null,2));process.exitCode=1;}
 else console.log(JSON.stringify(result,null,2));
