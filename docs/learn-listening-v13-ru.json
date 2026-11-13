@@ -1,0 +1,1154 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_listening_editorial_v13",
+  "language": "ru",
+  "status": "draft_requires_independent_review_and_recording",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "audioStatus": "script_only_no_audio_generated_or_validated",
+  "sourceRefs": [
+    "https://rm.coe.int/cefr-companion-volume-with-new-descriptors-2020/16809ea0d4",
+    "https://europass.europa.eu/en/common-european-framework-reference-language-skills"
+  ],
+  "assessmentPolicy": {
+    "listeningOnlyAfterApprovedAudio": true,
+    "transcriptVisibility": "hidden_during_listening_show_after_assessment_or_opt_in_study_mode",
+    "shortAnswer": "human_scored_or_uncertain",
+    "singleChoice": "valid_only_after_audio_review_and_unambiguous_independent_validation",
+    "teacherApprovalRequired": true
+  },
+  "audioProductionGuidance": {
+    "A2": "Russo padrão, dicção clara e pausada sem deformar a prosódia; conferir acento lexical, números, inflexões e distinção de vozes.",
+    "B1": "Russo padrão claro e natural; ritmo moderado e entonação contrastiva; conferência independente de aspecto verbal, casos e acentuação oral."
+  },
+  "units": [
+    {
+      "draftId": "ru-listen-v13-01",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-08",
+      "titlePt": "Ônibus com atraso",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Диктор",
+          "text": "Внимание, пассажиры! Автобус номер пять обычно приезжает в девять часов. Сегодня из-за ремонта дороги он приедет в девять тридцать. Пожалуйста, ждите автобус на второй остановке, рядом с аптекой."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-01-q1",
+          "kind": "single_choice",
+          "promptPt": "A que horas o ônibus chegará hoje?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Às 9h"
+            },
+            {
+              "id": "b",
+              "label": "Às 10h30"
+            },
+            {
+              "id": "c",
+              "label": "Às 9h30"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "Сегодня ... приедет в девять тридцать",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-01-q2",
+          "kind": "short_answer",
+          "promptPt": "Perto de que lugar fica a parada indicada?",
+          "modelPt": "Perto da farmácia.",
+          "acceptedExamplesPt": [
+            "Ao lado da farmácia.",
+            "Próximo da farmácia."
+          ],
+          "essentialEvidence": "рядом с аптекой",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-02",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-10",
+      "titlePt": "Frutas no mercado",
+      "genre": "transaction",
+      "transcript": [
+        {
+          "speaker": "Покупатель",
+          "text": "Здравствуйте! Сколько стоят яблоки?"
+        },
+        {
+          "speaker": "Продавец",
+          "text": "Сто двадцать рублей за килограмм. Сегодня есть и груши, но они дороже."
+        },
+        {
+          "speaker": "Покупатель",
+          "text": "Тогда дайте, пожалуйста, два килограмма яблок. Груши я куплю в другой раз."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-02-q1",
+          "kind": "single_choice",
+          "promptPt": "O que o cliente decide comprar?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Um quilo de maçãs e um de peras"
+            },
+            {
+              "id": "b",
+              "label": "Dois quilos de maçãs"
+            },
+            {
+              "id": "c",
+              "label": "Dois quilos de peras"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "два килограмма яблок",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-02-q2",
+          "kind": "short_answer",
+          "promptPt": "Quanto custa um quilo de maçãs?",
+          "modelPt": "120 rublos.",
+          "acceptedExamplesPt": [
+            "Cento e vinte rublos.",
+            "120 ₽."
+          ],
+          "essentialEvidence": "сто двадцать рублей за килограмм",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-03",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-08",
+      "titlePt": "Encontro no parque",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Катя",
+          "text": "Мы встречаемся в парке завтра утром?"
+        },
+        {
+          "speaker": "Игорь",
+          "text": "Нет, завтра я работаю. Давай встретимся в воскресенье в два часа у главного входа."
+        },
+        {
+          "speaker": "Катя",
+          "text": "Хорошо. Я приду в воскресенье."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-03-q1",
+          "kind": "single_choice",
+          "promptPt": "Em qual dia será o encontro?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Domingo"
+            },
+            {
+              "id": "b",
+              "label": "Sábado"
+            },
+            {
+              "id": "c",
+              "label": "Amanhã de manhã"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "в воскресенье",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-03-q2",
+          "kind": "short_answer",
+          "promptPt": "Onde devem se encontrar?",
+          "modelPt": "Na entrada principal.",
+          "acceptedExamplesPt": [
+            "Perto da entrada principal.",
+            "Junto à entrada principal do parque."
+          ],
+          "essentialEvidence": "у главного входа",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-04",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-06",
+      "titlePt": "Aula de russo",
+      "genre": "voice_message",
+      "transcript": [
+        {
+          "speaker": "Преподаватель",
+          "text": "Добрый вечер! Завтра урок русского языка начнётся в десять, а не в девять. Мы будем заниматься в кабинете номер семь. Возьмите тетрадь и учебник. До встречи!"
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-04-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual é o novo horário da aula?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Às 9h"
+            },
+            {
+              "id": "b",
+              "label": "Às 11h"
+            },
+            {
+              "id": "c",
+              "label": "Às 10h"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "начнётся в десять, а не в девять",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-04-q2",
+          "kind": "short_answer",
+          "promptPt": "Quais materiais os estudantes devem levar?",
+          "modelPt": "Caderno e livro didático.",
+          "acceptedExamplesPt": [
+            "Caderno e livro.",
+            "Uma apostila/livro de estudos e caderno."
+          ],
+          "essentialEvidence": "Возьмите тетрадь и учебник",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-05",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-07",
+      "titlePt": "Plano para o cinema",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Оля",
+          "text": "Пойдём сегодня в кино?"
+        },
+        {
+          "speaker": "Максим",
+          "text": "Сегодня не могу: вечером у меня работа. Но завтра после обеда я свободен."
+        },
+        {
+          "speaker": "Оля",
+          "text": "Отлично! Тогда куплю билеты на завтра. Фильм начинается в четыре."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-05-q1",
+          "kind": "single_choice",
+          "promptPt": "Quando decidiram ir ao cinema?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Depois de amanhã"
+            },
+            {
+              "id": "b",
+              "label": "Amanhã"
+            },
+            {
+              "id": "c",
+              "label": "Hoje à noite"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "куплю билеты на завтра",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-05-q2",
+          "kind": "short_answer",
+          "promptPt": "A que horas começa o filme?",
+          "modelPt": "Às quatro.",
+          "acceptedExamplesPt": [
+            "Às 16h.",
+            "4 horas da tarde."
+          ],
+          "essentialEvidence": "Фильм начинается в четыре",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-06",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-09",
+      "titlePt": "Empréstimo na biblioteca",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Читатель",
+          "text": "Можно взять эту книгу домой?"
+        },
+        {
+          "speaker": "Библиотекарь",
+          "text": "Да, на две недели. Но сначала покажите ваш читательский билет."
+        },
+        {
+          "speaker": "Читатель",
+          "text": "Вот мой билет. Спасибо!"
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-06-q1",
+          "kind": "single_choice",
+          "promptPt": "Por quanto tempo o livro pode ser emprestado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Duas semanas"
+            },
+            {
+              "id": "b",
+              "label": "Dois dias"
+            },
+            {
+              "id": "c",
+              "label": "Um mês"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "на две недели",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-06-q2",
+          "kind": "short_answer",
+          "promptPt": "O que é necessário apresentar primeiro?",
+          "modelPt": "O cartão de leitor.",
+          "acceptedExamplesPt": [
+            "Carteirinha da biblioteca.",
+            "Cartão da biblioteca."
+          ],
+          "essentialEvidence": "покажите ваш читательский билет",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-07",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-06",
+      "titlePt": "Rotina de trabalho",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Нина",
+          "text": "Ты каждый день работаешь дома?"
+        },
+        {
+          "speaker": "Павел",
+          "text": "Нет. Обычно я работаю в офисе с понедельника по четверг. А в пятницу работаю дома. Сегодня пятница, поэтому мне не нужно ехать в офис."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-07-q1",
+          "kind": "single_choice",
+          "promptPt": "Onde Pavel trabalha às sextas-feiras?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No escritório"
+            },
+            {
+              "id": "b",
+              "label": "Numa escola"
+            },
+            {
+              "id": "c",
+              "label": "Em casa"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "в пятницу работаю дома",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-07-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que ele não vai ao escritório hoje?",
+          "modelPt": "Porque é sexta-feira.",
+          "acceptedExamplesPt": [
+            "Hoje é sexta, quando trabalha em casa.",
+            "Às sextas ele trabalha de casa."
+          ],
+          "essentialEvidence": "Сегодня пятница, поэтому мне не нужно ехать в офис",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-08",
+      "language": "ru",
+      "level": "A2",
+      "stageNodeId": "ru-path-08",
+      "titlePt": "Mudança de passeio",
+      "genre": "voice_message",
+      "transcript": [
+        {
+          "speaker": "Даша",
+          "text": "Привет, Миша! Мы хотели гулять в парке после обеда, но на улице сильный дождь. Давай встретимся в кафе рядом с метро в пять часов. Я буду ждать тебя у окна."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-08-q1",
+          "kind": "single_choice",
+          "promptPt": "Onde Dasha propõe encontrar Misha?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Numa biblioteca"
+            },
+            {
+              "id": "b",
+              "label": "Num café perto do metrô"
+            },
+            {
+              "id": "c",
+              "label": "No parque"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "в кафе рядом с метро",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-08-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que o plano de ir ao parque mudou?",
+          "modelPt": "Porque está chovendo muito.",
+          "acceptedExamplesPt": [
+            "Por causa da chuva forte.",
+            "Está caindo uma chuva forte."
+          ],
+          "essentialEvidence": "на улице сильный дождь",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-09",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-11",
+      "titlePt": "Viagem de trem alterada",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Сотрудник",
+          "text": "Уважаемые пассажиры! Поезд до Казани, который должен был отправиться сегодня в восемь утра, отменён из-за сильного снегопада. Мы предлагаем пассажирам обменять билет на завтрашний поезд или вернуть деньги. Автобусы сегодня тоже могут опоздать, поэтому мы не советуем рассчитывать на них, если вам нужно быть в Казани к вечеру. За помощью обратитесь в кассу номер три."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-09-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual é a principal informação do aviso?",
+          "options": [
+            {
+              "id": "a",
+              "label": "O trem de hoje foi cancelado por causa da neve"
+            },
+            {
+              "id": "b",
+              "label": "Todos os trens de amanhã foram cancelados"
+            },
+            {
+              "id": "c",
+              "label": "Os ônibus substituirão o trem sem atrasos"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "Поезд ... отменён из-за сильного снегопада",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-09-q2",
+          "kind": "short_answer",
+          "promptPt": "Quais alternativas a empresa oferece aos passageiros?",
+          "modelPt": "Trocar para o trem de amanhã ou receber reembolso.",
+          "acceptedExamplesPt": [
+            "Remarcar para amanhã ou recuperar o dinheiro.",
+            "Troca de passagem ou devolução do valor."
+          ],
+          "essentialEvidence": "обменять билет на завтрашний поезд или вернуть деньги",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-09-q3",
+          "kind": "single_choice",
+          "promptPt": "Por que os ônibus não são recomendados para quem precisa chegar até a noite?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Porque não fazem o trajeto até Kazan"
+            },
+            {
+              "id": "b",
+              "label": "Porque também podem atrasar"
+            },
+            {
+              "id": "c",
+              "label": "Porque estão sem bilhetes"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "Автобусы сегодня тоже могут опоздать",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-10",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-13",
+      "titlePt": "Ajuda com relatório",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Аня",
+          "text": "Сергей, ты уже закончил отчёт для отдела продаж?"
+        },
+        {
+          "speaker": "Сергей",
+          "text": "Почти. Я собрал данные, но не успел проверить последнюю таблицу. Сегодня мне нужно уйти раньше, потому что у сына встреча с учителем."
+        },
+        {
+          "speaker": "Аня",
+          "text": "Я могу проверить таблицу, если ты отправишь мне файл до обеда."
+        },
+        {
+          "speaker": "Сергей",
+          "text": "Спасибо! Тогда я смогу отправить готовый отчёт руководителю завтра утром, как мы и обещали."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-10-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual tarefa Anya se oferece para fazer?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Reescrever o relatório inteiro"
+            },
+            {
+              "id": "b",
+              "label": "Reunir os dados do zero"
+            },
+            {
+              "id": "c",
+              "label": "Conferir a última tabela"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "Я могу проверить таблицу",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-10-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que Sergey precisa sair mais cedo?",
+          "modelPt": "Porque o filho tem um encontro com o professor.",
+          "acceptedExamplesPt": [
+            "Há uma reunião escolar do filho.",
+            "O filho vai se reunir com um professor."
+          ],
+          "essentialEvidence": "у сына встреча с учителем",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-10-q3",
+          "kind": "single_choice",
+          "promptPt": "Quando Sergey espera enviar o relatório pronto?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Amanhã de manhã"
+            },
+            {
+              "id": "b",
+              "label": "Hoje antes do almoço"
+            },
+            {
+              "id": "c",
+              "label": "Na próxima semana"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "завтра утром",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-11",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-12",
+      "titlePt": "Mudança de apartamento",
+      "genre": "narrative",
+      "transcript": [
+        {
+          "speaker": "Рассказчик",
+          "text": "Мы с сестрой долго искали квартиру ближе к работе. Первое жильё было дешёвым, но до метро нужно было идти почти полчаса. Вторая квартира стоит дороже, зато станция находится через дорогу. Мы решили снять вторую, потому что каждый день ездим на работу на метро. Пока у нас нет всей мебели, поэтому часть вещей останется у родителей до конца месяца."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-11-q1",
+          "kind": "single_choice",
+          "promptPt": "Por que escolheram a segunda opção?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Já possui todos os móveis"
+            },
+            {
+              "id": "b",
+              "label": "Fica mais perto do metrô"
+            },
+            {
+              "id": "c",
+              "label": "Tem aluguel menor"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "станция находится через дорогу ... каждый день ездим ... на метро",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-11-q2",
+          "kind": "short_answer",
+          "promptPt": "Qual era o problema da primeira opção?",
+          "modelPt": "Era necessário caminhar quase meia hora até o metrô.",
+          "acceptedExamplesPt": [
+            "Era longe do metrô.",
+            "Meia hora a pé até a estação."
+          ],
+          "essentialEvidence": "до метро нужно было идти почти полчаса",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-11-q3",
+          "kind": "single_choice",
+          "promptPt": "O que acontecerá com parte dos pertences?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Serão vendidos imediatamente"
+            },
+            {
+              "id": "b",
+              "label": "Irão todos para o novo apartamento hoje"
+            },
+            {
+              "id": "c",
+              "label": "Ficarão com os pais até o fim do mês"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "часть вещей останется у родителей до конца месяца",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-12",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-14",
+      "titlePt": "Trabalho voluntário",
+      "genre": "discussion",
+      "transcript": [
+        {
+          "speaker": "Организатор",
+          "text": "В субботу мы хотели посадить деревья возле школы, но утром обещают дождь."
+        },
+        {
+          "speaker": "Волонтёр",
+          "text": "Может быть, перенесём всё на воскресенье?"
+        },
+        {
+          "speaker": "Организатор",
+          "text": "В воскресенье школьный двор будет закрыт. Давайте в субботу подготовим инструменты в помещении, а посадим деревья во вторник после уроков."
+        },
+        {
+          "speaker": "Волонтёр",
+          "text": "Хорошая идея. Я напишу другим участникам и объясню новый план."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-12-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual plano foi adotado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Preparar os materiais no sábado e plantar na terça"
+            },
+            {
+              "id": "b",
+              "label": "Plantar no domingo"
+            },
+            {
+              "id": "c",
+              "label": "Cancelar definitivamente o projeto"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "в субботу подготовим инструменты ... посадим ... во вторник",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-12-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que não podem plantar no domingo?",
+          "modelPt": "Porque o pátio da escola estará fechado.",
+          "acceptedExamplesPt": [
+            "O espaço da escola fecha no domingo.",
+            "O pátio estará fechado."
+          ],
+          "essentialEvidence": "В воскресенье школьный двор будет закрыт",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-12-q3",
+          "kind": "single_choice",
+          "promptPt": "Quem vai avisar os outros participantes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "O professor de russo"
+            },
+            {
+              "id": "b",
+              "label": "O voluntário"
+            },
+            {
+              "id": "c",
+              "label": "O diretor da escola"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "Я напишу другим участникам",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-13",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-11",
+      "titlePt": "Reserva de museu",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Посетитель",
+          "text": "Здравствуйте! Я купил два билета на экскурсию в три часа, но в письме указано другое время."
+        },
+        {
+          "speaker": "Сотрудница",
+          "text": "Проверю. Да, экскурсию перенесли на четыре, потому что сегодня утром одна группа приехала позже. Мы отправили новое письмо всем участникам."
+        },
+        {
+          "speaker": "Посетитель",
+          "text": "К сожалению, в четыре у нас поезд. Можно поменять билеты на утреннюю экскурсию завтра?"
+        },
+        {
+          "speaker": "Сотрудница",
+          "text": "Да, места есть. Я оформлю обмен без доплаты."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-13-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual solução foi oferecida ao visitante?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Receber obrigatoriamente o dinheiro de volta"
+            },
+            {
+              "id": "b",
+              "label": "Participar de uma visita noturna"
+            },
+            {
+              "id": "c",
+              "label": "Trocar os ingressos para a manhã seguinte sem custo extra"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "обмен ... на утреннюю экскурсию завтра ... без доплаты",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-13-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que a visita daquele dia passou das três para as quatro?",
+          "modelPt": "Porque um grupo chegou atrasado pela manhã.",
+          "acceptedExamplesPt": [
+            "Houve atraso de outro grupo.",
+            "Um grupo chegou mais tarde."
+          ],
+          "essentialEvidence": "одна группа приехала позже",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-13-q3",
+          "kind": "single_choice",
+          "promptPt": "Por que o visitante não pode participar às quatro?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Porque tem um trem nesse horário"
+            },
+            {
+              "id": "b",
+              "label": "Porque o museu fecha às quatro"
+            },
+            {
+              "id": "c",
+              "label": "Porque perdeu os ingressos"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "в четыре у нас поезд",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-14",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-15",
+      "titlePt": "Caminho habitual e atual",
+      "genre": "narrative",
+      "transcript": [
+        {
+          "speaker": "Рассказчик",
+          "text": "Обычно я езжу на работу на автобусе, потому что остановка находится рядом с домом. Но на этой неделе дорогу ремонтируют, и автобус идёт по другому маршруту. Поэтому сейчас я каждый день хожу пешком до метро и еду на поезде две остановки. Так получается немного быстрее, хотя дорога до станции занимает пятнадцать минут. Когда ремонт закончится, я, скорее всего, снова буду ездить на автобусе."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-14-q1",
+          "kind": "single_choice",
+          "promptPt": "Que mudança foi feita no trajeto nesta semana?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Começou a trabalhar em casa"
+            },
+            {
+              "id": "b",
+              "label": "Passou a caminhar até o metrô e pegar o trem"
+            },
+            {
+              "id": "c",
+              "label": "Passou a ir de bicicleta"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "хожу пешком до метро и еду на поезде",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-14-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que mudou o trajeto habitual?",
+          "modelPt": "Porque a estrada está em obras e o ônibus mudou de percurso.",
+          "acceptedExamplesPt": [
+            "Por causa das obras na via.",
+            "O ônibus está fazendo outra rota devido à reforma."
+          ],
+          "essentialEvidence": "дорогу ремонтируют, и автобус идёт по другому маршруту",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-14-q3",
+          "kind": "single_choice",
+          "promptPt": "Qual transporte provavelmente voltará a usar depois das obras?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Bicicleta"
+            },
+            {
+              "id": "b",
+              "label": "Táxi"
+            },
+            {
+              "id": "c",
+              "label": "Ônibus"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "снова буду ездить на автобусе",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-15",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-13",
+      "titlePt": "Grupo de estudos",
+      "genre": "discussion",
+      "transcript": [
+        {
+          "speaker": "Маша",
+          "text": "Я хотела заниматься английским каждый вечер, но после работы часто устаю и пропускаю занятия."
+        },
+        {
+          "speaker": "Илья",
+          "text": "Может быть, начнём заниматься вместе два раза в неделю? Когда есть договорённость, легче не пропускать."
+        },
+        {
+          "speaker": "Маша",
+          "text": "Это хорошая мысль. Только по вторникам я поздно возвращаюсь домой."
+        },
+        {
+          "speaker": "Илья",
+          "text": "Тогда давай встречаться онлайн по средам и субботам. В среду будем слушать короткие записи, а в субботу обсуждать их."
+        },
+        {
+          "speaker": "Маша",
+          "text": "Согласна. Так у нас будет время подготовиться."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-15-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual foi a proposta final?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Estudar on-line às quartas e sábados"
+            },
+            {
+              "id": "b",
+              "label": "Estudar todos os dias presencialmente"
+            },
+            {
+              "id": "c",
+              "label": "Reunir-se às terças e domingos"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "по средам и субботам",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-15-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que Masha não consegue manter o plano inicial?",
+          "modelPt": "Ela costuma ficar cansada após o trabalho.",
+          "acceptedExamplesPt": [
+            "Fica cansada depois de trabalhar.",
+            "O cansaço faz com que falte a estudos."
+          ],
+          "essentialEvidence": "после работы часто устаю и пропускаю занятия",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-15-q3",
+          "kind": "single_choice",
+          "promptPt": "O que farão aos sábados?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Ouvirão somente músicas"
+            },
+            {
+              "id": "b",
+              "label": "Discutirão os áudios ouvidos"
+            },
+            {
+              "id": "c",
+              "label": "Farão uma prova escrita final"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "в субботу обсуждать их",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "ru-listen-v13-16",
+      "language": "ru",
+      "level": "B1",
+      "stageNodeId": "ru-path-12",
+      "titlePt": "Horários da feira de bairro",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Ведущая",
+          "text": "В нашем районе со вторника по пятницу работает небольшая ярмарка местных продуктов. По пятницам она раньше закрывалась в пять часов, и многие жители, которые работают до вечера, не успевали туда прийти. С этой недели по пятницам ярмарка будет открыта до семи. Организаторы надеются, что больше людей смогут купить овощи и хлеб после работы. По понедельникам ярмарка по-прежнему не работает, поэтому не стоит приезжать туда в начале недели."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ru-listen-v13-16-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual é a mudança anunciada?",
+          "options": [
+            {
+              "id": "a",
+              "label": "A feira passará a abrir às segundas-feiras"
+            },
+            {
+              "id": "b",
+              "label": "A feira deixará de vender pão"
+            },
+            {
+              "id": "c",
+              "label": "A feira fechará mais tarde às sextas-feiras"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "По пятницам она раньше закрывалась в пять часов; с этой недели по пятницам ... до семи.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "ru-listen-v13-16-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que ampliaram o horário?",
+          "modelPt": "Para atender quem sai do trabalho mais tarde.",
+          "acceptedExamplesPt": [
+            "Para pessoas que trabalham até mais tarde.",
+            "Para que mais moradores possam comprar depois do trabalho."
+          ],
+          "essentialEvidence": "многие ... работают до вечера ... не успевали",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "ru-listen-v13-16-q3",
+          "kind": "single_choice",
+          "promptPt": "Em qual dia a feira continua fechada?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Segunda-feira"
+            },
+            {
+              "id": "b",
+              "label": "Sexta-feira"
+            },
+            {
+              "id": "c",
+              "label": "Sábado"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "по понедельникам ... не работает",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    }
+  ],
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "scope": "script_and_question_consistency_only",
+    "scriptsInspected": 16,
+    "questionsInspected": 40,
+    "changeNotes": [
+      "ru-listen-v13-16: definidas operações de terça a sexta e extensão somente na sexta, mantendo pergunta de segunda coerente"
+    ],
+    "manualReviewNotIndependent": true,
+    "audioFilesInspected": 0,
+    "audioValidated": false,
+    "externalLanguageValidationPerformed": false,
+    "ownerAcceptancePending": true,
+    "releaseAllowed": false
+  }
+}

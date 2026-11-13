@@ -41,3 +41,10 @@ export function isLearnV19AudioPreviewEnabled(
 ):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='audio-v19';
 }
+
+/** V13 editorial/audio preview is loopback-only and never authorizes assessment. */
+export function isLearnListeningV13PreviewEnabled(
+ host=globalThis.location?.hostname||'',search=globalThis.location?.search||''
+):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='listening-v13';
+}
