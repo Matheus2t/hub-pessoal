@@ -187,7 +187,7 @@ export class LearnProgressionV17 extends LightElement {
   const attempt=proposal?[...this.assessment.attempts].filter(a=>a.scenarioId===proposal.id&&a.contentFingerprint===fingerprint).sort((a,b)=>b.submittedAt-a.submittedAt)[0]:undefined;
   const consensus=attempt?reviewConsensusV17(attempt.reviews):undefined;
   const effectiveDispute=!!consensus?.disputed;
-  const latestReview=consensus?.consensus===undefined?attempt?.reviews.at(-1):[...attempt.reviews].reverse().find(r=>r.score===consensus.consensus);
+  const latestReview=consensus?.consensus===undefined?attempt?.reviews.at(-1):[...(attempt?.reviews||[])].reverse().find(r=>r.score===consensus?.consensus);
   const summary=summarizeV17(this.assessment,proposals,new Map(Object.entries(this.fingerprints)));
   return html`<section class="learn-v17" aria-labelledby="learn-v17-title">
    <header class="learn-v17__head"><div><p class="learn-v17__eyebrow">LEARN · V17 · PRÉVIA INTERNA</p><h1 id="learn-v17-title">Progressão A1–B1</h1><p>Estudo registrado, evidências por tarefa e sugestões reversíveis. Sem notas automáticas ou certificação.</p></div><a class="button" href=${`#/learn/${this.language}`}>Voltar ao Learn</a></header>
