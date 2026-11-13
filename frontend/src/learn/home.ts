@@ -6,7 +6,7 @@ import type {Curriculum} from './content';
 import type {Backup,Language} from './model';
 import {summarize} from './engine';
 import {currentPlan,planAttempts} from './planning';
-import {isLearnProgressionPreviewEnabled} from './pilot-preview';
+import {isLearnProgressionPreviewEnabled,isLearnBridgeV11PreviewEnabled} from './pilot-preview';
 
 const modes = ['vocabulary','flashcards','listening','dictation','writing','reading','grammar','test'] as const;
 const descriptions = [
@@ -71,6 +71,7 @@ export class LearnHome extends LightElement {
         <div class="learn-course__top">
           <h2 id="learn-course-title">Níveis de estudo</h2>
           ${isLearnProgressionPreviewEnabled()?html`<a href=${`#/learn/${lang}/progression`}>Prévia da progressão <span aria-hidden="true">↗</span></a>`:nothing}
+          ${isLearnBridgeV11PreviewEnabled()?html`<a href=${`#/learn/${lang}/bridges`}>Atividades-ponte V11 <span aria-hidden="true">↗</span></a>`:nothing}
         </div>
         <div class="learn-course__levels" aria-label="Referências curriculares A1 a B1">
           ${levels.map(level=>html`<span class="learn-course__level"><strong>${level.code}</strong><span>${level.focus}</span></span>`)}

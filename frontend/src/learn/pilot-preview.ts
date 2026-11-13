@@ -41,3 +41,13 @@ export function isLearnV19AudioPreviewEnabled(
 ):boolean {
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='audio-v19';
 }
+
+/** V11 editorial exercises are not independently reviewed or publicly released.
+ * This local feature flag is not an authentication mechanism; server deployments
+ * must not serve a public V11 route while editorial public:false remains in force.
+ */
+export function isLearnBridgeV11PreviewEnabled(
+ host=globalThis.location?.hostname||'',search=globalThis.location?.search||''
+):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='bridge-v11';
+}
