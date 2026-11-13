@@ -91,7 +91,7 @@ for(const language of ['en','ru']){
  // Curated checks: prevent the five confirmed semantic fixes from silently disappearing.
  if(language==='ru'){
   const f=(id)=>byId.get(id);
-  verify(f('ru-writing-074')?.answers.includes('Моя коллега говорит по-русски.'),'ru-writing-074','a tradução feminina de colega é válida e deve ser aceita');
+  verify(f('ru-writing-074')?.answers.includes('Мой коллега говорит на русском языке.'),'ru-writing-074','expressão formal de falar russo deve ser aceita mantendo o masculino do enunciado');
   verify(f('ru-writing-084')?.answers.includes('Твой ответ правильный.'),'ru-writing-084','a forma informal singular твой precisa continuar aceita');
   verify(f('ru-writing-097')?.answers.includes('Можешь показать мне на карте?'),'ru-writing-097','a forma informal можешь deve continuar aceita');
   verify(f('ru-listening-018')?.explanation.includes('sem pressupor'),'ru-listening-018','explicação parental não deve pressupor composição familiar');
