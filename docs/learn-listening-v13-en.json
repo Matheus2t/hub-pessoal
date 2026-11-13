@@ -1,0 +1,1140 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_listening_editorial_v13",
+  "language": "en",
+  "status": "draft_requires_independent_review_and_recording",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "audioStatus": "script_only_no_audio_generated_or_validated",
+  "sourceRefs": [
+    "https://rm.coe.int/cefr-companion-volume-with-new-descriptors-2020/16809ea0d4",
+    "https://europass.europa.eu/en/common-european-framework-reference-language-skills"
+  ],
+  "assessmentPolicy": {
+    "listeningOnlyAfterApprovedAudio": true,
+    "transcriptVisibility": "hidden_during_listening_show_after_assessment_or_opt_in_study_mode",
+    "shortAnswer": "human_scored_or_uncertain",
+    "singleChoice": "valid_only_after_audio_review_and_unambiguous_independent_validation",
+    "teacherApprovalRequired": true
+  },
+  "audioProductionGuidance": {
+    "A2": "Fala padrão clara, lenta sem artificialidade; vozes distintas nos diálogos; pausa natural; revisão humana de inteligibilidade e acento.",
+    "B1": "Fala padrão clara e natural, ritmo moderado; manter prosódia de contraste, causa e consequência; revisão humana antes de avaliação."
+  },
+  "units": [
+    {
+      "draftId": "en-listen-v13-01",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-07",
+      "titlePt": "Ônibus para o museu",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Announcer",
+          "text": "Good morning. The number twelve bus to the museum usually leaves at nine fifteen. Today it will leave at nine forty because of road work. Please wait at stop three, not stop two."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-01-q1",
+          "kind": "single_choice",
+          "promptPt": "A que horas o ônibus sairá hoje?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Às 9h15"
+            },
+            {
+              "id": "b",
+              "label": "Às 10h40"
+            },
+            {
+              "id": "c",
+              "label": "Às 9h40"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "A mensagem corrige o horário habitual de 9h15 para 9h40.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-01-q2",
+          "kind": "short_answer",
+          "promptPt": "Em qual ponto as pessoas devem esperar?",
+          "modelPt": "No ponto três.",
+          "acceptedExamplesPt": [
+            "Ponto 3.",
+            "No terceiro ponto."
+          ],
+          "essentialEvidence": "stop three, not stop two",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-02",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-05",
+      "titlePt": "Mudança de aula",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Student",
+          "text": "Is our English class on Monday at six?"
+        },
+        {
+          "speaker": "Friend",
+          "text": "No, it's on Tuesday at six. The teacher sent us a message yesterday. We're still meeting in room four."
+        },
+        {
+          "speaker": "Student",
+          "text": "Thanks. I'll be there on Tuesday."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-02-q1",
+          "kind": "single_choice",
+          "promptPt": "Em qual dia acontecerá a aula?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Quarta-feira"
+            },
+            {
+              "id": "b",
+              "label": "Terça-feira"
+            },
+            {
+              "id": "c",
+              "label": "Segunda-feira"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "Tuesday at six corrige Monday.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-02-q2",
+          "kind": "short_answer",
+          "promptPt": "Em qual sala será a aula?",
+          "modelPt": "Na sala quatro.",
+          "acceptedExamplesPt": [
+            "Sala 4.",
+            "Na sala número quatro."
+          ],
+          "essentialEvidence": "room four",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-03",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-08",
+      "titlePt": "Ingressos para o concerto",
+      "genre": "transaction",
+      "transcript": [
+        {
+          "speaker": "Customer",
+          "text": "Can I buy two tickets for Saturday's concert?"
+        },
+        {
+          "speaker": "Clerk",
+          "text": "Saturday is sold out. We still have seats for Friday at seven. Each ticket costs twenty pounds."
+        },
+        {
+          "speaker": "Customer",
+          "text": "All right. Two tickets for Friday, please."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-03-q1",
+          "kind": "single_choice",
+          "promptPt": "Para qual dia a pessoa decide comprar ingressos?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Sexta-feira"
+            },
+            {
+              "id": "b",
+              "label": "Sábado"
+            },
+            {
+              "id": "c",
+              "label": "Domingo"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "O comprador aceita Friday após Saturday sold out.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-03-q2",
+          "kind": "short_answer",
+          "promptPt": "Quanto custa cada ingresso?",
+          "modelPt": "Vinte libras.",
+          "acceptedExamplesPt": [
+            "£20.",
+            "20 libras por ingresso."
+          ],
+          "essentialEvidence": "each ticket costs twenty pounds",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-04",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-07",
+      "titlePt": "Devolução na biblioteca",
+      "genre": "information",
+      "transcript": [
+        {
+          "speaker": "Visitor",
+          "text": "Where can I return this book?"
+        },
+        {
+          "speaker": "Librarian",
+          "text": "Put it in the blue box next to the main door. The library closes at five today, but the return box stays open until eight."
+        },
+        {
+          "speaker": "Visitor",
+          "text": "Great, thank you."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-04-q1",
+          "kind": "single_choice",
+          "promptPt": "Onde o livro deve ser devolvido?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Na mesa de atendimento"
+            },
+            {
+              "id": "b",
+              "label": "Na caixa vermelha do segundo andar"
+            },
+            {
+              "id": "c",
+              "label": "Na caixa azul junto à entrada principal"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "blue box next to the main door",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-04-q2",
+          "kind": "short_answer",
+          "promptPt": "Até que horas a caixa de devolução fica disponível?",
+          "modelPt": "Até as oito.",
+          "acceptedExamplesPt": [
+            "Até 20h.",
+            "Até as 8."
+          ],
+          "essentialEvidence": "box stays open until eight; library closes at five",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-05",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-09",
+      "titlePt": "Trabalho em casa",
+      "genre": "voice_message",
+      "transcript": [
+        {
+          "speaker": "Speaker",
+          "text": "Hi, Alex. I usually work in the office, but I'm working from home today. My internet wasn't working this morning, but it's fine now. So our online meeting can start at ten thirty, as planned. See you soon."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-05-q1",
+          "kind": "single_choice",
+          "promptPt": "Onde a pessoa está trabalhando hoje?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Numa biblioteca"
+            },
+            {
+              "id": "b",
+              "label": "Em casa"
+            },
+            {
+              "id": "c",
+              "label": "No escritório"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "I'm working from home today.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-05-q2",
+          "kind": "short_answer",
+          "promptPt": "Em que horário a reunião pode começar?",
+          "modelPt": "Às dez e meia.",
+          "acceptedExamplesPt": [
+            "Às 10h30.",
+            "10:30."
+          ],
+          "essentialEvidence": "meeting can start at ten thirty",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-06",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-06",
+      "titlePt": "Bolsa perdida",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Friend",
+          "text": "Is this blue bag yours?"
+        },
+        {
+          "speaker": "Passenger",
+          "text": "No, my bag is green. The blue one belongs to my brother. I left my green bag on the train this morning."
+        },
+        {
+          "speaker": "Friend",
+          "text": "Let's ask at the station office."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-06-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual objeto foi perdido?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Uma bolsa verde"
+            },
+            {
+              "id": "b",
+              "label": "Uma bolsa azul"
+            },
+            {
+              "id": "c",
+              "label": "Um casaco verde"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "I left my green bag on the train.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-06-q2",
+          "kind": "short_answer",
+          "promptPt": "Onde a bolsa foi deixada?",
+          "modelPt": "No trem.",
+          "acceptedExamplesPt": [
+            "No comboio.",
+            "Dentro do trem."
+          ],
+          "essentialEvidence": "on the train",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-07",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-10",
+      "titlePt": "Fim de semana chuvoso",
+      "genre": "conversation",
+      "transcript": [
+        {
+          "speaker": "Friend",
+          "text": "How was your weekend?"
+        },
+        {
+          "speaker": "Speaker",
+          "text": "On Saturday I visited my aunt, and we cooked lunch together. On Sunday I wanted to go cycling, but it rained all afternoon, so I stayed home and watched a film."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-07-q1",
+          "kind": "single_choice",
+          "promptPt": "O que a pessoa fez no domingo?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Visitou a tia"
+            },
+            {
+              "id": "b",
+              "label": "Saiu para andar de bicicleta"
+            },
+            {
+              "id": "c",
+              "label": "Ficou em casa e assistiu a um filme"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "stayed home and watched a film",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-07-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que ela não foi pedalar?",
+          "modelPt": "Porque choveu a tarde inteira.",
+          "acceptedExamplesPt": [
+            "Porque estava chovendo.",
+            "Choveu durante a tarde."
+          ],
+          "essentialEvidence": "it rained all afternoon",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-08",
+      "language": "en",
+      "level": "A2",
+      "stageNodeId": "en-path-08",
+      "titlePt": "Compras para o café da manhã",
+      "genre": "voice_message",
+      "transcript": [
+        {
+          "speaker": "Speaker",
+          "text": "Could you stop at the shop after work? We need bread, eggs and milk for tomorrow's breakfast. But don't buy eggs—we already have plenty. Just get bread and milk. The shop closes at eight."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-08-q1",
+          "kind": "single_choice",
+          "promptPt": "O que deve ser comprado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Leite e ovos"
+            },
+            {
+              "id": "b",
+              "label": "Pão e leite"
+            },
+            {
+              "id": "c",
+              "label": "Pão e ovos"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "Just get bread and milk; eggs already available",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-08-q2",
+          "kind": "short_answer",
+          "promptPt": "Até que horas a loja fica aberta?",
+          "modelPt": "Até as oito.",
+          "acceptedExamplesPt": [
+            "Até 20h.",
+            "Até as 8."
+          ],
+          "essentialEvidence": "shop closes at eight",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-09",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-12",
+      "titlePt": "Partida adiada",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Coach",
+          "text": "Our football team was going to play on Saturday, but the sports centre sent a message on Friday evening. The field will be closed because of heavy rain. We considered using the school field, but it is too small for a full match. Instead, we will train indoors on Saturday and arrange another date next week. Please bring indoor shoes, not football boots."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-09-q1",
+          "kind": "single_choice",
+          "promptPt": "O que a equipe fará no sábado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Treinar em ambiente fechado"
+            },
+            {
+              "id": "b",
+              "label": "Jogar no campo da escola"
+            },
+            {
+              "id": "c",
+              "label": "Cancelar todas as atividades da semana"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "Instead, we will train indoors on Saturday.",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-09-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que o campo da escola não foi escolhido?",
+          "modelPt": "Porque é pequeno demais para uma partida completa.",
+          "acceptedExamplesPt": [
+            "O campo é pequeno demais.",
+            "Não comporta uma partida completa."
+          ],
+          "essentialEvidence": "too small for a full match",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-09-q3",
+          "kind": "single_choice",
+          "promptPt": "O que os jogadores devem levar?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Equipamento de natação"
+            },
+            {
+              "id": "b",
+              "label": "Tênis para atividade interna"
+            },
+            {
+              "id": "c",
+              "label": "Chuteiras de campo"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "bring indoor shoes, not football boots",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-10",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-11",
+      "titlePt": "Clube de leitura",
+      "genre": "discussion",
+      "transcript": [
+        {
+          "speaker": "Mia",
+          "text": "Our reading club used to select a new book every week, but most members couldn't finish it in time."
+        },
+        {
+          "speaker": "Leo",
+          "text": "I agree. I enjoyed the meetings, yet I often arrived without having read the final chapters."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Starting next month, we'll read one book every two weeks. That should give everyone more time to prepare, although we'll discuss fewer titles."
+        },
+        {
+          "speaker": "Leo",
+          "text": "I think the conversations will actually be better."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-10-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual foi a principal mudança no clube?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Ler dois livros por semana"
+            },
+            {
+              "id": "b",
+              "label": "Parar de discutir livros"
+            },
+            {
+              "id": "c",
+              "label": "Ler um livro a cada duas semanas"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "one book every two weeks",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-10-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que fizeram a mudança?",
+          "modelPt": "Porque muitos não terminavam o livro a tempo.",
+          "acceptedExamplesPt": [
+            "Faltava tempo para terminar os livros.",
+            "Vários membros não liam os capítulos finais."
+          ],
+          "essentialEvidence": "most members couldn't finish it in time",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-10-q3",
+          "kind": "single_choice",
+          "promptPt": "Que desvantagem Mia reconhece?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Discutirão menos títulos"
+            },
+            {
+              "id": "b",
+              "label": "As reuniões serão mais longas"
+            },
+            {
+              "id": "c",
+              "label": "Deixarão de preparar encontros"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "we'll discuss fewer titles",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-11",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-15",
+      "titlePt": "Entrevista e trem",
+      "genre": "narrative",
+      "transcript": [
+        {
+          "speaker": "Speaker",
+          "text": "Yesterday I left home early for a job interview. My train stopped between stations because of a signal problem, and the driver said we might wait for twenty minutes. I called the company immediately, explained the delay and asked whether I could arrive a little late. The receptionist thanked me for calling and moved my interview to eleven. The train started again ten minutes later, so I arrived before the new time."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-11-q1",
+          "kind": "single_choice",
+          "promptPt": "Como a pessoa resolveu o problema do atraso?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Pegou um táxi sem avisar ninguém"
+            },
+            {
+              "id": "b",
+              "label": "Avisou a empresa e teve o horário alterado"
+            },
+            {
+              "id": "c",
+              "label": "Desistiu da entrevista"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "called the company; interview moved to eleven",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-11-q2",
+          "kind": "short_answer",
+          "promptPt": "Qual foi a causa da parada do trem?",
+          "modelPt": "Um problema na sinalização.",
+          "acceptedExamplesPt": [
+            "Problema de sinal.",
+            "Falha de sinalização."
+          ],
+          "essentialEvidence": "signal problem",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-11-q3",
+          "kind": "single_choice",
+          "promptPt": "O que aconteceu depois de o trem voltar a andar?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Chegou depois de onze"
+            },
+            {
+              "id": "b",
+              "label": "Perdeu a entrevista"
+            },
+            {
+              "id": "c",
+              "label": "Chegou antes do novo horário"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "arrived before the new time",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-12",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-14",
+      "titlePt": "Inscrição no estágio",
+      "genre": "narrative",
+      "transcript": [
+        {
+          "speaker": "Speaker",
+          "text": "When I applied for an internship last month, I thought my application was complete. A few days later, the recruiter explained that my CV had arrived but the portfolio file was missing. I checked my email and realised that the attachment was too large to send. I uploaded the portfolio to a shared folder and sent a link instead. The recruiter confirmed that they could open it and invited me to an interview."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-12-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual problema ocorreu na inscrição?",
+          "options": [
+            {
+              "id": "a",
+              "label": "O portfólio não chegou à empresa"
+            },
+            {
+              "id": "b",
+              "label": "O currículo foi enviado para outra pessoa"
+            },
+            {
+              "id": "c",
+              "label": "A vaga foi cancelada"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "CV had arrived but portfolio file was missing",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-12-q2",
+          "kind": "short_answer",
+          "promptPt": "Como a pessoa resolveu o problema?",
+          "modelPt": "Enviou um link para uma pasta compartilhada.",
+          "acceptedExamplesPt": [
+            "Compartilhou o portfólio por link.",
+            "Fez upload do arquivo e mandou o endereço."
+          ],
+          "essentialEvidence": "uploaded the portfolio to a shared folder and sent a link",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-12-q3",
+          "kind": "single_choice",
+          "promptPt": "Qual foi o resultado final declarado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Teve o processo encerrado"
+            },
+            {
+              "id": "b",
+              "label": "Recebeu convite para entrevista"
+            },
+            {
+              "id": "c",
+              "label": "Foi contratada imediatamente"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "invited me to an interview",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-13",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-13",
+      "titlePt": "Reforma da biblioteca",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Announcer",
+          "text": "The central library will be closed for repairs from Monday until Thursday. During those four days, visitors can collect books they have already reserved at the community centre across the street. New reservations will not be processed until Friday. Books due this week can be returned without a late fee next Monday. We apologise for the inconvenience and thank you for your patience."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-13-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual é a mensagem principal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Mudança definitiva de endereço da biblioteca"
+            },
+            {
+              "id": "b",
+              "label": "Fim do serviço de empréstimo"
+            },
+            {
+              "id": "c",
+              "label": "Mudanças temporárias no atendimento devido a reparos"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "closed for repairs from Monday until Thursday",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-13-q2",
+          "kind": "short_answer",
+          "promptPt": "Onde será possível retirar livros já reservados?",
+          "modelPt": "No centro comunitário do outro lado da rua.",
+          "acceptedExamplesPt": [
+            "No centro comunitário em frente.",
+            "No prédio comunitário do outro lado da rua."
+          ],
+          "essentialEvidence": "at community centre across the street",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-13-q3",
+          "kind": "single_choice",
+          "promptPt": "Quando novas reservas voltarão a ser processadas?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Na sexta-feira"
+            },
+            {
+              "id": "b",
+              "label": "Na terça-feira"
+            },
+            {
+              "id": "c",
+              "label": "Na segunda-feira seguinte"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "not processed until Friday",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-14",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-12",
+      "titlePt": "Curso presencial ou on-line",
+      "genre": "discussion",
+      "transcript": [
+        {
+          "speaker": "Sam",
+          "text": "I'm thinking about taking an evening photography course, but I finish work quite late."
+        },
+        {
+          "speaker": "Nora",
+          "text": "The online course might suit you because the lessons are recorded. You could watch them on weekends."
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's useful, but I learn better when I can ask questions immediately."
+        },
+        {
+          "speaker": "Nora",
+          "text": "The classroom course includes live feedback, though it means travelling across town twice a week."
+        },
+        {
+          "speaker": "Sam",
+          "text": "I might try the first online lesson before choosing."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-14-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual decisão Sam toma no fim?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Desistir de aprender fotografia"
+            },
+            {
+              "id": "b",
+              "label": "Experimentar primeiro uma aula on-line"
+            },
+            {
+              "id": "c",
+              "label": "Inscrever-se imediatamente na modalidade presencial"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "try the first online lesson before choosing",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-14-q2",
+          "kind": "short_answer",
+          "promptPt": "Por que o curso presencial lhe interessa?",
+          "modelPt": "Porque permite fazer perguntas e receber retorno imediato.",
+          "acceptedExamplesPt": [
+            "Por causa do feedback ao vivo.",
+            "Pode tirar dúvidas na hora."
+          ],
+          "essentialEvidence": "ask questions immediately; live feedback",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-14-q3",
+          "kind": "single_choice",
+          "promptPt": "Que dificuldade o curso presencial apresenta?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Falta completa de orientação"
+            },
+            {
+              "id": "b",
+              "label": "Aulas apenas aos domingos"
+            },
+            {
+              "id": "c",
+              "label": "Deslocamento duas vezes por semana"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "travelling across town twice a week",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-15",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-15",
+      "titlePt": "Reunião do projeto",
+      "genre": "meeting",
+      "transcript": [
+        {
+          "speaker": "Manager",
+          "text": "We planned to release the new website on Friday, but the testing team found a problem with the mobile menu."
+        },
+        {
+          "speaker": "Developer",
+          "text": "The desktop version works. We can fix the mobile issue tomorrow, then repeat the tests."
+        },
+        {
+          "speaker": "Designer",
+          "text": "I'd rather delay the launch by two days than publish something that visitors cannot navigate on their phones."
+        },
+        {
+          "speaker": "Manager",
+          "text": "Agreed. We'll update the schedule today and send the team a new checklist."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-15-q1",
+          "kind": "single_choice",
+          "promptPt": "Por que o lançamento será adiado?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Há um problema de navegação no celular"
+            },
+            {
+              "id": "b",
+              "label": "O site não funciona no computador"
+            },
+            {
+              "id": "c",
+              "label": "A equipe perdeu o domínio"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "problem with the mobile menu",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-15-q2",
+          "kind": "short_answer",
+          "promptPt": "Qual é a preocupação principal da designer?",
+          "modelPt": "Que visitantes não consigam navegar no celular.",
+          "acceptedExamplesPt": [
+            "Dificuldade de navegação no celular.",
+            "O menu móvel impede o uso adequado do site."
+          ],
+          "essentialEvidence": "visitors cannot navigate on their phones",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-15-q3",
+          "kind": "single_choice",
+          "promptPt": "Qual ação a gerente confirma?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Lançar sem testar"
+            },
+            {
+              "id": "b",
+              "label": "Atualizar o cronograma e enviar uma lista de verificação"
+            },
+            {
+              "id": "c",
+              "label": "Excluir o projeto"
+            }
+          ],
+          "correctOptionId": "b",
+          "evidence": "update the schedule; send a new checklist",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    },
+    {
+      "draftId": "en-listen-v13-16",
+      "language": "en",
+      "level": "B1",
+      "stageNodeId": "en-path-14",
+      "titlePt": "Mutirão de bairro",
+      "genre": "announcement",
+      "transcript": [
+        {
+          "speaker": "Organiser",
+          "text": "This Saturday we're organising a clean-up by the river. We expected to start at eight in the morning, but the weather service now predicts heavy rain until ten. Rather than cancel the event, we've moved the start to eleven. Volunteers should meet inside the community centre first, where we'll give out gloves and explain which paths are safe. If the rain continues after eleven, we'll clean the indoor storage area instead."
+        }
+      ],
+      "questions": [
+        {
+          "id": "en-listen-v13-16-q1",
+          "kind": "single_choice",
+          "promptPt": "Qual é o objetivo do aviso?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Anunciar o cancelamento definitivo do mutirão"
+            },
+            {
+              "id": "b",
+              "label": "Informar que o rio será fechado"
+            },
+            {
+              "id": "c",
+              "label": "Explicar alterações no mutirão devido à previsão de chuva"
+            }
+          ],
+          "correctOptionId": "c",
+          "evidence": "moved the start to eleven, contingency plan",
+          "scoring": "exact_choice_after_audio_validated"
+        },
+        {
+          "id": "en-listen-v13-16-q2",
+          "kind": "short_answer",
+          "promptPt": "Onde os voluntários devem se encontrar primeiro?",
+          "modelPt": "Dentro do centro comunitário.",
+          "acceptedExamplesPt": [
+            "No centro comunitário.",
+            "Na parte interna do centro comunitário."
+          ],
+          "essentialEvidence": "meet inside the community centre first",
+          "scoring": "human_or_uncertain_no_strict_string_match"
+        },
+        {
+          "id": "en-listen-v13-16-q3",
+          "kind": "single_choice",
+          "promptPt": "O que farão se a chuva continuar após as onze?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Limparão a área interna de armazenamento"
+            },
+            {
+              "id": "b",
+              "label": "Trabalharão nas trilhas junto ao rio"
+            },
+            {
+              "id": "c",
+              "label": "Voltarão obrigatoriamente para casa"
+            }
+          ],
+          "correctOptionId": "a",
+          "evidence": "clean the indoor storage area instead",
+          "scoring": "exact_choice_after_audio_validated"
+        }
+      ],
+      "productionStatus": "script_only_no_recording",
+      "reviewStatus": "editorial_draft_requires_independent_language_review",
+      "public": false
+    }
+  ],
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "scope": "script_and_question_consistency_only",
+    "scriptsInspected": 16,
+    "questionsInspected": 40,
+    "changeNotes": [],
+    "manualReviewNotIndependent": true,
+    "audioFilesInspected": 0,
+    "audioValidated": false,
+    "externalLanguageValidationPerformed": false,
+    "ownerAcceptancePending": true,
+    "releaseAllowed": false
+  }
+}

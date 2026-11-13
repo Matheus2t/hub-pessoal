@@ -17,6 +17,8 @@
     "learn:validate-delayed": "node scripts/validate-learn-delayed-probes.mjs",
     "learn:validate-readiness": "node scripts/validate-learn-readiness.mjs",
     "learn:validate-audio": "node scripts/validate-learn-audio.mjs",
+    "learn:validate-listening-v13": "node scripts/learn/validate-listening-v13.mjs && node --test scripts/learn/listening-v13-preview.test.mjs",
+    "learn:preview-listening-v13": "npm run build && node scripts/learn/listening-v13-preview.mjs",
     "learn:check-catalogs": "node scripts/learn/check-catalog-determinism.mjs",
     "learn:validate-progression": "node scripts/learn/validate-progression-v12.mjs",
     "learn:preview-v19": "npm run build && node scripts/learn-audio-v19/local-study-preview.mjs"

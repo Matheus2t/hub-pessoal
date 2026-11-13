@@ -42,6 +42,13 @@ export function isLearnV19AudioPreviewEnabled(
  return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='audio-v19';
 }
 
+/** V13 editorial/audio preview is loopback-only and never authorizes assessment. */
+export function isLearnListeningV13PreviewEnabled(
+ host=globalThis.location?.hostname||'',search=globalThis.location?.search||''
+):boolean {
+ return isLoopback(host)&&new URLSearchParams(search).get('learn-preview')==='listening-v13';
+}
+
 /** V16 B1 reading editorial preview. Not a public release or permission check.
  * Owners can inspect the proposed text on loopback before accepting it.
  */

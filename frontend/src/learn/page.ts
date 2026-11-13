@@ -18,9 +18,10 @@ import './diagnostic-page';
 import './delayed-review-page';
 import './integration-page';
 import './v19-local-preview';
+import './listening-v13-preview';
 import './bridge-v11';
 import './reading-b1-v16';
-import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled} from './pilot-preview';
+import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled} from './pilot-preview';
 import {renderLearnFlowNav} from './flow-nav';
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
@@ -33,7 +34,7 @@ export class LearnPage extends LightElement {
   @state() private contentError=false;
   private generation=0;
   private previousActivity='';
-  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity'),c5Activities=['integration','daily','dashboard'];const entersC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.activity),leavesC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.previousActivity);if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'||this.activity==='progression'||this.previousActivity==='progression'||entersC5||leavesC5))void this.load();if(activityChanged)this.previousActivity=this.activity}
+  protected updated(changes:PropertyValues){const activityChanged=changes.has('activity'),c5Activities=['integration','daily','dashboard'];const entersC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.activity),leavesC5=this.isIntegrationPreviewEnabled()&&c5Activities.includes(this.previousActivity);if(changes.has('language')||changes.has('invalid')||activityChanged&&(this.activity.startsWith('pilot-')||this.previousActivity.startsWith('pilot-')||this.activity==='diagnostic'||this.previousActivity==='diagnostic'||this.activity==='reviews'||this.previousActivity==='reviews'||this.activity==='listening-v13'||this.previousActivity==='listening-v13'||this.activity==='progression'||this.previousActivity==='progression'||entersC5||leavesC5))void this.load();if(activityChanged)this.previousActivity=this.activity}
   disconnectedCallback(){this.generation++;super.disconnectedCallback()}
   private async load(){
     const generation=++this.generation;
@@ -42,6 +43,7 @@ export class LearnPage extends LightElement {
     if(this.activity==='diagnostic'&&this.isDiagnosticPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     if((this.activity==='pilot-c1'||this.activity==='pilot-c2')&&this.isPilotPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     if(this.activity==='reviews'&&this.isDelayedReviewPreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
+    if(this.activity==='listening-v13'&&isLearnListeningV13PreviewEnabled()){this.catalog=undefined;this.loading=false;return;}
     const language=this.language as Language;
     const [progress,content]=await Promise.allSettled([snapshot(),language?loadCurriculum(language):Promise.resolve()]);
     if(generation!==this.generation||!this.isConnected)return;
@@ -67,6 +69,9 @@ export class LearnPage extends LightElement {
     if(this.activity==='audio-v19')return (this.language==='en'||this.language==='ru')&&isLearnV19AudioPreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--v19-preview"><learn-v19-local-preview .language=${this.language as Language}></learn-v19-local-preview></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Os novos áudios V19 só podem ser usados em uma sessão local autorizada. Não estão publicados.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
+    if(this.activity==='listening-v13')return (this.language==='en'||this.language==='ru')&&isLearnListeningV13PreviewEnabled()
+      ?html`<article class="learn-page learn-page--activity learn-page--listening-v13"><learn-listening-v13-preview .language=${this.language as Language}></learn-listening-v13-preview></article>`
+      :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Listening V13 está restrito ao servidor local autenticado e não está publicado.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao Learn</a></section>`;
     if(this.activity==='progression'&&!isLearnProgressionPreviewEnabled())return html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A progressão V12 continua restrita a localhost/loopback enquanto o mapeamento pedagógico não tiver liberação pública.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='dashboard'&&this.isIntegrationPreviewEnabled())return !this.data||!this.catalog?html`<article class="learn-page learn-page--activity"><p role="status" class="learn-message">${this.loading?'Carregando acompanhamento local…':'O catálogo não está disponível. Seu histórico foi preservado.'}</p></article>`:html`<article class="learn-page learn-page--activity"><nav class="learn-internal"><a href=${`#/learn/${this.language}`}>Voltar às áreas de ${this.language==='ru'?'Russo':'Inglês'}</a><a href=${`#/learn/${this.language}/integration`}>Percurso integrado</a></nav>${renderLearnFlowNav(this.language as Language,'dashboard')}<learn-integration-evidence .language=${this.language as Language} .progress=${this.data}></learn-integration-evidence><learn-advanced mode="dashboard" .language=${this.language as Language} .catalog=${this.catalog} .progress=${this.data}></learn-advanced></article>`;
     const language=this.language as Language,label=labels[language];
@@ -85,6 +90,7 @@ export class LearnPage extends LightElement {
       ${label&&language==='ru'&&this.activity===''&&isLearnPilotPreviewEnabled('c2')?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href="#/learn/ru/pilot-c2">Aula-piloto de Russo <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDiagnosticPreviewEnabled(language as Language)?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/diagnostic`}>Diagnóstico inicial <span aria-hidden="true">↗</span></a></nav>`:nothing}
         ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnDelayedReviewPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/reviews`}>Revisões D+2 e D+7 <span aria-hidden="true">↗</span></a></nav>`:nothing}
+      ${label&&this.activity===''&&isLearnListeningV13PreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/listening-v13`}>Listening A2/B1 <span aria-hidden="true">↗</span></a></nav>`:nothing}
         ${label&&this.activity===''&&(language==='en'||language==='ru')&&isLearnProgressionPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/progression`}>Progressão guiada A1–B1 <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${label&&this.activity===''&&this.isIntegrationPreviewEnabled()?html`<nav class="learn-c1-preview-link" aria-label="Prévia interna"><a class="button" href=${`#/learn/${language}/integration`}>Percurso integrado <span aria-hidden="true">↗</span></a></nav>`:nothing}
       ${this.loading?html`<p role="status" class="learn-message">Carregando progresso local…</p>`:nothing}

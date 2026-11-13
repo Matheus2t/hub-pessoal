@@ -1,5 +1,5 @@
 import type {Language,Skill} from './model';
-import {isLearnAudioFixturePreviewEnabled,isLearnV19AudioPreviewEnabled} from './pilot-preview';
+import {isLearnAudioFixturePreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnV19AudioPreviewEnabled} from './pilot-preview';
 
 export type AudioSkill=Extract<Skill,'listening'|'dictation'>;
 export interface LearnAudioAsset {
@@ -65,7 +65,7 @@ export function canPlayLearnAudio(asset:LearnAudioAsset|undefined,policy:LearnAu
   if(asset.source==='local-v19-technical'&&asset.validationStatus==='technical-passed'&&
      asset.licenseStatus==='review-pending'&&asset.assessmentEnabled===false&&
      !policy.audioAssessmentEnabled&&policy.publicRelease!==true){
-    return isLearnV19AudioPreviewEnabled(hostname,search);
+    return isLearnV19AudioPreviewEnabled(hostname,search)||isLearnListeningV13PreviewEnabled(hostname,search);
   }
   if(asset.validationStatus!=='approved'||asset.licenseStatus!=='approved')return false;
   return policy.publicRelease===true||localPreview;
