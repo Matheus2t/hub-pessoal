@@ -3,7 +3,6 @@ import {customElement,property,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
 import type {Language} from './model';
 import {bridgeDraftsForLanguage,type BridgeTaskV11} from './bridge-v11-content';
-import {isLearnBridgeV11PreviewEnabled} from './pilot-preview';
 
 type Transition=BridgeTaskV11['transition'];
 const transitions:readonly Transition[]=['A1_to_A2','A2_to_B1'];
@@ -15,8 +14,9 @@ const skillLabel:Record<BridgeTaskV11['skill'],string>={
 };
 
 /**
- * V11 is a local editorial study preview, NOT public curricular content.
+ * V11 is public owner-approved formative practice (20 written tasks).
  * Responses remain in component memory; no grade or learning evidence is generated.
+ * Four unapproved audio scripts are visible only as clearly unavailable references.
  */
 @customElement('learn-bridge-v11')
 export class LearnBridgeV11 extends LightElement {
@@ -45,7 +45,6 @@ export class LearnBridgeV11 extends LightElement {
   if(next)this.resetTask(next.draftId);
  }
  render(){
-  if(!isLearnBridgeV11PreviewEnabled())return html`<p role="status">Esta prévia editorial ainda não está disponível no site público.</p>`;
   const tasks=bridgeDraftsForLanguage(this.language);
   const visible=tasks.filter(task=>task.transition===this.transition);
   const active=visible.find(task=>task.draftId===this.selectedId)||visible[0];
@@ -54,9 +53,9 @@ export class LearnBridgeV11 extends LightElement {
   return html`<section class="learn-bridge" aria-labelledby="learn-bridge-title">
     <header class="learn-bridge__head">
       <div>
-        <p class="learn-bridge__kicker">V11 · PRÉVIA EDITORIAL LOCAL</p>
+        <p class="learn-bridge__kicker">V11 · PRÁTICA FORMATIVA</p>
         <h1 id="learn-bridge-title">Atividades-ponte</h1>
-        <p>Prepare a passagem entre A1, A2 e B1 com tarefas de gramática, leitura e escrita. Esta versão é experimental, sem correção automática ou certificado.</p>
+        <p>Prepare a passagem entre A1, A2 e B1 com tarefas de gramática, leitura e escrita. As atividades são formativas, com exemplos de resposta e sem notas automáticas ou certificação.</p>
       </div>
       <a class="button" href=${`#/learn/${this.language}`}>Voltar ao Learn</a>
     </header>
@@ -77,7 +76,7 @@ export class LearnBridgeV11 extends LightElement {
           </option>`)}
         </select>
         <p><strong>${visible.length}</strong> tarefas de ${transitionLabel(this.transition)} · ${this.language==='ru'?'Russo':'Inglês'}</p>
-        <p>O conteúdo permanece em revisão editorial independente. Suas respostas não são guardadas nem contam no histórico.</p>
+        <p>Conteúdo liberado para prática formativa. Suas respostas não são salvas nem contam como avaliação.</p>
       </aside>
       ${active?html`<article class="learn-bridge__task" aria-labelledby="bridge-task-title">
         <div class="learn-bridge__meta">
@@ -92,7 +91,7 @@ export class LearnBridgeV11 extends LightElement {
         </div>
         <button type="button" class="button" aria-expanded=${this.revealAudioScript}
           @click=${()=>this.revealAudioScript=!this.revealAudioScript}>
-          ${this.revealAudioScript?'Ocultar roteiro':'Consultar roteiro editorial'}
+          ${this.revealAudioScript?'Ocultar roteiro':'Consultar roteiro de referência'}
         </button>
         ${this.revealAudioScript?html`<div class="learn-bridge__source" lang=${this.language}>${active.stimulusText}</div>`:nothing}
         `:html`
@@ -131,7 +130,7 @@ export class LearnBridgeV11 extends LightElement {
         </footer>
       </article>`:nothing}
     </div>
-    <p class="learn-bridge__bottom">Esta é uma prévia interna para teste de interface e conteúdo. Não altera notas, progresso, dados de avaliação, backups nem a trilha pública.</p>
+    <p class="learn-bridge__bottom">Prática sem pontuação automática. Suas respostas ficam apenas nesta tela; o histórico, a trilha e os backups existentes não são alterados.</p>
   </section>`;
  }
 }
