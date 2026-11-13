@@ -1,0 +1,40 @@
+name: Regressão avaliação V17
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/learn/progression-v17-*.ts'
+      - 'frontend/src/learn/backup.ts'
+      - 'frontend/src/learn/model.ts'
+      - 'frontend/tests/learn-progress-v17.spec.ts'
+      - 'scripts/learn/validate-assessment-progression-v17.mjs'
+      - 'docs/learn-v17-audit-2026-11-13.md'
+      - '.github/workflows/learn-v17-assessment-regression.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/learn/progression-v17-*.ts'
+      - 'frontend/src/learn/backup.ts'
+      - 'frontend/src/learn/model.ts'
+      - 'frontend/tests/learn-progress-v17.spec.ts'
+      - 'scripts/learn/validate-assessment-progression-v17.mjs'
+      - 'docs/learn-v17-audit-2026-11-13.md'
+      - '.github/workflows/learn-v17-assessment-regression.yml'
+permissions:
+  contents: read
+jobs:
+  v17-assessment-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: node scripts/learn/validate-assessment-progression-v17.mjs
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx playwright install chromium
+      - name: Testar revisão, progresso, backups, privacidade e UI V17
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-progress-v17.spec.ts
