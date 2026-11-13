@@ -1,6 +1,6 @@
 # 2T Learn — homologação integrada final (13/11/2026)
 
-**Estado da execução:** testes completos em curso; a decisão será preenchida com resultados observados no PR de homologação, sem antecipar a aprovação.
+**Estado da execução:** **APROVADA TECNICAMENTE** sobre o commit de validação `9adc6bb1cd1a4cebf7fd7db46b50194d34828805` do [PR #151](https://github.com/Matheus2t/hub-pessoal/pull/151), com **4/4 checks concluídos em sucesso** (três jobs integrados e frontend). A homologação não valida o SHA do deployment no domínio.
 
 **Baseline de partida:** `main` `cbb740e5c48038f19f72593bcfd639efe69c8876` (V18 integrada pelo PR #150).  
 **Escopo:** somente a área Learn e a respectiva esteira de verificação. Os módulos Ações, Renda Fixa, Games, Times e Call não fazem parte desta homologação.
@@ -37,15 +37,18 @@ A execução do CI não utiliza ou distribui o inventário privado de 68 MP3s. T
 
 | Verificação | Resultado |
 | --- | --- |
-| `learn-content-and-data` | **Em validação** |
-| `learn-local-end-to-end` | **Em validação** |
-| `learn-public-release-gates` | **Em validação** |
-| Testes integrados novos e totais Playwright | **Em validação** |
-| Testes de regressão Node/arquivos privados por fixture | **Em validação** |
-| Segurança e isolamento no bundle público | **Em validação** |
-| Merge da homologação na `main` | **Pendente dos três checks** |
+| `learn-content-and-data` | **Aprovado** — 474 IDs, geração determinística, 11 contratos originais e validadores V12/V13/V14/V16/V17/A1–B1 |
+| `learn-local-end-to-end` | **Aprovado** — 220 testes Playwright em Chromium; 1 teste de MP3 privado V13 ignorado por indisponibilidade de inventário neste CI |
+| `learn-public-release-gates` | **Aprovado** — 3/3 testes de acesso público em navegador; 474 exercícios presentes, zero gravações distribuídas, V16/V17 ausentes no bundle |
+| Compilação `frontend` | **Aprovada** — quarto check verde |
+| Testes integrados novos de backup EN/RU e prática V11 | **Aprovados** dentro dos 220 Playwright; exportação, restauração atômica, recarga e isolamento EN/RU confirmados |
+| Node: áudio privado simulado/contratos de servidores | **25 aprovados, 1 ignorado** de 26; o teste ignorado exige inventário MP3 V19 não disponibilizado ao runner |
+| Responsividade e navegação | **Aprovadas nos viewports simulados** usados pela regressão (320, 390, 768, 1366 e 1920 px); não testadas em celulares físicos |
+| Merge da homologação na `main` | **Conferir o PR #151** — a validação de código está aprovada neste commit; o merge não altera as conclusões técnicas |
 
-**Resultado final:** pendente. O relatório deve ser atualizado após observar os checks; não inferir aprovação do texto ou apenas da criação do PR.
+**Resultado final:** **homologação técnica integrada aprovada em GitHub Actions** para a baseline de código descrita acima. Evidências: logs dos jobs `learn-content-and-data`, `learn-local-end-to-end` e `learn-public-release-gates` no [PR #151](https://github.com/Matheus2t/hub-pessoal/pull/151). Não houve erros funcionais bloqueantes; duas primeiras execuções falharam por problemas **da esteira de testes**, corrigidos antes da aprovação: (a) expectativa estrita de texto de rota bloqueada em vez de aceitar 404 da aplicação e (b) `fetch-depth` insuficiente para `git show f2ab5f8`. A execução final passou **sem ignorar esses cenários de segurança e integridade**.
+
+**Itens intencionalmente fora da aprovação:** MP3 real não disponibilizado nos runners; avaliação humana de naturalidade; teste físico Android/iOS; identidade institucional de revisor; rastreamento da versão de deployment/alias no domínio `matheus2t.com.br`; liberação pública das prévias privadas. Esses itens **não são falhas ocultas**, mas limites explícitos da homologação.
 
 ## 4. Limites e operação após a homologação
 
@@ -55,4 +58,4 @@ A execução do CI não utiliza ou distribui o inventário privado de 68 MP3s. T
 
 **Vercel e domínio oficial:** os checks GitHub de saúde da produção atestam o que suas respectivas rotinas consultaram, **não** identificam necessariamente o SHA servido. A tentativa de consulta ao projeto `matheus2t` na equipe `matheus2ts-projects` e ao hostname pelo conector Vercel resultou em `not_found`/projetos inacessíveis. A ferramenta de navegação pública também não conseguiu abrir `https://matheus2t.com.br/` nesta sessão. Logo, **deploy específico em produção não foi homologado remotamente** e não será tratado como um bloqueio artificial da homologação técnica local. Não foi solicitado nem realizado deploy manual.
 
-**Dependência de Codex:** somente se surgir uma falha técnica fora do alcance das correções diretas ou se o proprietário desejar uma confirmação adicional do deployment exato por acesso Vercel não disponível ao ChatGPT. A necessidade real será registrada depois da execução CI e das correções.
+**Dependência de Codex:** **não foi necessária** para completar, corrigir a esteira e aprovar a homologação técnica do Learn; os testes e a documentação foram realizados diretamente pelo ChatGPT. **Possível ajuda futura do Codex:** se o proprietário exigir conferência do deployment exato com acesso Vercel do ambiente local — isso permanece não verificado por este canal. Nenhuma mudança de regras/rotas públicas foi autorizada ou executada por implicação.
