@@ -9,6 +9,7 @@ on:
       - 'frontend/tests/learn-workspace-v20.spec.ts'
       - 'frontend/tests/learn-v19-integration.spec.ts'
       - 'frontend/tests/learn-v18-editorial.spec.ts'
+      - 'frontend/tests/learn-progress-v17.spec.ts'
       - 'docs/learn-revisao-final-v18.md'
       - 'docs/learn-revisao-integrada-v18.json'
       - 'scripts/learn-audio-v19/**'
