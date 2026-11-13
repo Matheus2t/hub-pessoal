@@ -1198,3 +1198,24 @@ learn-home { display:block; min-width:0; width:100%; }
  .learn-page .learn-v17__scenario,.learn-page .learn-v17__checkpoint { padding:17px; }
  .learn-page .learn-v17__practice .button { flex:1 1 auto; }
 }
+
+
+/* V17: at 320px level selectors must shrink and wrap rather than grow the page. */
+.learn-page .learn-v17__levels .button {
+ width:100%; max-width:100%; min-width:0; box-sizing:border-box;
+ grid-template-columns:minmax(0,1fr); white-space:normal; overflow-wrap:anywhere;
+}
+.learn-page .learn-v17__levels .button > * {
+ min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:left;
+}
+.learn-page .learn-v17__sidebar,
+.learn-page .learn-v17__content,
+.learn-page .learn-v17__stage,
+.learn-page .learn-v17__scenario,
+.learn-page .learn-v17__checkpoint {
+ min-width:0; overflow-wrap:anywhere;
+}
+@media(max-width:360px){
+ .learn-page .learn-v17__levels { gap:6px; }
+ .learn-page .learn-v17__levels .button { padding:11px 8px; }
+}
