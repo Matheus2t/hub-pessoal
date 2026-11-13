@@ -1,4 +1,5 @@
 import type {Attempt,Backup,Card,LessonAssistance,LessonDraft,LessonEvidenceEvent,LessonFeedback,LessonProgress,LessonShownAssistance,PlanningRecord,V17AssessmentData,V17AssessmentAttempt,V17HumanReview} from './model';
+import {reviewConsensusV17} from './progression-v17-review-consensus';
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const text=(v:unknown,max=2000):v is string=>typeof v==='string'&&v.length>0&&v.length<=max;
 const num=(v:unknown,min:number,max:number):v is number=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
@@ -121,11 +122,17 @@ function validV17Assessment(v:unknown,language:'en'|'ru'):v is V17AssessmentData
   for(let index=0;index<reviews.length;index++){const review=reviews[index],expected=index===0?'initial':reviewerIds.has(review.reviewerId)?'correction':'independent_review';if(review.decision!==expected||review.reviewedAt<previousReviewAt)return false;reviewerIds.add(review.reviewerId);previousReviewAt=review.reviewedAt;}
   const distinct=new Map<string,number>();for(const review of reviews)distinct.set(review.reviewerId,review.score);
   const counts=new Map<number,number>();for(const score of distinct.values())counts.set(score,(counts.get(score)||0)+1);
-  const consensus=[...counts].find(([,count])=>count>=2)?.[0],conflict=distinct.size>1&&consensus===undefined;
+  const {consensus,disputed}=reviewConsensusV17(reviews);
   if(a.reviewStatus==='awaiting_review')return reviews.length===0&&a.outcome==='uncertain';
   if(a.reviewStatus==='not_assessed')return reviews.length===0&&a.outcome==='not_assessed';
-  if(a.reviewStatus==='disputed')return conflict&&a.outcome==='uncertain';
-  return reviews.length>0&&!conflict&&a.outcome===v17OutcomeForScore(consensus??[...distinct.values()].at(-1));
+  if(a.reviewStatus==='disputed')return disputed&&a.outcome==='uncertain';
+  if(!reviews.length)return false;
+  if(!disputed)return a.outcome===v17OutcomeForScore(consensus??[...distinct.values()].at(-1));
+  // Backward compatibility: an earlier V17 release mistakenly accepted a 2-versus-2
+  // reviewer tie as consensus. Keep those v3 backups readable, but all runtime
+  // recommendations and displays downgrade the legacy result to unresolved.
+  const legacyConsensus=[...counts].find(([,count])=>count>=2)?.[0];
+  return legacyConsensus!==undefined&&a.outcome===v17OutcomeForScore(legacyConsensus);
  })||new Set((v.attempts as any[]).map(a=>a.attemptId)).size!==(v.attempts as any[]).length)return false;
  return new Set((v.drafts as any[]).map(d=>`${d.scenarioId}:${d.contentFingerprint}`)).size===(v.drafts as any[]).length;
 }
