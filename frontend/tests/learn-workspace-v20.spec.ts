@@ -59,7 +59,8 @@ test('Learn V20.1 progression keeps V12 gates, honest activity counts and collap
   await expect(details).not.toHaveAttribute('open','');
   await details.locator('summary').click();
   await expect(details).toHaveAttribute('open','');
-  await expect(page.getByText('Atividades-ponte V11 indisponíveis')).toBeVisible();
+  await expect(page.getByText('Atividades-ponte V11 disponíveis para prática')).toBeVisible();
+  await expect(page.getByRole('link',{name:'Abrir atividades-ponte'})).toHaveAttribute('href', /#\/learn\/(en|ru)\/bridges/);
   for(const width of viewportWidths){
     await page.setViewportSize({width,height:900});
     for(const theme of ['dark','light'] as const){
