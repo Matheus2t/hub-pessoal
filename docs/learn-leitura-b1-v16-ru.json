@@ -1,0 +1,799 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_b1_reading_interpretation_editorial_v16",
+  "language": "ru",
+  "status": "editorial_review_pending",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "purpose": "Complementar leituras legadas B1 sem substituir IDs/históricos.",
+  "sourceCatalog": "frontend/public/learn/ru.json",
+  "legacySnapshotRef": "main",
+  "assessmentPolicy": "Multiple-choice keys require independent teacher review. Free-text examples are illustrative only, not an automatic allowlist; free text must be human-scored or marked uncertain. No reading proficiency or CEFR certification can be inferred from simple completion.",
+  "units": [
+    {
+      "draftId": "ru-reading-b1-v16-01",
+      "language": "ru",
+      "level": "B1",
+      "legacyReadingId": "ru-v2-reading-001",
+      "linkedStageNodeId": "ru-path-11",
+      "genre": "community_notice",
+      "topic": "Projetos",
+      "title": "Книги для соседей",
+      "text": "После ремонта районной библиотеки у нас осталось много книг, которые больше не помещались на старых полках. Несколько жителей предложили открыть небольшой пункт обмена книгами в общественном центре. Волонтёры уже разобрали книги по темам, но оказалось, что некоторые издания повреждены. Такие книги решили пока не выдавать, чтобы читатели не получили их случайно.\n\nСначала организаторы хотели открыть пункт только по субботам. Однако люди, работающие в выходные, попросили добавить вечерний день. Теперь центр будет принимать посетителей по средам после шести и по субботам утром. Через месяц организаторы соберут отзывы и решат, стоит ли менять расписание. Они напоминают, что обмен бесплатный, но выбор книг пока ограничен.",
+      "glossaryTeacherOnly": [
+        [
+          "пункт обмена",
+          "ponto de troca"
+        ],
+        [
+          "издания повреждены",
+          "exemplares danificados"
+        ],
+        [
+          "выбор книг",
+          "seleção de livros"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "ru-reading-b1-v16-01-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual é o objetivo principal do projeto descrito?",
+          "evidenceSpans": [
+            "пункт обмена книгами",
+            "обмен бесплатный"
+          ],
+          "explanationPt": "Troca comunitária, não venda.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Vender todos os livros antigos da biblioteca."
+            },
+            {
+              "id": "b",
+              "label": "Fechar a biblioteca às quartas-feiras."
+            },
+            {
+              "id": "c",
+              "label": "Permitir a troca gratuita de livros da comunidade."
+            }
+          ],
+          "correctOptionId": "c",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-01-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que acrescentaram atendimento nas noites de quarta-feira?",
+          "evidenceSpans": [
+            "люди, работающие в выходные, попросили добавить вечерний день",
+            "по средам после шести"
+          ],
+          "explanationPt": "Ligar pedido de acessibilidade ao horário adicional, sem alegar dados de público.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Porque algumas pessoas trabalham nos fins de semana e não conseguiriam aproveitar apenas o sábado.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "O novo horário atende pessoas que trabalham no sábado.",
+            "A mudança amplia o acesso para quem está ocupado no fim de semana."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "ru-reading-b1-v16-01-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "O que acontecerá com os exemplares danificados?",
+          "evidenceSpans": [
+            "Такие книги решили пока не выдавать"
+          ],
+          "explanationPt": "Não afirmar descarte dos exemplares.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Não serão disponibilizados por enquanto."
+            },
+            {
+              "id": "b",
+              "label": "Serão vendidos imediatamente."
+            },
+            {
+              "id": "c",
+              "label": "Serão entregues sem separação."
+            }
+          ],
+          "correctOptionId": "a",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-01-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Que decisão ainda depende de informações coletadas no mês seguinte?",
+          "evidenceSpans": [
+            "Через месяц организаторы соберут отзывы и решат, стоит ли менять расписание"
+          ],
+          "explanationPt": "Não confundir teste com decisão já tomada.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Se o horário do ponto de troca deve ser modificado após a coleta de opiniões.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Reavaliar os dias e horários com base nos comentários dos visitantes."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "ru-reading-b1-v16-01-transfer",
+        "promptRu": "Напишите короткое приглашение соседям на бесплатный обмен книгами. Укажите удобное время, одно правило и попросите оставить отзыв.",
+        "scoringCriteriaPt": [
+          "Convite com horário concreto.",
+          "Regra prática explícita.",
+          "Pedido de feedback compreensível em russo."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "ru-reading-b1-v16-02",
+      "language": "ru",
+      "level": "B1",
+      "legacyReadingId": "ru-v2-reading-002",
+      "linkedStageNodeId": "ru-path-12",
+      "genre": "public_notice",
+      "topic": "Informação",
+      "title": "Изменения на автобусном маршруте",
+      "text": "Из-за ремонта моста автобус номер семь на следующей неделе будет ходить по временному маршруту. Раньше он останавливался у спортивного центра, но теперь ближайшая остановка будет у городского музея. Пассажиры смогут дойти от музея до спортивного центра примерно за десять минут. Представители транспортной компании объясняют, что это временное решение и после ремонта автобус должен вернуться на старую дорогу.\n\nНекоторые жители спрашивают, будут ли автобусы приходить по обычному расписанию. Компания пока не обещает точного времени, потому что на новой дороге часто бывают пробки. В течение первой недели сотрудники будут записывать опоздания и публиковать обновления на сайте. Пассажирам советуют проверять информацию перед поездкой, особенно если у них назначена важная встреча.",
+      "glossaryTeacherOnly": [
+        [
+          "временный маршрут",
+          "itinerário temporário"
+        ],
+        [
+          "пробки",
+          "congestionamentos"
+        ],
+        [
+          "опоздания",
+          "atrasos"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "ru-reading-b1-v16-02-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "O que o aviso informa principalmente?",
+          "evidenceSpans": [
+            "Из-за ремонта моста автобус номер семь на следующей неделе будет ходить по временному маршруту"
+          ],
+          "explanationPt": "Desvio temporário, não cancelamento definitivo.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "O ônibus 7 terá percurso temporário por causa de obras."
+            },
+            {
+              "id": "b",
+              "label": "O ônibus 7 deixará de circular definitivamente."
+            },
+            {
+              "id": "c",
+              "label": "O centro esportivo mudará de endereço."
+            }
+          ],
+          "correctOptionId": "a",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-02-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que a empresa recomenda conferir o site antes da viagem?",
+          "evidenceSpans": [
+            "на новой дороге часто бывают пробки",
+            "записывать опоздания и публиковать обновления на сайте"
+          ],
+          "explanationPt": "Conectar incerteza de horário e atualizações.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Porque há risco de atrasos devido ao trânsito no novo percurso e o horário exato ainda é incerto.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "A nova via pode ter congestionamentos.",
+            "A empresa acompanhará atrasos e divulgará atualizações."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "ru-reading-b1-v16-02-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Onde ficará a parada mais próxima do centro esportivo durante as obras?",
+          "evidenceSpans": [
+            "ближайшая остановка будет у городского музея"
+          ],
+          "explanationPt": "A parada será junto ao museu.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "No próprio canteiro da ponte."
+            },
+            {
+              "id": "b",
+              "label": "Perto do museu municipal."
+            },
+            {
+              "id": "c",
+              "label": "Na entrada do centro esportivo."
+            }
+          ],
+          "correctOptionId": "b",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-02-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "O que já é certo e o que ainda é incerto sobre a mudança?",
+          "evidenceSpans": [
+            "будет ходить по временному маршруту",
+            "пока не обещает точного времени"
+          ],
+          "explanationPt": "Distinguir mudança confirmada de promessa não feita.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "É certo que haverá desvio temporário e parada perto do museu; o cumprimento exato dos horários ainda não está garantido.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Percurso alterado confirmado, mas horários sujeitos a atrasos."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "ru-reading-b1-v16-02-transfer",
+        "promptRu": "Напишите сообщение другу, которому нужно приехать в спортивный центр. Объясните временное изменение маршрута и предложите, где проверить время автобуса.",
+        "scoringCriteriaPt": [
+          "Explica o desvio e a parada.",
+          "Sugere consulta a atualizações.",
+          "Não promete pontualidade não comprovada."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "ru-reading-b1-v16-03",
+      "language": "ru",
+      "level": "B1",
+      "legacyReadingId": "ru-v2-reading-003",
+      "linkedStageNodeId": "ru-path-13",
+      "genre": "report",
+      "topic": "Viagens",
+      "title": "Велосипеды для школьников",
+      "text": "Весной в нашем городе собрали старые велосипеды, которыми семьи больше не пользовались. Волонтёры проверили тормоза и колёса, а необходимые детали заменили. После проверки часть велосипедов передали школьному клубу. Там дети учатся правилам безопасной езды и могут тренироваться во дворе под наблюдением взрослых.\n\nОрганизаторы подчёркивают, что не все подаренные велосипеды удалось подготовить к использованию. Некоторые потребовали слишком сложного ремонта, поэтому их пока оставили в мастерской. Руководитель клуба также попросил родителей не считать занятия заменой самостоятельной проверки велосипеда перед поездкой. Проект помог начать тренировки, но для регулярных занятий нужны взрослые помощники и место, где можно безопасно хранить оборудование. Городская администрация обещала обсудить это с клубом в конце месяца.",
+      "glossaryTeacherOnly": [
+        [
+          "тормоза",
+          "freios"
+        ],
+        [
+          "под наблюдением взрослых",
+          "sob supervisão de adultos"
+        ],
+        [
+          "хранить оборудование",
+          "guardar equipamentos"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "ru-reading-b1-v16-03-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "O que melhor resume a iniciativa?",
+          "evidenceSpans": [
+            "часть велосипедов передали школьному клубу",
+            "могут тренироваться во дворе под наблюдением взрослых"
+          ],
+          "explanationPt": "Reuso condicionado à revisão e supervisão.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Abrir uma oficina de carros para crianças."
+            },
+            {
+              "id": "b",
+              "label": "Preparar bicicletas usadas para atividades supervisionadas de um clube escolar."
+            },
+            {
+              "id": "c",
+              "label": "Doar bicicletas novas a todos os moradores."
+            }
+          ],
+          "correctOptionId": "b",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-03-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que nem todas as bicicletas foram entregues ao clube?",
+          "evidenceSpans": [
+            "Некоторые потребовали слишком сложного ремонта, поэтому их пока оставили в мастерской"
+          ],
+          "explanationPt": "Não supor que todas serão consertadas depois.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Porque algumas precisavam de reparos complexos e ainda não estavam prontas para uso.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Nem todos os consertos estavam concluídos.",
+            "Algumas bicicletas exigiam manutenção difícil."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "ru-reading-b1-v16-03-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Onde as crianças treinam?",
+          "evidenceSpans": [
+            "могут тренироваться во дворе под наблюдением взрослых"
+          ],
+          "explanationPt": "Treinamento supervisionado no pátio.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Em estradas movimentadas sozinhas."
+            },
+            {
+              "id": "b",
+              "label": "No depósito da prefeitura."
+            },
+            {
+              "id": "c",
+              "label": "No pátio, com supervisão adulta."
+            }
+          ],
+          "correctOptionId": "c",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-03-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Que duas condições ainda são necessárias para manter as atividades regularmente?",
+          "evidenceSpans": [
+            "нужны взрослые помощники и место, где можно безопасно хранить оборудование"
+          ],
+          "explanationPt": "A entrega de bicicletas não garante continuidade.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Adultos para ajudar e um local seguro para guardar os equipamentos.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Mais supervisores e espaço seguro para armazenamento."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "ru-reading-b1-v16-03-transfer",
+        "promptRu": "Напишите короткое объявление школьному клубу о занятии на велосипедах. Назовите правило безопасности и одну практическую потребность.",
+        "scoringCriteriaPt": [
+          "Anúncio adequado a crianças/famílias.",
+          "Regra de segurança clara.",
+          "Necessidade prática realista."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "ru-reading-b1-v16-04",
+      "language": "ru",
+      "level": "B1",
+      "legacyReadingId": "ru-v2-reading-004",
+      "linkedStageNodeId": "ru-path-14",
+      "genre": "personal_blog",
+      "topic": "Estudo",
+      "title": "Разговорный клуб по средам",
+      "text": "Когда я впервые пришёл в разговорный клуб, мне казалось, что остальные участники говорят намного лучше меня. Поэтому на первых встречах я почти не задавал вопросов. Ведущая клуба заметила это и предложила каждому заранее выбрать короткую статью и подготовить два вопроса к ней. Она сказала, что важно не только правильно произносить слова, но и уметь объяснять своё мнение.\n\nНа прошлой неделе мы обсуждали статью о городском транспорте. Я не знал одного нужного слова, но смог объяснить мысль другими словами. Участники выслушали меня, а потом предложили более точное выражение. Теперь я чаще участвую в обсуждениях, хотя всё ещё делаю ошибки. Для меня самое полезное — возможность попробовать, получить спокойный отзыв и снова высказаться.",
+      "glossaryTeacherOnly": [
+        [
+          "ведущая клуба",
+          "mediadora do clube"
+        ],
+        [
+          "заранее",
+          "com antecedência"
+        ],
+        [
+          "более точное выражение",
+          "expressão mais precisa"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "ru-reading-b1-v16-04-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual mudança na dinâmica do clube ajudou o narrador a participar?",
+          "evidenceSpans": [
+            "подготовить два вопроса",
+            "Участники выслушали меня, а потом предложили более точное выражение"
+          ],
+          "explanationPt": "Preparação e feedback sem interrupção.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Impedir perguntas dos participantes iniciantes."
+            },
+            {
+              "id": "b",
+              "label": "Exigir pronunciamento sem nenhum erro."
+            },
+            {
+              "id": "c",
+              "label": "Preparar perguntas e receber retorno respeitoso após falar."
+            }
+          ],
+          "correctOptionId": "c",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-04-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "O que o episódio da palavra desconhecida mostra sobre a comunicação do narrador?",
+          "evidenceSpans": [
+            "не знал одного нужного слова, но смог объяснить мысль другими словами",
+            "предложили более точное выражение"
+          ],
+          "explanationPt": "Não afirmar que aprendeu todo o vocabulário.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Mesmo sem conhecer uma palavra exata, ele conseguiu transmitir a ideia e receber ajuda para aprimorá-la.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Conseguiu explicar com outras palavras.",
+            "O grupo compreendeu e sugeriu formulação mais precisa."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "ru-reading-b1-v16-04-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Sobre qual tema era o artigo discutido na semana anterior?",
+          "evidenceSpans": [
+            "статью о городском транспорте"
+          ],
+          "explanationPt": "Tema explícito: transporte urbano.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Transporte urbano."
+            },
+            {
+              "id": "b",
+              "label": "Cultivo de plantas."
+            },
+            {
+              "id": "c",
+              "label": "História do esporte."
+            }
+          ],
+          "correctOptionId": "a",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-04-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "O narrador afirma ter eliminado todos os erros? Explique o progresso relatado.",
+          "evidenceSpans": [
+            "Теперь я чаще участвую в обсуждениях, хотя всё ещё делаю ошибки"
+          ],
+          "explanationPt": "Distinguir maior participação de ausência de erros.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Não. Continua cometendo erros, mas participa mais e recebe feedback para reformular as ideias.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Ainda erra, porém fala mais e recebe sugestões úteis."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "ru-reading-b1-v16-04-transfer",
+        "promptRu": "Пригласите нового участника в разговорный клуб. Объясните, как подготовиться к встрече и как группа помогает человеку, который не знает нужного слова.",
+        "scoringCriteriaPt": [
+          "Convite claro.",
+          "Orientação de preparação.",
+          "Mecanismo concreto de ajuda em caso de dificuldade lexical."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "ru-reading-b1-v16-05",
+      "language": "ru",
+      "level": "B1",
+      "legacyReadingId": "ru-v2-reading-005",
+      "linkedStageNodeId": "ru-path-15",
+      "genre": "meeting_summary",
+      "topic": "Ambiente",
+      "title": "Свет во дворе",
+      "text": "На собрании жильцов обсуждали освещение во дворе. В прошлом месяце возле дорожки установили новые лампы, которые включаются, когда кто-то проходит рядом. Часть соседей заметила, что теперь вечером легче видеть ступеньки. Другие спросили, сколько электричества действительно удалось сэкономить. Управляющий признал, что пока таких данных нет: счёт за месяц ещё не пришёл.\n\nВо время обсуждения одна жительница сообщила, что в дождливый вечер одна лампа не включилась сразу. Управляющий пообещал вызвать специалиста и записывать подобные случаи. Участники решили сначала проверить работу ламп и сравнить счета за несколько месяцев. Только после этого они собираются обсуждать, стоит ли ставить такие же лампы у второго входа. Пока решение о расширении проекта не принято.",
+      "glossaryTeacherOnly": [
+        [
+          "освещение во дворе",
+          "iluminação no pátio"
+        ],
+        [
+          "управляющий",
+          "administrador"
+        ],
+        [
+          "счёт за месяц",
+          "conta do mês"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "ru-reading-b1-v16-05-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual é a decisão dos moradores em relação à ampliação da iluminação?",
+          "evidenceSpans": [
+            "Участники решили сначала проверить работу ламп и сравнить счета за несколько месяцев",
+            "Пока решение о расширении проекта не принято"
+          ],
+          "explanationPt": "A ampliação foi adiada, aguardando evidências.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Avaliar o funcionamento e as contas antes de decidir."
+            },
+            {
+              "id": "b",
+              "label": "Instalar imediatamente o sistema na segunda entrada."
+            },
+            {
+              "id": "c",
+              "label": "Retirar todas as lâmpadas antes de inspecioná-las."
+            }
+          ],
+          "correctOptionId": "a",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-05-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que a opinião de que houve economia de eletricidade ainda não pode ser confirmada?",
+          "evidenceSpans": [
+            "пока таких данных нет: счёт за месяц ещё не пришёл",
+            "сравнить счета за несколько месяцев"
+          ],
+          "explanationPt": "O texto não fornece valor economizado.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Porque ainda não chegaram contas suficientes para comparar o consumo.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Não há medições/contas disponíveis para comparar.",
+            "Os dados de consumo ainda não foram reunidos."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "ru-reading-b1-v16-05-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Qual problema concreto foi relatado sobre uma das lâmpadas?",
+          "evidenceSpans": [
+            "в дождливый вечер одна лампа не включилась сразу"
+          ],
+          "explanationPt": "Falha de acionamento relatada numa noite chuvosa.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Foi removida antes da reunião."
+            },
+            {
+              "id": "b",
+              "label": "Ela não acendeu imediatamente numa noite chuvosa."
+            },
+            {
+              "id": "c",
+              "label": "Ela permaneceu sempre ligada durante o dia."
+            }
+          ],
+          "correctOptionId": "b",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "ru-reading-b1-v16-05-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Que dois tipos de evidência os moradores querem obter antes de decidir expandir o sistema?",
+          "evidenceSpans": [
+            "проверить работу ламп",
+            "сравнить счета за несколько месяцев"
+          ],
+          "explanationPt": "Distinguir funcionamento de comprovação de economia.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "illustrativeAnswerPt": "Registros de funcionamento/falhas e comparação das contas de energia de vários meses.",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Funcionamento das lâmpadas e dados reais de consumo."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "ru-reading-b1-v16-05-transfer",
+        "promptRu": "Напишите сообщение жильцам с просьбой сообщать о неполадках освещения. Объясните, почему пока нельзя уверенно говорить об экономии энергии.",
+        "scoringCriteriaPt": [
+          "Solicita registro de falhas.",
+          "Explica ausência de dados de consumo.",
+          "Não inventa resultados medidos."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    }
+  ],
+  "legacyCatalogBlobSha": "f5931daee2ca34f61098243fbaf2cb6f83794a75",
+  "progressionManifestBlobSha": "7cad0006f4159ce658654a03841066b1720074fc",
+  "reviewStatus": "internal_draft_requires_independent_teacher_approval_and_student_pilot",
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "textsInspected": 5,
+    "questionsInspected": 20,
+    "transferTasksInspected": 5,
+    "changes": [],
+    "externalIndependentReviewPerformed": false,
+    "ownerAcceptancePending": true,
+    "releaseAllowed": false,
+    "openAnswersRequireHumanOrUncertain": true
+  }
+}

@@ -1,0 +1,33 @@
+name: Validar contrato editorial V16
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-leitura-b1-v16-*.json'
+      - 'docs/learn-leitura-interpretacao-b1-v16.md'
+      - 'scripts/learn/validate-reading-b1-v16.mjs'
+      - 'frontend/src/learn/reading-b1-v16-content.ts'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v16-editorial-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-leitura-b1-v16-*.json'
+      - 'docs/learn-leitura-interpretacao-b1-v16.md'
+      - 'scripts/learn/validate-reading-b1-v16.mjs'
+      - 'frontend/src/learn/reading-b1-v16-content.ts'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v16-editorial-contract.yml'
+permissions:
+  contents: read
+jobs:
+  editorial-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar sintaxe do validador
+        run: node --check scripts/learn/validate-reading-b1-v16.mjs
+      - name: Validar 10 textos, 40 questões, transferências e paridade com prévia
+        run: node scripts/learn/validate-reading-b1-v16.mjs

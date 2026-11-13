@@ -1,0 +1,808 @@
+{
+  "schemaVersion": 1,
+  "recordType": "learn_b1_reading_interpretation_editorial_v16",
+  "language": "en",
+  "status": "editorial_review_pending",
+  "publicRelease": false,
+  "cefrCertified": false,
+  "purpose": "Complementar 5 leituras legadas B1 com 5 novos textos e 20 perguntas interpretativas, sem substituir ou reclassificar os exercícios existentes.",
+  "sourceCatalog": "frontend/public/learn/en.json",
+  "legacySnapshotRef": "main",
+  "assessmentPolicy": "Multiple-choice keys require independent teacher review. Free-text examples are illustrative only, not an automatic allowlist; free text must be human-scored or marked uncertain. No reading proficiency or CEFR certification can be inferred from simple completion.",
+  "units": [
+    {
+      "draftId": "en-reading-b1-v16-01",
+      "language": "en",
+      "level": "B1",
+      "legacyReadingId": "en-v2-reading-001",
+      "linkedStageNodeId": "en-path-11",
+      "genre": "community_email",
+      "topic": "Projetos",
+      "title": "A workshop that changed its plan",
+      "text": "Our neighbourhood group has organised repair workshops for the past three months. At first, we invited everyone to bring broken household objects on the same Saturday morning. The room became crowded, and several visitors left before anyone could help them. We received positive comments about the volunteers, but complaints about the long wait.\n\nFor next month, we have decided to offer two shorter sessions. People who need help with bicycles should book the early session; the later one will focus on small electrical items. Both sessions will remain free. Volunteers have also asked visitors to describe the problem when booking, so they can prepare suitable tools. We cannot promise that every object will be repaired, but we hope fewer people will leave without receiving advice.",
+      "glossaryTeacherOnly": [
+        [
+          "repair workshops",
+          "oficinas de conserto"
+        ],
+        [
+          "crowded",
+          "lotado"
+        ],
+        [
+          "suitable tools",
+          "ferramentas adequadas"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "en-reading-b1-v16-01-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual é a principal mudança anunciada pelo grupo?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Passar a cobrar pelas oficinas."
+            },
+            {
+              "id": "b",
+              "label": "Deixar de aceitar objetos para conserto."
+            },
+            {
+              "id": "c",
+              "label": "Separar a oficina em duas sessões com focos diferentes."
+            }
+          ],
+          "correctOptionId": "c",
+          "evidenceSpans": [
+            "For next month, we have decided to offer two shorter sessions.",
+            "the later one will focus on small electrical items."
+          ],
+          "explanationPt": "Dividir a atividade e organizar os tipos de atendimento.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-01-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que solicitar a descrição do problema antes da visita pode melhorar a oficina?",
+          "illustrativeAnswerPt": "Permite preparar ferramentas adequadas e organizar melhor o atendimento, respondendo à espera longa anterior.",
+          "evidenceSpans": [
+            "Volunteers have also asked visitors to describe the problem when booking, so they can prepare suitable tools.",
+            "complaints about the long wait."
+          ],
+          "explanationPt": "A resposta deve conectar a preparação de ferramentas à dificuldade anterior, sem prometer que todo reparo dará certo.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Preparar ferramentas antes da sessão.",
+            "Reduzir improvisos na hora do atendimento."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "en-reading-b1-v16-01-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Que limite os organizadores deixam explícito?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Nem todos os objetos poderão ser consertados."
+            },
+            {
+              "id": "b",
+              "label": "Todas as bicicletas serão atendidas com prioridade absoluta."
+            },
+            {
+              "id": "c",
+              "label": "A sessão posterior será paga."
+            }
+          ],
+          "correctOptionId": "a",
+          "evidenceSpans": [
+            "We cannot promise that every object will be repaired"
+          ],
+          "explanationPt": "Não é possível garantir o conserto de todos os objetos.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-01-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Resuma o problema anterior e duas medidas anunciadas para enfrentá-lo.",
+          "illustrativeAnswerPt": "A oficina estava lotada e havia longas esperas; foram criadas duas sessões especializadas e pedidos prévios de descrição do problema.",
+          "evidenceSpans": [
+            "The room became crowded",
+            "offer two shorter sessions",
+            "describe the problem when booking"
+          ],
+          "explanationPt": "Mencionar o problema e duas medidas, distinguindo plano de resultado comprovado.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Muita gente esperava; agora haverá sessões separadas e preparo antecipado de ferramentas."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "en-reading-b1-v16-01-transfer",
+        "promptEn": "Write a short message to neighbours inviting them to a new repair workshop. Explain how visitors should prepare and mention one limitation of the event.",
+        "scoringCriteriaPt": [
+          "Convite com horário ou orientação de participação coerente com situação proposta.",
+          "Instrução concreta de preparo.",
+          "Uma limitação comunicada sem prometer sucesso garantido."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "en-reading-b1-v16-02",
+      "language": "en",
+      "level": "B1",
+      "legacyReadingId": "en-v2-reading-002",
+      "linkedStageNodeId": "en-path-12",
+      "genre": "public_notice",
+      "topic": "Informação",
+      "title": "A library tries a new schedule",
+      "text": "The town library usually closes at six, but many people who work during the day have asked for later opening hours. The library cannot afford to keep every room open in the evening, so it will test a smaller service on Thursdays for six weeks. Visitors will be able to collect reserved books and use the reading area until eight. The computer room will still close at six.\n\nIf enough people use the evening service, the library will consider continuing it after the trial. Staff will count visits and collect short comments, but a decision has not been made. Some visitors have already asked whether the library will open later on other weekdays. The manager says the first priority is to find out whether Thursday evenings are useful before making a wider promise.",
+      "glossaryTeacherOnly": [
+        [
+          "cannot afford",
+          "não tem recursos para"
+        ],
+        [
+          "reserved books",
+          "livros reservados"
+        ],
+        [
+          "trial",
+          "período de teste"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "en-reading-b1-v16-02-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual é a finalidade do novo horário de quinta-feira?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Testar um atendimento noturno limitado antes de decidir se vale ampliá-lo."
+            },
+            {
+              "id": "b",
+              "label": "Abrir todas as salas até as oito todos os dias."
+            },
+            {
+              "id": "c",
+              "label": "Fechar permanentemente a sala de computadores."
+            }
+          ],
+          "correctOptionId": "a",
+          "evidenceSpans": [
+            "it will test a smaller service on Thursdays for six weeks",
+            "a decision has not been made"
+          ],
+          "explanationPt": "Experimento limitado, sem garantia de permanência.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-02-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que a biblioteca não anunciou horários estendidos para toda a semana?",
+          "illustrativeAnswerPt": "Porque tem recursos limitados e quer avaliar a procura nas quintas antes de assumir um compromisso maior.",
+          "evidenceSpans": [
+            "The library cannot afford to keep every room open in the evening",
+            "before making a wider promise"
+          ],
+          "explanationPt": "É preciso relacionar limitação de recursos e decisão baseada em teste.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "O orçamento não permite manter tudo aberto.",
+            "Primeiro vão medir a utilidade do serviço de quinta-feira."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "en-reading-b1-v16-02-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Qual serviço continuará encerrando às seis horas?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "A retirada de livros reservados."
+            },
+            {
+              "id": "b",
+              "label": "A sala de computadores."
+            },
+            {
+              "id": "c",
+              "label": "A área de leitura."
+            }
+          ],
+          "correctOptionId": "b",
+          "evidenceSpans": [
+            "The computer room will still close at six."
+          ],
+          "explanationPt": "A sala de computadores continua fechando às seis.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-02-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Quais evidências serão consideradas para decidir se o serviço de quinta continua?",
+          "illustrativeAnswerPt": "O número de visitantes e os comentários coletados durante seis semanas.",
+          "evidenceSpans": [
+            "for six weeks",
+            "Staff will count visits and collect short comments"
+          ],
+          "explanationPt": "Não afirmar que a decisão de continuar já foi tomada.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Contagem de visitas e opiniões do público ao longo do teste."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "en-reading-b1-v16-02-transfer",
+        "promptEn": "Write to the library manager suggesting one way to evaluate the Thursday trial. Explain what information your suggestion would provide.",
+        "scoringCriteriaPt": [
+          "Proposta de avaliação viável.",
+          "Informação que seria coletada.",
+          "Ligação explícita entre dados e decisão."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "en-reading-b1-v16-03",
+      "language": "en",
+      "level": "B1",
+      "legacyReadingId": "en-v2-reading-003",
+      "linkedStageNodeId": "en-path-13",
+      "genre": "news_report",
+      "topic": "Tecnologia",
+      "title": "Computers for another school",
+      "text": "At the end of the school year, twelve computers were collected from a local office. They still worked, but they were too slow for some of the office's new programs. A volunteer team checked the machines and replaced parts where necessary. The computers were then prepared for a nearby school that needed equipment for basic writing and research tasks.\n\nBefore delivery, the office asked a technician to remove its private files. The volunteers explained that the machines would not be suitable for demanding design software, even after repairs. The school accepted this limitation because its immediate need was to give more pupils access to simple digital lessons. A teacher said the donation would be useful, but added that the school still needed enough time and staff to introduce the computers into classes.",
+      "glossaryTeacherOnly": [
+        [
+          "demanding design software",
+          "programas exigentes de design"
+        ],
+        [
+          "private files",
+          "arquivos privados"
+        ],
+        [
+          "immediate need",
+          "necessidade imediata"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "en-reading-b1-v16-03-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "O que melhor resume a iniciativa descrita?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Instalar programas avançados de design na escola."
+            },
+            {
+              "id": "b",
+              "label": "Adaptar computadores usados para tarefas básicas em outra escola."
+            },
+            {
+              "id": "c",
+              "label": "Comprar computadores novos para o escritório."
+            }
+          ],
+          "correctOptionId": "b",
+          "evidenceSpans": [
+            "The computers were then prepared for a nearby school",
+            "basic writing and research tasks"
+          ],
+          "explanationPt": "Reaproveitamento de máquinas para uso básico, não compra de novas.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-03-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que a escola aceitou computadores que ainda tinham limitações?",
+          "illustrativeAnswerPt": "Porque serviam para escrita e pesquisa básicas, a necessidade imediata da escola, apesar de não executarem softwares exigentes.",
+          "evidenceSpans": [
+            "would not be suitable for demanding design software",
+            "its immediate need was to give more pupils access to simple digital lessons"
+          ],
+          "explanationPt": "A resposta deve relacionar limitação técnica e finalidade da escola.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Para tarefas básicas, os equipamentos eram suficientes.",
+            "O limite de desempenho não impedia o uso pretendido."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "en-reading-b1-v16-03-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Qual medida foi tomada antes da entrega para proteger informações do escritório?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Os alunos receberam as senhas do escritório."
+            },
+            {
+              "id": "b",
+              "label": "Os voluntários prometeram não abrir os arquivos."
+            },
+            {
+              "id": "c",
+              "label": "Um técnico removeu arquivos privados."
+            }
+          ],
+          "correctOptionId": "c",
+          "evidenceSpans": [
+            "a technician to remove its private files"
+          ],
+          "explanationPt": "Remoção de arquivos privados, sem alegar auditoria de segurança completa.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-03-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Além dos equipamentos, qual condição o professor considera necessária para que a doação seja útil?",
+          "illustrativeAnswerPt": "Tempo e pessoal para introduzir os computadores nas aulas.",
+          "evidenceSpans": [
+            "the school still needed enough time and staff to introduce the computers into classes"
+          ],
+          "explanationPt": "O texto não afirma que a adoção já foi concluída.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Ter tempo e equipe para incorporar as máquinas ao ensino."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "en-reading-b1-v16-03-transfer",
+        "promptEn": "Write a note to a school explaining one useful purpose for donated computers and one limitation that teachers should plan for.",
+        "scoringCriteriaPt": [
+          "Uso plausível e específico.",
+          "Limitação informada com clareza.",
+          "Recomendação de planejamento relacionada ao uso."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "en-reading-b1-v16-04",
+      "language": "en",
+      "level": "B1",
+      "legacyReadingId": "en-v2-reading-004",
+      "linkedStageNodeId": "en-path-14",
+      "genre": "personal_email",
+      "topic": "Estudo",
+      "title": "A reading partner who listens",
+      "text": "When I joined the language exchange group, I hoped to improve my speaking, but I often stayed quiet. I could understand short articles, yet I became nervous when someone asked me to explain my opinion. The group leader introduced me to Clara, a student who had joined a year earlier and remembered having the same problem.\n\nClara suggested that we read a short news story before each meeting and each prepare two questions. During our first sessions, she let me finish my answers before giving feedback. She also asked me to explain why I agreed or disagreed with the writer, rather than repeat sentences from the article. I still make mistakes, and I sometimes need extra time, but now I speak more often. I have learned that preparing ideas is useful, while listening patiently can make practice less frightening.",
+      "glossaryTeacherOnly": [
+        [
+          "language exchange",
+          "intercâmbio de idiomas"
+        ],
+        [
+          "giving feedback",
+          "dar retorno"
+        ],
+        [
+          "rather than",
+          "em vez de"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "en-reading-b1-v16-04-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual foi a mudança mais importante na participação da pessoa que narra durante as discussões?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Começou a decorar os textos sem conversar."
+            },
+            {
+              "id": "b",
+              "label": "Deixou de ler artigos antes das reuniões."
+            },
+            {
+              "id": "c",
+              "label": "Passou a discutir opiniões e justificativas com uma parceira que lhe dá tempo para responder."
+            }
+          ],
+          "correctOptionId": "c",
+          "evidenceSpans": [
+            "she let me finish my answers before giving feedback",
+            "explain why I agreed or disagreed with the writer"
+          ],
+          "explanationPt": "A prática passou a envolver explicação de ideias e apoio paciente.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-04-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que preparar duas perguntas antes de cada encontro provavelmente ajuda a pessoa que narra a participar?",
+          "illustrativeAnswerPt": "Porque oferece ideias para discutir e reduz a necessidade de improvisar quando se sente nervosa ou nervoso.",
+          "evidenceSpans": [
+            "each prepare two questions",
+            "I became nervous when someone asked me to explain my opinion"
+          ],
+          "explanationPt": "É inferência plausível; não afirmar cura total da ansiedade.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Chegar com perguntas preparadas facilita a conversa.",
+            "Preparar perguntas ajuda a organizar ideias antes de falar."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "en-reading-b1-v16-04-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "O que Clara evita fazer enquanto a outra pessoa responde?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Interromper antes de ela terminar."
+            },
+            {
+              "id": "b",
+              "label": "Pedir justificativas."
+            },
+            {
+              "id": "c",
+              "label": "Ler notícias antes dos encontros."
+            }
+          ],
+          "correctOptionId": "a",
+          "evidenceSpans": [
+            "she let me finish my answers before giving feedback"
+          ],
+          "explanationPt": "A parceira espera a resposta terminar antes de dar feedback.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-04-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "O texto afirma que a pessoa que narra já fala sem erros? Justifique com dois elementos.",
+          "illustrativeAnswerPt": "Não. A pessoa ainda comete erros e às vezes precisa de tempo, mas participa mais das conversas.",
+          "evidenceSpans": [
+            "I still make mistakes",
+            "I sometimes need extra time",
+            "now I speak more often"
+          ],
+          "explanationPt": "Diferenciar progresso de domínio perfeito.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Ainda comete erros, mas passou a falar mais vezes.",
+            "O progresso aparece na participação maior, mesmo sem domínio perfeito."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "en-reading-b1-v16-04-transfer",
+        "promptEn": "Invite a shy classmate to a reading discussion. Suggest one preparation step and one respectful way the group can give feedback.",
+        "scoringCriteriaPt": [
+          "Convite adequado.",
+          "Etapa concreta de preparação.",
+          "Prática respeitosa de feedback."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    },
+    {
+      "draftId": "en-reading-b1-v16-05",
+      "language": "en",
+      "level": "B1",
+      "legacyReadingId": "en-v2-reading-005",
+      "linkedStageNodeId": "en-path-15",
+      "genre": "narrative_report",
+      "topic": "Ambiente",
+      "title": "The lights during the meeting",
+      "text": "Last Wednesday, the residents of our building were discussing the new corridor lights when the electricity went off for a few minutes. Some people wondered whether the new system had caused the problem. However, a technician later explained that several buildings on the street had lost power at the same time. The residents agreed that this information did not support blaming the new lights.\n\nThe meeting continued after the power returned. A few neighbours said they liked the lights turning on automatically when someone entered, while others wanted clearer signs showing how to report a fault. The building manager promised to place instructions near the lifts and to record any complaints during the next month. Nobody presented figures showing how much energy the system had saved, so the group decided not to make a public claim about savings yet.",
+      "glossaryTeacherOnly": [
+        [
+          "lost power",
+          "ficaram sem energia"
+        ],
+        [
+          "report a fault",
+          "comunicar uma falha"
+        ],
+        [
+          "claim about savings",
+          "afirmação sobre economia"
+        ]
+      ],
+      "questions": [
+        {
+          "draftId": "en-reading-b1-v16-05-q1",
+          "kind": "single_choice",
+          "competency": "main_idea",
+          "promptPt": "Qual é a postura final dos moradores sobre o sistema de iluminação?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Acompanhar possíveis problemas e evitar afirmar economia ainda não medida."
+            },
+            {
+              "id": "b",
+              "label": "Concluir que as lâmpadas causaram a queda de energia."
+            },
+            {
+              "id": "c",
+              "label": "Divulgar imediatamente uma porcentagem de economia."
+            }
+          ],
+          "correctOptionId": "a",
+          "evidenceSpans": [
+            "to record any complaints during the next month",
+            "not to make a public claim about savings yet"
+          ],
+          "explanationPt": "Monitoramento e prudência, sem concluir eficácia numérica.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-05-q2",
+          "kind": "open_response",
+          "competency": "evidence_based_inference",
+          "promptPt": "Por que a queda de energia não foi tomada como prova de defeito nas luzes novas?",
+          "illustrativeAnswerPt": "Porque vários prédios perderam energia ao mesmo tempo; isso enfraquece a hipótese de uma causa exclusiva no sistema do edifício.",
+          "evidenceSpans": [
+            "several buildings on the street had lost power at the same time",
+            "did not support blaming the new lights"
+          ],
+          "explanationPt": "Não afirmar a causa exata da queda, que não é dada.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "A interrupção afetou outros edifícios.",
+            "O problema não ocorreu apenas onde as novas lâmpadas foram instaladas."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        },
+        {
+          "draftId": "en-reading-b1-v16-05-q3",
+          "kind": "single_choice",
+          "competency": "constraint_or_detail",
+          "promptPt": "Que melhoria prática a administração prometeu implementar?",
+          "optionsPt": [
+            {
+              "id": "a",
+              "label": "Anunciar economia sem medições."
+            },
+            {
+              "id": "b",
+              "label": "Colocar instruções perto dos elevadores para relatar falhas."
+            },
+            {
+              "id": "c",
+              "label": "Retirar todas as lâmpadas no mesmo dia."
+            }
+          ],
+          "correctOptionId": "b",
+          "evidenceSpans": [
+            "promised to place instructions near the lifts"
+          ],
+          "explanationPt": "O plano é colocar instruções; não confundir promessa com conclusão.",
+          "scoringPolicy": "approved_options_only_after_teacher_review",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true
+        },
+        {
+          "draftId": "en-reading-b1-v16-05-q4",
+          "kind": "open_response",
+          "competency": "synthesis",
+          "promptPt": "Que duas informações ainda seriam necessárias para uma avaliação mais completa do sistema?",
+          "illustrativeAnswerPt": "Registros de eventuais reclamações e medições reais de economia de energia.",
+          "evidenceSpans": [
+            "record any complaints during the next month",
+            "Nobody presented figures showing how much energy the system had saved"
+          ],
+          "explanationPt": "Relacionar dados de usabilidade com dados de consumo, sem inventar economia.",
+          "scoringPolicy": "human_review_or_uncertain_no_automatic_literal_match",
+          "public": false,
+          "feedbackVisibleOnlyAfterSubmission": true,
+          "independentTeacherApprovalRequired": true,
+          "illustrativeAnswerExamplesPt": [
+            "Queixas coletadas ao longo do mês e números sobre consumo."
+          ],
+          "rubricHumanPt": {
+            "score3": "Resposta responde à pergunta, conecta evidências decisivas e não acrescenta suposições contraditórias.",
+            "score2": "Sentido parcialmente correto, mas falta uma relação necessária ou há omissão relevante.",
+            "score1": "Menciona somente fato isolado ou ideia fragmentária sem resolver a pergunta.",
+            "score0": "Contradiz o texto ou não responde à questão.",
+            "uncertain": "Paráfrase plausível não classificada com segurança: revisão humana; nunca zero automático."
+          }
+        }
+      ],
+      "transferTask": {
+        "draftId": "en-reading-b1-v16-05-transfer",
+        "promptEn": "Write a brief message to residents explaining why it is too early to claim success and what evidence should be collected next.",
+        "scoringCriteriaPt": [
+          "Explicita incerteza quanto aos resultados.",
+          "Propõe coleta de evidência adequada.",
+          "Tom respeitoso para os moradores."
+        ],
+        "requiresIndependentWriting": true,
+        "assessment": "human_review_or_uncertain_no_automatic_literal_match",
+        "public": false,
+        "useForReadingMastery": false
+      },
+      "reviewStatus": "draft_requires_independent_language_and_pedagogical_review",
+      "public": false,
+      "existingCatalogReading": false
+    }
+  ],
+  "legacyCatalogBlobSha": "0d242835b4c15c10f4a94d26090af12c55adc2ac",
+  "progressionManifestBlobSha": "7cad0006f4159ce658654a03841066b1720074fc",
+  "reviewStatus": "internal_draft_requires_independent_teacher_approval_and_student_pilot",
+  "internalEditorialReview": {
+    "round": "v18",
+    "reviewDate": "2026-11-12",
+    "textsInspected": 5,
+    "questionsInspected": 20,
+    "transferTasksInspected": 5,
+    "changes": [
+      "en-reading-b1-v16-04: retiradas inferências de gênero sem suporte no texto; melhorado foco em participação oral."
+    ],
+    "externalIndependentReviewPerformed": false,
+    "ownerAcceptancePending": true,
+    "releaseAllowed": false,
+    "openAnswersRequireHumanOrUncertain": true
+  }
+}
