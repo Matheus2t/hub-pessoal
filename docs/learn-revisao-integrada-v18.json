@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
   "recordType": "learn_internal_editorial_review_v18_reconciled",
-  "asOf": "2026-11-12",
+  "asOf": "2026-11-13",
   "timezone": "America/Sao_Paulo",
   "auditType": "internal_editorial_and_source_structural_check",
-  "baselineMainSha": "f9e1b9062c42176115fde1eb127d585970384483",
+  "baselineMainSha": "55186744e333f09788f20c9bacf174574a9bfcfb",
   "originalReviewPR": 123,
   "independentExternalLanguageReviewPerformed": false,
   "studentPilotPerformed": false,
   "audioAuditoryApprovalPerformed": false,
   "cefrCertification": false,
-  "approvalPolicy": "Owner may authorize noncertifying formative practice per version. Internal review does not certify language proficiency or recordings.",
+  "approvalPolicy": "Owner alone evaluates usability and study content during actual personal use. External pedagogical reviewers and student pilots are waived as project process requirements, NOT performed or approved. No CEFR certification, institutionally verified reviewer, or audibly approved assessment is claimed. Keep unreleased preview gates and the audio evaluation policy until explicitly changed and technically validated.",
   "contentInventory": {
     "legacyExercises": {
       "total": 474,
@@ -43,14 +43,18 @@
         "ru": 40
       },
       "editorialPR": 118,
-      "publicAudioAssessmentAuthorized": false
+      "publicAudioAssessmentAuthorized": false,
+      "editorialMerged": true,
+      "technicalPreviewInMain": true
     },
     "v14": {
       "dictations": 32,
       "english": 16,
       "russian": 16,
       "editorialPR": 119,
-      "publicAudioAssessmentAuthorized": false
+      "publicAudioAssessmentAuthorized": false,
+      "editorialMerged": true,
+      "technicalPreviewInMain": true
     },
     "v16": {
       "texts": 10,
@@ -61,14 +65,17 @@
       "editorialPR": 121,
       "technicalPR": 134,
       "technicalPreviewInMain": true,
-      "publicReleaseAuthorized": false
+      "publicReleaseAuthorized": false,
+      "editorialMerged": true
     },
     "v17": {
       "stageScenarios": 30,
       "levelCheckpoints": 6,
       "syntheticPolicyCases": 16,
       "editorialPR": 122,
-      "publicReleaseAuthorized": false
+      "publicReleaseAuthorized": false,
+      "editorialMerged": true,
+      "technicalPreviewInMain": true
     },
     "v19": {
       "technicalAudioFilesCreated": 68,
@@ -223,7 +230,7 @@
       "corrections": [
         "release-governance-and-evidence-limits"
       ],
-      "release": "editorial_policy_draft",
+      "release": "technical_formative_preview_only",
       "learningMasteryCertified": false
     }
   ],
@@ -234,11 +241,90 @@
     "audioRequiresOwnerAuditoryAcceptance": true,
     "noPublicDraftsWithoutOwnerApproval": true,
     "noCeFrCertificationClaim": true,
-    "noAutomaticMergeOfPendingContentPRs": true
+    "noAutomaticMergeOfPendingContentPRs": true,
+    "ownerWaivedPriorListeningForPersonalFormativeUse": true,
+    "ownerWaivedExternalReviewAndStudentPilots": true,
+    "waiverDoesNotEnableAudioAssessment": true,
+    "localPreviewGateNotPublicRelease": true
   },
   "integrationRegressionsAlreadyObserved": {
     "v11PlaywrightPassed": 165,
     "v16PlaywrightPassed": 170
   },
-  "warning": "Recorded checks are source-level and prior CI checks. This audit alone does not publish additional content or establish external CEFR validation."
+  "warning": "V18 is an internal documentation reconciliation, not final integrated homologation or authorization of private drafts/public audio assessments. Prior review/pilot/audio approval was waived as a workflow prerequisite for owner-only personal practice, but not performed. Legacy reports and sourceTrace hashes record their historical snapshots and must not be presented as current Git blob hashes.",
+  "sourceTraceIsHistoricalEvidence": true,
+  "ownerEvaluationProcess": {
+    "decisionDate": "2026-11-13",
+    "onlyHandsOnTester": "owner",
+    "independentExternalReviewerRequired": false,
+    "externalReviewerWaived": true,
+    "studentPilotRequired": false,
+    "studentPilotWaived": true,
+    "preUseAudioListeningApprovalRequired": false,
+    "audioHumanListeningPerformed": false,
+    "personalPracticalAcceptance": "pending_until_owner_uses_learn",
+    "waivedDoesNotMeanPerformed": true,
+    "changesToPublicReleaseOrAssessment": "require_explicit_separate_authorization_and_technical_validation"
+  },
+  "integratedTechnicalStatus": {
+    "checkedAt": "2026-11-13",
+    "baselineMainSha": "55186744e333f09788f20c9bacf174574a9bfcfb",
+    "editorialPRsMerged": [
+      118,
+      119,
+      121,
+      122
+    ],
+    "technicalAndAuditPRsMerged": [
+      132,
+      133,
+      134,
+      138,
+      139,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149
+    ],
+    "publicContent": {
+      "legacyExercises": 474,
+      "englishExercises": 237,
+      "russianExercises": 237,
+      "v11NonAudioFormativeTasks": 20,
+      "v11ListeningTasksPublic": 0,
+      "v13AuditoryAssessmentPublic": false,
+      "v14AuditoryAssessmentPublic": false,
+      "v16ReviewPublic": false,
+      "v17AssessmentPublic": false,
+      "v19AudioFilesPublic": 0
+    },
+    "localPreview": {
+      "progressionV12": true,
+      "listeningV13": true,
+      "dictationV14": true,
+      "readingV16": true,
+      "assessmentV17": true,
+      "audioV19": true,
+      "noPublicBypass": "preview_only_and_public_bundles_exclude_v16_v17_modules"
+    },
+    "technicalAudio": {
+      "privateGenerated": 68,
+      "technicalInventoryPassed": 68,
+      "humanListeningApprovals": 0,
+      "assessmentEnabled": false
+    },
+    "regressionEvidence": {
+      "qualityAuditPR": 148,
+      "mobileAuditPR": 149,
+      "mobileWorkflowPlaywrightPassed": 40,
+      "completeLearnRegressionPlaywrightPassed": 216,
+      "publicSecurityPlaywrightPassed": 2,
+      "mobileMergeChecksPassed": 3,
+      "theseAreHistoricalCIResultsNotANewEndToEndHomologation": true
+    },
+    "finalIntegratedHomologationPerformed": false
+  }
 }

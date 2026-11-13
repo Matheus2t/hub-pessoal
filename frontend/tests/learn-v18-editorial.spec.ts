@@ -77,3 +77,68 @@ test('V18 confirma V16 não pontuada, com trechos de evidência e vínculos vál
  expect(audit.contentInventory.v16.technicalPreviewInMain).toBe(true);
  expect(audit.contentInventory.v16.publicReleaseAuthorized).toBe(false);
 });
+
+test('V18/2026-11-13 registra merges atuais e dispensa de avaliadores sem inventar aprovações',()=>{
+ const audit=read('docs/learn-revisao-integrada-v18.json');
+ const report=readFileSync('docs/learn-revisao-final-v18.md','utf8');
+ const owner=audit.ownerEvaluationProcess;
+ const integration=audit.integratedTechnicalStatus;
+ expect(audit.asOf).toBe('2026-11-13');
+ expect(audit.baselineMainSha).toBe('55186744e333f09788f20c9bacf174574a9bfcfb');
+ expect(integration.baselineMainSha).toBe(audit.baselineMainSha);
+ expect(integration.editorialPRsMerged).toEqual([118,119,121,122]);
+ for(const n of [145,147,148,149])expect(integration.technicalAndAuditPRsMerged).toContain(n);
+ for(const v of ['v13','v14','v16','v17'])expect(audit.contentInventory[v].technicalPreviewInMain).toBe(true);
+ expect(owner).toMatchObject({
+  onlyHandsOnTester:'owner',independentExternalReviewerRequired:false,
+  externalReviewerWaived:true,studentPilotRequired:false,studentPilotWaived:true,
+  preUseAudioListeningApprovalRequired:false,audioHumanListeningPerformed:false,
+  personalPracticalAcceptance:'pending_until_owner_uses_learn',
+  waivedDoesNotMeanPerformed:true,
+ });
+ expect(audit.independentExternalLanguageReviewPerformed).toBe(false);
+ expect(audit.studentPilotPerformed).toBe(false);
+ expect(audit.audioAuditoryApprovalPerformed).toBe(false);
+ expect(audit.cefrCertification).toBe(false);
+ expect(audit.contentInventory.v19.ownerAuditoryApprovals).toBe(0);
+ expect(audit.contentInventory.v19.publicFiles).toBe(0);
+ expect(integration.publicContent).toMatchObject({
+  legacyExercises:474,englishExercises:237,russianExercises:237,
+  v11NonAudioFormativeTasks:20,v13AuditoryAssessmentPublic:false,
+  v14AuditoryAssessmentPublic:false,v16ReviewPublic:false,
+  v17AssessmentPublic:false,v19AudioFilesPublic:0,
+ });
+ expect(integration.technicalAudio).toMatchObject({
+  privateGenerated:68,technicalInventoryPassed:68,humanListeningApprovals:0,assessmentEnabled:false,
+ });
+ expect(integration.regressionEvidence).toMatchObject({
+  completeLearnRegressionPlaywrightPassed:216,publicSecurityPlaywrightPassed:2,
+  theseAreHistoricalCIResultsNotANewEndToEndHomologation:true,
+ });
+ expect(integration.finalIntegratedHomologationPerformed).toBe(false);
+ expect(audit.releaseGates.ownerWaivedExternalReviewAndStudentPilots).toBe(true);
+ expect(audit.releaseGates.ownerWaivedPriorListeningForPersonalFormativeUse).toBe(true);
+ expect(audit.releaseGates.waiverDoesNotEnableAudioAssessment).toBe(true);
+ expect(audit.releaseGates.noPublicDraftsWithoutOwnerApproval).toBe(true);
+ for(const ref of ['#118','#119','#121','#122','#145','#147','#148','#149'])expect(report).toContain(ref);
+ expect(report).toContain('homologação técnica integrada');
+ expect(report).toContain('Dispensado');
+ expect(report).toContain('55186744e333f09788f20c9bacf174574a9bfcfb');
+});
+
+test('V18/2026-11-13 mantém inventário EN/RU e links de relatórios de auditoria',()=>{
+ const en=read('frontend/public/learn/en.json');
+ const ru=read('frontend/public/learn/ru.json');
+ expect(en.exercises).toHaveLength(237);
+ expect(ru.exercises).toHaveLength(237);
+ for(const doc of [
+  'docs/learn-v14-final-editorial-review-2026-11-13.md',
+  'docs/learn-exercise-quality-audit-2026-11-13.md',
+  'docs/learn-mobile-ux-audit-2026-11-13.md',
+  'docs/learn-security-audit-2026-11-13.md',
+  'docs/learn-v17-audit-2026-11-13.md',
+  'docs/learn-a1-b1-curricular-audit-2026-11-13.md',
+ ]){
+  expect(readFileSync(doc,'utf8').length,doc).toBeGreaterThan(250);
+ }
+});
