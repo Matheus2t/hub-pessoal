@@ -1,6 +1,19 @@
 # 2T Learn — Listening A2/B1 (V13, pacote editorial)
 
-**Status:** roteiro editorial em revisão, `publicRelease: false`. **Não existe áudio gravado, licenciado, revisado ou homologado nesta entrega.** Nenhum roteiro pode ser considerado atividade de compreensão oral aplicada até que haja áudio aprovado e teste de escuta sem transcrição. Este pacote **não certifica A2/B1 pelo CEFR**.
+**Status:** pacote editorial incorporado tecnicamente à `main`, sem liberação estudantil (`publicRelease:false`). **Esta entrega editorial não produziu nem publicou gravações.** A pipeline V19 gerou posteriormente gravações privadas, com integridade técnica verificada, que ainda **não foram aprovadas por escuta, nem liberadas para uso público ou avaliação de Listening**. Este pacote não certifica A2/B1 pelo CEFR.
+
+## Reconciliação do PR editorial #118 com a V13 técnica (13/11/2026)
+
+**Finalização do PR editorial não equivale a homologação dos áudios ou liberação da V13.** Os JSONs de Inglês e Russo deste PR já haviam sido incorporados ao código principal pela integração técnica [#136](https://github.com/Matheus2t/hub-pessoal/pull/136). Na reconciliação, ambos os arquivos editoriais e os **32 IDs / 80 questões** foram conferidos com a `main` sem diferenças de conteúdo ou alteração de gabaritos. O PR #118 passa a servir de registro editorial rastreável, e **não cria cópias nem substitui as fontes usadas pelo sistema**.
+
+- [#140](https://github.com/Matheus2t/hub-pessoal/pull/140): corrigiu a montagem FFmpeg de diálogos e homologou tecnicamente o Listening. As 17 regenerações corrigidas permanecem em cópia privada; 15 áudios de fala única não precisaram de regeneração. Os 32 registros continuam `awaiting_owner_review`.
+- [#141](https://github.com/Matheus2t/hub-pessoal/pull/141): documentou a inspeção pós-deploy e o bloqueio das rotas públicas.
+- [#142](https://github.com/Matheus2t/hub-pessoal/pull/142): integrou a avaliação V17, sem promover gravações V13 não auditadas a evidência de Listening.
+- O validador V13 verifica agora a correspondência entre metadados editoriais, etapas reais da V12 e a resposta sanitizada da prévia local, além de impedir exposição de gabaritos, notas e MP3s no contrato de prévia sem manifesto privado. O CI executa o contrato e os testes Node da prévia nas alterações relevantes.
+
+**Diferencie os estados:** os campos `audioStatus:script_only_no_audio_generated_or_validated` e `productionStatus:script_only_no_recording` são marcas históricas de **origem do pacote editorial**, não uma declaração atual de inexistência de áudios privados. A produção privada V19 e seus relatórios técnicos ficam documentados em [learn-audio-v19.md](./learn-audio-v19.md), [learn-v13-homologation.md](./learn-v13-homologation.md) e [learn-v13-audio-audit.md](./learn-v13-audio-audit.md). Nenhum estado editorial ou áudio foi promovido a "aprovado" por esta reconciliação.
+
+**Pendências separadas:** escuta humana e aceite dos 32 arquivos, licenças/atribuições aplicáveis, revisão linguística/pedagógica independente se for alegada validação externa, piloto com estudantes e autorização explícita do responsável para uso público. A prévia continua exclusivamente local e sem avaliação certificadora.
 
 ## 1. Objetivo e referências
 
@@ -31,7 +44,7 @@ Criar material de *recepção oral* para A2 e B1 em Inglês e Russo, sem mudar o
 
 Cada unidade informa `stageNodeId` dentro do intervalo **A2: 05–10; B1: 11–15**, sempre no idioma correto. O campo indica **alinhamento curricular provisório**, não um requisito de avanço, não cria progresso por si e não autoriza alteração na V12.
 
-## 4. Fluxo de implementação e produção de áudio (etapa futura do Codex + avaliadores)
+## 4. Requisitos originalmente previstos para implementação, áudio e homologação
 
 1. **Homologação linguística independente** de cada transcrição e alternativa. Verificar gramática, naturalidade, ambiguidade, vocabulário e adequação aproximada ao nível; no Russo, conferir acentuação lexical, numerais e flexões em voz.
 2. **Produção do áudio**, com direito/licença para hospedagem e uso. Duração/velocidade somente depois da gravação; não fabricar áudio ou estimar que o texto escrito já comprova compreensão.
@@ -53,17 +66,17 @@ Cada unidade informa `stageNodeId` dentro do intervalo **A2: 05–10; B1: 11–1
 
 ## 5. Limites e continuidade
 
-- O pacote é **conteúdo novo proposto**: 32 unidades, não 32 exercícios ativos nem 32 gravações.
+- O pacote nasceu como **conteúdo editorial proposto**: 32 unidades; hoje as unidades estão em prévia local, mas não constituem 32 exercícios públicos ou 32 gravações homologadas.
 - Não há equivalência entre este pacote e uma prova certificada CEFR; a avaliação ainda cobre uma amostra limitada da competência oral.
 - Os itens legados e pontes V11 continuam fora do escopo.
-- Depois da homologação dos roteiros, o Codex pode desenvolver a experiência de reprodução/avaliação sem expor transcrições durante a escuta e sem alterar o progresso histórico.
+- A experiência de prévia local já está implementada. Ativação estudantil, avaliação independente por áudio e acesso público continuam bloqueados até decisões futuras e novas homologações.
 
 ## Revisão interna V18 e fluxo de liberação sem equipe externa
 
-**Escopo revisado em 12/11/2026:** 32 roteiros / 80 questões. A revisão feita neste projeto por ChatGPT é **editorial interna**; não houve parecer linguístico independente, validação com turma, certificação CEFR nem revisão de gravação inexistente.
+**Escopo revisado em 12/11/2026:** 32 roteiros / 80 questões. A revisão feita neste projeto por ChatGPT é **editorial interna**; não houve parecer linguístico independente, validação com turma, certificação CEFR nem revisão auditiva humana dos arquivos técnicos posteriormente produzidos.
 
 **Equipe real:** ChatGPT prepara e revisa editorialmente, Codex implementa e testa, e o dono do site decide o aceite e a publicação. Não existe obrigação de contratar especialistas externos para oferecer **prática pessoal não certificadora**; revisão externa só seria necessária se o projeto quisesse alegar validação independente ou classificação formal de proficiência.
 
-O roteiro continua sem áudio. O dono precisa ouvir cada gravação gerada, conferir o texto falado, registrar origem/licença, testar inteligibilidade, repetição e nível antes de autorizar a atividade.
+O pacote editorial não inclui MP3. As gravações privadas V19 já foram produzidas e passaram por verificações técnicas posteriores, mas o dono ainda precisa ouvir os arquivos finais, conferir a correspondência com o roteiro, origem/licença, inteligibilidade, ritmo e naturalidade antes de autorizar qualquer atividade auditiva.
 
 **Controle de publicação:** não alterar `publicRelease:false` nem expor materiais de draft só porque a revisão textual foi concluída. O aceite explícito do dono, testes de integração, revisão dos áudios aplicáveis e verificações de produção continuam pendentes. Status: **revisão interna concluída; liberação ainda não autorizada**.
