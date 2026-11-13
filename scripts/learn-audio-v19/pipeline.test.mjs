@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  applyOwnerDecision, blobSha, canApplyOwnerDecision, extractRecords, retryRejected, verifyPinnedBytes, voicesFor,
+  applyOwnerDecision, audioConcatLabels, blobSha, canApplyOwnerDecision, extractRecords, retryRejected, verifyPinnedBytes, voicesFor,
 } from './pipeline.mjs';
 import { isAllowedHost, isLoopback, safeAsset } from './reviewer.mjs';
 
@@ -76,6 +76,15 @@ test('rejected audio retry increments version and preserves the rejected attempt
   assert.equal(retry.generation.assetPath, null);
   assert.equal(retry.previousAttempts[0].generation.assetPath, 'audio/ru-audio-01__v2.mp3');
   assert.equal(retry.previousAttempts[0].ownerReview.note, 'prosody');
+});
+
+test('audio concat maps every segment and pause to its own FFmpeg input', () => {
+  assert.deepEqual(audioConcatLabels(1), ['[0:a]']);
+  assert.deepEqual(audioConcatLabels(2), ['[0:a]', '[1:a]', '[2:a]']);
+  assert.deepEqual(audioConcatLabels(3), ['[0:a]', '[1:a]', '[2:a]', '[3:a]', '[4:a]']);
+  assert.deepEqual(audioConcatLabels(4), ['[0:a]', '[1:a]', '[2:a]', '[3:a]', '[4:a]', '[5:a]', '[6:a]']);
+  assert.throws(() => audioConcatLabels(0), /inteiro positivo/);
+  assert.throws(() => audioConcatLabels(1.5), /inteiro positivo/);
 });
 
 test('review server is loopback-only and rejects paths outside private audio directory', () => {
