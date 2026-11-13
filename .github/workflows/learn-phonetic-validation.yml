@@ -39,4 +39,12 @@ jobs:
           python3 -m http.server 8123 --bind 127.0.0.1 --directory dist > /tmp/2t-learn-phonetic.log 2>&1 &
           sleep 2
           PW_CHANNEL=chromium npx playwright test frontend/tests/learn-v19-integration.spec.ts --grep 'V19 preview stays within screen'
-          PW_CHANNEL=chromium npx playwright test frontend/tests/learn-*.spec.ts
+          # Local-only preview tests need draft JSONs; public security tests must
+          # run after a separate public build instead of against this local build.
+          LOCAL_TEST_FILES=$(find frontend/tests -maxdepth 1 -type f -name 'learn-*.spec.ts' ! -name 'learn-public-security.spec.ts' | sort)
+          PW_CHANNEL=chromium npx playwright test $LOCAL_TEST_FILES
+      - name: Rebuild public distribution and ensure private Learn assets stay absent
+        run: |
+          VERCEL=1 npm run build
+          node scripts/learn/audit-learn-public-build.mjs
+          PW_CHANNEL=chromium npx playwright test frontend/tests/learn-public-security.spec.ts

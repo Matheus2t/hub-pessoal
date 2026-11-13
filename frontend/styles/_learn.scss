@@ -1193,7 +1193,7 @@ learn-progression button:focus-visible,learn-progression a:focus-visible,learn-p
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 36px;
+    min-height: 44px;
     padding: 7px 12px;
     border: 1px solid var(--line);
     border-radius: 7px;
@@ -1249,8 +1249,8 @@ learn-progression button:focus-visible,learn-progression a:focus-visible,learn-p
     button {
       display: inline-grid;
       place-items: center;
-      min-width: 39px;
-      min-height: 39px;
+      min-width: 44px;
+      min-height: 44px;
       padding: 6px 9px;
       border: 1px solid var(--line-soft);
       border-radius: 7px;
@@ -1272,7 +1272,7 @@ learn-progression button:focus-visible,learn-progression a:focus-visible,learn-p
   @media(max-width: 450px) {
     .learn-phonetic-editor__header { align-items: start; flex-direction: column; }
     .learn-phonetic-editor__symbols { gap: 5px; }
-    .learn-phonetic-editor__symbols button { min-width: 36px; min-height: 36px; }
+    .learn-phonetic-editor__symbols button { min-width: 44px; min-height: 44px; }
   }
 }
 
