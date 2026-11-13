@@ -235,6 +235,16 @@ export function retryRejected(record) {
   };
 }
 
+export function audioConcatLabels(segmentCount) {
+  if (!Number.isInteger(segmentCount) || segmentCount < 1) throw new Error('segmentCount precisa ser inteiro positivo.');
+  const labels = [];
+  for (let index = 0; index < segmentCount; index++) {
+    labels.push(`[${2 * index}:a]`);
+    if (index < segmentCount - 1) labels.push(`[${2 * index + 1}:a]`);
+  }
+  return labels;
+}
+
 function readSources() {
   return SOURCES.map((source) => {
     const content = fs.readFileSync(path.join(SOURCES_DIR, source.file), 'utf8');
@@ -438,10 +448,7 @@ function generateRecord(record) {
     if (i < normalized.length - 1) args.push('-f', 'lavfi', '-t', '0.42', '-i', 'anullsrc=r=22050:cl=mono');
   }
   const chain = [];
-  for (let i = 0; i < normalized.length; i++) {
-    chain.push(`[${i}:a]`);
-    if (i < generated.length - 1) chain.push(`[${2 * i + 1}:a]`);
-  }
+  chain.push(...audioConcatLabels(normalized.length));
   const concat = chain.join('') + `concat=n=${chain.length}:v=0:a=1,loudnorm=I=-18:TP=-2:LRA=11[out]`;
   args.push('-filter_complex', concat, '-map', '[out]', '-ar', '22050', '-ac', '1', '-codec:a', 'libmp3lame', '-b:a', '96k', '-write_xing', '0', '-y', output);
   run(process.env.FFMPEG_BIN || 'ffmpeg', args);

@@ -99,6 +99,46 @@ test('local V13 playback, questions, transcript assistance, navigation and ungra
  expect(await page.evaluate(()=>Number((window as Window&{__v13DbOpens?:number}).__v13DbOpens||0))).toBe(0);
 });
 
+test('a regenerated private MP3 supports play, pause, resume and restart',async({page})=>{
+ const privateRoot=process.env.LEARN_AUDIO_V19_DIR;
+ test.skip(!privateRoot,'Local private audio assets are not available in CI.');
+ const manifest=JSON.parse(readFileSync(resolve(privateRoot!,'manifest.json'),'utf8'));
+ const record=manifest.records.find((item:{id:string})=>item.id==='en-listen-v13-07');
+ expect(record?.state).toBe('awaiting_owner_review');
+ expect(record?.generation?.assetPath).toBe('audio/en-listen-v13-07__v2.mp3');
+ const audioPath=resolve(privateRoot!,record.generation.assetPath);
+ expect(audioPath.startsWith(`${resolve(privateRoot!)}${sep}`)).toBe(true);
+ await serveBuiltSite(page,{status:200,contentType:'audio/mpeg',body:readFileSync(audioPath)});
+ await page.route('**/learn/v13/preview.json**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(preview('en'))}));
+ await page.goto('/?learn-preview=listening-v13#/learn/en/listening-v13');
+ const player=page.locator('learn-recording-player');const media=player.locator('audio');
+ await expect(player.getByText('Áudio de estudo; não habilita avaliação.')).toBeVisible();
+ await player.getByRole('button',{name:'Reproduzir gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).paused)).toBe(false);
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeGreaterThan(0.15);
+ await player.getByRole('button',{name:'Pausar gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).paused)).toBe(true);
+ await player.getByRole('button',{name:'Reproduzir gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).paused)).toBe(false);
+ await player.getByRole('button',{name:'Reiniciar gravação'}).click();
+ await expect.poll(()=>media.evaluate(element=>(element as HTMLAudioElement).currentTime)).toBeLessThan(0.5);
+});
+
+test('slow audio response keeps loading state and becomes playable without duplicate retry',async({page})=>{
+ await serveBuiltSite(page);
+ await page.route('**/learn/v13/preview.json**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(preview('en'))}));
+ await page.route('**/learn/audio/fixture-tone.wav',async route=>{
+  await new Promise(resolve=>setTimeout(resolve,1000));
+  await route.fulfill({status:200,contentType:'audio/wav',body:toneWav()});
+ });
+ await page.goto('/?learn-preview=listening-v13#/learn/en/listening-v13');
+ const player=page.locator('learn-recording-player');const play=player.getByRole('button',{name:'Reproduzir gravação'});
+ await play.click();
+ await expect(play).toBeDisabled();
+ await expect(play).toContainText('Carregando…');
+ await expect(player.getByText('Reprodução concluída.')).toBeVisible({timeout:8000});
+});
+
 test('V13 preview avoids horizontal overflow in both themes from 320px to desktop',async({page})=>{
  await serveBuiltSite(page);
  await page.route('**/learn/v13/preview.json**',route=>{
