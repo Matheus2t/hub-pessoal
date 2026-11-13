@@ -73,10 +73,10 @@ test('V11 russo preserva o conteúdo original e não simula correção de produ�
  await page.goto('/?learn-preview=bridge-v11#/learn/ru/bridges');
  const panel=page.locator('learn-bridge-v11');
  await expect(panel.getByRole('heading',{name:'Atividades-ponte'})).toBeVisible();
- await expect(panel.getByText('12 tarefas de A1 → A2')).toHaveCount(0);
+ await expect(panel.getByRole('button',{name:/A1 → A2/})).toHaveAttribute('aria-pressed','true');
  const select=panel.getByLabel('Atividade',{exact:true});
  await select.selectOption('ru-bridge-v10-03');
- await expect(panel.getByRole('heading',{name:'Avaliar afirmação sobre lugar de leitura.'})).toBeVisible();
+ await expect(panel.getByRole('heading',{name:'Encontrar local e rotina em texto curto.'})).toBeVisible();
  await expect(panel.locator('textarea')).toBeVisible();
  await panel.getByRole('button',{name:'Conferir exemplos de resposta'}).click();
  await expect(panel.getByText('Os exemplos são ilustrativos.')).toBeVisible();
