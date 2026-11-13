@@ -1,0 +1,42 @@
+name: Conciliar documentação Learn V18
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-revisao-final-v18.md'
+      - 'docs/learn-revisao-integrada-v18.json'
+      - 'frontend/tests/learn-v18-editorial.spec.ts'
+      - '.github/workflows/learn-v18-documentation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-revisao-final-v18.md'
+      - 'docs/learn-revisao-integrada-v18.json'
+      - 'frontend/tests/learn-v18-editorial.spec.ts'
+      - '.github/workflows/learn-v18-documentation.yml'
+permissions:
+  contents: read
+jobs:
+  editorial-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: TypeScript e contratos
+        run: npm run typecheck
+      - name: Validar manifesto editorial V18, integração e decisão do proprietário
+        run: npx playwright test frontend/tests/learn-v18-editorial.spec.ts
+      - name: Verificar 474 exercícios preservados e respostas incertas
+        run: node scripts/learn/audit-exercise-quality-v21.mjs
+      - name: Validar 32 roteiros V14 e revisão editorial
+        run: node scripts/learn/validate-dictation-v14.mjs
+      - name: Gerar build público sem liberar prévias privadas
+        run: npm run build
+        env:
+          VERCEL: '1'
+      - name: Validar distribuição Learn pública
+        run: node scripts/learn/audit-learn-public-build.mjs
