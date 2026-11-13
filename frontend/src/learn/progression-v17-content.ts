@@ -58,7 +58,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "en-reading-02-q2",
       "en-reading-02-q3"
     ],
-    "independentScenarioPt": "Reescreva um diálogo novo substituindo dois referentes por pronomes de sujeito.",
+    "independentScenarioPt": "No diálogo 'Marta is a doctor. Marta works in a clinic. The clinic is busy.', reescreva a segunda e a terceira frases com pronomes de sujeito para evitar a repetição de Marta e the clinic.",
     "essentialCriteriaPt": [
       "Pronomes combinam com os referentes.",
       "Referências permanecem claras."
@@ -127,7 +127,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "en-reading-05-q2",
       "en-reading-05-q3"
     ],
-    "independentScenarioPt": "Pergunte sobre hábito de uma personagem e dê resposta negativa.",
+    "independentScenarioPt": "Eva trabalha à noite e não estuda pela manhã. Em inglês, faça uma pergunta sobre o hábito de trabalho dela e escreva uma frase negativa sobre o hábito de estudar.",
     "essentialCriteriaPt": [
       "Usa do/does com forma base.",
       "Negação preserva o sentido e a pessoa."
@@ -334,7 +334,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "en-v2-reading-004-q2",
       "en-v2-reading-004-q3"
     ],
-    "independentScenarioPt": "Identifique uma pessoa e uma ferramenta em duas orações relativas.",
+    "independentScenarioPt": "Em inglês, descreva uma pessoa que conserta computadores usando who e uma ferramenta que mede temperatura usando which, em duas frases próprias.",
     "essentialCriteriaPt": [
       "Relativas conectam informações.",
       "Referentes inequívocos."
@@ -380,9 +380,9 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "ru-reading-01-q2",
       "ru-reading-01-q3"
     ],
-    "independentScenarioPt": "Leia bilhete curto em cirílico e transcreva duas palavras com letras distintas.",
+    "independentScenarioPt": "Leia o bilhete 'Ёж в лесу. Лена едет домой.'. Indique em português quem está na floresta e para onde Lena vai; copie uma palavra com ё e outra com е.",
     "essentialCriteriaPt": [
-      "Reconhece grafia cirílica no contexto.",
+      "Localiza duas informações explícitas no bilhete em cirílico.",
       "Não confunde ё e е na cópia apresentada."
     ],
     "evidenceCategory": "written_reception",
@@ -426,7 +426,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "ru-reading-03-q2",
       "ru-reading-03-q3"
     ],
-    "independentScenarioPt": "Classifique o gênero de objetos incluindo palavra terminada em -ь.",
+    "independentScenarioPt": "Classifique o gênero de 'стол', 'книга', 'словарь' e 'дверь'. Explique em português por que a terminação -ь, sozinha, não determina o gênero.",
     "essentialCriteriaPt": [
       "Gênero dos termos propostos correto.",
       "Não assume gênero universal em -ь."
@@ -449,7 +449,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "ru-reading-04-q2",
       "ru-reading-04-q3"
     ],
-    "independentScenarioPt": "Transforme nomes comuns de materiais escolares em plural.",
+    "independentScenarioPt": "Escreva em russo o plural das palavras 'стол', 'книга', 'окно' e 'учитель', respeitando a forma própria de cada substantivo.",
     "essentialCriteriaPt": [
       "Plurais frequentes corretos.",
       "Respeita exceções ensinadas."
@@ -518,7 +518,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "ru-reading-07-q2",
       "ru-reading-07-q3"
     ],
-    "independentScenarioPt": "Responda negativamente a duas perguntas de rotina.",
+    "independentScenarioPt": "Responda em russo, de forma negativa, às perguntas 'Ты работаешь сегодня?' e 'Ты знаешь адрес?'. Formule respostas completas em cirílico.",
     "essentialCriteriaPt": [
       "Distingue не com verbo e нет na resposta.",
       "Não exige genitivo B1 como condição."
@@ -587,7 +587,7 @@ export const v17Scenarios:readonly StageScenarioV17[]=[
       "ru-reading-10-q2",
       "ru-reading-10-q3"
     ],
-    "independentScenarioPt": "Peça uma, duas e cinco unidades de objetos com numeral.",
+    "independentScenarioPt": "Em uma papelaria, escreva em russo três pedidos do item 'книга': um exemplar, dois exemplares e cinco exemplares. Use numerais e flexões adequadas.",
     "essentialCriteriaPt": [
       "Quantidades expressas corretamente.",
       "Concordância dos substantivos no contexto."

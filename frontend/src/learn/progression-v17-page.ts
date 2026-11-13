@@ -117,6 +117,7 @@ export class LearnProgressionV17 extends LightElement {
       <p class="learn-v17__eyebrow">CENÁRIO DE TRANSFERÊNCIA · RASCUNHO</p>
       <h2 id="v17-scenario-title">Aplicar em uma situação nova</h2>
       <p>${proposal!.independentScenarioPt}</p>
+      <p class="learn-v17__notice">Para produção, responda ${this.language==='ru'?'em russo, usando cirílico':'em inglês'}. Quando a proposta pedir explicitamente uma explicação em português, siga o enunciado. Nenhuma resposta recebe pontuação automática.</p>
       <label>Resposta para autoestudo (sem avaliação)
        <textarea rows="5" maxlength="2300" autocomplete="off" .value=${this.draft}
         @input=${(e:Event)=>this.draft=(e.target as HTMLTextAreaElement).value}
