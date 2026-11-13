@@ -20,7 +20,8 @@ import './integration-page';
 import './v19-local-preview';
 import './bridge-v11';
 import './reading-b1-v16';
-import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled} from './pilot-preview';
+import './progression-v17-page';
+import {isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnPilotPreviewEnabled,isLearnProgressionPreviewEnabled,isLearnV19AudioPreviewEnabled,isLearnReadingV16PreviewEnabled,isLearnAssessmentV17PreviewEnabled} from './pilot-preview';
 import {renderLearnFlowNav} from './flow-nav';
 const labels={en:{name:'Inglês',native:'English'},ru:{name:'Russo',native:'Русский'}};
 @customElement('learn-page')
@@ -67,6 +68,9 @@ export class LearnPage extends LightElement {
     if(this.activity==='audio-v19')return (this.language==='en'||this.language==='ru')&&isLearnV19AudioPreviewEnabled()
       ?html`<article class="learn-page learn-page--activity learn-page--v19-preview"><learn-v19-local-preview .language=${this.language as Language}></learn-v19-local-preview></article>`
       :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>Os novos áudios V19 só podem ser usados em uma sessão local autorizada. Não estão publicados.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
+    if(this.activity==='progress-v17')return (this.language==='en'||this.language==='ru')&&isLearnAssessmentV17PreviewEnabled()
+      ?html`<article class="learn-page learn-page--activity learn-page--v17-preview"><learn-progression-v17 .language=${this.language as Language} .progress=${this.data}></learn-progression-v17></article>`
+      :html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A avaliação V17 ainda não foi liberada publicamente. O estudo e o histórico permanecem disponíveis.</p><a class="button" href="#/learn">Voltar ao Learn</a></section>`;
     if(this.activity==='progression'&&!isLearnProgressionPreviewEnabled())return html`<section class="learn-message" role="status"><h1>Prévia indisponível</h1><p>A progressão V12 continua restrita a localhost/loopback enquanto o mapeamento pedagógico não tiver liberação pública.</p><a class="button" href=${`#/learn/${this.language==='ru'?'ru':'en'}`}>Voltar ao ${this.language==='ru'?'Russo':'Inglês'}</a></section>`;
     if(this.activity==='dashboard'&&this.isIntegrationPreviewEnabled())return !this.data||!this.catalog?html`<article class="learn-page learn-page--activity"><p role="status" class="learn-message">${this.loading?'Carregando acompanhamento local…':'O catálogo não está disponível. Seu histórico foi preservado.'}</p></article>`:html`<article class="learn-page learn-page--activity"><nav class="learn-internal"><a href=${`#/learn/${this.language}`}>Voltar às áreas de ${this.language==='ru'?'Russo':'Inglês'}</a><a href=${`#/learn/${this.language}/integration`}>Percurso integrado</a></nav>${renderLearnFlowNav(this.language as Language,'dashboard')}<learn-integration-evidence .language=${this.language as Language} .progress=${this.data}></learn-integration-evidence><learn-advanced mode="dashboard" .language=${this.language as Language} .catalog=${this.catalog} .progress=${this.data}></learn-advanced></article>`;
     const language=this.language as Language,label=labels[language];
