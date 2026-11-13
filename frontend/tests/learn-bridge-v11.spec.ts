@@ -65,8 +65,8 @@ test('V11 permite usar 20 tarefas formativas sem notas ou histórico',async({pag
  await expect(panel.getByText('Áudio ainda indisponível.')).toBeVisible();
  await expect(panel.locator('learn-audio, learn-recording-player, audio')).toHaveCount(0);
  await expect(panel.locator('textarea')).toHaveCount(0);
- await panel.getByRole('button',{name:'Consultar roteiro de referência'}).click();
- await expect(panel.getByText(/Why didn't you take the plane/)).toBeVisible();
+ await expect(panel.getByRole('button',{name:'Consultar roteiro de referência'})).toHaveCount(0);
+ await expect(panel.getByText(/Why didn't you take the plane/)).toHaveCount(0);
  await page.reload();
  await expect(panel.getByRole('heading',{name:'Formar pergunta com do/does.'})).toBeVisible();
  await expect(panel.locator('textarea')).toBeEmpty();
