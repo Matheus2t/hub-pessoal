@@ -9,6 +9,8 @@ const errors=[];
 const fail=(id,reason)=>errors.push(id+': '+reason);
 const seen=new Set();
 const matrix={en:{A2:0,B1:0},ru:{A2:0,B1:0}};
+const progression=JSON.parse(readFileSync(resolve(root,'frontend/public/learn/progression-v12.json'),'utf8'));
+const reviewedVariantCounts={en:{'04':1,'07':3,'09':1,'11':1},ru:{'06':3,'11':1,'14':1,'16':1}};
 const norm=s=>s.normalize('NFC').toLowerCase().replace(/[\p{P}\p{S}]/gu,'').replace(/\s+/g,' ').trim();
 
 for(const lang of ['en','ru']){
@@ -17,7 +19,11 @@ for(const lang of ['en','ru']){
   if(data.schemaVersion!==1||data.recordType!=='learn_dictation_editorial_v14'||data.language!==lang)fail(lang,'manifesto invalido');
   if(data.publicRelease!==false||data.cefrCertified!==false||data.audioStatus!=='no_audio_produced_or_reviewed')fail(lang,'release ou audio indevido');
   if(data.units?.length!==16)fail(lang,'esperado 16 ditados');
-  for(const item of data.units||[]){
+  const review=data.internalEditorialReview;
+  if(review?.itemsInspected!==16||review.reviewedScriptsOnly!==true||review.audioValidated!==false||review.externalLanguageValidationPerformed!==false||review.releaseAllowed!==false||review.ownerAcceptancePending!==true)fail(lang,'revisão editorial não equivale a aprovação externa ou de áudio');
+  for(const [index,item] of (data.units||[]).entries()){
+    const expectedId=`${lang}-dict-v14-${String(index+1).padStart(2,'0')}`;
+    if(item.draftId!==expectedId)fail(item.draftId||lang,'ordem dos 16 IDs divergente do inventário editorial fixado');
     const id=item.draftId;
     if(seen.has(id))fail(id,'id duplicado');
     seen.add(id);
@@ -28,6 +34,8 @@ for(const lang of ['en','ru']){
     const match=new RegExp('^'+lang+'-path-([0-9]{2})$').exec(item.linkedStageNodeId||'');
     const stage=match?Number(match[1]):NaN;
     if(!Number.isInteger(stage)||(item.targetLevel==='A2'&&(stage<5||stage>10))||(item.targetLevel==='B1'&&(stage<11||stage>15)))fail(id,'vinculo V12 incorreto');
+    const realStage=progression.languageTracks?.[lang]?.stages?.find(row=>row.nodeId===item.linkedStageNodeId);
+    if(!realStage||realStage.level!==item.targetLevel||realStage.nodeId!==item.linkedStageNodeId)fail(id,'vínculo não existe no manifesto V12 ou tem nível incorreto');
     if(item.public!==false||item.audioProductionStatus!=='script_only_no_audio'||item.teacherReviewStatus!=='draft_requires_independent_review'||item.existingCatalogExercise!==false)fail(id,'gate editorial');
     if(!item.expectedTranscript?.trim()||!item.objectivePt?.trim()||!item.instructionPt?.trim()||!item.protectedElementsPt?.trim())fail(id,'campos textuais faltando');
     if(item.instructionPt?.includes(item.expectedTranscript))fail(id,'gabarito no enunciado');
@@ -37,12 +45,15 @@ for(const lang of ['en','ru']){
     if(p.acceptDigitWordEquivalence!=='explicit_full_transcript_variants_only')fail(id,'conversao numerica nao controlada');
     if(lang==='ru'&&p.acceptYoAsE!=='explicit_full_transcript_variants_only_otherwise_uncertain')fail(id,'ё precisa de regra contextual');
     if(!Array.isArray(p.acceptedFullTranscriptVariants))fail(id,'variantes nao sao array');
+    const reviewedCount=reviewedVariantCounts[lang][String(index+1).padStart(2,'0')]||0;
+    if(p.acceptedFullTranscriptVariants?.length!==reviewedCount)fail(id,'quantidade de variantes alterada sem nova revisão editorial');
     else {
       const all=[item.expectedTranscript,...p.acceptedFullTranscriptVariants];
       if(new Set(all.map(norm)).size!==all.length)fail(id,'variantes duplicadas');
       if(all.some(x=>!x.trim()))fail(id,'variante vazia');
     }
     if(item.assessmentPolicy!=='manual_review_or_uncertain_for_unrecognized_transcription')fail(id,'politica de avaliacao insegura');
+    if(item.orthographicAlternativePolicy?.ignoreTerminalPunctuation!==true||item.orthographicAlternativePolicy?.ignoreCapitalization!==true||item.orthographicAlternativePolicy?.collapseWhitespace!==true)fail(id,'normalização declarada divergente do contrato');
     if(lang==='ru'&&!/[А-Яа-яЁё]/.test(item.expectedTranscript))fail(id,'sem cirilico');
   }
 }

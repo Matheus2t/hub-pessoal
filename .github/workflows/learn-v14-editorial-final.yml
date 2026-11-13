@@ -1,0 +1,51 @@
+name: Revisão editorial final V14
+on:
+  pull_request:
+    paths:
+      - 'docs/learn-ditados-a2-b1-v14.md'
+      - 'docs/learn-ditados-v14-en.json'
+      - 'docs/learn-ditados-v14-ru.json'
+      - 'docs/learn-v14-final-editorial-review-2026-11-13.md'
+      - 'scripts/learn/validate-dictation-v14.mjs'
+      - 'scripts/learn/dictation-v14-core.mjs'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v14-editorial-final.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/learn-ditados-a2-b1-v14.md'
+      - 'docs/learn-ditados-v14-en.json'
+      - 'docs/learn-ditados-v14-ru.json'
+      - 'docs/learn-v14-final-editorial-review-2026-11-13.md'
+      - 'scripts/learn/validate-dictation-v14.mjs'
+      - 'scripts/learn/dictation-v14-core.mjs'
+      - 'frontend/public/learn/progression-v12.json'
+      - '.github/workflows/learn-v14-editorial-final.yml'
+permissions:
+  contents: read
+jobs:
+  v14-editorial-final:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Verificar fonte editorial, 32 IDs, 30 nós V12, variantes e gates
+        run: node scripts/learn/validate-dictation-v14.mjs
+      - name: Testar correção conservadora e sessão privada V14
+        run: node --test scripts/learn/dictation-v14-core.test.mjs scripts/learn-audio-v19/dictation-v14-preview.test.mjs scripts/learn-audio-v19/dictation-v14-preview.integration.test.mjs
+      - name: Compilar distribuição pública
+        run: npm run build
+        env:
+          VERCEL: '1'
+      - name: Verificar ausência de gabaritos e MP3s no dist público
+        run: |
+          node scripts/learn/validate-dictation-v14.mjs --check-dist
+          node scripts/learn/audit-learn-public-build.mjs
+      - run: npx playwright install chromium
+      - name: Executar regressão V14 com isolamento EN/RU e backup
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/learn-dictation-v14.spec.ts
