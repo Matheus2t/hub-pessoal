@@ -26,7 +26,7 @@ Para abrir a prévia, execute na raiz:
 
 ```powershell
 $env:LEARN_AUDIO_V19_DIR = 'C:\caminho\privado\learn-audio-v19' # opcional; omita se estiver neste worktree
-npm run preview-listening-v13
+npm run learn:preview-listening-v13
 ```
 
 Abra exclusivamente o endereço local com token impresso no terminal. Não compartilhe esse endereço. Encerre com `Ctrl+C`. O comando gera o build normal e então inicia o servidor local autenticado. O conteúdo editorial não é inserido no build.
@@ -38,6 +38,14 @@ Abra exclusivamente o endereço local com token impresso no terminal. Não compa
 - Fixtures de áudio nos testes verificam somente controles do player; não são fala nem homologação. A pasta privada V19 é opcional no CI.
 - Na captura local atual, 32 registros V19 coincidem por ID, idioma, tipo, transcrição e estado técnico, mas os 32 aguardam a escuta/aprovação do proprietário. Nenhum é elegível para avaliação.
 - Não foi feita homologação auditiva humana, validação linguística externa ou teste com estudantes. A2/B1 descreve somente o alvo curricular provisório; não é certificação CEFR.
+
+### Execução desta integração
+
+- Typecheck e build passaram depois de reconciliar a V13 com os módulos V16/V18 que avançaram na `main`.
+- Os 13 validadores Learn existentes passaram; o validador V13 confirmou 32 roteiros e 80 questões, e os testes Node do servidor passaram (4/4).
+- A regressão Playwright Learn passou (178/178), incluindo as verificações V13 e V16.
+- O domínio oficial foi simulado em Playwright para confirmar o bloqueio; não se afirma que isso seja uma requisição real à produção.
+- A API Vercel não permitiu consultar o projeto `matheus2t` (404) nem listar seus deployments (403); o CLI não está disponível nesta sessão. Portanto, o estado de preview/produção não foi confirmado por Vercel.
 
 ## Ativação futura
 
