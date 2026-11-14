@@ -19,14 +19,21 @@ const manifestSource=JSON.parse(readFileSync('frontend/public/learn/pedagogy-v1/
 const noAudioPolicy:LearnAudioPolicy={audioAssessmentEnabled:false,validatedRecordings:0,generatedAtPlaybackIsDraft:true};
 const fixture:LearnAudioAsset={id:'test-tone-v15',language:'en',activityId:'test-tone-v15',skill:'listening',referenceText:'',locale:'en',accent:null,source:'test-fixture',licenseStatus:'fixture-only',contentVersion:1,validationStatus:'fixture-unvalidated',assessmentEnabled:false,assetUrl:'/learn/audio/fixture-tone.wav'};
 
-test('current manifest has no eligible recordings and rejects unsafe sources',()=>{
+test('manifest exposes only licensed public study recordings and rejects unsafe sources',()=>{
   const manifest=parseLearnAudioManifest(manifestSource);
   expect(manifest.assets).toHaveLength(124);
   expect(manifest.policy).toMatchObject({audioAssessmentEnabled:false,validatedRecordings:0,generatedAtPlaybackIsDraft:true});
-  expect(manifest.assets.every(asset=>asset.assetUrl===null&&!asset.assessmentEnabled)).toBe(true);
+  const publicStudy=manifest.assets.filter(asset=>asset.releaseType==='public-study-only');
+  expect(publicStudy).toHaveLength(60);expect(publicStudy.filter(asset=>asset.language==='en')).toHaveLength(30);expect(publicStudy.filter(asset=>asset.language==='ru')).toHaveLength(30);
+  expect(publicStudy.every(asset=>asset.skill==='listening'&&asset.validationStatus==='technical-passed-study-only'&&!asset.assessmentEnabled&&!!asset.sha256)).toBe(true);
+  expect(manifest.assets.filter(asset=>asset.releaseType!=='public-study-only').every(asset=>asset.assetUrl===null&&!asset.assessmentEnabled)).toBe(true);
   expect(manifest.assets.some(asset=>/v13|v14/.test(asset.activityId))).toBe(false);
-  expect(audioAvailabilityFor(manifest,'en')).toEqual({listening:false,dictation:false});
-  expect(audioAvailabilityFor(manifest,'ru')).toEqual({listening:false,dictation:false});
+  expect(audioAvailabilityFor(manifest,'en')).toEqual({listening:true,dictation:false});
+  expect(audioAvailabilityFor(manifest,'ru')).toEqual({listening:true,dictation:false});
+  const russianStudy=manifest.assets.find(asset=>asset.id==='catalog:ru:ru-listening-001')!;
+  expect(canPlayLearnAudio(russianStudy,manifest.policy,'matheus2t.com.br','')).toBe(true);
+  expect(canAssessLearnAudio(russianStudy,manifest.policy,'matheus2t.com.br','')).toBe(false);
+  expect(canPlayLearnAudio({...russianStudy,assetUrl:'/learn/audio/private/v13.mp3'},manifest.policy,'matheus2t.com.br','')).toBe(false);
   expect(safeLearnAudioUrl('https://cdn.example/audio.mp3')).toBeUndefined();
   expect(safeLearnAudioUrl('//cdn.example/learn/audio/file.mp3')).toBeUndefined();
   expect(safeLearnAudioUrl('/learn/audio/../secret.wav')).toBeUndefined();
@@ -61,10 +68,13 @@ test('audio provenance is additive in IndexedDB v3 backups and legacy v1/v2/v3 r
   expect(validAttempt(attempt)).toBe(true);
   expect(validAttempt({...attempt,correct:true})).toBe(false);
   expect(validAttempt({...attempt,audioEvidence:{source:'recording',validated:true,transcriptViewedBeforeAttempt:false}})).toBe(false);
+  const transcriptStudyAttempt:Attempt={...attempt,id:'transcript-study-only',audioEvidence:undefined};
+  expect(validAttempt(transcriptStudyAttempt)).toBe(true);
   for(const version of [1,2,3] as const){
-    const backup={format:'2t-learn',version,exportedAt:100,attempts:[attempt],cards:[],...(version>=2?{planning:[]}:{}),...(version===3?{lessonEvents:[],lessonProgress:[]}:{})};
+    const backup={format:'2t-learn',version,exportedAt:100,attempts:[attempt,transcriptStudyAttempt],cards:[],...(version>=2?{planning:[]}:{}),...(version===3?{lessonEvents:[],lessonProgress:[]}:{})};
     const restored=parseBackup(JSON.stringify(backup));
     expect(restored.version).toBe(version);expect(restored.attempts[0].audioEvidence).toEqual(attempt.audioEvidence);
+    expect(restored.attempts[1].assessmentOutcome).toBe('uncertain');expect(restored.attempts[1].audioEvidence).toBeUndefined();
     const historical={...attempt,id:`legacy-${version}`,audioEvidence:undefined,assessmentOutcome:undefined,correct:true};
     expect(parseBackup(JSON.stringify({...backup,attempts:[historical]})).attempts[0].audioEvidence).toBeUndefined();
   }
@@ -160,25 +170,26 @@ test('future draft activities cannot fall back to browser synthesis when a recor
     session.language='en';session.mode='listening';session.audioPurpose='assessment';session.exercises=[{id:'en-v13-draft',language:'en',skill:'listening',topic:'draft',level:'A1',prompt:'Choose what you heard.',answers:['Good morning.'],explanation:'',audio:'Good morning.',audioAssetId:'en-v13-draft',wordIds:[],questionType:'singleChoice',options:[{id:'a',label:'Good morning.'},{id:'b',label:'Good evening.'}],correctOptionId:'a'}];document.body.append(session);
   });
   const session=page.locator('learn-session').last();
-  await expect(session.getByRole('status')).toContainText('Gravação aprovada indisponível');
+  await expect(session.getByRole('alert')).toContainText('O áudio não está disponível agora');
   await expect(session.locator('learn-audio')).toHaveCount(0);
   await expect(session.locator('form')).toHaveCount(0);
   await expect(session).not.toContainText('Good morning.');
+  await expect(session.getByRole('button',{name:'Estudar com a transcrição'})).toBeVisible();
 });
 
 test('assessment purpose keeps the answer transcript hidden before submission',async({page})=>{
   await serveBuiltSite(page);await page.goto('/?learn-preview=audio-v15');await page.evaluate(()=>import('/learn.js'));
   await page.evaluate(()=>{
     const session=document.createElement('learn-session') as HTMLElement&{language:string;mode:string;audioPurpose:string;exercises:unknown[]};
-    session.language='en';session.mode='listening';session.audioPurpose='assessment';session.exercises=[{id:'legacy-listening-assessment',language:'en',skill:'listening',topic:'practice',level:'A1',prompt:'What greeting is used?',answers:['Good morning.'],explanation:'',audio:'Good morning, everyone.',wordIds:[]}];document.body.append(session);
+    session.language='en';session.mode='listening';session.audioPurpose='assessment';session.exercises=[{id:'legacy-listening-assessment',audioAssetId:'en-listening-001',language:'en',skill:'listening',topic:'practice',level:'A1',prompt:'What greeting is used?',answers:['Good morning.'],explanation:'',audio:'hello',wordIds:[]}];document.body.append(session);
   });
   const session=page.locator('learn-session').last();
-  await expect(session.locator('learn-audio')).toBeVisible();
+  await expect(session.locator('learn-recording-player')).toBeVisible();
   await expect(session.locator('details.learn-audio-transcript')).toHaveCount(0);
-  await expect(session).not.toContainText('Good morning, everyone.');
+  await expect(session).not.toContainText('hello');
 });
 
-test('legacy TTS listening remains practice only and persists an uncertain, non-scored attempt',async({page})=>{
+test('legacy dictation TTS remains practice only and persists an uncertain, non-scored attempt',async({page})=>{
   await serveBuiltSite(page);
   await page.addInitScript(()=>{
     class Utterance {text:string;voice:any=null;lang='';rate=1;volume=1;onend:(()=>void)|null=null;onerror:(()=>void)|null=null;constructor(text:string){this.text=text}}
@@ -194,27 +205,22 @@ test('legacy TTS listening remains practice only and persists an uncertain, non-
   await expect(session.getByRole('button',{name:'Verificar resposta'})).toBeEnabled();
   await session.locator('textarea').fill(exercise.answers[0]);
   await session.getByRole('button',{name:'Verificar resposta'}).click();
-  await expect(session.locator('.learn-feedback strong')).toHaveText('Resposta salva · não avaliada (gravação não homologada)');
+  await expect(session.locator('.learn-feedback strong')).toHaveText('Resposta salva · não avaliada (gravação sem homologação auditiva)');
   const attempt=await page.evaluate(()=>new Promise<any>((resolve,reject)=>{const request=indexedDB.open('2t-learn',3);request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('attempts','readonly'),get=tx.objectStore('attempts').getAll();get.onsuccess=()=>{db.close();resolve(get.result.at(-1))};get.onerror=()=>reject(get.error)}}));
   expect(attempt).toMatchObject({correct:false,assessmentOutcome:'uncertain',audioEvidence:{source:'browser-synthesis',validated:false,transcriptViewedBeforeAttempt:false}});
 });
 
 test('consulted transcript is recorded as assistance and cannot produce independent listening evidence',async({page})=>{
   await serveBuiltSite(page);
-  await page.addInitScript(()=>{
-    class Utterance{text:string;voice:any=null;lang='';rate=1;volume=1;onend:(()=>void)|null=null;onerror:(()=>void)|null=null;constructor(text:string){this.text=text}}
-    let timer:number|undefined;const synth={getVoices:()=>[{name:'Local English',lang:'en-US',localService:true,default:true,voiceURI:'local'}],addEventListener:()=>{},removeEventListener:()=>{},cancel:()=>{if(timer)clearTimeout(timer)},pause:()=>{},resume:()=>{},speak:(utterance:Utterance)=>{timer=window.setTimeout(()=>utterance.onend?.(),120)}};
-    Object.defineProperty(window,'SpeechSynthesisUtterance',{configurable:true,value:Utterance});Object.defineProperty(window,'speechSynthesis',{configurable:true,value:synth});
-  });
   await page.goto('/?learn-preview=audio-v15#/learn/en/listening');
   await page.getByRole('button',{name:'Iniciar prática'}).click();
   const session=page.locator('learn-session'),expected=await session.evaluate((element:any)=>element.exercises[0].answers[0]);
   await session.locator('details.learn-audio-transcript summary').click();
-  await session.locator('learn-audio').getByRole('button',{name:'Ouvir / repetir'}).click();
+  await session.locator('learn-recording-player').getByRole('button',{name:'Reproduzir gravação'}).click();
   await expect(session.getByRole('button',{name:'Verificar resposta'})).toBeEnabled();
   await session.locator('textarea').fill(expected);
   await session.getByRole('button',{name:'Verificar resposta'}).click();
   await expect(session.locator('.learn-feedback strong')).toHaveText('Resposta salva · transcrição consultada; não é evidência independente');
   const attempt=await page.evaluate(()=>new Promise<any>((resolve,reject)=>{const request=indexedDB.open('2t-learn',3);request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('attempts','readonly'),get=tx.objectStore('attempts').getAll();get.onsuccess=()=>{db.close();resolve(get.result.at(-1))};get.onerror=()=>reject(get.error)}}));
-  expect(attempt).toMatchObject({correct:false,assessmentOutcome:'uncertain',audioEvidence:{source:'browser-synthesis',validated:false,transcriptViewedBeforeAttempt:true}});
+  expect(attempt).toMatchObject({correct:false,assessmentOutcome:'uncertain',audioEvidence:{source:'recording',validated:false,transcriptViewedBeforeAttempt:true}});
 });

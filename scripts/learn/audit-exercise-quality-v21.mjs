@@ -102,7 +102,9 @@ for(const language of ['en','ru']){
 verify(report.perLanguage.en?.exercises+report.perLanguage.ru?.exercises===474,'total','474 exercícios esperados');
 const audio=read('frontend/public/learn/pedagogy-v1/audio-assets.json');
 verify(audio.policy?.audioAssessmentEnabled===false&&audio.policy.validatedRecordings===0,'áudio','audição não homologada não pode ativar avaliação');
-verify(Array.isArray(audio.assets)&&audio.assets.every(x=>x.assetUrl===null&&x.assessmentEnabled===false),'áudio','nenhum arquivo aprovado ou avaliação habilitada');
+const publicStudyAudio=audio.assets?.filter(x=>x.releaseType==='public-study-only')||[];
+verify(Array.isArray(audio.assets)&&publicStudyAudio.length===60&&publicStudyAudio.every(x=>x.skill==='listening'&&x.validationStatus==='technical-passed-study-only'&&x.assessmentEnabled===false&&!!x.assetUrl&&/^[a-f0-9]{64}$/i.test(x.sha256||'')),'áudio','60 arquivos de Listening licenciados devem permanecer limitados a estudo, sem avaliação');
+verify(audio.assets?.filter(x=>x.releaseType!=='public-study-only').every(x=>x.assetUrl===null&&x.assessmentEnabled===false),'áudio','ditados, diagnósticos e pilotos privados devem continuar sem assets públicos');
 if(process.argv.includes('--json'))console.log(JSON.stringify({...report,errors},null,2));
 else console.log(JSON.stringify({ok:errors.length===0,...report,errors},null,2));
 if(errors.length)process.exitCode=1;

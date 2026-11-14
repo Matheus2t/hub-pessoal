@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 fs.cpSync('frontend/public/financials', 'dist/financials', { recursive: true });
 
 // Generate a compact annual view from already-reviewed CVM snapshots.
@@ -36,7 +37,30 @@ if (publicLearnBuild) {
   }
   // Required by the public legacy audio availability UI; this manifest
   // exposes only metadata, and never private V13/V14/V19 recordings.
-  fs.copyFileSync('frontend/public/learn/pedagogy-v1/audio-assets.json', 'dist/learn/pedagogy-v1/audio-assets.json');
+  const audioManifestPath = 'frontend/public/learn/pedagogy-v1/audio-assets.json';
+  const audioManifest = JSON.parse(fs.readFileSync(audioManifestPath, 'utf8'));
+  fs.copyFileSync(audioManifestPath, 'dist/learn/pedagogy-v1/audio-assets.json');
+  const studyAudio = audioManifest.assets.filter(asset => asset.releaseType === 'public-study-only');
+  if (studyAudio.length !== 60 || studyAudio.filter(asset => asset.language === 'en').length !== 30 || studyAudio.filter(asset => asset.language === 'ru').length !== 30) {
+    throw new Error('Build público recusado: o inventário de áudios de estudo não corresponde aos 30 estímulos por idioma.');
+  }
+  for (const asset of studyAudio) {
+    const expectedUrl = `/learn/audio/${asset.language}/${asset.activityId}.mp3`;
+    const source = path.resolve('frontend/public', `.${expectedUrl}`);
+    const relative = path.relative(path.resolve('frontend/public'), source);
+    if (asset.skill !== 'listening' || asset.id !== `catalog:${asset.language}:${asset.activityId}` ||
+        !new RegExp(`^${asset.language}-listening-\\d{3}$`).test(asset.activityId) || asset.assetUrl !== expectedUrl ||
+        asset.validationStatus !== 'technical-passed-study-only' || asset.assessmentEnabled !== false ||
+        asset.licenseStatus !== 'CC0 voice-model/data chain (official Piper commercial-use list); exercise text authored in 2T' ||
+        !/^[a-f0-9]{64}$/i.test(asset.sha256 || '') || relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(source)) {
+      throw new Error(`Build público recusado: áudio de estudo sem proveniência ou política válida (${asset.id}).`);
+    }
+    const digest = crypto.createHash('sha256').update(fs.readFileSync(source)).digest('hex');
+    if (digest !== asset.sha256) throw new Error(`Build público recusado: SHA-256 divergente (${asset.id}).`);
+    const target = path.resolve('dist', `.${expectedUrl}`);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(source, target);
+  }
 } else {
   fs.cpSync('frontend/public/learn', 'dist/learn', { recursive: true });
 }

@@ -2,13 +2,13 @@ import {html,type PropertyValues} from 'lit';
 import {customElement,property,query,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
 import {canAssessLearnAudio,canPlayLearnAudio,type LearnAudioAsset,type LearnAudioPolicy} from './audio-assets';
+import {registerLearnAudioPlayer,stopOtherLearnAudioPlayers} from './audio-playback';
 
 interface AudioHeardDetail {source:'recording';assetId:string;validated:boolean;assessmentEligible:boolean;audibleSeconds:number;coveragePercent:number;playCount:number;playbackRates:number[]}
 const secondsLabel=(seconds:number)=>{
   if(!Number.isFinite(seconds)||seconds<0)return '0:00';
   const whole=Math.floor(seconds);return `${Math.floor(whole/60)}:${String(whole%60).padStart(2,'0')}`;
 };
-const connectedPlayers=new Set<LearnRecordingPlayer>();
 
 @customElement('learn-recording-player')
 export class LearnRecordingPlayer extends LightElement {
@@ -32,8 +32,9 @@ export class LearnRecordingPlayer extends LightElement {
   private audibleRanges:Array<[number,number]> = [];
   private playCount=0;
   private playbackRates:number[]=[];
+  private releaseAudioPlayer?:()=>void;
 
-  connectedCallback(){super.connectedCallback();connectedPlayers.add(this);}
+  connectedCallback(){super.connectedCallback();this.releaseAudioPlayer=registerLearnAudioPlayer(this.stopPlayback);}
 
   protected willUpdate(changes:PropertyValues){
     if(changes.has('asset')||changes.has('policy')){
@@ -43,7 +44,9 @@ export class LearnRecordingPlayer extends LightElement {
     }
   }
 
-  disconnectedCallback(){connectedPlayers.delete(this);this.stopAndRelease();super.disconnectedCallback();}
+  disconnectedCallback(){this.releaseAudioPlayer?.();this.releaseAudioPlayer=undefined;this.stopAndRelease();super.disconnectedCallback();}
+
+  private stopPlayback=()=>this.pause();
 
   private stopAndRelease(){
     const media=this.media;
@@ -56,12 +59,18 @@ export class LearnRecordingPlayer extends LightElement {
 
   private async play(){
     if(!this.media||!this.asset||!canPlayLearnAudio(this.asset,this.policy))return;
-    for(const player of connectedPlayers)if(player!==this)player.pause();
+    stopOtherLearnAudioPlayers(this.stopPlayback);
+    if(this.error)this.media.load();
     this.error='';this.loading=true;
     try{await this.media.play();this.loading=false;}
-    catch(reason){this.loading=false;this.playing=false;const failedSource=!!this.media?.error||reason instanceof DOMException&&['NotSupportedError','NetworkError'].includes(reason.name);this.error=failedSource?'A gravação não pôde ser carregada. Verifique a conexão e tente novamente.':'O navegador bloqueou a reprodução. Use o botão para tentar novamente.';}
+    catch(reason){this.loading=false;this.playing=false;const failedSource=!!this.media?.error||reason instanceof DOMException&&['NotSupportedError','NetworkError'].includes(reason.name);this.error=failedSource?'A gravação não pôde ser carregada. Verifique a conexão e tente novamente.':'O navegador bloqueou a reprodução. Use o botão para tentar novamente.';this.dispatchEvent(new CustomEvent('playback-error',{bubbles:true,composed:true}));}
   }
   private pause(){this.media?.pause();this.loading=false;}
+  private stop(){
+    const media=this.media;if(!media)return;
+    media.pause();media.currentTime=0;this.currentTime=0;this.playing=false;this.loading=false;this.completed=false;this.completionSent=false;
+    this.lastAudibleTime=0;this.lastWallTime=performance.now();
+  }
   private async restart(){
     if(!this.media)return;
     this.media.currentTime=0;this.currentTime=0;this.completed=false;this.completionSent=false;await this.play();
@@ -107,7 +116,7 @@ export class LearnRecordingPlayer extends LightElement {
     }
     if(this.repeating){media.currentTime=0;this.completed=false;void this.play();}
   }
-  private onMediaError(){this.loading=false;this.playing=false;this.error='A gravação não pôde ser carregada. Tente novamente mais tarde.';}
+  private onMediaError(){this.loading=false;this.playing=false;this.error='A gravação não pôde ser carregada. Tente novamente mais tarde.';this.dispatchEvent(new CustomEvent('playback-error',{bubbles:true,composed:true}));}
 
   render(){
     const playable=canPlayLearnAudio(this.asset,this.policy),fixture=this.asset?.source==='test-fixture';
@@ -118,8 +127,9 @@ export class LearnRecordingPlayer extends LightElement {
       ${fixture?html`<p class="learn-audio-player__fixture" role="note">Fixture técnico: tom de teste, sem fala. Não é material de estudo.</p>`:html`<p class="learn-audio-player__label">Gravação ${eligible?'validada':'disponível para estudo'}</p>`}
       <audio .src=${this.asset.assetUrl!} preload="none" playsinline @loadedmetadata=${()=>this.onMetadata()} @canplay=${()=>{this.loading=false}} @play=${()=>this.onPlay()} @pause=${()=>this.onPause()} @seeking=${()=>this.onSeek()} @seeked=${()=>this.onSeek()} @timeupdate=${()=>this.onTime()} @ended=${()=>this.onEnded()} @error=${()=>this.onMediaError()}></audio>
       <div class="learn-audio-player__controls">
-        <button class="button" type="button" aria-label="Reproduzir gravação" ?disabled=${this.playing||this.loading} @click=${()=>void this.play()}>${this.loading?'Carregando…':'Reproduzir'}</button>
+        <button class="button" type="button" aria-label=${this.error?'Tentar reproduzir gravação':'Reproduzir gravação'} ?disabled=${this.playing||this.loading} @click=${()=>void this.play()}>${this.loading?'Carregando…':this.error?'Tentar novamente':'Reproduzir'}</button>
         <button class="button" type="button" aria-label="Pausar gravação" ?disabled=${!this.playing} @click=${()=>this.pause()}>Pausar</button>
+        <button class="button" type="button" aria-label="Parar gravação" ?disabled=${!this.playing&&this.currentTime===0} @click=${()=>this.stop()}>Parar</button>
         <button class="button" type="button" aria-label="Reiniciar gravação" ?disabled=${!this.asset.assetUrl||this.loading} @click=${()=>void this.restart()}>Reiniciar</button>
         <button class="button" type="button" aria-label="Repetir gravação" aria-pressed=${this.repeating} @click=${()=>this.repeating=!this.repeating}>${this.repeating?'Repetição ligada':'Repetir'}</button>
       </div>

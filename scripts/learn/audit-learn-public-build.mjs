@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** Fail closed if localhost-only Learn editorial assets are copied into a public build. */
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {existsSync,readFileSync,readdirSync,lstatSync} from 'node:fs';
 import {resolve,relative,join,sep} from 'node:path';
 
@@ -16,7 +17,6 @@ const privatePatterns=[
  /(?:^|\/)evaluation-policy\.json$/i,
  /(?:^|\/)evidence-contract\.json$/i,
  /(?:^|\/)feedback-casebook\.json$/i,
- /(?:^|\/)audio\/|(?:\.(?:mp3|wav|m4a|ogg|flac|webm)$)/i,
 ];
 function paths(folder){
  if(!existsSync(folder))return [];
@@ -30,16 +30,28 @@ export function verifyLearnPublicAssets(rootFolder=ROOT){
  const learnDir=resolve(rootFolder,'learn');
  assert.ok(existsSync(learnDir),'dist/learn ausente');
  const names=paths(learnDir).map(p=>relative(learnDir,p).split(sep).join('/')).sort();
- const expected=[...allowed].sort();
- assert.deepEqual(names,expected,`Publicação indevida de arquivos Learn em dist/learn: ${names.join(', ')}`);
- for(const p of names)assert.ok(!privatePatterns.some(pattern=>pattern.test(p)),`Conteúdo privado em assets: ${p}`);
  const manifest=JSON.parse(readFileSync(resolve(learnDir,'pedagogy-v1/audio-assets.json'),'utf8'));
  assert.equal(manifest.schemaVersion,1);
  assert.equal(manifest.policy.audioAssessmentEnabled,false,'Avaliação auditiva deve estar desativada');
  assert.equal(manifest.policy.validatedRecordings,0);
  assert.ok(manifest.assets.length>0);
+ const studyAudio=manifest.assets.filter(asset=>asset.releaseType==='public-study-only');
+ assert.equal(studyAudio.length,60);
+ assert.equal(studyAudio.filter(asset=>asset.language==='en').length,30);
+ assert.equal(studyAudio.filter(asset=>asset.language==='ru').length,30);
+ const expected=new Set([...allowed,...studyAudio.map(asset=>asset.assetUrl.slice('/learn/'.length))]);
+ assert.deepEqual(names,[...expected].sort(),`Publicação indevida de arquivos Learn em dist/learn: ${names.join(', ')}`);
+ for(const p of names){
+  assert.ok(!privatePatterns.some(pattern=>pattern.test(p)),`Conteúdo privado em assets: ${p}`);
+  if(/\.(?:mp3|wav|m4a|ogg|flac|webm)$/i.test(p))assert.ok(expected.has(p),`Áudio fora da allowlist pública: ${p}`);
+ }
  for(const asset of manifest.assets){
-  assert.equal(asset.assetUrl,null,`Gravação não autorizada em manifesto público: ${asset.id}`);
+  if(asset.releaseType==='public-study-only'){
+   assert.equal(asset.skill,'listening');assert.equal(asset.validationStatus,'technical-passed-study-only');
+   assert.equal(asset.assessmentEnabled,false);assert.match(asset.sha256,/^[a-f0-9]{64}$/i);
+   const file=resolve(learnDir,asset.assetUrl.slice('/learn/'.length));
+   assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),asset.sha256,`SHA divergente ${asset.id}`);
+  }else assert.equal(asset.assetUrl,null,`Gravação privada não autorizada em manifesto público: ${asset.id}`);
   assert.equal(asset.assessmentEnabled,false,`Avaliação auditiva habilitada: ${asset.id}`);
  }
  for(const [name,language] of [['en.json','en'],['ru.json','ru']]){
@@ -47,7 +59,7 @@ export function verifyLearnPublicAssets(rootFolder=ROOT){
   assert.equal(catalog.language,language);
   assert.equal(catalog.exercises.length,237,`Catálogo legado ${language} alterado`);
  }
- for(const forbidden of ['learn/v13/preview.json','learn/v19/preview.json','learn/audio','learn-listening-v13-en.json','learn-listening-v13-ru.json','private/learn-audio-v19']){
+ for(const forbidden of ['learn/v13/preview.json','learn/v19/preview.json','learn-listening-v13-en.json','learn-listening-v13-ru.json','private/learn-audio-v19','private/learn-audio-public']){
   assert.ok(!existsSync(resolve(rootFolder,forbidden)),`Arquivo privado incluído na distribuição: ${forbidden}`);
  }
  const learnBundle=resolve(rootFolder,'learn.js');

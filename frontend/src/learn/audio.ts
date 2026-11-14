@@ -2,6 +2,7 @@ import {html,type PropertyValues} from 'lit';
 import {customElement,property,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
 import {LearnSpeech} from './speech';
+import {registerLearnAudioPlayer,stopOtherLearnAudioPlayers} from './audio-playback';
 import type {Language} from './model';
 
 @customElement('learn-audio')
@@ -19,6 +20,7 @@ export class LearnAudio extends LightElement {
   private speech=new LearnSpeech();
   private generation=0;
   private voiceTimer?:ReturnType<typeof setTimeout>;
+  private releaseAudioPlayer?:()=>void;
   private refresh=()=>{
     const voices=this.speech.allVoices();
     this.available=this.speech.voices(this.language).length>0;
@@ -29,13 +31,16 @@ export class LearnAudio extends LightElement {
 
   connectedCallback(){
     super.connectedCallback();
+    this.releaseAudioPlayer=registerLearnAudioPlayer(this.stopPlayback);
     globalThis.speechSynthesis?.addEventListener('voiceschanged',this.refresh);
     this.refresh();
+    if(!this.speech.supported())queueMicrotask(()=>this.dispatchEvent(new CustomEvent('audio-unavailable',{bubbles:true,composed:true})));
   }
 
   disconnectedCallback(){
     this.generation++;
     clearTimeout(this.voiceTimer);
+    this.releaseAudioPlayer?.();this.releaseAudioPlayer=undefined;
     this.speech.stop();
     globalThis.speechSynthesis?.removeEventListener('voiceschanged',this.refresh);
     super.disconnectedCallback();
@@ -55,16 +60,18 @@ export class LearnAudio extends LightElement {
     this.playing=false;
     this.paused=false;
   }
+  private stopPlayback=()=>this.stop();
 
   private async play(){
     const token=++this.generation;
+    stopOtherLearnAudioPlayers(this.stopPlayback);
     this.error='';
     this.playing=true;
     try{
       await this.speech.play(this.text,this.language,this.rate,this.volume);
       if(token===this.generation&&this.isConnected)this.dispatchEvent(new CustomEvent('heard',{bubbles:true,composed:true,detail:{source:'browser-speech-synthesis',validated:false}}));
     }catch{
-      if(token===this.generation&&this.isConnected)this.error=`Não foi possível reproduzir em ${this.language==='ru'?'russo':'inglês'}. Verifique as vozes do sistema e as configurações de áudio do navegador.`;
+      if(token===this.generation&&this.isConnected){this.error=`Não foi possível reproduzir em ${this.language==='ru'?'russo':'inglês'}. Verifique as vozes do sistema e as configurações de áudio do navegador.`;this.dispatchEvent(new CustomEvent('playback-error',{bubbles:true,composed:true}));}
     }finally{
       if(token===this.generation&&this.isConnected){this.playing=false;this.paused=false;}
     }
