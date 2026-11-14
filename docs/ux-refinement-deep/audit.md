@@ -2,7 +2,7 @@
 
 ## Escopo e critério
 
-Auditoria visual local de 21 rotas, com captura de geometria em 7 larguras (320, 390, 768, 1024, 1366, 1440 e 1920 px) e nos temas claro/escuro: 294 combinações. O relatório mede overflow horizontal do documento; foram observados **0 casos**. Capturas comparáveis estão em `evidence/before/` e `evidence/after/`. A pasta `after/` também contém `metrics.json` e capturas adicionais de telas relevantes.
+Auditoria visual local de 21 rotas. A linha de base registra geometria em 1366 e 390 px nos dois temas (84 combinações); a validação posterior cobre 320, 390, 768, 1024, 1366, 1440 e 1920 px nos dois temas (294 combinações). O relatório mede overflow horizontal do documento: **0 casos** em ambas as amostras. As capturas raster “antes” são parciais (63 imagens: desktop claro/escuro e celular escuro); as capturas “depois” incluem 92 imagens em `evidence/after/`. Não há imagem “antes” em tema claro para celular. Os dois arquivos `metrics.json` registram os respectivos conjuntos de medidas.
 
 As mudanças se limitaram aos problemas que a comparação confirmou. Telas visualmente consistentes foram mantidas sem alterações para preservar o design aprovado.
 
