@@ -88,6 +88,10 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
   .learn-message { margin: 22px 0; padding: 24px; background: var(--panel); border: 1px solid var(--line-soft); border-radius: 10px; }
   .learn-message p { margin-top: 10px; max-width: 75ch; color: var(--secondary); font-size: 14px; line-height: 1.75; }
   .learn-message .button { margin-top: 16px; }
+  .learn-dashboard-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 18px 32px; }
+  .learn-dashboard-insight { min-width: 0; }
+  .learn-dashboard-insight h3 { margin: 0; font-size: 14px; font-weight: 550; }
+  .learn-dashboard-insight p,.learn-dashboard-insight a { display: block; margin: 5px 0 0; color: var(--secondary); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
 
   .learn-filters {
     display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; margin: 22px 0;
@@ -271,6 +275,7 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
     .learn-heading h1 { font-size: 30px; }
     .learn-heading .button { padding-inline: 12px; font-size: 13px; }
     .learn-languages,.learn-word-list,.learn-chart-grid { grid-template-columns: minmax(0,1fr); }
+    .learn-dashboard-summary { grid-template-columns: minmax(0,1fr); gap: 14px; }
     .learn-hub-nav { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .learn-hub-nav .button:last-child { grid-column: 1 / -1; }
     .learn-progress { padding: 20px; }

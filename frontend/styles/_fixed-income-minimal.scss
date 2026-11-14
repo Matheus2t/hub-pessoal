@@ -34,8 +34,9 @@
   background: var(--panel);
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-lg);
-  height: 100%;
+  height: auto;
   min-height: 0;
+  align-self: start;
 }
 .fixed-workspace .rf-minimal .rf-section-header {
   border: 0;
