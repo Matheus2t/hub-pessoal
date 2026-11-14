@@ -60,7 +60,7 @@ test('PRICE and SAC ledger is open and jumps directly to last year',async({page}
  const schedule=Array.from({length:36},(_,i)=>({
   month:i+1,payment:'150.00',interest:'50.00',amortization:'100.00',balance:String(3600-100*(i+1))
  }));
- await page.route(/\\/api\\/finance\\/(price|sac)$/,route=>route.fulfill({status:200,contentType:'application/json',
+ await page.route('**/api/finance/*',route=>route.fulfill({status:200,contentType:'application/json',
   body:JSON.stringify({total_paid:'5400.00',total_interest:'1800.00',first_payment:'150.00',last_payment:'150.00',schedule})
  }));
  for(const path of ['price','sac']){
