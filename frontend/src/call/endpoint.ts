@@ -11,14 +11,23 @@ export function callEndpoint():URL {
  return url;
 }
 
+// In-memory only: a successful public lobby check means the signaler was
+// responsive very recently. Avoid another serial health request on entry.
+let responsiveOrigin='',responsiveUntil=0;
+export function markSignalerResponsive(endpoint:URL){
+ responsiveOrigin=endpoint.origin;responsiveUntil=performance.now()+10000;
+}
+
 /** User-initiated cold-start wait; never an idle keep-alive or background ping. */
 export async function wakeSignaler(endpoint:URL,signal:AbortSignal){
+ signal.throwIfAborted();
+ if(endpoint.origin===responsiveOrigin&&performance.now()<responsiveUntil)return;
  const health=new URL('/call/health',endpoint);health.protocol=endpoint.protocol==='wss:'?'https:':'http:';
  const deadline=performance.now()+90000;
  while(!signal.aborted){
   try{
    const response=await fetch(health,{signal,credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store'});
-   if(response.ok){const body=await response.json();if(body.status==='ok'&&body.mode==='single-process'&&body.media===false)return}
+   if(response.ok){const body=await response.json();if(body.status==='ok'&&body.mode==='single-process'&&body.media===false){markSignalerResponsive(endpoint);return}}
   }catch{if(signal.aborted)throw new DOMException('Cancelled','AbortError')}
   if(performance.now()>=deadline)break;
   await new Promise<void>(resolve=>{const done=()=>{clearTimeout(timer);signal.removeEventListener('abort',done);resolve()},timer=window.setTimeout(done,2000);signal.addEventListener('abort',done,{once:true})});
