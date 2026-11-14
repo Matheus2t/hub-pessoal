@@ -122,14 +122,16 @@ export class SportsCalendar extends LightElement {
       }
       const date=`${month}-${String(number).padStart(2,'0')}`,matches=byDay.get(date)||[];
       const isToday=date===current,isSelected=date===chosen;
+      const details=matches.map(entry=>`${entry.game.home} versus ${entry.game.away}, ${matchTime(entry.game)}`).join('; ');
       const label=`${number} de ${monthTitle}, ${matches.length} ${matches.length===1?'jogo':'jogos'}`;
-      return html`<button type="button" class="sports-month-day" aria-label=${label} aria-pressed=${isSelected} aria-current=${isToday?'date':nothing} data-matches=${matches.length} @click=${()=>this.day=date}>
+      return html`<button type="button" class="sports-month-day" aria-label=${label} aria-description=${details||nothing} title=${details||label} aria-pressed=${isSelected} aria-current=${isToday?'date':nothing} data-matches=${matches.length} @click=${()=>this.day=date}>
        <span class="sports-month-number">${number}</span>
        <span class="sports-month-events" aria-hidden="true">
         ${matches.slice(0,2).map(entry=>html`<span class="sports-month-event"><team-crest .src=${crestFor(entry,'home')}></team-crest><span>${abbreviation(entry.game.home)} × ${abbreviation(entry.game.away)}</span></span>`)}
         ${matches.length>2?html`<span class="sports-month-more">+${matches.length-2} jogos</span>`:nothing}
        </span>
        ${matches.length?html`<span class="sports-month-count" aria-hidden="true">${matches.length}</span>`:nothing}
+       <span class="sports-month-mobile-matches" aria-hidden="true">${matches.slice(0,1).map(entry=>html`<span>${abbreviation(entry.game.home)}–${abbreviation(entry.game.away)}</span>`)}</span>
       </button>`;
      })}
     </div>

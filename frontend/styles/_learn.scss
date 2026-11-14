@@ -166,6 +166,8 @@ learn-daily, learn-dashboard, learn-backup, learn-path { display: block; min-wid
   .learn-audio-options input { flex:0 0 auto; width:18px; height:18px; margin:1px 0 0; accent-color:var(--text); }
   .learn-word .learn-audio { margin: 18px 0 0; padding: 16px 0 0; border: 0; border-top: 1px solid var(--line-soft); background: transparent; border-radius: 0; }
   .learn-feedback { padding: 20px; margin-top: 24px; border-left: 3px solid var(--text); border-radius: 0 8px 8px 0; background: var(--raised); text-align: left; }
+  .learn-feedback[data-outcome="incorrect"] { border-left-style: double; border-left-width: 5px; }
+  .learn-feedback[data-outcome="uncertain"] { border-left-style: dashed; border-left-color: var(--secondary); }
   .learn-feedback strong { display: block; font-size: 16px; font-weight: 550; }
   .learn-feedback p { margin: 12px 0; font-size: 15px; line-height: 1.75; }
   .learn-feedback .button { margin-top: 10px; }

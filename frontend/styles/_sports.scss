@@ -389,12 +389,16 @@ sports-calendar .sports-agenda-refresh { min-height:38px; padding:7px 12px; font
  sports-calendar .sports-month-day[data-matches="0"] { background:var(--panel); }
  sports-calendar .sports-month-events { display:none; }
  sports-calendar .sports-month-count { display:grid; place-items:center; width:20px; height:20px; border-radius:4px; background:var(--panel); border:1px solid var(--line); color:var(--text); font-size:10px; font-weight:650; }
+ sports-calendar .sports-month-mobile-matches { display:block; overflow:hidden; color:var(--secondary); font-size:7px; font-weight:600; line-height:1.2; white-space:nowrap; text-overflow:clip; }
  sports-calendar .sports-calendar-detail { padding:15px; }
  sports-calendar .sports-calendar-detail-heading h2 { font-size:18px; }
  sports-calendar .sports-agenda-game { grid-template-columns:minmax(0,1fr) auto; gap:8px 12px; padding:15px 3px; }
  sports-calendar .sports-agenda-game > time { grid-column:1/-1; display:flex; gap:11px; }
  sports-calendar .sports-agenda-opponents strong { font-size:12px; }
  sports-calendar .sports-agenda-opponents team-crest img { width:18px; height:18px; }
+}
+@media(min-width:481px) {
+ sports-calendar .sports-month-mobile-matches { display:none; }
 }
 @media(prefers-reduced-motion:reduce) {
  sports-calendar .sports-month-day, sports-calendar .sports-agenda-tabs .button, sports-calendar .sports-team-filters .button { transition:none; }
