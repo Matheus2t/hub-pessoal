@@ -7,6 +7,30 @@ test("Catálogo lista os dez jogos", async ({ page }) => {
   await expect(page.locator("arcade-sudoku .arcade-sudoku .sudoku-cell")).toHaveCount(81);
 });
 
+test('páginas de jogo identificam o título e mantêm retorno para Games', async ({page}) => {
+  const games=[['snake','Snake'],['sudoku','Sudoku'],['2048','2048'],['breakout','Breakout'],['pong','Pong'],['palavra-secreta','Termo'],['digitacao','Digitação'],['jogo-da-velha','Jogo da Velha'],['reflexos','Reflexos'],['memoria','Memória']];
+  for(const [slug,name] of games){
+    await page.goto('/#/games/'+slug);
+    await expect(page).toHaveTitle(`${name} · Games · 2T`);
+    const crumbs=page.getByRole('navigation',{name:'Caminho da página'});
+    await expect(crumbs.getByRole('link',{name:'Games'})).toHaveAttribute('href','#/games');
+    await expect(crumbs.locator('[aria-current="page"]')).toHaveText(name);
+  }
+});
+
+for(const width of [320,390,768,1024,1366,1920])for(const theme of ['dark','light']){
+ test(`Games directory wraps categories at ${width}px (${theme})`,async({page})=>{
+  await page.setViewportSize({width,height:900});await page.goto('/#/games');
+  await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
+  await expect(page.locator('.arcade-tile')).toHaveCount(10);
+  await expect(page.getByRole('group',{name:'Filtrar jogos por categoria'}).getByRole('button',{name:'Habilidade'})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  for(const tab of await page.locator('.arcade-category-tabs button').all()){
+    const box=await tab.boundingBox();expect(box).not.toBeNull();expect(box!.x+box!.width).toBeLessThanOrEqual(width+1);
+  }
+ });
+}
+
 test("Todas as páginas de jogos carregam", async ({ page }) => {
   for (const slug of ["snake","sudoku","2048","breakout","pong","palavra-secreta","digitacao","jogo-da-velha","reflexos","memoria"]) {
     await page.goto("/#/games/" + slug);
