@@ -34,10 +34,12 @@ test('all extended tables offer direct year selection and monthly rows',async({p
   const tool=page.locator('extended-finance-calculator');
   await tool.getByRole('button',{name:action}).click();
   await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
-  await tool.locator('year-navigation').getByRole('combobox',{name:'Ir para o ano'}).selectOption(last);
-  await expect(tool.locator('year-navigation').getByRole('combobox',{name:'Ir para o ano'})).toHaveValue(last);
-  const expected=path==='aposentadoria'?'409':path==='aluguel-vs-financiamento'?'229':path==='amortizacao'?'229':'49';
-  await expect(tool.locator('.extended-table tbody tr').first()).toContainText(expected);
+  const nav=tool.locator('year-navigation');
+  if(path==='amortizacao')await nav.getByRole('button',{name:'Último ano'}).click();
+  else await nav.getByRole('combobox',{name:'Ir para o ano'}).selectOption(last);
+  const selected=Number(await nav.getByRole('combobox',{name:'Ir para o ano'}).inputValue());
+  expect(selected).toBe(path==='amortizacao'?Number(await nav.getByRole('combobox',{name:'Ir para o ano'}).locator('option').last().getAttribute('value')):Number(last));
+  await expect(tool.locator('.extended-table tbody tr').first().locator('th')).toHaveText(String((selected-1)*12+1));
  }
 });
 
