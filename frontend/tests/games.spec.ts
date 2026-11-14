@@ -21,7 +21,7 @@ test("Tabuleiros, campos e botões principais aparecem", async ({ page }) => {
   await page.goto("/#/games/sudoku");
   await expect(page.locator(".arcade-sudoku .sudoku-cell")).toHaveCount(81);
   await page.goto("/#/games/palavra-secreta");
-  await expect(page.locator(".arcade-letters button")).toHaveCount(26);
+  await expect(page.locator(".termo-keyboard .termo-key")).toHaveCount(26);
   await page.goto("/#/games/jogo-da-velha");
   await expect(page.locator(".arcade-tic-board button")).toHaveCount(9);
   await page.locator(".arcade-tic-board button").first().click();
@@ -67,4 +67,54 @@ test("Layouts Games sem rolagem horizontal no celular e desktop", async ({ page 
       expect(overflow, `overflow no game ${slug || "catálogo"} em ${width}px`).toBeLessThanOrEqual(2);
     }
   }
+});
+
+test("TERMO tem 6 linhas, teclado e feedback por posição", async ({page}) => {
+  await page.addInitScript(() => { Math.random = () => 0; });
+  await page.goto("/#/games/palavra-secreta");
+  await expect(page.locator(".termo-row")).toHaveCount(6);
+  await expect(page.locator(".termo-cell")).toHaveCount(30);
+  for (const letter of ["L","I","V","R","O"]) {
+    await page.getByRole("button",{name:"Letra "+letter,exact:true}).click();
+  }
+  await page.getByRole("button",{name:"Confirmar"}).click();
+  await expect(page.locator(".termo-row").first().locator(".is-correct")).toHaveCount(5);
+  await expect(page.locator(".termo-result")).toContainText("LIVRO");
+  await page.getByRole("button",{name:"Nova palavra"}).click();
+  await expect(page.locator(".termo-result")).toHaveCount(0);
+});
+
+test("2048 combina valores e pode desfazer", async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.removeItem("2t.games.2048.session.v2");
+    Math.random = () => 0;
+  });
+  await page.goto("/#/games/2048");
+  await expect(page.locator(".g2048-grid .tile")).toHaveCount(16);
+  await expect(page.locator(".g2048-grid .tile").first()).toHaveText("2");
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator(".g2048-grid .tile").first()).toHaveText("4");
+  await expect(page.locator(".g2048-scorebar").first()).toContainText("4");
+  await page.getByRole("button",{name:"Desfazer movimento"}).click();
+  await expect(page.locator(".g2048-grid .tile").first()).toHaveText("2");
+});
+
+test("Memória tem prévia e inicia com cartas fechadas", async ({page}) => {
+  await page.goto("/#/games/memoria");
+  await expect(page.locator(".memory-grid .memory-card")).toHaveCount(16);
+  await page.getByRole("button",{name:"Começar partida"}).click();
+  await expect(page.locator(".memory-grid .is-face-up")).toHaveCount(16);
+  await expect(page.locator(".memory-board-message")).toHaveCount(0,{timeout:5000});
+  await page.locator(".memory-grid .memory-card").first().click();
+  await expect(page.locator(".memory-grid .is-face-up")).toHaveCount(1);
+  await page.getByRole("button",{name:"Reiniciar"}).click();
+  await expect(page.getByRole("button",{name:"Começar partida"})).toBeVisible();
+});
+
+test("Sudoku destaca contexto e mostra progresso",async ({page})=>{
+  await page.goto("/#/games/sudoku");
+  await expect(page.locator(".sudoku-progress-track")).toBeVisible();
+  await page.locator(".arcade-sudoku .sudoku-cell").nth(12).click();
+  await expect(page.locator(".arcade-sudoku .sudoku-cell").nth(12)).toHaveClass(/selected/);
+  expect(await page.locator(".arcade-sudoku .sudoku-cell.related").count()).toBeGreaterThan(10);
 });

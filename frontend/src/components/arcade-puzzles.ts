@@ -76,89 +76,9 @@ export class ArcadeSudoku extends LightElement {
   private hint(){if(this.finished)return;const free=this.board.map((v,i)=>v!==this.solution[i]&&this.initial[i]===0?i:-1).filter(i=>i>=0);if(!free.length)return;this.selected=pick(free);this.input(this.solution[this.selected]);}
   render(){return html`<section class="arcade-game">${gameHeader("sudoku","Preencha cada linha, coluna e quadrante com os números de 1 a 9.")}
     <div class="arcade-toolbar"><label>Dificuldade <select .value=${String(this.difficulty)} @change=${(e:Event)=>{this.difficulty=Number((e.target as HTMLSelectElement).value);this.newPuzzle();}}><option value="0">Fácil</option><option value="1">Médio</option><option value="2">Difícil</option></select></label><span>Tempo: ${Math.floor(this.seconds/60)}:${String(this.seconds%60).padStart(2,"0")}</span><span>Erros: ${this.mistakes}</span><button @click=${()=>this.newPuzzle()}>Novo jogo</button><button @click=${()=>this.hint()} ?disabled=${this.finished}>Dica</button></div>
-    <div class="arcade-sudoku-wrap"><div class="arcade-sudoku" role="group" aria-label="Tabuleiro Sudoku">${this.board.map((v,i)=>html`<button type="button" class=${`sudoku-cell ${i===this.selected?"selected":""} ${this.initial[i]?"given":""} ${v&&v!==this.solution[i]?"wrong":""} ${i%3===2?"end-col":""} ${Math.floor(i/9)%3===2?"end-row":""}`} @click=${()=>this.selected=i} aria-label=${`Linha ${Math.floor(i/9)+1}, coluna ${i%9+1}, ${v||"vazio"}`} aria-pressed=${i===this.selected}>${v||""}</button>`)}</div>
+    <div class="arcade-sudoku-wrap"><div class="sudoku-progress-top"><span>PROGRESSO DO TABULEIRO</span><strong>${this.board.filter(v=>v!==0).length} / 81</strong></div><div class="sudoku-progress-track"><span style=${"width:"+Math.round(this.board.filter(Boolean).length/81*100)+"%"}></span></div><div class="arcade-sudoku" role="group" aria-label="Tabuleiro Sudoku">${this.board.map((v,i)=>{const sr=Math.floor(this.selected/9),sc=this.selected%9,r=Math.floor(i/9),col=i%9;const related=this.selected>=0&&(r===sr||col===sc||(Math.floor(r/3)===Math.floor(sr/3)&&Math.floor(col/3)===Math.floor(sc/3)));const sameDigit=this.selected>=0&&!!this.board[this.selected]&&v===this.board[this.selected];const classes=["sudoku-cell",i===this.selected?"selected":"",this.initial[i]?"given":"",v&&v!==this.solution[i]?"wrong":"",i%3===2?"end-col":"",r%3===2?"end-row":"",related?"related":"",sameDigit?"same-digit":""];return html`<button type="button" class=${classes.filter(Boolean).join(" ")} @click=${()=>this.selected=i} aria-label=${`Linha ${r+1}, coluna ${col+1}, ${v||"vazio"}`} aria-pressed=${i===this.selected}>${v||""}</button>`;})}</div>
     <div class="sudoku-numbers">${[1,2,3,4,5,6,7,8,9,0].map(n=>html`<button @click=${()=>this.input(n)}> ${n||"⌫"} </button>`)}</div></div>
     <p class="arcade-status" role="status">${this.finished?"Sudoku completo! Tempo registrado no seu navegador.":"Selecione uma casa e digite um número. As casas incorretas ficam marcadas."}</p>
-  </section>`;}
-}
-
-const mergeLine=(line:number[])=>{
-  const packed=line.filter(x=>x!==0),out:number[]=[];let points=0;
-  for(let i=0;i<packed.length;i++){if(packed[i]===packed[i+1]){out.push(packed[i]*2);points+=packed[i]*2;i++;}else out.push(packed[i]);}
-  while(out.length<4)out.push(0);
-  return {out,points};
-};
-@customElement("arcade-2048")
-export class Arcade2048 extends LightElement {
-  @state() private board=Array(16).fill(0) as number[];
-  @state() private score=0;
-  @state() private status="playing";
-  @state() private best=0;
-  private touch:{x:number;y:number}|null=null;
-  connectedCallback(){super.connectedCallback();this.best=Number(localStorage.getItem("2t.games.2048.best")||0)||0;this.reset();window.addEventListener("keydown",this.onKey);}
-  disconnectedCallback(){window.removeEventListener("keydown",this.onKey);super.disconnectedCallback();}
-  private spawn(board:number[]):number[]{const free=board.map((v,i)=>v===0?i:-1).filter(i=>i>=0);if(free.length)board[pick(free)]=Math.random()<.9?2:4;return board;}
-  private reset(){this.board=this.spawn(this.spawn(Array(16).fill(0) as number[]));this.score=0;this.status="playing";}
-  private move(dir:string){
-    if(this.status!=="playing")return;
-    const next=[...this.board];let gained=0;
-    for(let line=0;line<4;line++){
-      const indices=Array.from({length:4},(_,n)=>dir==="left"?line*4+n:dir==="right"?line*4+(3-n):dir==="up"?n*4+line:(3-n)*4+line);
-      const result=mergeLine(indices.map(i=>this.board[i]));gained+=result.points;
-      indices.forEach((i,n)=>next[i]=result.out[n]);
-    }
-    if(same(next,this.board))return;
-    this.board=this.spawn(next);this.score+=gained;
-    if(this.score>this.best){this.best=this.score;try{localStorage.setItem("2t.games.2048.best",String(this.best));}catch{/* storage optional */}}
-    if(this.board.includes(2048)){this.status="won";saveGame("2048",this.score);}
-    else if(!this.board.some(v=>v===0)&&!this.board.some((v,i)=>i%4<3&&v===this.board[i+1]||i<12&&v===this.board[i+4])){this.status="lost";saveGame("2048",this.score);}
-  }
-  private onKey=(e:KeyboardEvent)=>{
-    if((e.target as HTMLElement)?.closest("input,textarea,select"))return;
-    const dirs:Record<string,string>={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",s:"down",a:"left",d:"right"};
-    if(dirs[e.key]){e.preventDefault();this.move(dirs[e.key]);}
-  };
-  private touchStart(e:TouchEvent){this.touch={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};}
-  private touchEnd(e:TouchEvent){if(!this.touch)return;const dx=e.changedTouches[0].clientX-this.touch.x,dy=e.changedTouches[0].clientY-this.touch.y;this.touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;this.move(Math.abs(dx)>Math.abs(dy)?dx>0?"right":"left":dy>0?"down":"up");}
-  render(){return html`<section class="arcade-game">${gameHeader("2048","Deslize para combinar números iguais. Alcance a peça 2048.")}
-    <div class="arcade-toolbar"><span>Pontuação <strong>${this.score}</strong></span><span>Recorde <strong>${this.best}</strong></span><button @click=${()=>this.reset()}>Novo jogo</button></div>
-    <div class="arcade-2048" @touchstart=${(e:TouchEvent)=>this.touchStart(e)} @touchend=${(e:TouchEvent)=>this.touchEnd(e)} role="grid" aria-label="Tabuleiro de 2048">${this.board.map(v=>html`<div class=${`tile tile-${v}`} role="gridcell">${v||""}</div>`)}</div>
-    <div class="arcade-pad"><button @click=${()=>this.move("up")}>↑</button><div><button @click=${()=>this.move("left")}>←</button><button @click=${()=>this.move("down")}>↓</button><button @click=${()=>this.move("right")}>→</button></div></div>
-    <p class="arcade-status" role="status">${this.status==="won"?"Você alcançou 2048! Parabéns.":this.status==="lost"?"Sem movimentos disponíveis. Inicie outra partida.":"Use as setas, WASD ou deslize no celular."}</p>
-  </section>`;}
-}
-
-const WORDS:{hint:string;word:string}[][]=[
- [{word:"CASA",hint:"Moradia"},{word:"LIVRO",hint:"Leitura"},{word:"GATO",hint:"Animal"},{word:"PRAIA",hint:"Litoral"},{word:"FRUTA",hint:"Alimento"},{word:"NUVEM",hint:"Céu"},{word:"PORTA",hint:"Entrada"},{word:"CHUVA",hint:"Clima"},{word:"ESCOLA",hint:"Ensino"},{word:"JARDIM",hint:"Plantas"}],
- [{word:"TECLADO",hint:"Computador"},{word:"GIRASSOL",hint:"Flor"},{word:"PLANETA",hint:"Astronomia"},{word:"CADERNO",hint:"Estudo"},{word:"FLORESTA",hint:"Natureza"},{word:"CIENCIA",hint:"Conhecimento"},{word:"PROGRAMA",hint:"Software"},{word:"CONQUISTA",hint:"Resultado"},{word:"HORIZONTE",hint:"Paisagem"},{word:"BIBLIOTECA",hint:"Livros"}],
- [{word:"CRIPTOGRAFIA",hint:"Segurança digital"},{word:"BIODIVERSIDADE",hint:"Ecologia"},{word:"PROBABILIDADE",hint:"Matemática"},{word:"ARQUEOLOGIA",hint:"História"},{word:"MICROPROCESSADOR",hint:"Computação"},{word:"METAMORFOSE",hint:"Transformação"},{word:"ASTRONOMIA",hint:"Universo"},{word:"INCONSTITUCIONAL",hint:"Direito"},{word:"SUSTENTABILIDADE",hint:"Meio ambiente"},{word:"INTEROPERABILIDADE",hint:"Sistemas"}]
-];
-@customElement("arcade-words")
-export class ArcadeWords extends LightElement {
-  @state() private level=0;
-  @state() private round=0;
-  @state() private entry=WORDS[0][0];
-  @state() private guessed:string[]=[];
-  @state() private status="playing";
-  private used=new Set<string>();
-  connectedCallback(){super.connectedCallback();this.newRound();window.addEventListener("keydown",this.onKey);}
-  disconnectedCallback(){window.removeEventListener("keydown",this.onKey);super.disconnectedCallback();}
-  private newRound(){
-    const choices=WORDS[this.level].filter(w=>!this.used.has(w.word));
-    if(!choices.length)this.used.clear();
-    this.entry=pick(choices.length?choices:WORDS[this.level]);this.used.add(this.entry.word);
-    this.guessed=[];this.status="playing";
-  }
-  private get misses(){return this.guessed.filter(c=>!this.entry.word.includes(c)).length;}
-  private get solved(){return [...this.entry.word].every(c=>this.guessed.includes(c));}
-  private guess(c:string){if(this.status!=="playing"||this.guessed.includes(c))return;this.guessed=[...this.guessed,c];if(this.solved){this.status="won";saveGame("palavra-secreta",(this.level+1)*100-this.misses*12);}else if(this.misses>=6){this.status="lost";saveGame("palavra-secreta",0);}}
-  private onKey=(e:KeyboardEvent)=>{if((e.target as HTMLElement)?.closest("input,textarea,select"))return;const c=e.key.toUpperCase();if(/^[A-Z]$/.test(c))this.guess(c);};
-  private setLevel(level:number){this.level=level;this.round=0;this.used.clear();this.newRound();}
-  render(){return html`<section class="arcade-game">${gameHeader("palavra-secreta","Descubra a palavra antes de esgotar seis tentativas.")}
-    <div class="arcade-toolbar"><label>Nível <select .value=${String(this.level)} @change=${(e:Event)=>this.setLevel(Number((e.target as HTMLSelectElement).value))}><option value="0">Fácil</option><option value="1">Médio</option><option value="2">Difícil</option></select></label><span>Erros: ${this.misses}/6</span><span>Palavra ${Math.min(this.used.size,10)}/10</span><button @click=${()=>this.newRound()}>Outra palavra</button></div>
-    <div class="arcade-word-panel"><p>Dica: <strong>${this.entry.hint}</strong></p><div class="arcade-word" aria-label="Palavra a descobrir">${[...this.entry.word].map(c=>html`<span>${this.guessed.includes(c)||this.status==="lost"?c:""}</span>`)}</div>
-    <div class="arcade-letters">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(c=>html`<button ?disabled=${this.guessed.includes(c)||this.status!=="playing"} class=${this.guessed.includes(c)?this.entry.word.includes(c)?"correct":"incorrect":""} @click=${()=>this.guess(c)}>${c}</button>`)}</div>
-    <p class="arcade-status" role="status">${this.status==="won"?"Acertou! Escolha outra palavra ou mude de nível.":this.status==="lost"?`Fim de jogo. A resposta era ${this.entry.word}.`:"Selecione as letras ou use o teclado."}</p></div>
   </section>`;}
 }
 
@@ -208,40 +128,3 @@ export class ArcadeTic extends LightElement {
   </section>`;}
 }
 
-const ICONS=["●","◆","▲","■","★","✦","♣","♥","☀","☯","♫","⌘"];
-@customElement("arcade-memory")
-export class ArcadeMemory extends LightElement {
-  @state() private difficulty=1;
-  @state() private deck:string[]=[];
-  @state() private revealed:number[]=[];
-  @state() private matched:number[]=[];
-  @state() private moves=0;
-  @state() private seconds=0;
-  @state() private complete=false;
-  private timer:ReturnType<typeof setInterval>|undefined;
-  private hideTimer:ReturnType<typeof setTimeout>|undefined;
-  connectedCallback(){super.connectedCallback();this.reset();}
-  disconnectedCallback(){clearInterval(this.timer);clearTimeout(this.hideTimer);super.disconnectedCallback();}
-  private get pairs(){return [4,8,12][this.difficulty];}
-  private reset(){
-    clearTimeout(this.hideTimer);clearInterval(this.timer);
-    const icons=shuffle(ICONS).slice(0,this.pairs);
-    this.deck=shuffle([...icons,...icons]);this.revealed=[];this.matched=[];this.moves=0;this.seconds=0;this.complete=false;
-    this.timer=setInterval(()=>{if(!this.complete)this.seconds++;},1000);
-  }
-  private flip(i:number){
-    if(this.complete||this.matched.includes(i)||this.revealed.includes(i)||this.revealed.length>=2)return;
-    const next=[...this.revealed,i];this.revealed=next;
-    if(next.length!==2)return;
-    this.moves++;
-    if(this.deck[next[0]]===this.deck[next[1]]){
-      const matched=[...this.matched,...next];this.matched=matched;this.revealed=[];
-      if(matched.length===this.deck.length){this.complete=true;clearInterval(this.timer);saveGame("memoria",Math.max(1,1200-this.moves*20-this.seconds));}
-    }else this.hideTimer=setTimeout(()=>{this.revealed=[];},850);
-  }
-  render(){return html`<section class="arcade-game">${gameHeader("memoria","Encontre todos os pares usando menos movimentos e tempo.")}
-    <div class="arcade-toolbar"><label>Dificuldade <select .value=${String(this.difficulty)} @change=${(e:Event)=>{this.difficulty=Number((e.target as HTMLSelectElement).value);this.reset();}}><option value="0">Fácil · 4 pares</option><option value="1">Médio · 8 pares</option><option value="2">Difícil · 12 pares</option></select></label><span>Movimentos: ${this.moves}</span><span>Tempo: ${this.seconds}s</span><button @click=${()=>this.reset()}>Reiniciar</button></div>
-    <div class="arcade-memory-board" role="group" aria-label="Cartas de memória">${this.deck.map((v,i)=>html`<button class=${this.revealed.includes(i)||this.matched.includes(i)?"face-up":""} ?disabled=${this.matched.includes(i)} @click=${()=>this.flip(i)} aria-label=${`Carta ${i+1}, ${this.revealed.includes(i)||this.matched.includes(i)?v:"virada"}`}>${this.revealed.includes(i)||this.matched.includes(i)?v:"?"}</button>`)}</div>
-    <p class="arcade-status" role="status">${this.complete?`Concluído em ${this.moves} movimentos e ${this.seconds} segundos!`:"Vire duas cartas e encontre o par."}</p>
-  </section>`;}
-}
