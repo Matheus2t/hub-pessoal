@@ -3,6 +3,7 @@
 import {existsSync,readdirSync,readFileSync,statSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {verifyLearnPublicAssets} from './audit-learn-public-build.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const errors=[];
@@ -65,7 +66,15 @@ if(process.argv.includes('--check-dist')){
     const files=[];
     const walk=dir=>{for(const name of readdirSync(dir)){const file=resolve(dir,name);if(statSync(file).isDirectory())walk(file);else files.push(file)}};
     walk(dist);
-    for(const file of files)if(/\.mp3$/i.test(file)||/learn-ditados-v14-(en|ru)\.json$/i.test(file))fail('bundle','áudio ou fonte editorial privada foi incluída no dist');
+    let allowedPublicAudio=new Set();
+    try{
+      const publicAudit=verifyLearnPublicAssets(dist);
+      allowedPublicAudio=new Set(publicAudit.files.filter(file=>/\.mp3$/i.test(file)).map(file=>resolve(dist,'learn',file)));
+    }catch(error){fail('dist',`ativos públicos do Learn inválidos: ${error instanceof Error?error.message:String(error)}`)}
+    for(const file of files){
+      if(/\.mp3$/i.test(file)&&!allowedPublicAudio.has(file))fail('bundle','áudio não autorizado incluído no dist');
+      if(/learn-ditados-v14-(en|ru)\.json$/i.test(file))fail('bundle','fonte editorial privada foi incluída no dist');
+    }
     const frontend=resolve(root,'frontend'),sourceFiles=[];
     const walkSource=dir=>{for(const name of readdirSync(dir)){const file=resolve(dir,name);if(statSync(file).isDirectory())walkSource(file);else sourceFiles.push(file)}};
     walkSource(frontend);
