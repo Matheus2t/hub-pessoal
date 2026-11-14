@@ -680,9 +680,11 @@ call-page[hidden] { display:none !important; }
   .call-join-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
+    align-items: start;
     margin-bottom: 24px;
     .call-channel-panel, .call-private-panel {
-      min-height: 292px;
+      min-height: 0;
+      align-self: start;
       padding: clamp(22px, 2.5vw, 30px);
       border: 1px solid var(--line-soft);
       border-radius: 7px;
