@@ -29,6 +29,13 @@ panel-workspace { display: block; min-width: 0; }
  .workspace-panel .panel { border: 0; background: transparent; padding: 0; }
  .workspace-panel .metrics-grid { margin: 0; }
 }
+.ws-grid[data-area="calculator-compound"] .ws-cell[data-panel="empty"] { align-self: stretch; }
+.calculator-workspace .calculator-empty {
+  display: grid;
+  place-content: center;
+  min-height: 100%;
+  text-align: center;
+}
 @media(max-width:900px) { .workspace-v2 .ws-cell { grid-column: 1/-1 !important; grid-row: auto !important; } }
 @media(max-width:600px) { .workspace-v2 { .ws-toolbar { flex-wrap: wrap; } .ws-options li { align-items: start; } .ws-module-actions { width: 100%; margin-left: 0; } .ws-config { padding: 16px; } .workspace-panel { padding: 16px; } } }
 

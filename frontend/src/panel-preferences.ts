@@ -1,6 +1,6 @@
 export type PanelMode='essential'|'complete'|'custom';
 export type PanelSize='small'|'medium'|'large';
-export interface PanelDefinition {id:string;title:string;required?:boolean;essential?:boolean;available?:boolean;size?:PanelSize;resizable?:boolean;role?:'form'|'chart';hint?:string}
+export interface PanelDefinition {id:string;title:string;required?:boolean;essential?:boolean;available?:boolean;size?:PanelSize;resizable?:boolean;role?:'form'|'chart';rowSpan?:number;hint?:string}
 export interface PanelState {id:string;visible:boolean;size:PanelSize}
 export interface PanelPreferences {version:1;mode:PanelMode;panels:PanelState[]}
 export interface PreferenceStorage {getItem(key:string):string|null;setItem(key:string,value:string):void}
