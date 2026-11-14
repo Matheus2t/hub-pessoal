@@ -19,7 +19,8 @@ test('retirement zero-rate example and invalid ages', async ({ page }) => {
   await tool.getByLabel('Idade atual').fill('30');
   await tool.getByLabel('Idade de aposentadoria').fill('31');
   await tool.getByLabel('Patrimônio já investido').fill('1.000,00');
-  await tool.getByLabel('Aporte mensal').fill('100,00');
+  await tool.getByRole('button',{name:'Quero testar um aporte'}).click();
+  await tool.getByLabel('Aporte mensal que pretendo investir').fill('100,00');
   await tool.getByLabel('Renda mensal desejada, de hoje').fill('100');
   await tool.locator('summary').click();
   await tool.getByLabel('Rentabilidade efetiva anual').fill('0');
@@ -27,7 +28,7 @@ test('retirement zero-rate example and invalid ages', async ({ page }) => {
   await tool.getByLabel('Taxa anual de retirada').fill('4');
   await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
   await expect(tool.locator('.metric-card').first()).toContainText('2.200,00');
-  await expect(tool.locator('tbody tr')).toHaveCount(2);
+  await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
   await tool.getByLabel('Idade de aposentadoria').fill('30');
   await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
   await expect(tool.getByText('Precisa ser maior que a idade atual.')).toBeVisible();
@@ -61,7 +62,7 @@ test('CLT shows annual provisions once and switches tax regime', async ({ page }
   await tool.getByRole('button',{name:'Calcular custo CLT'}).click();
   await expect(tool.locator('.metric-card').first()).toContainText('3.600,00');
   await expect(tool.locator('.metric-card').nth(1)).toContainText('43.200,00');
-  await expect(tool.locator('tbody tr')).toHaveCount(8);
+  await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
 });
 
 test('housing compare uses same capital and monthly cashflow', async ({ page }) => {
@@ -70,7 +71,9 @@ test('housing compare uses same capital and monthly cashflow', async ({ page }) 
   await tool.getByLabel('Horizonte da comparação').fill('2');
   await tool.getByRole('button',{name:'Comparar cenários'}).click();
   await expect(tool.locator('.metric-card')).toHaveCount(3);
-  await expect(tool.locator('tbody tr')).toHaveCount(2);
+  await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
+  await tool.locator('year-navigation').getByRole('combobox',{name:'Ir para o ano'}).selectOption('2');
+  await expect(tool.locator('.extended-table tbody tr').first()).toContainText('13');
   await expect(tool.locator('svg[role=img]')).toBeVisible();
 });
 

@@ -11,7 +11,7 @@ for (const width of [1366, 390]) {
       await tool.getByRole('button', { name: 'Calcular', exact: true }).click();
       expect((await response).status()).toBe(200);
       await expect(tool.locator('metric-card').first()).toContainText(expected);
-      await tool.locator('summary').click();
+      if (path === 'juros-simples') await tool.locator('results-table summary').click();
       await expect(tool.locator('tbody tr')).toHaveCount(3);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await page.evaluate(() => window.scrollTo(0, 0));
@@ -38,7 +38,6 @@ test('catalog search, annual units and invalid period', async ({ page }) => {
   await tool.getByLabel('Prazo', { exact: true }).fill('1');
   await tool.getByRole('button', { name: 'Calcular', exact: true }).click();
   await expect(tool.locator('metric-card').first()).toContainText('1.000,00');
-  await tool.locator('summary').click();
   await expect(tool.locator('tbody tr')).toHaveCount(12);
 });
 

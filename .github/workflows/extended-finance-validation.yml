@@ -3,6 +3,12 @@ on:
   pull_request:
     paths:
       - 'frontend/src/extended-finance.ts'
+      - 'frontend/src/components/year-navigation.ts'
+      - 'frontend/src/components/results-table.ts'
+      - 'frontend/src/components/finance-calculator.ts'
+      - 'frontend/styles/_finance.scss'
+      - 'frontend/tests/finance.spec.ts'
+      - 'frontend/tests/calculator-improvements.spec.ts'
       - 'frontend/src/components/extended-finance-calculator.ts'
       - 'frontend/src/catalog.ts'
       - 'frontend/src/components/app-shell.ts'
@@ -26,8 +32,8 @@ jobs:
         run: npx playwright install chromium
       - name: Serve build
         run: python3 -m http.server 8123 --directory dist >/tmp/2t-finance.log 2>&1 &
-      - name: Four extended calculator journeys
+      - name: Calculator journeys and direct year navigation
         env:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
-        run: npx playwright test frontend/tests/extended-finance.spec.ts
+        run: npx playwright test frontend/tests/extended-finance.spec.ts frontend/tests/calculator-improvements.spec.ts
