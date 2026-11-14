@@ -643,7 +643,7 @@ export class CallPage extends LightElement {
   `:html`<header><div><span class="call-kicker">2T / COMUNICAÇÃO</span><h1>Call</h1></div><span class="call-badge">CONVERSAS PRIVADAS · 5 PESSOAS</span></header>
 
   ${isLanding?html`<div class="call-join-grid" aria-label="Escolha como entrar">
-   <section class="call-channel-panel" aria-label="Sala Permanente">
+   <section class="call-channel-panel" aria-label="Sala Permanente" aria-busy=${this.channelLoading}>
     
     <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Acesso pelo link do canal.</p></div>
     ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
@@ -682,7 +682,7 @@ export class CallPage extends LightElement {
    ${this.voice.active?this.deafenControl():nothing}
    <button class="call-control-camera" type="button" aria-pressed=${!!this.capture.camera} ?disabled=${this.cameraDisabled} @click=${()=>this.capture.toggleCamera()}>${this.cameraLabel}</button>
    <button class="call-control-screen" type="button" aria-pressed=${!!this.capture.screen} ?disabled=${this.voice.active&&this.call.state!=='connected'} @click=${()=>this.capture.toggleScreen()}>${this.capture.screenBusy?'Cancelar seleção de tela':this.capture.screen?'Parar compartilhamento':'Compartilhar tela'}</button>
-   ${this.voice.active?html`<div class="call-share-quality" role="group" aria-label="Qualidade de compartilhamento">
+   ${this.voice.active?html`<details class="call-share-settings"><summary>Configurações de transmissão</summary><div class="call-share-quality" role="group" aria-label="Qualidade de compartilhamento">
     <label>O que compartilhar
      <select aria-label="Fonte da transmissão" .value=${this.capture.source}
       ?disabled=${!!this.capture.screen||this.capture.screenBusy}
@@ -710,7 +710,7 @@ export class CallPage extends LightElement {
      this.capture.source==='window'?
      'Se o jogo desaparecer ao alternar para o Chrome, use Janela sem bordas nas configurações do jogo ou escolha Uma das telas. Jogos em tela cheia exclusiva podem não aparecer.':
      'Selecione a guia desejada no Chrome. O áudio da guia depende do navegador.'}</p>
-   </div>`:nothing}
+   </div></details>`:nothing}
    <button class="call-control-secondary" type="button" ?disabled=${!this.microphone&&!this.capture.screen&&!this.micBusy&&!this.capture.screenBusy&&!this.capture.camera&&!this.capture.cameraBusy} @click=${this.release}>Desligar toda mídia</button>
    ${this.capture.canFlip?html`<button class="call-control-secondary" type="button" ?disabled=${this.cameraDisabled||this.capture.cameraBusy} @click=${()=>this.capture.flipCamera()}>Alternar câmera</button>`:nothing}
    ${this.capture.camera&&this.capture.cameras.length>1?html`<label class="call-camera-select">Câmera ativa

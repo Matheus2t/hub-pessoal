@@ -316,6 +316,12 @@
 .fixed-workspace .rf-minimal .rf-evolution .rf-table-wrap {
   margin-top: 0;
 }
+.fixed-workspace .rf-minimal .rf-table-scroll-hint { display:none; }
+@media(max-width:700px) {
+  .fixed-workspace .rf-minimal .rf-table-scroll-hint { display:block; margin:0 4px 8px; color:var(--secondary); font-size:11px; }
+  .fixed-workspace .rf-minimal .rf-evolution .rf-table th:first-child { position:sticky; left:0; z-index:2; background:var(--panel); }
+  .fixed-workspace .rf-minimal .rf-evolution .rf-table tbody th:first-child { background:var(--raised); }
+}
 .fixed-workspace .rf-minimal .rf-assumptions {
   border: 0;
   border-top: 1px solid var(--line-soft);
@@ -395,6 +401,15 @@
 }
 @media (max-width: 900px) {
   :host([area="fixed-income-simulator"]) .ws-cell {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+}
+@media (max-width: 900px) {
+  :host([area="fixed-income-simulator"]) .ws-grid { grid-template-columns: minmax(0,1fr); }
+  :host([area="fixed-income-simulator"]) .ws-cell[data-panel="form"],
+  :host([area="fixed-income-simulator"]) .ws-cell[data-panel="summary"],
+  :host([area="fixed-income-simulator"]) .ws-cell[data-panel="empty"] {
     grid-column: 1 / -1 !important;
     grid-row: auto !important;
   }

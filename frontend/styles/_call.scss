@@ -1130,3 +1130,10 @@ call-page[hidden] { display:none !important; }
  .call-page .call-microphone-test { justify-content:flex-start; }
  .call-page .call-microphone-test meter { flex:1 1 100px; }
 }
+.call-share-settings { flex:1 1 100%; min-width:0; margin:6px 0 0; border-top:1px solid var(--line-soft); }
+.call-share-settings > summary { width:fit-content; padding:9px 0; color:var(--secondary); font-size:12px; cursor:pointer; }
+.call-share-settings > summary:hover { color:var(--text); }
+.call-share-settings > summary:focus-visible { outline:2px solid var(--text); outline-offset:3px; }
+.call-channel-panel[aria-busy="true"] .call-note[role="status"]::before { content:""; display:inline-block; width:9px; height:9px; margin-right:8px; border:1px solid currentColor; border-top-color:transparent; border-radius:50%; vertical-align:-1px; animation:call-lobby-spin .8s linear infinite; }
+@keyframes call-lobby-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .call-channel-panel[aria-busy="true"] .call-note[role="status"]::before { animation:none; border-style:dashed; } }

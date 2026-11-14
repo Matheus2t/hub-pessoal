@@ -77,6 +77,17 @@ test('calendar shows real month grid, selected fixtures and month navigation',as
  await expect(page.locator('.sports-agenda-list li')).toHaveCount(2);
  await expect(page.locator('.sports-agenda-list')).toContainText('105 – 99');
 });
+
+test('mobile calendar exposes compact matchups and accessible fixture descriptions',async({page})=>{
+ await mockSports(page);await page.setViewportSize({width:320,height:760});
+ await page.goto('/#/times');
+ await page.getByRole('group',{name:'Visualização da agenda'}).getByRole('button',{name:'Calendário',exact:true}).click();
+ const cell=page.getByRole('button',{name:'8 de novembro de 2026, 2 jogos'});
+ await expect(cell).toHaveAttribute('aria-description',/Chicago Bulls versus Philadelphia 76ers/);
+ await expect(cell.locator('.sports-month-mobile-matches')).toBeVisible();
+ await expect(cell.locator('.sports-month-mobile-matches')).not.toBeEmpty();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
 for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
  test('sports calendar visual and keyboard '+width+' '+theme,async({page},info)=>{
   await mockSports(page);await page.setViewportSize({width,height:900});

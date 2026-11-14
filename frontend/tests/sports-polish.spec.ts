@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 
 test('La Liga display, crest alignment and no unsupported lineups',async({page},info)=>{
- await page.route('**/api/sports/**',route=>route.fulfill({json:{season:'2026-2027',sections:{schedule:{state:'available',items:[{id:'test',starts_at:'2099-01-01T20:00:00Z',home:'Barcelona',away:'Opponent',is_home:true,competition:'Primera División',season:'2098-2099',status:'Agendado',away_crest:'/teams/spfc.png'}],note:'Test',updated_at:''},results:{state:'empty',items:[],note:'',updated_at:''},standings:{state:'available',items:[{team:'Barcelona',is_team:true,rank:1,points:30,played:10,crest:'/teams/barcelona.png'}],competition:'Primera Division',season:'2026-2027',note:'',updated_at:''},statistics:{state:'empty',items:[],note:'',updated_at:''},roster:{state:'unavailable',items:[],note:'',updated_at:''}}}}));
+ await page.route('**/api/sports/**',route=>route.fulfill({json:{season:'2026-2027',sections:{schedule:{state:'available',items:[{id:'test',starts_at:'2099-01-01T20:00:00Z',home:'Barcelona',away:'Opponent',is_home:true,competition:'Primera División',season:'2098-2099',status:'Agendado',away_crest:'/teams/spfc.png'},{id:'next',starts_at:'2099-01-08T20:00:00Z',home:'Barcelona',away:'Villarreal CF',is_home:true,competition:'Primera División',season:'2098-2099',status:'Agendado',away_crest:'/teams/spfc.png'}],note:'Test',updated_at:''},results:{state:'empty',items:[],note:'',updated_at:''},standings:{state:'available',items:[{team:'Barcelona',is_team:true,rank:1,points:30,played:10,crest:'/teams/barcelona.png'}],competition:'Primera Division',season:'2026-2027',note:'',updated_at:''},statistics:{state:'empty',items:[],note:'',updated_at:''},roster:{state:'unavailable',items:[],note:'',updated_at:''}}}}));
  for(const width of [1366,390,320]){
   await page.setViewportSize({width,height:900});await page.goto('/#/barcelona');
   await expect(page.locator('.sports-schedule')).toContainText('La Liga');
@@ -39,4 +39,24 @@ test('team pages never show rosters or formations, even when API includes them',
     await expect(page.locator('.sports-coverage')).not.toContainText('Historical players');
     await expect(page.locator('.sports-coverage')).not.toContainText('Elenco');
   }
+});
+
+test('featured next match is not duplicated in the upcoming-games list', async ({page}) => {
+  await page.route('**/api/sports/**', route => route.fulfill({ json: {
+    season: '2026-2027', sections: {
+      schedule: { state: 'available', items: [
+        { id: 'next', starts_at: '2099-01-01T20:00:00Z', home: 'São Paulo FC', away: 'Fluminense FC', is_home: true, competition: 'Brasileirão Série A', status: 'Agendado' },
+        { id: 'later', starts_at: '2099-01-08T20:00:00Z', home: 'Santos FC', away: 'São Paulo FC', is_home: false, competition: 'Brasileirão Série A', status: 'Agendado' }
+      ], note: '', updated_at: '' },
+      results: { state: 'empty', items: [], note: '', updated_at: '' },
+      standings: { state: 'empty', items: [], note: '', updated_at: '' },
+      statistics: { state: 'empty', items: [], note: '', updated_at: '' },
+      roster: { state: 'unavailable', items: [], note: '', updated_at: '' }
+    }
+  }}));
+  await page.goto('/#/spfc');
+  await expect(page.locator('.sports-next')).toContainText('Fluminense FC');
+  await expect(page.locator('.sports-schedule')).toContainText('Santos FC');
+  await expect(page.locator('.sports-schedule')).not.toContainText('Fluminense FC');
+  await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(1);
 });

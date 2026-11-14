@@ -8,6 +8,7 @@ test('new categories are derived automatically and Todas remains last', () => {
   expect(filterTools('Calculadoras', '', future)).toHaveLength(8);
   expect(filterTools('Todas', '', future)).toHaveLength(10);
   expect(filterTools('Todas', 'utilidade', future)).toHaveLength(1);
+  expect(filterTools('Calculadoras', 'patrimônio').some(tool=>tool.name==='Aposentadoria')).toBe(true);
 });
 
 for (const theme of ['dark', 'light']) {

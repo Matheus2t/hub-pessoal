@@ -12,7 +12,9 @@ for(const width of [1920,1366,768,390,320])test(`approved team visuals unchanged
  }}}));
  for(const route of ['76ers','spfc','barcelona']){
   await page.goto('/#/'+route);
-  await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(3);
+  // The next fixture is featured above and excluded from the remaining schedule.
+  await expect(page.locator('.sports-next')).toContainText('Adversário');
+  await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(2);
   // The compact header now shows the three local club crests directly.
   const crests=page.locator('app-sidebar .nav-team-icons img');
   await expect(crests).toHaveCount(3);

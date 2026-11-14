@@ -41,6 +41,13 @@ test('catalog search, annual units and invalid period', async ({ page }) => {
   await expect(tool.locator('tbody tr')).toHaveCount(12);
 });
 
+test('catalog search also matches the tool description',async({page})=>{
+  await page.goto('/#/calculadoras');
+  await page.getByRole('searchbox',{name:'Buscar calculadora'}).fill('renda futura');
+  await expect(page.locator('tool-card')).toHaveCount(1);
+  await expect(page.locator('tool-card')).toContainText('Aposentadoria');
+});
+
 test('compound accepts effective annual rate and years', async ({ page }) => {
   await page.goto('/#/calculadora');
   const tool = page.locator('compound-calculator');

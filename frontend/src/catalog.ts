@@ -78,7 +78,7 @@ export function getCategories(items: readonly Pick<Tool, "category">[] = tools):
 export function filterTools(category: string, query: string, items: readonly Tool[] = tools): Tool[] {
   const search = query.trim().toLocaleLowerCase("pt-BR");
   return items.filter(tool => (category === "Todas" || tool.category === category)
-    && `${tool.name} ${tool.category}`.toLocaleLowerCase("pt-BR").includes(search));
+    && `${tool.name} ${tool.category} ${tool.description}`.toLocaleLowerCase("pt-BR").includes(search));
 }
 
 export const learnActivities:Record<string,string>={vocabulary:'Vocabulário',flashcards:'Flashcards',listening:'Listening',dictation:'Ditado', 'dictation-v14':'Ditados A2/B1 V14 (prévia local)',writing:'Escrita',reading:'Leitura',grammar:'Gramática',test:'Avaliações',errors:'Caderno de erros',targeted:'Treino direcionado',daily:'Plano diário',dashboard:'Acompanhamento',backup:'Backup',path:'Trilha de aprendizado',progression:'Progressão guiada A1–B1','pilot-c1':'Aula-piloto (prévia)','pilot-c2':'Aula-piloto (prévia)',diagnostic:'Diagnóstico inicial (prévia)',reviews:'Revisões espaçadas (prévia)',integration:'Percurso integrado (prévia)','audio-v19':'Áudios V19 (prévia local)','listening-v13':'Listening A2/B1 (prévia local)',bridges:'Atividades-ponte', 'reading-b1':'Leitura B1 (prévia V16)','progress-v17':'Progressão A1–B1 V17 (prévia)'};

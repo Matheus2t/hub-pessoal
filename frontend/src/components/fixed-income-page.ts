@@ -31,20 +31,20 @@ export class FixedIncomePage extends LightElement {
         {id:'empty',title:'Resultado',required:true,available:!r,size:'medium',resizable:false},
         {id:'summary',title:'Resultado líquido',essential:true,available:!!r,size:'medium'},
         {id:'chart',title:'Gráfico de evolução',essential:true,available:!!r,size:'large'},
-        {id:'taxes',title:'Impostos e custos',available:!!r,size:'large'},
-        {id:'table',title:'Tabela mensal',available:!!r,size:'large'},
         {id:'tools',title:'Cenários salvos e ferramentas',size:'large'},
-        {id:'comparison',title:'Comparador de investimentos',size:'large'}
+        {id:'comparison',title:'Comparador de investimentos',size:'large'},
+        {id:'taxes',title:'Impostos e custos',available:!!r,size:'large'},
+        {id:'table',title:'Tabela mensal',available:!!r,size:'large'}
       ]}>
       <section slot="form" class="workspace-panel rf-simulation" aria-labelledby="rf-simulation"><header class="rf-section-header"><div><span class="rf-eyebrow">SIMULAR</span><h2 id="rf-simulation">Monte sua simulação</h2></div><button type="button" class="button button-ghost rf-reset" @click=${()=>{this.draft=newInvestment();this.redemption='';this.touched=false}}>Limpar</button></header>
         <fixed-income-fields .compact=${true} .draft=${this.draft} @draft-change=${(e:CustomEvent<InvestmentDraft>)=>{this.draft=e.detail;this.touched=true;if(e.detail.product==='ipca')this.redemption=''}}></fixed-income-fields>
         ${this.draft.product!=='ipca'?html`<details class="rf-cost-inputs"><summary>Consultar antes do vencimento</summary><label class="rf-field rf-date-field"><span>Data pretendida de resgate</span><input type="date" .value=${this.redemption} @input=${(e:Event)=>{this.redemption=(e.target as HTMLInputElement).value;this.touched=true}} /><small>Em branco: cálculo até o vencimento. Sujeito à liquidez contratada.</small></label></details>`:nothing}
-        <div class="rf-simulation-actions"><button type="button" class="button rf-primary-action" @click=${()=>{this.touched=true;this.updateComplete.then(()=>this.querySelector<HTMLElement>(this.result().projection?'[slot=summary]':'[slot=empty]')?.scrollIntoView({behavior:'smooth',block:'nearest'}))}}>Simular investimento <span aria-hidden="true">↗</span></button></div>
+        <div class="rf-simulation-actions"><button type="button" class="button rf-primary-action" @click=${()=>{this.touched=true;this.updateComplete.then(()=>this.querySelector<HTMLElement>(this.result().projection?'[slot=summary]':'[slot=empty]')?.scrollIntoView({behavior:'smooth',block:'nearest'}))}}>Ver resultado <span aria-hidden="true">↗</span></button></div>
       </section>
 
       <section slot="empty" class="workspace-panel rf-result-panel rf-result-empty"><header class="rf-section-header"><div><span class="rf-eyebrow">RESULTADO</span><h2>Seu resultado</h2></div></header>
         <div class="rf-empty-balance"><span>Patrimônio líquido projetado</span><strong>—</strong></div>
-        ${error?html`<p class="rf-alert" role="status">${error}</p>`:html`<p class="rf-empty">Preencha os dados do investimento para visualizar a projeção.</p>`}
+        ${error?html`<p class="rf-alert" role="status">${error}</p>`:html`<p class="rf-empty">Informe valor, taxa e prazo para ver patrimônio líquido, custos e rentabilidade estimados.</p>`}
         <div class="rf-empty-metrics" aria-hidden="true"><div><span>Rendimento líquido</span><strong>—</strong></div><div><span>Rentabilidade</span><strong>—</strong></div></div>
       </section>
       <section slot="summary" class="workspace-panel rf-result-panel" aria-live="polite">${r&&p?html`<header class="rf-section-header"><div><span class="rf-eyebrow">RESULTADO</span><h2 id="rf-results-title">Resultado líquido</h2></div></header><p class="rf-result-meta">${productNames[r.input.product]} · ${p.days} dias · ${fixedDate(p.date)}${r.maturedBefore?' · Vence antes da data consultada; sem reinvestimento.':''}</p>

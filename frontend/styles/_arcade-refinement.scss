@@ -262,7 +262,7 @@
   .arcade-hub-heading h1 {font-size:51px}
   .arcade-hub-heading p {font-size:13px}
   .arcade-directory-tools {gap:14px}
-  .arcade-category-tabs {width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+  .arcade-category-tabs {width:100%;flex-wrap:wrap;overflow:visible}
   .arcade-category-tabs button {flex:0 0 auto;min-height:42px}
   .arcade-search {width:100%;min-width:0}
   .arcade-game-heading .arcade-heading-title {align-items:flex-end}

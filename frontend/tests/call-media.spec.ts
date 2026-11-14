@@ -340,6 +340,8 @@ test('two simultaneous screens switch video and local audio without replacing th
   const hostContent=a.page.getByRole('combobox',{name:'Tipo de transmissão'});
   const hostSource=a.page.getByRole('combobox',{name:'Fonte da transmissão'});
   const guestSource=b.page.getByRole('combobox',{name:'Fonte da transmissão'});
+  await a.page.getByText('Configurações de transmissão',{exact:true}).click();
+  await b.page.getByText('Configurações de transmissão',{exact:true}).click();
   await expect(hostSource).toHaveValue('monitor');
   await expect(hostSource.locator('option')).toHaveCount(3);
   await guestSource.selectOption('window');

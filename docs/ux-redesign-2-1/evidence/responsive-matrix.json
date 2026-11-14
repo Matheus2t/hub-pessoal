@@ -1,0 +1,2522 @@
+[
+  {
+    "file": "home-320-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1272,
+    "errors": []
+  },
+  {
+    "file": "home-320-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1272,
+    "errors": []
+  },
+  {
+    "file": "home-390-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1320,
+    "errors": []
+  },
+  {
+    "file": "home-390-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1320,
+    "errors": []
+  },
+  {
+    "file": "home-768-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 911,
+    "errors": []
+  },
+  {
+    "file": "home-768-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 911,
+    "errors": []
+  },
+  {
+    "file": "home-1024-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 914,
+    "errors": []
+  },
+  {
+    "file": "home-1024-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 914,
+    "errors": []
+  },
+  {
+    "file": "home-1366-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 987,
+    "errors": []
+  },
+  {
+    "file": "home-1366-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 987,
+    "errors": []
+  },
+  {
+    "file": "home-1920-dark.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1008,
+    "errors": []
+  },
+  {
+    "file": "home-1920-light.jpg",
+    "route": "#/",
+    "title": "Início · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1008,
+    "errors": []
+  },
+  {
+    "file": "retirement-320-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1442,
+    "errors": []
+  },
+  {
+    "file": "retirement-320-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1442,
+    "errors": []
+  },
+  {
+    "file": "retirement-390-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1404,
+    "errors": []
+  },
+  {
+    "file": "retirement-390-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1404,
+    "errors": []
+  },
+  {
+    "file": "retirement-768-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1111,
+    "errors": []
+  },
+  {
+    "file": "retirement-768-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1111,
+    "errors": []
+  },
+  {
+    "file": "retirement-1024-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1317,
+    "errors": []
+  },
+  {
+    "file": "retirement-1024-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1317,
+    "errors": []
+  },
+  {
+    "file": "retirement-1366-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1049,
+    "errors": []
+  },
+  {
+    "file": "retirement-1366-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1049,
+    "errors": []
+  },
+  {
+    "file": "retirement-1920-dark.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1012,
+    "errors": []
+  },
+  {
+    "file": "retirement-1920-light.jpg",
+    "route": "#/aposentadoria",
+    "title": "Aposentadoria · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1012,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-320-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1607,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-320-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1607,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-390-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1522,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-390-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1522,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-768-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1580,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-768-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1580,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1024-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1024-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1366-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1366-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1920-dark.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "stocks-company-1920-light.jpg",
+    "route": "#/acoes/PETR4",
+    "title": "Mercado de Ações · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1228,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-320-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1557,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-320-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1557,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-390-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1537,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-390-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1537,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-768-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1374,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-768-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1374,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1024-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1060,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1024-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1060,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1366-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1068,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1366-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1068,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1920-dark.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1068,
+    "errors": []
+  },
+  {
+    "file": "fixed-income-1920-light.jpg",
+    "route": "#/renda-fixa",
+    "title": "Renda Fixa · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1068,
+    "errors": []
+  },
+  {
+    "file": "learn-english-320-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 804,
+    "errors": []
+  },
+  {
+    "file": "learn-english-320-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 804,
+    "errors": []
+  },
+  {
+    "file": "learn-english-390-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 754,
+    "errors": []
+  },
+  {
+    "file": "learn-english-390-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 754,
+    "errors": []
+  },
+  {
+    "file": "learn-english-768-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 690,
+    "errors": []
+  },
+  {
+    "file": "learn-english-768-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 690,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1024-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 714,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1024-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 714,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1366-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 774,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1366-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 774,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1920-dark.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 779,
+    "errors": []
+  },
+  {
+    "file": "learn-english-1920-light.jpg",
+    "route": "#/learn/en/daily",
+    "title": "Plano diário · Inglês · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 779,
+    "errors": []
+  },
+  {
+    "file": "call-320-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 811,
+    "errors": []
+  },
+  {
+    "file": "call-320-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 811,
+    "errors": []
+  },
+  {
+    "file": "call-390-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 811,
+    "errors": []
+  },
+  {
+    "file": "call-390-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 811,
+    "errors": []
+  },
+  {
+    "file": "call-768-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 820,
+    "errors": []
+  },
+  {
+    "file": "call-768-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 820,
+    "errors": []
+  },
+  {
+    "file": "call-1024-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 638,
+    "errors": []
+  },
+  {
+    "file": "call-1024-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 638,
+    "errors": []
+  },
+  {
+    "file": "call-1366-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "call-1366-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "call-1920-dark.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "call-1920-light.jpg",
+    "route": "#/call",
+    "title": "Call · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-320-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-320-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 686,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-390-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 993,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-390-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 993,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-768-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 898,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-768-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 898,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1024-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 901,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1024-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 901,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1366-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 931,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1366-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 931,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1920-dark.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 931,
+    "errors": []
+  },
+  {
+    "file": "sports-calendar-1920-light.jpg",
+    "route": "#/times",
+    "title": "Times · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 931,
+    "errors": []
+  },
+  {
+    "file": "76ers-320-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 909,
+    "errors": []
+  },
+  {
+    "file": "76ers-320-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 909,
+    "errors": []
+  },
+  {
+    "file": "76ers-390-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 916,
+    "errors": []
+  },
+  {
+    "file": "76ers-390-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 916,
+    "errors": []
+  },
+  {
+    "file": "76ers-768-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 874,
+    "errors": []
+  },
+  {
+    "file": "76ers-768-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 874,
+    "errors": []
+  },
+  {
+    "file": "76ers-1024-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 762,
+    "errors": []
+  },
+  {
+    "file": "76ers-1024-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 762,
+    "errors": []
+  },
+  {
+    "file": "76ers-1366-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 784,
+    "errors": []
+  },
+  {
+    "file": "76ers-1366-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 784,
+    "errors": []
+  },
+  {
+    "file": "76ers-1920-dark.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 784,
+    "errors": []
+  },
+  {
+    "file": "76ers-1920-light.jpg",
+    "route": "#/76ers",
+    "title": "Philadelphia 76ers · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 784,
+    "errors": []
+  },
+  {
+    "file": "spfc-320-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1491,
+    "errors": []
+  },
+  {
+    "file": "spfc-320-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1491,
+    "errors": []
+  },
+  {
+    "file": "spfc-390-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1497,
+    "errors": []
+  },
+  {
+    "file": "spfc-390-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1497,
+    "errors": []
+  },
+  {
+    "file": "spfc-768-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "spfc-768-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "spfc-1024-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1077,
+    "errors": []
+  },
+  {
+    "file": "spfc-1024-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1077,
+    "errors": []
+  },
+  {
+    "file": "spfc-1366-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1099,
+    "errors": []
+  },
+  {
+    "file": "spfc-1366-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1099,
+    "errors": []
+  },
+  {
+    "file": "spfc-1920-dark.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1099,
+    "errors": []
+  },
+  {
+    "file": "spfc-1920-light.jpg",
+    "route": "#/spfc",
+    "title": "São Paulo Futebol Clube · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1099,
+    "errors": []
+  },
+  {
+    "file": "barcelona-320-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1829,
+    "errors": []
+  },
+  {
+    "file": "barcelona-320-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1829,
+    "errors": []
+  },
+  {
+    "file": "barcelona-390-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1817,
+    "errors": []
+  },
+  {
+    "file": "barcelona-390-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1817,
+    "errors": []
+  },
+  {
+    "file": "barcelona-768-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1611,
+    "errors": []
+  },
+  {
+    "file": "barcelona-768-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1611,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1024-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1024-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1366-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1328,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1366-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1328,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1920-dark.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1328,
+    "errors": []
+  },
+  {
+    "file": "barcelona-1920-light.jpg",
+    "route": "#/barcelona",
+    "title": "FC Barcelona · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1328,
+    "errors": []
+  },
+  {
+    "file": "games-320-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 2309,
+    "errors": []
+  },
+  {
+    "file": "games-320-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 2309,
+    "errors": []
+  },
+  {
+    "file": "games-390-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 2309,
+    "errors": []
+  },
+  {
+    "file": "games-390-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 2309,
+    "errors": []
+  },
+  {
+    "file": "games-768-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 2809,
+    "errors": []
+  },
+  {
+    "file": "games-768-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 2809,
+    "errors": []
+  },
+  {
+    "file": "games-1024-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1698,
+    "errors": []
+  },
+  {
+    "file": "games-1024-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1698,
+    "errors": []
+  },
+  {
+    "file": "games-1366-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1731,
+    "errors": []
+  },
+  {
+    "file": "games-1366-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1731,
+    "errors": []
+  },
+  {
+    "file": "games-1920-dark.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1731,
+    "errors": []
+  },
+  {
+    "file": "games-1920-light.jpg",
+    "route": "#/games",
+    "title": "Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1731,
+    "errors": []
+  },
+  {
+    "file": "snake-320-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1569,
+    "errors": []
+  },
+  {
+    "file": "snake-320-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1569,
+    "errors": []
+  },
+  {
+    "file": "snake-390-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1536,
+    "errors": []
+  },
+  {
+    "file": "snake-390-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1536,
+    "errors": []
+  },
+  {
+    "file": "snake-768-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1188,
+    "errors": []
+  },
+  {
+    "file": "snake-768-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1188,
+    "errors": []
+  },
+  {
+    "file": "snake-1024-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1395,
+    "errors": []
+  },
+  {
+    "file": "snake-1024-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1395,
+    "errors": []
+  },
+  {
+    "file": "snake-1366-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1428,
+    "errors": []
+  },
+  {
+    "file": "snake-1366-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1428,
+    "errors": []
+  },
+  {
+    "file": "snake-1920-dark.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1428,
+    "errors": []
+  },
+  {
+    "file": "snake-1920-light.jpg",
+    "route": "#/games/snake",
+    "title": "Snake · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1428,
+    "errors": []
+  },
+  {
+    "file": "sudoku-320-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1102,
+    "errors": []
+  },
+  {
+    "file": "sudoku-320-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1102,
+    "errors": []
+  },
+  {
+    "file": "sudoku-390-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1127,
+    "errors": []
+  },
+  {
+    "file": "sudoku-390-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1127,
+    "errors": []
+  },
+  {
+    "file": "sudoku-768-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1299,
+    "errors": []
+  },
+  {
+    "file": "sudoku-768-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1299,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1024-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1310,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1024-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1310,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1366-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1340,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1366-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1340,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1920-dark.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1340,
+    "errors": []
+  },
+  {
+    "file": "sudoku-1920-light.jpg",
+    "route": "#/games/sudoku",
+    "title": "Sudoku · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1340,
+    "errors": []
+  },
+  {
+    "file": "2048-320-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1606,
+    "errors": []
+  },
+  {
+    "file": "2048-320-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1606,
+    "errors": []
+  },
+  {
+    "file": "2048-390-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1632,
+    "errors": []
+  },
+  {
+    "file": "2048-390-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1632,
+    "errors": []
+  },
+  {
+    "file": "2048-768-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1782,
+    "errors": []
+  },
+  {
+    "file": "2048-768-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1782,
+    "errors": []
+  },
+  {
+    "file": "2048-1024-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1299,
+    "errors": []
+  },
+  {
+    "file": "2048-1024-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1299,
+    "errors": []
+  },
+  {
+    "file": "2048-1366-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1335,
+    "errors": []
+  },
+  {
+    "file": "2048-1366-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1335,
+    "errors": []
+  },
+  {
+    "file": "2048-1920-dark.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1335,
+    "errors": []
+  },
+  {
+    "file": "2048-1920-light.jpg",
+    "route": "#/games/2048",
+    "title": "2048 · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1335,
+    "errors": []
+  },
+  {
+    "file": "breakout-320-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 865,
+    "errors": []
+  },
+  {
+    "file": "breakout-320-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 865,
+    "errors": []
+  },
+  {
+    "file": "breakout-390-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 914,
+    "errors": []
+  },
+  {
+    "file": "breakout-390-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 914,
+    "errors": []
+  },
+  {
+    "file": "breakout-768-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1115,
+    "errors": []
+  },
+  {
+    "file": "breakout-768-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1115,
+    "errors": []
+  },
+  {
+    "file": "breakout-1024-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1218,
+    "errors": []
+  },
+  {
+    "file": "breakout-1024-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1218,
+    "errors": []
+  },
+  {
+    "file": "breakout-1366-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1248,
+    "errors": []
+  },
+  {
+    "file": "breakout-1366-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1248,
+    "errors": []
+  },
+  {
+    "file": "breakout-1920-dark.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1248,
+    "errors": []
+  },
+  {
+    "file": "breakout-1920-light.jpg",
+    "route": "#/games/breakout",
+    "title": "Breakout · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1248,
+    "errors": []
+  },
+  {
+    "file": "pong-320-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 893,
+    "errors": []
+  },
+  {
+    "file": "pong-320-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 893,
+    "errors": []
+  },
+  {
+    "file": "pong-390-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 878,
+    "errors": []
+  },
+  {
+    "file": "pong-390-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 878,
+    "errors": []
+  },
+  {
+    "file": "pong-768-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1086,
+    "errors": []
+  },
+  {
+    "file": "pong-768-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1086,
+    "errors": []
+  },
+  {
+    "file": "pong-1024-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1182,
+    "errors": []
+  },
+  {
+    "file": "pong-1024-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1182,
+    "errors": []
+  },
+  {
+    "file": "pong-1366-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1213,
+    "errors": []
+  },
+  {
+    "file": "pong-1366-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1213,
+    "errors": []
+  },
+  {
+    "file": "pong-1920-dark.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1213,
+    "errors": []
+  },
+  {
+    "file": "pong-1920-light.jpg",
+    "route": "#/games/pong",
+    "title": "Pong · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1213,
+    "errors": []
+  },
+  {
+    "file": "word-game-320-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "word-game-320-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1382,
+    "errors": []
+  },
+  {
+    "file": "word-game-390-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1439,
+    "errors": []
+  },
+  {
+    "file": "word-game-390-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1439,
+    "errors": []
+  },
+  {
+    "file": "word-game-768-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1469,
+    "errors": []
+  },
+  {
+    "file": "word-game-768-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1469,
+    "errors": []
+  },
+  {
+    "file": "word-game-1024-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1480,
+    "errors": []
+  },
+  {
+    "file": "word-game-1024-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1480,
+    "errors": []
+  },
+  {
+    "file": "word-game-1366-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1510,
+    "errors": []
+  },
+  {
+    "file": "word-game-1366-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1510,
+    "errors": []
+  },
+  {
+    "file": "word-game-1920-dark.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1510,
+    "errors": []
+  },
+  {
+    "file": "word-game-1920-light.jpg",
+    "route": "#/games/palavra-secreta",
+    "title": "Termo · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1510,
+    "errors": []
+  },
+  {
+    "file": "typing-320-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1035,
+    "errors": []
+  },
+  {
+    "file": "typing-320-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1035,
+    "errors": []
+  },
+  {
+    "file": "typing-390-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 980,
+    "errors": []
+  },
+  {
+    "file": "typing-390-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 980,
+    "errors": []
+  },
+  {
+    "file": "typing-768-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 926,
+    "errors": []
+  },
+  {
+    "file": "typing-768-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 926,
+    "errors": []
+  },
+  {
+    "file": "typing-1024-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 968,
+    "errors": []
+  },
+  {
+    "file": "typing-1024-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 968,
+    "errors": []
+  },
+  {
+    "file": "typing-1366-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1001,
+    "errors": []
+  },
+  {
+    "file": "typing-1366-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1001,
+    "errors": []
+  },
+  {
+    "file": "typing-1920-dark.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1001,
+    "errors": []
+  },
+  {
+    "file": "typing-1920-light.jpg",
+    "route": "#/games/digitacao",
+    "title": "Digitação · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1001,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-320-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 911,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-320-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 911,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-390-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 937,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-390-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 937,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-768-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1040,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-768-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1040,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1024-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1050,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1024-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1050,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1366-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1081,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1366-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1081,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1920-dark.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1081,
+    "errors": []
+  },
+  {
+    "file": "tic-tac-toe-1920-light.jpg",
+    "route": "#/games/jogo-da-velha",
+    "title": "Jogo da Velha · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1081,
+    "errors": []
+  },
+  {
+    "file": "reflex-320-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 818,
+    "errors": []
+  },
+  {
+    "file": "reflex-320-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 818,
+    "errors": []
+  },
+  {
+    "file": "reflex-390-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 818,
+    "errors": []
+  },
+  {
+    "file": "reflex-390-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 818,
+    "errors": []
+  },
+  {
+    "file": "reflex-768-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 949,
+    "errors": []
+  },
+  {
+    "file": "reflex-768-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 949,
+    "errors": []
+  },
+  {
+    "file": "reflex-1024-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 959,
+    "errors": []
+  },
+  {
+    "file": "reflex-1024-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 959,
+    "errors": []
+  },
+  {
+    "file": "reflex-1366-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 990,
+    "errors": []
+  },
+  {
+    "file": "reflex-1366-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 990,
+    "errors": []
+  },
+  {
+    "file": "reflex-1920-dark.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 990,
+    "errors": []
+  },
+  {
+    "file": "reflex-1920-light.jpg",
+    "route": "#/games/reflexos",
+    "title": "Reflexos · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 990,
+    "errors": []
+  },
+  {
+    "file": "memory-320-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1564,
+    "errors": []
+  },
+  {
+    "file": "memory-320-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "horizontalOverflow": false,
+    "mainHeight": 1564,
+    "errors": []
+  },
+  {
+    "file": "memory-390-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1589,
+    "errors": []
+  },
+  {
+    "file": "memory-390-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 375,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "mainHeight": 1589,
+    "errors": []
+  },
+  {
+    "file": "memory-768-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1749,
+    "errors": []
+  },
+  {
+    "file": "memory-768-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 753,
+    "viewportWidth": 768,
+    "horizontalOverflow": false,
+    "mainHeight": 1749,
+    "errors": []
+  },
+  {
+    "file": "memory-1024-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1312,
+    "errors": []
+  },
+  {
+    "file": "memory-1024-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1009,
+    "viewportWidth": 1024,
+    "horizontalOverflow": false,
+    "mainHeight": 1312,
+    "errors": []
+  },
+  {
+    "file": "memory-1366-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1450,
+    "errors": []
+  },
+  {
+    "file": "memory-1366-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1351,
+    "viewportWidth": 1366,
+    "horizontalOverflow": false,
+    "mainHeight": 1450,
+    "errors": []
+  },
+  {
+    "file": "memory-1920-dark.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1450,
+    "errors": []
+  },
+  {
+    "file": "memory-1920-light.jpg",
+    "route": "#/games/memoria",
+    "title": "Memória · Games · 2T",
+    "scrollWidth": 1905,
+    "viewportWidth": 1920,
+    "horizontalOverflow": false,
+    "mainHeight": 1450,
+    "errors": []
+  }
+]

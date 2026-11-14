@@ -16,7 +16,7 @@ import "./team-shortcuts";
 import "./team-page";
 import "./sports-calendar";
 import "./games-page";
-import "./arcade-core";
+import { GAMES } from "./arcade-core";
 import "./arcade-puzzles";
 import "./games-termo";
 import "./games-2048";
@@ -36,7 +36,9 @@ export class AppShell extends LightElement {
   private dockDeafen=()=>{const view=this.querySelector("call-page") as HTMLElement&{toggleDockDeafen?:()=>void}|null;view?.toggleDockDeafen?.()};
   private dockLeave=()=>{const view=this.querySelector("call-page") as HTMLElement&{leaveFromDock?:()=>void}|null;view?.leaveFromDock?.()};
   protected updated(changes:Map<PropertyKey,unknown>){if(changes.has('page')&&this.page==='call')void import('../call/page');}
-  private pageTitle(){const mode=['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]:undefined;return mode?`${mode} · ${pages[this.page].title}`:pages[this.page].title}
+  private gameTitle(){const id=this.route.match(/^#\/games\/([^/?#]+)/)?.[1];return GAMES.find(game=>game.id===id)?.name}
+  private gameBreadcrumb(){return this.route==='#/games'?'':html`<a href="#/games">Games</a><span aria-hidden="true">/</span>`}
+  private pageTitle(){const game=this.page==='games'?this.gameTitle():undefined;if(game)return `${game} · Games`;const mode=['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]:undefined;return mode?`${mode} · ${pages[this.page].title}`:pages[this.page].title}
   private openCalendar = () => {
     const dialog = this.querySelector<HTMLDialogElement>(".calendar-dialog");
     if (dialog && !dialog.open) dialog.showModal();
@@ -79,7 +81,7 @@ export class AppShell extends LightElement {
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">Learn / Изучать</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}<span aria-current="page">${['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">Learn / Изучать</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}${this.page==='games'?this.gameBreadcrumb():''}<span aria-current="page">${this.page==='games'?this.gameTitle()||pages[this.page].title:['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           <call-page ?hidden=${this.page !== "call"} @call-session-change=${this.onCallSession}></call-page>

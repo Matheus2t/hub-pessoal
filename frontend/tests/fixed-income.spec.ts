@@ -4,11 +4,22 @@ async function fillCdb(page:Page){
  await f.getByLabel('Valor aplicado').fill('10.000,00');await f.getByLabel('CDI anual').fill('12');await f.getByLabel('Percentual do CDI').fill('100');
  await f.getByLabel('Data da aplicação').fill('2027-01-01');await f.getByLabel('Vencimento',{exact:true}).fill('2028-01-01');return f;
 }
+test('fixed income clarifies live result and shows all table columns on mobile',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await page.goto('/#/renda-fixa');
+ const f=await fillCdb(page);
+ await expect(page.getByRole('button',{name:'Ver resultado'})).toBeVisible();
+ await expect(page.getByTestId('rf-net')).toHaveText(/10\.990,00/);
+ await page.locator('.rf-results fixed-income-evolution > details > summary').click();
+ await expect(page.locator('.rf-table-scroll-hint')).toBeVisible();
+ await expect(page.locator('.rf-table-wrap thead th:first-child')).toHaveCSS('position','sticky');
+ await expect(f.getByLabel('Valor aplicado')).toHaveValue('10.000,00');
+});
 for(const width of [1920,1366,768,390,320])test(`fixed income responsive and themes ${width}`,async({page},info)=>{
  const errors:string[]=[];const forbidden:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.method()==='POST'||/api\.bcb|brapi|tradingview|tesourodireto|api\/sports/.test(r.url()))forbidden.push(r.url())});
  await page.setViewportSize({width,height:1000});await page.goto('/#/');await page.locator('home-page a[href="#/renda-fixa"]').click();
  await expect(page.getByRole('heading',{name:'Renda Fixa',exact:true})).toBeVisible();
  const f=await fillCdb(page);await expect(page.getByTestId('rf-net')).toHaveText(/10\.990,00/);
+ if(width<=900){const form=await page.locator('.rf-results [slot="form"]').boundingBox(),summary=await page.locator('.rf-results [slot="summary"]').boundingBox();expect(form).not.toBeNull();expect(summary).not.toBeNull();expect(summary!.y).toBeGreaterThanOrEqual(form!.y+form!.height-1);}
  const chart=page.locator('.rf-results fixed-income-chart');await chart.getByRole('slider').focus();await page.keyboard.press('Home');await expect(chart.locator('.rf-chart-legend')).toContainText('10.000,00');
  await page.locator('.rf-results fixed-income-evolution > details > summary').click();await expect(page.locator('.rf-results .rf-table tbody tr')).toHaveCount(13);
  for(const theme of ['dark','light']){await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath(`fixed-${width}-${theme}.png`),fullPage:true,animations:'disabled'});}

@@ -20,6 +20,7 @@ for(const language of ['en','ru'] as const){
    const feedback=session.locator('.learn-feedback');
    await expect(feedback).toBeVisible();
    await expect(feedback).toHaveAttribute('role','status');
+   await expect(feedback).toHaveAttribute('data-outcome',/^(correct|incorrect|uncertain)$/);
    await expect(feedback).toBeFocused();
    expect(await page.evaluate(()=>{
     const target=document.querySelector<HTMLElement>('learn-session .learn-feedback')!;
@@ -34,6 +35,17 @@ for(const language of ['en','ru'] as const){
   });
  }
 }
+
+test('daily plan configuration stays collapsed until requested',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await page.goto('/#/learn/en/daily');
+ const settings=page.locator('learn-daily details.learn-prose').first();
+ await expect(settings).toBeVisible();await expect(settings).not.toHaveAttribute('open','');
+ await expect(settings.locator('summary')).toHaveText('Definir metas e montar plano');
+ await expect(page.locator('learn-daily')).toContainText('Monte o plano para começar');
+ await settings.locator('summary').click();
+ await expect(settings).toHaveAttribute('open','');
+ await expect(settings.getByRole('button',{name:'Salvar e montar plano'})).toBeVisible();
+});
 
 for(const width of [320,390] as const){
  test(`mobile UX: Russian phonetic controls remain at least 44px at ${width}px`,async({page})=>{
