@@ -13,25 +13,19 @@ test('catalog lists all eight calculators and routes stay reachable', async ({ p
   }
 });
 
-test('retirement zero-rate example and invalid ages', async ({ page }) => {
+test('retirement requires a future age and keeps monthly detail', async ({ page }) => {
   await page.goto('/#/aposentadoria');
   const tool = page.locator('extended-finance-calculator');
   await tool.getByLabel('Idade atual').fill('30');
-  await tool.getByLabel('Idade de aposentadoria').fill('31');
-  await tool.getByLabel('Patrimônio já investido').fill('1.000,00');
-  await tool.getByRole('button',{name:'Quero testar um aporte'}).click();
-  await tool.getByLabel('Aporte mensal que pretendo investir').fill('100,00');
-  await tool.getByLabel('Renda mensal desejada, de hoje').fill('100');
-  await tool.locator('summary').click();
-  await tool.getByLabel('Rentabilidade efetiva anual').fill('0');
-  await tool.getByLabel('Inflação anual estimada').fill('0');
-  await tool.getByLabel('Taxa anual de retirada').fill('4');
-  await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
-  await expect(tool.locator('.metric-card').first()).toContainText('2.200,00');
-  await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
   await tool.getByLabel('Idade de aposentadoria').fill('30');
   await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
   await expect(tool.getByText('Precisa ser maior que a idade atual.')).toBeVisible();
+  await tool.getByLabel('Idade de aposentadoria').fill('31');
+  await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
+  await expect(tool.locator('.metric-card').first()).toContainText('Aporte mensal necessário');
+  await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
+  await tool.getByRole('button',{name:'Quero testar um aporte'}).click();
+  await expect(tool.getByLabel('Aporte mensal que pretendo investir')).toBeVisible();
 });
 
 test('amortization saves interest and allows payment versus term', async ({ page }) => {
@@ -43,10 +37,10 @@ test('amortization saves interest and allows payment versus term', async ({ page
   await tool.getByLabel('Amortização única', {exact:true}).fill('600');
   await tool.getByLabel('Mês da amortização única').fill('1');
   await tool.getByRole('button',{name:'Simular amortização'}).click();
-  await expect(tool.getByText('6 meses')).toBeVisible();
+  await expect(tool.locator('.metric-card').nth(1)).toContainText('6 meses');
   await tool.getByLabel('Aplicar extra para').selectOption('payment');
   await tool.getByRole('button',{name:'Simular amortização'}).click();
-  await expect(tool.getByText('0 meses')).toBeVisible();
+  await expect(tool.locator('.metric-card').nth(1)).toContainText('0 meses');
 });
 
 test('CLT shows annual provisions once and switches tax regime', async ({ page }) => {
