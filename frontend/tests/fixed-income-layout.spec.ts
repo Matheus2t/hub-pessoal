@@ -23,7 +23,7 @@ for(const width of [1366,768,390,320]) test('Renda Fixa tem fluxo simples e resp
  await fields.getByLabel('Vencimento',{exact:true}).fill('2028-01-01');
  await expect(root.getByTestId('rf-net')).toContainText('10.990,00');
  await expect(root.getByRole('heading',{name:'Resultado líquido'})).toBeVisible();
- await root.getByRole('button',{name:'Simular investimento'}).click();
+ await root.getByRole('button',{name:'Ver resultado'}).click();
  await expect(root.getByTestId('rf-net')).toBeVisible();
  if(width>900){
   const a=await w.locator('[data-panel=form]').boundingBox();
