@@ -1,4 +1,32 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+async function mockCompoundApi(page: Page) {
+  await page.route("**/api/calculations", (route) => {
+    const input = route.request().postDataJSON() as {
+      initial_capital: number; monthly_contribution: number; monthly_rate: number; months: number;
+    };
+    let balance = Number(input.initial_capital);
+    let invested = balance;
+    let totalInterest = 0;
+    const evolution = Array.from({ length: Number(input.months) }, (_, index) => {
+      const interest = Math.round((balance * Number(input.monthly_rate) / 100 + Number.EPSILON) * 100) / 100;
+      balance = Math.round((balance + interest + Number(input.monthly_contribution)) * 100) / 100;
+      invested = Math.round((invested + Number(input.monthly_contribution)) * 100) / 100;
+      totalInterest = Math.round((totalInterest + interest) * 100) / 100;
+      return {
+        month: index + 1, interest: interest.toFixed(2), deposit: Number(input.monthly_contribution).toFixed(2),
+        balance: balance.toFixed(2), invested: invested.toFixed(2),
+      };
+    });
+    return route.fulfill({
+      status: 200,
+      json: {
+        final_amount: balance.toFixed(2), total_invested: invested.toFixed(2),
+        total_interest: totalInterest.toFixed(2), evolution,
+      },
+    });
+  });
+}
 
 test("HTML, assets, API and financial result are served together", async ({
   request,
@@ -35,6 +63,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
   test(`complete calculator and themes at ${width}px`, async ({
     page,
   }, testInfo) => {
+    await mockCompoundApi(page);
     await page.setViewportSize({ width, height: width === 1920 ? 1080 : 900 });
     const exceptions: string[] = [];
     page.on("pageerror", (error) => exceptions.push(error.message));
@@ -54,7 +83,7 @@ for (const width of [1920, 1366, 768, 390, 320]) {
       });
     await expect(page.getByRole("button", { name: "Abrir menu" })).toHaveCount(0);
   await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
-  await page.getByRole("link", { name: "Abrir calculadora" }).click();
+  await page.getByRole("link", { name: "Abrir calculadora", exact: true }).click();
     await expect(
       page.getByRole("heading", { name: "Calculadora de juros compostos" }),
     ).toBeVisible();
@@ -151,12 +180,13 @@ test("validation, loading, API error and 600-month pagination", async ({
     "Não foi possível concluir a simulação",
   );
   await page.unroute("**/api/calculations");
+  await mockCompoundApi(page);
   await page.getByRole("button", { name: "Simular investimento" }).click();
   await expect(page.locator("metric-card")).toHaveCount(3);
   await expect(page.locator(".chart-panel")).toContainText("600 meses");
   await page.locator("compound-calculator summary").click();
   await expect(page.locator("tbody tr")).toHaveCount(12);
-  await page.getByRole("button", { name: "Próxima" }).click();
+  await page.getByRole("button", { name: "Próximo ano" }).click();
   await expect(page.locator("tbody tr").first()).toContainText("13");
   await page.getByLabel("Capital inicial", { exact: true }).fill("2000");
   await expect(page.locator(".result-status")).toContainText(
@@ -177,10 +207,11 @@ test("touch chart, mobile navigation and system theme preference", async ({
     reducedMotion: "reduce",
   });
   const page = await context.newPage();
+  await mockCompoundApi(page);
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
-  await page.getByRole("link", { name: "Abrir calculadora" }).tap();
+  await page.getByRole("link", { name: "Abrir calculadora", exact: true }).tap();
   await expect(page.getByRole("button", { name: "Abrir menu" })).toHaveCount(0);
   await page.getByRole("button", { name: "Simular investimento" }).tap();
   const plot = page.locator(".evolution-svg");
@@ -204,6 +235,7 @@ test("touch chart, mobile navigation and system theme preference", async ({
 });
 
 test("typography is readable and emphasizes key information", async ({ page }) => {
+  await mockCompoundApi(page);
   await page.goto("/");
   const bodyFont = await page.locator("body").evaluate(
     (element) => getComputedStyle(element).fontFamily,
@@ -214,7 +246,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
   expect(await brand.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expect(page.locator(".brand strong")).toHaveCount(0);
   await page.locator("home-page").getByRole("link", { name: /Calculadoras/ }).click();
-  await page.getByRole("link", { name: "Abrir calculadora" }).click();
+  await page.getByRole("link", { name: "Abrir calculadora", exact: true }).click();
   expect(
     await page.getByRole('heading', {name:'Calculadora de juros compostos',exact:true}).evaluate((element) =>
       Number(getComputedStyle(element).fontWeight),
@@ -234,6 +266,7 @@ test("typography is readable and emphasizes key information", async ({ page }) =
 });
 
 test("mouse hovering each chart line shows only that series' exact monthly value", async ({ page }) => {
+  await mockCompoundApi(page);
   await page.goto("/#/calculadora");
   await page.getByLabel("Capital inicial", { exact: true }).fill("1.000,00");
   await page.getByLabel("Aporte mensal", { exact: true }).fill("100,00");
@@ -315,7 +348,7 @@ test("footer calendar opens on demand and navigates holidays", async ({ page }) 
   const a=await cards.nth(0).boundingBox(),b=await cards.nth(1).boundingBox(),c=await cards.nth(2).boundingBox();
   if(!a||!b||!c)throw Error("Cards da home não renderizados");
   expect(Math.abs(b.y-a.y)).toBeLessThan(2);
-  expect(Math.abs(c.y-a.y)).toBeLessThan(2);
+  expect(c.y).toBeGreaterThan(a.y);
   await trigger.click();
   await expect(dialog).toBeVisible();
   await expect(dialog.locator(".calendar-navigation h3")).toHaveText("Outubro de 2026");

@@ -50,7 +50,7 @@ export class AppShell extends LightElement {
       history.replaceState(null, "", "#/calculadoras");
   }
   private navigate = () => {
-    this.querySelectorAll<HTMLDetailsElement>(".teams-menu").forEach(menu=>menu.open=false);
+    this.querySelectorAll<HTMLDetailsElement>(".areas-menu,.teams-menu").forEach(menu=>menu.open=false);
     this.closeCalendar();
     this.normalizeRoute();
     this.page = currentPage();

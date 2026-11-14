@@ -1,8 +1,8 @@
 games-page {display:block;min-width:0}
-.games-section {max-width:1240px;margin:auto}
-.games-header {margin:14px 0 28px}
+.games-section {max-width:1360px;margin:auto}
+.games-header {margin:8px 0 24px}
 .games-kicker {font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:650}
-.games-header h1 {font-size:clamp(36px,4.5vw,60px);line-height:1.1;letter-spacing:-.055em;margin:10px 0}
+.games-header h1 {font-size:clamp(32px,3.8vw,48px);line-height:1.1;letter-spacing:-.055em;margin:9px 0}
 .games-header p {color:var(--secondary);font-size:15px;max-width:540px}
 .games-layout {display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:24px;align-items:start}
 .snake-panel,.snake-info,.snake-rank {background:var(--panel);border:1px solid var(--line-soft);border-radius:12px}

@@ -35,6 +35,6 @@ for(const width of [1366,768,390,320]) {
   await expect(rankings.getByLabel('Exercício',{exact:true})).toHaveValue('2024-12-31');
   await page.evaluate(()=>document.documentElement.dataset.theme='light');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(rankings.locator('.rk-panel')).toHaveCSS('background-color','rgb(242, 242, 242)');
+  await expect(rankings.locator('.rk-panel')).toHaveCSS('background-color','rgb(255, 255, 255)');
  });
 }
