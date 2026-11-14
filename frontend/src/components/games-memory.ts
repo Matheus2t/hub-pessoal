@@ -91,6 +91,7 @@ export class ArcadeMemory extends LightElement {
             ${this.phase==="complete"?html`<div class="memory-board-message memory-finished" role="status"><span class="games-kicker">TODOS OS PARES ENCONTRADOS</span><strong>Concluído!</strong>
               <div class="memory-stars" aria-label=${this.rating+" de 3 estrelas"}>${[1,2,3].map(n=>html`<span class=${n<=this.rating?"earned":""}>★</span>`)}</div>
               <p>${this.moves} movimentos · ${this.seconds} segundos</p>
+              <span class="memory-final-score">${this.lastResult} pontos</span>
               <button @click=${()=>this.reset()}>Jogar novamente ↗</button></div>`:""}
           </div>
           <div class="memory-footer"><span>${this.phase==="ready"?"Escolha a dificuldade e comece.":this.phase==="preview"?"Observe e memorize as cartas.":this.phase==="playing"?"Encontre dois símbolos iguais.":"Você completou o desafio."}</span><button @click=${()=>this.reset()}>↶ Reiniciar</button></div>
