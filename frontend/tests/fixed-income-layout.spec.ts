@@ -91,9 +91,9 @@ for (const width of [1366,390,320]) test('Renda Fixa minimalista mostra o essenc
  await expect(root.getByRole('heading',{name:'Monte sua simulação'})).toBeVisible();
  await expect(root.getByRole('heading',{name:'Seu resultado'})).toBeVisible();
  await expect(form.locator('.rf-advanced-fields')).not.toHaveAttribute('open','');
- await expect(form.getByText('Liquidez contratada')).not.toBeVisible();
+ await expect(form.getByText('Liquidez contratada',{exact:true})).not.toBeVisible();
  await form.locator('.rf-advanced-fields > summary').click();
- await expect(form.getByText('Liquidez contratada')).toBeVisible();
+ await expect(form.getByText('Liquidez contratada',{exact:true})).toBeVisible();
  await form.locator('.rf-advanced-fields > summary').click();
  const fields=form.locator('fixed-income-fields');
  await fields.getByLabel('Valor aplicado').fill('10000');
