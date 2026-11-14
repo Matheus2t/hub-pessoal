@@ -153,7 +153,8 @@ export class ExtendedFinanceCalculator extends LightElement {
     const data: Record<string, number> = {};
     const errors: Record<string, string> = {};
     for (const f of entries) {
-      const n = parseFinanceField(this.values[f.key] ?? '', f.unit);
+      const n = this.kind === 'retirement' && f.key === 'monthlyContribution' && this.retirementMode === 'goal'
+        ? 0 : parseFinanceField(this.values[f.key] ?? '', f.unit);
       data[f.key] = n;
       if (!Number.isFinite(n) || n < f.min || n > f.max || (f.integer && !Number.isInteger(n))) {
         errors[f.key] = f.integer ? `Informe um inteiro entre ${f.min} e ${f.max}.` : `Informe um valor entre ${f.min} e ${f.max}.`;
@@ -188,7 +189,9 @@ export class ExtendedFinanceCalculator extends LightElement {
   private goalPreview(): ReturnType<typeof simulateRetirement> | null {
     if (this.kind !== 'retirement' || this.retirementMode !== 'goal') return null;
     try {
-      const input = Object.fromEntries(configurations.retirement.fields.map(f => [f.key, parseFinanceField(this.values[f.key] ?? '', f.unit)])) as Record<string, number>;
+      const input = Object.fromEntries(configurations.retirement.fields.map(f => [
+        f.key, f.key === 'monthlyContribution' ? 0 : parseFinanceField(this.values[f.key] ?? '', f.unit)
+      ])) as Record<string, number>;
       if (!Number.isInteger(input.currentAge) || !Number.isInteger(input.retirementAge)) return null;
       return simulateRetirement({ ...input, mode: 'goal' } as unknown as Parameters<typeof simulateRetirement>[0]);
     } catch { return null; }
@@ -313,8 +316,11 @@ export class ExtendedFinanceCalculator extends LightElement {
       rows: out.data.monthlyRows.map(r => [String(r.month),money(r.buyWealth),money(r.rentWealth),money(r.payment),money(r.rentMonthly),money(r.loanBalance)]),
     };
     if (out.kind === 'amortization') return {
-      title: 'Parcelas com amortização extra', heads: ['Mês','Parcela total','Juros','Amortização normal','Extra','Saldo'],
-      rows: out.data.accelerated.rows.map(r => [String(r.month),money(r.payment),money(r.interest),money(r.amortization),money(r.extra),money(r.balance)]),
+      title: 'Antes e depois da amortização', heads: ['Mês','Parcela original','Parcela com extra','Juros com extra','Extra aplicado','Saldo original','Saldo com extra'],
+      rows: out.data.accelerated.rows.map((r,i) => [
+        String(r.month),money(out.data.baseline.rows[i]?.payment ?? 0),money(r.payment),
+        money(r.interest),money(r.extra),money(out.data.baseline.rows[i]?.balance ?? 0),money(r.balance)
+      ]),
     };
     return {
       title: 'Provisões e custos mensais da equipe',
@@ -329,7 +335,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   private details() {
     const out = this.output;
     if (!out) return nothing;
-    if (out.kind === 'retirement') return html`<p class="extended-detail">Renda desejada em valores de hoje: <strong>${money(parseFinanceField(this.values.desiredIncome ?? '0','R$'))}/mês</strong>. Renda necessária na data futura, corrigida pela inflação: <strong>${money(out.data.futureMonthlyIncome)}/mês</strong>. Capacidade projetada em valores de hoje: <strong>${money(out.data.projectedMonthlyIncomeToday)}/mês</strong>. ${out.data.gap > 0 ? html`Faltariam <strong>${money(out.data.gap)}</strong> para a meta.` : html`Meta de patrimônio atingida ou superada sob as premissas informadas.`}</p>`;
+    if (out.kind === 'retirement') return html`<p class="extended-detail">Renda desejada em valores de hoje: <strong>${money(out.data.requestedIncomeToday)}/mês</strong>. Renda necessária na data futura, corrigida pela inflação: <strong>${money(out.data.futureMonthlyIncome)}/mês</strong>. Capacidade projetada em valores de hoje: <strong>${money(out.data.projectedMonthlyIncomeToday)}/mês</strong>. ${out.data.gap > 0 ? html`Faltariam <strong>${money(out.data.gap)}</strong> para a meta.` : html`Meta de patrimônio atingida ou superada sob as premissas informadas.`}</p>`;
     if (out.kind === 'housing') return html`<p class="extended-detail">Entrada e custos iniciais: <strong>${money(out.data.initialCash)}</strong>. Valor financiado: <strong>${money(out.data.financed)}</strong>. Primeira prestação estimada: <strong>${money(out.data.firstPayment)}</strong>.</p>`;
     if (out.kind === 'amortization') return html`<p class="extended-detail">Sem extras: <strong>${money(out.data.baseline.totalInterest)}</strong> em juros e ${out.data.baseline.rows.length} parcelas. Com extras: <strong>${money(out.data.accelerated.totalInterest)}</strong> em juros e ${out.data.accelerated.rows.length} parcelas.</p>`;
     return html`<div class="extended-detail"><p>Equipe de <strong>${out.data.employees} ${out.data.employees===1?'pessoa':'pessoas'}</strong> · Custo equivalente a <strong>${out.data.multiplier.toLocaleString('pt-BR',{maximumFractionDigits:2})}×</strong> o salário mensal por funcionário. Custo por pessoa: <strong>${money(out.data.averageMonthlyCost)}/mês</strong>.</p>

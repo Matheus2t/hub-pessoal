@@ -103,6 +103,7 @@ export function simulateRetirement(input: RetirementInput) {
   const futureMonthlyCapacity = assets * withdrawalRate / 100 / 12;
   return {
     mode, months, points, monthlyRows,
+    requestedIncomeToday: roundCurrency(desiredIncome),
     usedMonthlyContribution: roundCurrency(usedMonthlyContribution),
     finalAssets: roundCurrency(assets),
     targetAssets: roundCurrency(targetAssets),
