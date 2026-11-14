@@ -8,6 +8,7 @@ import './form-field';
 import './metric-card';
 import './evolution-chart';
 import './results-table';
+import './year-navigation';
 
 type LoanRow = { month: number; payment: string; amortization: string; interest: string; balance: string };
 type LoanResult = { total_paid: string; total_interest: string; first_payment: string; last_payment: string; schedule: LoanRow[] };
@@ -55,6 +56,12 @@ export class FinanceCalculator extends LightElement {
     const result = this.result;
     const loan = result && 'schedule' in result ? result : undefined;
     const investment = result && 'evolution' in result ? result : undefined;
+    const yearRows = loan?.schedule.slice(this.tablePage * 12, (this.tablePage + 1) * 12) ?? [];
+    const yearInterest = yearRows.reduce((sum, row) => sum + Number(row.interest), 0);
+    const yearAmortized = yearRows.reduce((sum, row) => sum + Number(row.amortization), 0);
+    const yearPaid = yearRows.reduce((sum, row) => sum + Number(row.payment), 0);
+    const endingBalance = yearRows.at(-1)?.balance ?? '0';
+    const years = loan ? Math.ceil(loan.schedule.length / 12) : 0;
     return html`<div class="ws-page-heading"><h1>${title}</h1></div>
       <panel-workspace fixed-layout .area=${`calculator-${this.kind}`} .panels=${[
         {id:'form',title:'Simulação',required:true,essential:true,size:'small',resizable:false,role:'form'},
@@ -91,8 +98,34 @@ export class FinanceCalculator extends LightElement {
       <section slot="chart" class="workspace-panel">${investment?html`<evolution-chart .rows=${investment.evolution}></evolution-chart>`:nothing}</section>
       <section slot="table" class="workspace-panel">
         ${investment?html`<results-table .rows=${investment.evolution}></results-table>`:nothing}
-          ${loan ? html`<p class="disclaimer">Última parcela: ${money(loan.last_payment)}. ${this.kind === 'price' ? 'Parcelas fixas, com ajuste de centavos na última.' : 'Amortização constante, com ajuste de centavos na última parcela.'}</p>
-            <section class="panel table-panel"><details class="results-details"><summary>Parcelas e saldo devedor</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Tabela de amortização"><table><thead><tr><th scope="col">Mês</th><th scope="col">Parcela</th><th scope="col">Amortização</th><th scope="col">Juros</th><th scope="col">Saldo devedor</th></tr></thead><tbody>${loan.schedule.slice(this.tablePage * 12, this.tablePage * 12 + 12).map(row => html`<tr><td>${row.month}</td><td>${money(row.payment)}</td><td>${money(row.amortization)}</td><td>${money(row.interest)}</td><td>${money(row.balance)}</td></tr>`)}</tbody></table></div><div class="table-pagination"><button type="button" class="button secondary" ?disabled=${this.tablePage === 0} @click=${() => this.tablePage--}>Anterior</button><span>Página ${this.tablePage + 1} de ${Math.ceil(loan.schedule.length / 12)}</span><button type="button" class="button secondary" ?disabled=${(this.tablePage + 1) * 12 >= loan.schedule.length} @click=${() => this.tablePage++}>Próxima</button></div></details></section>` : nothing}
+          ${loan ? html`<section class="loan-ledger" aria-label="Parcelas e saldo devedor">
+            <header class="loan-ledger-header">
+              <div><span class="loan-ledger-eyebrow">DEMONSTRATIVO DO FINANCIAMENTO</span>
+                <h2>Parcelas e saldo devedor</h2>
+                <p>${this.kind === 'price' ? 'PRICE · parcelas regulares aproximadamente constantes, com juros decrescentes.' : 'SAC · amortização constante e parcelas que diminuem com o saldo.'}</p></div>
+              <span class="loan-ledger-total">${loan.schedule.length} parcelas</span>
+            </header>
+            <div class="loan-ledger-metrics" aria-label=${`Resumo financeiro do ano ${this.tablePage+1}`}>
+              <div><span>Pago no ano</span><strong>${money(yearPaid)}</strong></div>
+              <div><span>Juros no ano</span><strong>${money(yearInterest)}</strong></div>
+              <div><span>Amortizado no ano</span><strong>${money(yearAmortized)}</strong></div>
+              <div><span>Saldo ao fim do ano</span><strong>${money(endingBalance)}</strong></div>
+            </div>
+            <year-navigation .year=${this.tablePage+1} .years=${years}
+              .range=${`Meses ${this.tablePage*12+1}–${Math.min((this.tablePage+1)*12,loan.schedule.length)} de ${loan.schedule.length}`}
+              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
+            <div class="loan-ledger-scroll table-scroll" tabindex="0" role="region" aria-label="Parcelas mensais do financiamento">
+              <table><caption class="sr-only">Demonstrativo de parcelas e evolução do saldo devedor</caption>
+                <thead><tr><th scope="col">Mês</th><th scope="col">Parcela paga</th><th scope="col">Juros</th><th scope="col">Amortização</th><th scope="col">Saldo devedor</th></tr></thead>
+                <tbody>${yearRows.map(row=>html`<tr>
+                  <th scope="row">${row.month}</th><td>${money(row.payment)}</td><td>${money(row.interest)}</td>
+                  <td>${money(row.amortization)}</td><td class="loan-ledger-balance">${money(row.balance)}</td>
+                </tr>`)}</tbody>
+                <tfoot><tr><th scope="row">Total do período</th><td>${money(yearPaid)}</td><td>${money(yearInterest)}</td><td>${money(yearAmortized)}</td><td>${money(endingBalance)}</td></tr></tfoot>
+              </table>
+            </div>
+            <p class="loan-ledger-caption">Última parcela do contrato: ${money(loan.last_payment)}. A cobrança real pode incluir tarifas, seguros e tributos não simulados.</p>
+          </section>` : nothing}
 
       </section></panel-workspace>`;
   }
