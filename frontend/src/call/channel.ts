@@ -1,4 +1,4 @@
-import {callEndpoint,wakeSignaler} from './endpoint';
+import {callEndpoint,wakeSignaler,markSignalerResponsive} from './endpoint';
 import type {ChannelRequest,ChannelStatus,ServerMessage} from './protocol';
 import {callErrors} from './signaling';
 
@@ -28,12 +28,43 @@ async function readyEndpoint(signal:AbortSignal){
  return endpoint;
 }
 
+/** Query the public lobby immediately. A warm server needs no preliminary
+ * health check; a sleeping server falls back to the existing cold-start wait.
+ * The room identifier is never stored or cached across page loads. */
 export async function requestChannelLobby(signal:AbortSignal):Promise<ChannelStatus>{
- const endpoint=await readyEndpoint(signal);
- const url=new URL('/call/lobby',endpoint);url.protocol=endpoint.protocol==='wss:'?'https:':'http:';
- const response=await fetch(url,{signal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'});
- if(!response.ok)throw new Error(response.status===429?callErrors.rate_limited:callErrors.channel_unavailable);
- return response.json() as Promise<ChannelStatus>;
+ const endpoint=callEndpoint();
+ signal.throwIfAborted();
+ const url=new URL('/call/lobby',endpoint);
+ url.protocol=endpoint.protocol==='wss:'?'https:':'http:';
+
+ const fetchLobby=async(requestSignal:AbortSignal)=>{
+  const response=await fetch(url,{
+   signal:requestSignal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'
+  });
+  if(response.status===429)throw new Error(callErrors.rate_limited);
+  if(!response.ok)throw new Error(callErrors.channel_unavailable);
+  const result=await response.json() as ChannelStatus;
+  if(!result||result.type!=='channel')throw new Error(callErrors.channel_unavailable);
+  markSignalerResponsive(endpoint);
+  return result;
+ };
+ const quick=new AbortController(),abortQuick=()=>quick.abort();
+ signal.addEventListener('abort',abortQuick,{once:true});
+ // Only the initial fast path is bounded. Real cold starts retain the full
+ // on-demand 90-second wake window without permanent keep-alive requests.
+ const quickTimeout=window.setTimeout(abortQuick,5000);
+ try{
+  return await fetchLobby(quick.signal);
+ }catch(error){
+  signal.throwIfAborted();
+  if(error instanceof Error&&error.message===callErrors.rate_limited)throw error;
+ }finally{
+  clearTimeout(quickTimeout);
+  signal.removeEventListener('abort',abortQuick);
+ }
+ signal.throwIfAborted();
+ await readyEndpoint(signal);
+ return fetchLobby(signal);
 }
 
 /** One request on the existing protected WSS route. Never keeps an idle socket. */
