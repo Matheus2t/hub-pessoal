@@ -20,7 +20,7 @@ for (const width of [1366,390,320]) {
    const link=nav.getByRole('link',{name:label,exact:true});
    await expect(link).toHaveAttribute('href',href);
    await expect(link).toHaveCSS('display','flex');
-   await expect(link).toHaveCSS('border-top-style','solid');
+   await expect(link).toHaveCSS('border-bottom-style','solid');
    await expect(link).toHaveCSS('text-decoration-line','none');
   }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -45,7 +45,9 @@ test('Ações shortcuts open correct tools and highlight selected route',async({
   await expect(nav.getByRole('link',{name:label,exact:true})).toHaveAttribute('aria-current','page');
   await expect(nav.locator('[aria-current=page]')).toHaveCount(1);
   const current=nav.getByRole('link',{name:label,exact:true});
-  await expect(current).toHaveCSS('background-color',await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--text').trim()==='#efefef'?'rgb(239, 239, 239)':'rgb(25, 25, 25)'));
+  const selectedStyle=await current.evaluate(e=>{const style=getComputedStyle(e);return {borderColor:style.borderBottomColor,textColor:style.color,borderWidth:style.borderBottomWidth}});
+  expect(selectedStyle.borderWidth).toBe('2px');
+  expect(selectedStyle.borderColor).toBe(selectedStyle.textColor);
  }
  await page.goto('/#/acoes/ITUB4');
  await expect(page.getByRole('navigation',{name:'Ferramentas de análise'}).getByRole('link')).toHaveCount(5);

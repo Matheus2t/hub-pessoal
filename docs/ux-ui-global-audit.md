@@ -54,12 +54,13 @@ Tokens e componentes comuns; navegação e homepage; refinamentos focados nas fa
 | `npm run build` (TypeScript, esbuild e Sass) | Aprovado após os ajustes finais de SCSS |
 | Playwright: 15 specs relevantes, excluindo somente o smoke integrado HTML/API/resultado financeiro | 117 aprovados; 0 falhas |
 | Regressão dedicada `market-scroll.spec.ts` | O CI detectou conflito causado por `scroll-behavior: smooth` global; removido o comportamento global e repetida a suíte no Edge com provedor isolado: 13/13 aprovados nos cinco viewports e cenários de widgets/iframe |
+| Navegação Ações `market-nav.spec.ts` | O CI revelou asserções ainda vinculadas ao antigo destaque por fundo; adaptadas ao sublinhado ativo e aprovadas localmente no Edge: 4/4 |
 | Cobertura visual automatizada | Incluiu 320, 390, 600, 768, 1024, 1366, 1920 px e ambos os temas, nos specs aplicáveis |
 | `git diff --check` | Aprovado; Git emitiu apenas avisos de conversão LF/CRLF em arquivos existentes |
 | Pytest completo | Iniciado com `PYTHONPATH=backend`, mas não terminou: ficou sem progresso após os primeiros casos e foi interrompido. Resultado inconclusivo, não aprovado |
 | Smoke integrado `/api/health` + cálculo | Não executado com sucesso: o servidor estático local usado pela suíte retorna 404 para `/api/health`. Isso não testa o backend FastAPI integrado; a regressão de API permanece pendente |
 
-O teste Playwright integrado excluído exige frontend e API FastAPI disponíveis juntos. Não houve alteração de backend; por isso, o resultado da suíte não deve ser interpretado como validação da API. O CI original do primeiro commit também falhou na regressão de rolagem; a causa foi removida e os 13 casos passaram localmente no Edge. A nova execução de CI após o commit corretivo ainda deve ser acompanhada. A implantação e a validação de produção devem ser registradas separadamente após a publicação.
+O teste Playwright integrado excluído exige frontend e API FastAPI disponíveis juntos. Não houve alteração de backend; por isso, o resultado da suíte não deve ser interpretado como validação da API. O primeiro CI do PR encontrou a rolagem global concorrendo com os gestos de Ações; a correção passou os 13 casos de scroll no Edge e no segundo CI. Esse CI também identificou expectativas visuais antigas em `market-nav.spec.ts`; foram atualizadas para o destaque por sublinhado e os quatro casos passaram localmente. A nova execução de CI após esse ajuste ainda deve ser acompanhada. A implantação e a validação de produção devem ser registradas separadamente após a publicação.
 
 ### Pendências de homologação
 
