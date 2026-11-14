@@ -218,3 +218,33 @@ extended-finance-calculator { display:block; min-width:0; max-width:100%; }
   .extended-calculator .extended-chart-secondary strong { font-size: 12px; }
   .extended-calculator .extended-chart-terminal .extended-chart-legend { gap: 8px 12px; }
 }
+
+/* Goal-first retirement: desired income drives the required contribution. */
+.extended-calculator .retirement-intent {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--raised);margin-bottom:19px;}
+.extended-calculator .retirement-mode-button {border:1px solid transparent;border-radius:5px;background:transparent;color:var(--secondary);font:600 12px var(--font-body);padding:12px 9px;min-height:45px;cursor:pointer;}
+.extended-calculator .retirement-mode-button[aria-pressed=true] {background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.extended-calculator .retirement-mode-button:focus-visible {outline:2px solid var(--text);outline-offset:2px;}
+.extended-calculator .retirement-goal-preview {padding:19px 21px;margin-bottom:20px;background:var(--raised);border:1px solid var(--line);border-left:3px solid var(--text);border-radius:7px;}
+.extended-calculator .retirement-goal-preview > span {display:block;color:var(--secondary);font-size:10px;letter-spacing:.105em;font-weight:750;line-height:1.5;}
+.extended-calculator .retirement-goal-preview > strong {display:block;font-size:clamp(25px,2.7vw,40px);letter-spacing:-.06em;line-height:1.25;font-weight:680;color:var(--text);font-variant-numeric:tabular-nums;margin:6px 0;overflow-wrap:anywhere;}
+.extended-calculator .retirement-goal-preview strong small {font-size:13px;letter-spacing:0;color:var(--secondary);font-weight:500;margin-left:5px;}
+.extended-calculator .retirement-goal-preview p {font-size:12px;line-height:1.55;color:var(--secondary);}
+.extended-calculator .extended-table-top {display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap;}
+.extended-calculator .extended-table-top h2 {margin:4px 0 0;font-size:19px;}
+.extended-calculator .extended-table-kicker {font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--muted);}
+.extended-calculator .extended-table-count {color:var(--secondary);border:1px solid var(--line-soft);border-radius:6px;padding:8px 12px;font-size:11px;white-space:nowrap;}
+.extended-calculator .extended-table table {min-width:650px;}
+.extended-calculator .extended-table th {font-size:12px;}
+.extended-calculator .extended-table thead {background:var(--raised);}
+.extended-calculator .extended-table tbody th {font-weight:600;color:var(--secondary);padding:12px 13px;border-bottom:1px solid var(--line-soft);text-align:left;}
+.extended-calculator .extended-table tbody tr:hover {background:var(--hover);}
+.extended-calculator .extended-cost-breakdown {margin-top:14px;border-top:1px solid var(--line-soft);padding-top:8px;}
+.extended-calculator .extended-cost-breakdown summary {cursor:pointer;color:var(--text);font-weight:650;font-size:12px;padding:10px 0;}
+.extended-calculator .extended-cost-breakdown .table-scroll {overflow-x:auto;}
+.extended-calculator .extended-cost-breakdown table {width:100%;min-width:330px;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums;margin:5px 0 12px;}
+.extended-calculator .extended-cost-breakdown th,.extended-calculator .extended-cost-breakdown td {padding:9px 7px;border-bottom:1px solid var(--line-soft);}
+.extended-calculator .extended-cost-breakdown th {text-align:left;font-weight:500;}
+.extended-calculator .extended-cost-breakdown td {text-align:right;}
+.extended-calculator .extended-detail > p {margin:0;font-size:12px;color:var(--secondary);line-height:1.7;}
+.extended-calculator .extended-detail > p:last-child:not(:first-child) {margin-top:12px;}
+@media(max-width:600px){.extended-calculator .retirement-intent {grid-template-columns:minmax(0,1fr);}.extended-calculator .retirement-goal-preview {padding:16px;}.extended-calculator .extended-table-count {white-space:normal;}}
