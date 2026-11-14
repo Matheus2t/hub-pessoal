@@ -6,6 +6,7 @@ export interface LearnAudioAsset {
   id:string;language:Language;activityId:string;skill:AudioSkill;referenceText:string;
   locale:string;accent:string|null;source:string|null;licenseStatus:string;
   contentVersion:number;validationStatus:string;assessmentEnabled:boolean;assetUrl:string|null;
+  releaseType?:'public-study-only';sha256?:string;
 }
 export interface LearnAudioPolicy {
   audioAssessmentEnabled:boolean;validatedRecordings:number;generatedAtPlaybackIsDraft:boolean;publicRelease?:boolean;
@@ -33,7 +34,7 @@ export function parseLearnAudioManifest(value:unknown):LearnAudioManifest {
   if(typeof policy.audioAssessmentEnabled!=='boolean'||!Number.isInteger(policy.validatedRecordings)||Number(policy.validatedRecordings)<0||typeof policy.generatedAtPlaybackIsDraft!=='boolean'||(policy.publicRelease!==undefined&&typeof policy.publicRelease!=='boolean'))throw Error('Política de áudio inválida.');
   const ids=new Set<string>();
   const assets=value.assets.map((raw):LearnAudioAsset=>{
-    if(!isObject(raw)||!text(raw.id,160)||ids.has(raw.id)||!language(raw.language)||!text(raw.activityId,160)||!audioSkill(raw.skill)||typeof raw.referenceText!=='string'||raw.referenceText.length>6000||!text(raw.locale,40)||(raw.accent!==null&&!text(raw.accent,100))||(raw.source!==null&&!text(raw.source,1000))||!text(raw.licenseStatus,300)||!Number.isInteger(raw.contentVersion)||Number(raw.contentVersion)<1||!text(raw.validationStatus,100)||typeof raw.assessmentEnabled!=='boolean'||(raw.assetUrl!==null&&(!text(raw.assetUrl,600)||!safeLearnAudioUrl(raw.assetUrl))))throw Error('Registro de áudio inválido.');
+    if(!isObject(raw)||!text(raw.id,160)||ids.has(raw.id)||!language(raw.language)||!text(raw.activityId,160)||!audioSkill(raw.skill)||typeof raw.referenceText!=='string'||raw.referenceText.length>6000||!text(raw.locale,40)||(raw.accent!==null&&!text(raw.accent,100))||(raw.source!==null&&!text(raw.source,1000))||!text(raw.licenseStatus,300)||!Number.isInteger(raw.contentVersion)||Number(raw.contentVersion)<1||!text(raw.validationStatus,100)||typeof raw.assessmentEnabled!=='boolean'||(raw.assetUrl!==null&&(!text(raw.assetUrl,600)||!safeLearnAudioUrl(raw.assetUrl)))||(raw.releaseType!==undefined&&raw.releaseType!=='public-study-only')||(raw.sha256!==undefined&&(typeof raw.sha256!=='string'||!/^[a-f0-9]{64}$/i.test(raw.sha256))))throw Error('Registro de áudio inválido.');
     ids.add(raw.id);
     return raw as unknown as LearnAudioAsset;
   });
@@ -56,8 +57,19 @@ export function findLearnAudioAsset(manifest:LearnAudioManifest,language:Languag
   return manifest.assets.find(asset=>asset.language===language&&asset.skill===skill&&asset.activityId===activityId);
 }
 
+function isPublicStudyAudio(asset:LearnAudioAsset):boolean {
+  return asset.releaseType==='public-study-only'&&asset.skill==='listening'&&
+    asset.id===`catalog:${asset.language}:${asset.activityId}`&&
+    new RegExp(`^${asset.language}-listening-\\d{3}$`).test(asset.activityId)&&
+    asset.assetUrl===`/learn/audio/${asset.language}/${asset.activityId}.mp3`&&
+    asset.source==='Piper TTS 1.8.0; OHF-Voice CC0 voice-model chain; generated locally from the 2T exercise text.'&&
+    asset.licenseStatus==='CC0 voice-model/data chain (official Piper commercial-use list); exercise text authored in 2T'&&
+    asset.validationStatus==='technical-passed-study-only'&&asset.assessmentEnabled===false&&!!asset.sha256;
+}
+
 export function canPlayLearnAudio(asset:LearnAudioAsset|undefined,policy:LearnAudioPolicy,hostname=globalThis.location?.hostname||'',search=globalThis.location?.search||''):boolean {
   if(!asset?.assetUrl||!safeLearnAudioUrl(asset.assetUrl))return false;
+  if(isPublicStudyAudio(asset))return true;
   const localPreview=isLearnAudioFixturePreviewEnabled(hostname,search);
   if(asset.source==='test-fixture'&&asset.validationStatus==='fixture-unvalidated'&&asset.licenseStatus==='fixture-only')return localPreview;
   // Technical-only recordings may play in the authenticated loopback V19 workspace.
