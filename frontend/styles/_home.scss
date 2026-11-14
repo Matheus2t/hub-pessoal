@@ -1,100 +1,110 @@
-calculator-catalog { display:block; min-width:0; }
+/* Home: one clear entry into the platform, with an editorial two-row area map. */
 .main-content:has(home-page) { min-height:calc(100svh - 72px); display:flex; flex-direction:column; }
 .main-content:has(home-page) .page-footer { margin-top:auto; }
-/* 2T: vertical quick-access cards and discreet footer calendar. */
-home-page { display:flex; flex:1; flex-direction:column; justify-content:center; gap:28px; padding-block:24px 40px; }
-/* Keep the homepage hierarchy stable, including when an older JS bundle is still open. */
-home-page > .platform-intro { order: 0; }
-home-page > .home-call[href="#/call"] { order: 1; }
-home-page > .platform-areas { order: 2; }
-home-page > .home-call[href="#/games"] { order: 3; }
-.platform-intro { width: 100%; max-width: 1440px; margin-inline: auto; }
-.platform-areas { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; max-width:1440px; margin-inline:auto; gap:24px; align-items:stretch; }
-home-page .area-card { display:flex; flex-direction:column; align-items:stretch; aspect-ratio:3 / 4; min-height:0; height:auto; padding:clamp(20px,1.8vw,28px); gap:18px; border:1px solid var(--line-soft); border-radius:10px; background:var(--panel); }
-home-page .area-market { background: var(--panel); }
-home-page .area-content { display:flex; flex:1; min-width:0; flex-direction:column; align-items:stretch; justify-content:space-between; gap:24px; }
-home-page .area-icon { width: 32px; height: 32px; color: var(--secondary); }
-home-page .area-icon .icon { width: 32px; height: 32px; }
-home-page .area-copy h2 { font-size: clamp(20px,1.7vw,24px); font-weight: 600; letter-spacing: -.03em; margin-bottom: 10px; }
-home-page .area-copy p { font-size: 14px; max-width: 28ch; }
-home-page .area-preview { width: 100%; max-height: 125px; margin-top: auto; }
-home-page .area-access { padding-top: 16px; margin-top: auto; }
-home-page .area-card:hover { border-color: var(--border-highlight); }
-.platform-intro h1 { font-size: clamp(32px,3vw,42px); }
-@media(max-width:1199px) { .platform-areas { grid-template-columns: repeat(2,minmax(0,1fr)); max-width: 700px; } .platform-intro { max-width: 700px; } }
-@media(max-width:600px) { .platform-areas { grid-template-columns: minmax(0,1fr); max-width: 350px; gap: 20px; } .platform-intro { max-width: 350px; } home-page .area-card { padding: 24px; aspect-ratio: 3 / 4; } home-page { padding-block: 8px 28px; gap: 24px; } home-page .area-copy h2 { font-size: 23px; } }
-
-.area-preview { fill:none; color:var(--secondary); opacity:.7; transition:opacity var(--duration),transform var(--duration); }
-.preview-grid { stroke:var(--line-soft); stroke-width:1; }
+home-page { display:flex; flex:1; flex-direction:column; gap:20px; padding-block:8px 28px; }
+home-page > .platform-intro { order:0; width:100%; max-width:1440px; margin-inline:auto; }
+home-page > .home-call[href="#/call"] { order:1; }
+home-page > .platform-areas { order:2; }
+home-page > .home-call[href="#/games"] { order:3; }
+.platform-intro h1 { font-size:clamp(28px,3vw,40px); font-weight:590; letter-spacing:-.055em; line-height:1.12; }
+.platform-areas { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); width:100%; max-width:1440px; margin-inline:auto; gap:16px 20px; align-items:stretch; }
+.platform-areas::before { content:"Áreas"; grid-column:1/-1; margin:2px 0 1px; color:var(--secondary); font-size:13px; font-weight:560; letter-spacing:.01em; }
+home-page .area-card {
+  display:grid; grid-template-rows:auto 1fr auto; align-items:stretch; min-width:0; min-height:258px; height:auto;
+  padding:clamp(20px,2vw,28px); gap:13px; border:1px solid var(--line-soft); border-radius:var(--radius-lg); background:var(--panel);
+  transition:background var(--duration) var(--ease),border-color var(--duration) var(--ease),transform var(--duration) var(--ease);
+}
+home-page .area-calculators { grid-column:span 7; }
+home-page .area-market { grid-column:span 5; }
+home-page .area-fixed-income { grid-column:span 5; }
+home-page .area-learn { grid-column:span 7; }
+home-page .area-card:hover { border-color:var(--border-highlight); background:var(--raised); transform:translateY(-2px); }
+home-page .area-card:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+home-page .area-icon { width:32px; height:32px; color:var(--secondary); }
+home-page .area-icon .icon { width:30px; height:30px; }
+home-page .area-content { display:grid; grid-template-columns:minmax(0,1fr) minmax(130px,.62fr); align-items:end; gap:18px; min-width:0; }
+home-page .area-copy { align-self:start; min-width:0; }
+home-page .area-copy h2 { margin:0 0 8px; font-size:clamp(19px,1.7vw,24px); font-weight:580; letter-spacing:-.035em; line-height:1.22; }
+home-page .area-copy p { max-width:34ch; color:var(--secondary); font-size:13px; line-height:1.55; }
+home-page .area-preview { width:100%; max-height:98px; margin-top:auto; }
+.area-preview { fill:none; color:var(--secondary); opacity:.66; transition:opacity var(--duration),transform var(--duration); }
+.preview-grid { stroke:var(--line); stroke-width:1; }
 .preview-bars { stroke:var(--line); stroke-width:10; }
 .preview-line,.preview-wicks { stroke:currentColor; stroke-width:1.5; }
 .preview-candles { stroke:currentColor; stroke-width:7; }
-.area-access { display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line-soft); font-size:13px; }
-.area-arrow { font-size:21px; }
-.home-intro {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-.home-intro h1 { font-size: 36px; line-height: 1.2; font-weight: 600; letter-spacing: -0.04em; }
-.catalog-search { display: grid; gap: 8px; color: var(--secondary); font-size: 13px; min-width: 260px; }
-.catalog-search input { width: 100%; min-height: 44px; padding: 10px 14px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; font: inherit; }
-.catalog-search input:focus-visible { outline: 2px solid var(--detail); outline-offset: 3px; }
-.category-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.category-filters .button { min-height: 40px; padding: 8px 14px; border-color: transparent; border-radius: 6px; color: var(--secondary); }
-.category-filters [aria-pressed="true"] { background: var(--raised); color: var(--text); border-color: var(--line-soft); }
-.tool-collection { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-tool-card { height: 100%; }
-.tool-card {
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  height: 100%; min-height: 144px; padding: 28px; border: 1px solid var(--line-soft);
-  border-radius: 8px; background: var(--panel); color: var(--text); text-decoration: none;
-  transition: background var(--duration), border-color var(--duration);
-}
-.tool-card:hover { background: var(--raised); border-color: var(--line); }
-.tool-card:focus-visible { outline: 2px solid var(--detail); outline-offset: 4px; }
-.tool-card h2 { margin: 0 0 8px; font-size: 21px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.3; }
-.tool-card p { font-size: 14px; line-height: 1.5; color: var(--secondary); }
-.tool-arrow { display: grid; place-items: center; flex-shrink: 0; color: var(--muted); transition: color var(--duration), transform var(--duration); }
-.tool-arrow .icon { width: 18px; height: 18px; }
-.tool-card:hover .tool-arrow { color: var(--text); transform: translateX(3px); }
-@media (max-width: 700px) {
-  .home-intro { align-items: stretch; flex-direction: column; gap: 20px; }
-  .home-intro h1 { font-size: 30px; }
-  .catalog-search { min-width: 0; }
-  .tool-collection { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .tool-card { min-height: 120px; padding: 22px; gap: 16px; }
-  .tool-card h2 { font-size: 20px; }
-}
+home-page .area-card:hover .area-preview { opacity:1; transform:translateY(-2px); }
+home-page .area-access { display:flex; justify-content:space-between; align-items:center; min-height:34px; padding-top:10px; border-top:1px solid var(--line-soft); color:var(--secondary); font-size:12px; }
+home-page .area-arrow { color:var(--text); font-size:20px; line-height:1; }
 
-
-/* Direct 2T Call entry on the landing page, independent of the compact header. */
+/* Call and Games remain easy to reach without taking the visual weight of an area card. */
 home-page .home-call {
-  display: grid; grid-template-columns: 50px minmax(0, 1fr) auto;
-  align-items: center; gap: 22px;
-  width: 100%; max-width: 1440px; margin-inline: auto; min-height: 128px;
-  padding: 26px 30px; border: 1px solid var(--line-soft); border-radius: 10px;
-  background: var(--panel); color: var(--text);
-  text-decoration: none; transition: background var(--duration), border-color var(--duration);
+  display:grid; grid-template-columns:40px minmax(0,1fr) auto; align-items:center; gap:14px;
+  width:100%; max-width:1440px; min-height:78px; margin-inline:auto; padding:13px 17px;
+  border:1px solid var(--line-soft); border-radius:var(--radius); background:transparent; color:var(--text);
+  text-decoration:none; transition:background var(--duration),border-color var(--duration);
 }
-home-page .home-call:hover { background: var(--raised); border-color: var(--border-highlight); }
-home-page .home-call:focus-visible { outline: 2px solid var(--detail); outline-offset: 4px; }
-.home-call-icon { display: grid; place-items: center; width: 50px; height: 50px; border: 1px solid var(--line-soft); border-radius: 10px; color: var(--secondary); }
-.home-call-icon svg { width: 32px; height: 32px; }
-.home-call-copy { display: grid; min-width: 0; gap: 7px; }
-.home-call-copy strong { font-size: clamp(21px,2vw,26px); line-height: 1.2; font-weight: 600; letter-spacing: -.03em; }
-.home-call-copy > span { font-size: 14px; line-height: 1.5; color: var(--secondary); }
-.home-call-action { display: inline-flex; align-items: center; gap: 16px; padding-left: 20px; border-left: 1px solid var(--line-soft); font-size: 13px; }
-.home-call-action span { font-size: 23px; line-height: 1; }
-@media (max-width: 1199px) { home-page .home-call { max-width: 700px; } }
-@media (max-width: 600px) {
-  home-page { flex: initial; justify-content: flex-start; gap: 18px; padding-block: 8px 16px; }
-  home-page .home-call { max-width: 350px; grid-template-columns: 42px minmax(0,1fr); gap: 10px 14px; min-height: 0; padding: 18px; }
-  .home-call-icon { width: 42px; height: 42px; }
-  .home-call-icon svg { width: 28px; height: 28px; }
-  .home-call-copy strong { font-size: 21px; }
-  .home-call-copy > span { font-size: 12px; }
-  .home-call-action { grid-column: 2; padding: 0; border: 0; gap: 10px; }
+home-page .home-call:hover { background:var(--panel); border-color:var(--line); }
+home-page .home-call:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+.home-call-icon { display:grid; place-items:center; width:38px; height:38px; border:1px solid var(--line-soft); border-radius:var(--radius); color:var(--secondary); }
+.home-call-icon svg { width:25px; height:25px; }
+.home-call-copy { display:grid; min-width:0; gap:3px; }
+.home-call-copy strong { font-size:16px; line-height:1.25; font-weight:580; letter-spacing:-.02em; }
+.home-call-copy > span { color:var(--secondary); font-size:12px; line-height:1.45; }
+.home-call-action { display:inline-flex; align-items:center; gap:10px; padding-left:16px; border-left:1px solid var(--line-soft); color:var(--secondary); font-size:12px; white-space:nowrap; }
+.home-call-action span { color:var(--text); font-size:18px; line-height:1; }
+home-page .home-games-entry { min-height:62px; }
+home-page .home-games-entry .home-call-icon { width:34px; height:34px; border:0; }
+home-page .home-games-entry .home-call-icon svg { width:25px; height:25px; }
+
+/* Calculator catalogue uses the same hierarchy but keeps its task-specific grid. */
+.home-intro { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:24px; }
+.home-intro h1 { font-size:clamp(28px,3vw,36px); line-height:1.2; font-weight:600; letter-spacing:-.045em; }
+.catalog-search { display:grid; gap:8px; min-width:260px; color:var(--secondary); font-size:13px; }
+.catalog-search input { width:100%; min-height:44px; padding:10px 14px; border:1px solid var(--line); border-radius:var(--radius); background:var(--input); color:var(--text); font:inherit; }
+.catalog-search input:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+.category-filters { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; }
+.category-filters .button { min-height:40px; padding:8px 14px; border-color:transparent; border-radius:999px; color:var(--secondary); }
+.category-filters [aria-pressed="true"] { border-color:var(--line); background:var(--raised); color:var(--text); }
+.tool-collection { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+tool-card { height:100%; }
+.tool-card { display:flex; align-items:center; justify-content:space-between; gap:24px; height:100%; min-height:132px; padding:24px; border:1px solid var(--line-soft); border-radius:var(--radius); background:var(--panel); color:var(--text); text-decoration:none; transition:background var(--duration),border-color var(--duration),transform var(--duration); }
+.tool-card:hover { transform:translateY(-1px); background:var(--raised); border-color:var(--line); }
+.tool-card:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+.tool-card h2 { margin:0 0 7px; font-size:19px; font-weight:580; letter-spacing:-.025em; line-height:1.3; }
+.tool-card p { color:var(--secondary); font-size:13px; line-height:1.55; }
+.tool-arrow { display:grid; place-items:center; flex-shrink:0; color:var(--muted); transition:color var(--duration),transform var(--duration); }
+.tool-arrow .icon { width:18px; height:18px; }
+.tool-card:hover .tool-arrow { color:var(--text); transform:translateX(3px); }
+
+@media(max-width:1199px) {
+  .platform-areas { gap:14px; }
+  home-page .area-calculators,home-page .area-market,home-page .area-fixed-income,home-page .area-learn { grid-column:span 6; }
+  home-page .area-card { min-height:240px; }
+  home-page .area-content { grid-template-columns:minmax(0,1fr) minmax(100px,.55fr); }
 }
+@media(max-width:700px) {
+  .main-content:has(home-page) { min-height:0; padding-top:20px; }
+  .main-content:has(home-page) .page-footer { margin-top:16px; padding-top:12px; }
+  home-page { flex:initial; gap:14px; padding-block:2px 16px; }
+  home-page .area-calculators,home-page .area-market,home-page .area-fixed-income,home-page .area-learn { grid-column:1/-1; }
+  home-page .area-card { min-height:206px; padding:19px; }
+  home-page .area-content { grid-template-columns:minmax(0,1fr) minmax(100px,.48fr); gap:12px; }
+  home-page .area-copy h2 { font-size:20px; }
+  home-page .area-copy p { font-size:13px; }
+  home-page .area-preview { max-height:76px; }
+  home-page .home-call { grid-template-columns:38px minmax(0,1fr); gap:9px 12px; min-height:0; padding:13px; }
+  home-page .home-call-action { grid-column:2; padding:0; border:0; }
+  .home-intro { align-items:stretch; flex-direction:column; gap:16px; }
+  .catalog-search { min-width:0; }
+  .tool-collection { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .tool-card { min-height:112px; padding:19px; gap:15px; }
+  .tool-card h2 { font-size:18px; }
+}
+@media(max-width:360px) {
+  .platform-areas { gap:10px; }
+  home-page .area-card { min-height:190px; padding:15px; }
+  home-page .area-content { grid-template-columns:minmax(0,1fr) 86px; gap:8px; }
+  home-page .area-preview { max-height:65px; }
+  home-page .area-copy p { font-size:12px; }
+}
+@media(prefers-reduced-motion:reduce) { home-page .area-card:hover,.tool-card:hover { transform:none; } }

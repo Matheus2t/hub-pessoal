@@ -72,6 +72,14 @@
 .termo-hint button:hover {color:var(--text)}
 .termo-hint button span {font-size:19px}
 .termo-hint strong {color:var(--text)}
+@media(max-width:480px) {
+  .termo-topline { align-items:flex-start; flex-wrap:wrap; gap:12px; padding:14px; }
+  .termo-topline > div:first-child { width:100%; min-width:0; }
+  .termo-levels { flex-wrap:wrap; }
+  .termo-score { justify-content:flex-start; gap:22px; }
+  .termo-play { padding:18px 10px; }
+  .termo-keyboard { width:100%; }
+}
 
 /* 2048 — distinct high-contrast tiles and an uncluttered game-first layout. */
 .game-2048 {max-width:1070px}

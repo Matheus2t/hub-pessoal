@@ -859,9 +859,9 @@ evolution-chart .chart-readout {
   gap: 6px 16px;
   margin: 0;
   padding: 20px 21px 13px;
-  background: #090c10;
-  color: #edf1f5;
-  border: 1px solid #303843;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line-soft);
   border-bottom: 0;
   border-radius: 10px 10px 0 0;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
@@ -869,7 +869,7 @@ evolution-chart .chart-readout {
 }
 evolution-chart .chart-readout > span {
   grid-column: 1/-1;
-  color: #8d9bad;
+  color: var(--muted);
   letter-spacing: .1em;
   font-size: 10px;
   font-weight: 650;
@@ -878,13 +878,13 @@ evolution-chart .chart-readout > strong {
   font-size: clamp(19px, 2.1vw, 28px);
   letter-spacing: -.045em;
   font-weight: 650;
-  color: #f2f5f8;
+  color: var(--text);
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
 evolution-chart .chart-readout > small {
   font-size: 11px;
-  color: #9dabbb;
+  color: var(--secondary);
   min-width: 0;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -893,16 +893,16 @@ evolution-chart .chart-readout > small b {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #e3e9ef;
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 evolution-chart .chart-plot {
   order: 2;
   padding: 0 11px 8px;
-  border: 1px solid #303843;
+  border: 1px solid var(--line-soft);
   border-top: 0;
   border-radius: 0 0 10px 10px;
-  background: #090c10;
+  background: var(--panel);
   overflow: hidden;
 }
 evolution-chart .evolution-svg {
@@ -914,28 +914,28 @@ evolution-chart .evolution-svg {
   overflow: hidden;
 }
 evolution-chart .chart-axis {
-  fill: #8694a4;
+  fill: var(--muted);
   font-size: 11px;
   font-weight: 500;
 }
 evolution-chart .chart-grid {
-  stroke: #303743;
+  stroke: var(--line);
   stroke-dasharray: 3 5;
   stroke-width: .75;
 }
 evolution-chart .chart-balance {
-  stroke: #f0f3f8;
+  stroke: var(--text);
   stroke-width: 2.5;
   vector-effect: non-scaling-stroke;
 }
 evolution-chart .chart-invested {
-  stroke: #9fadb9;
+  stroke: var(--secondary);
   stroke-width: 1.9;
   stroke-dasharray: 6 4;
   vector-effect: non-scaling-stroke;
 }
 evolution-chart .chart-interest {
-  stroke: #72959d;
+  stroke: var(--muted);
   stroke-width: 1.75;
   stroke-dasharray: 3 5;
   vector-effect: non-scaling-stroke;
@@ -945,7 +945,7 @@ evolution-chart .chart-invested.is-inspected,
 evolution-chart .chart-interest.is-inspected { stroke-width: 3.1; }
 evolution-chart .chart-cursor,
 evolution-chart .chart-cursor-horizontal {
-  stroke: #9ba6b4;
+  stroke: var(--border-highlight);
   stroke-dasharray: 3 5;
   stroke-width: .9;
   vector-effect: non-scaling-stroke;
@@ -953,23 +953,23 @@ evolution-chart .chart-cursor-horizontal {
 }
 evolution-chart .chart-cursor-horizontal { opacity: .55; }
 evolution-chart .chart-point {
-  fill: #090c10;
-  stroke: #f3f6f9;
+  fill: var(--panel);
+  stroke: var(--text);
   stroke-width: 2.6;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 evolution-chart .chart-tooltip {
-  background: #151b23;
-  border: 1px solid #46515e;
-  color: #f2f5f8;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--text);
   border-radius: 7px;
   box-shadow: 0 10px 25px rgba(0,0,0,.28);
   padding: 11px 13px;
   z-index: 2;
 }
-evolution-chart .chart-tooltip span { color: #aebac7; }
-evolution-chart .chart-tooltip strong { color: #f4f6f8; }
+evolution-chart .chart-tooltip span { color: var(--secondary); }
+evolution-chart .chart-tooltip strong { color: var(--text); }
 evolution-chart .chart-legend {
   order: 3;
   display: grid;
@@ -997,9 +997,9 @@ evolution-chart .chart-legend-item.is-active {
   border-color: var(--line);
   background: var(--panel);
 }
-evolution-chart .legend-dot.balance { background: #e5eaf0; }
-evolution-chart .legend-dot.invested { border-top-color: #9fadb9; }
-evolution-chart .legend-dot.interest { border-top-color: #72959d; }
+evolution-chart .legend-dot.balance { background: var(--text); }
+evolution-chart .legend-dot.invested { border-top-color: var(--secondary); }
+evolution-chart .legend-dot.interest { border-top-color: var(--muted); }
 evolution-chart .chart-slider {
   order: 4;
   display: flex;

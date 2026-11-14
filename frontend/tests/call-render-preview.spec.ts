@@ -52,7 +52,11 @@ test('HTTPS deployment loads Render configuration and refuses unauthenticated ro
  for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   await page.setViewportSize({width,height:950});await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Call',exact:true})).toHaveCount(0);
+  const nav=page.getByRole('navigation',{name:'Navegação principal'});
+  await expect(nav.getByRole('link',{name:'Call',exact:true})).toHaveCount(0);
+  await nav.locator('.areas-menu summary').click();
+  await expect(nav.getByRole('link',{name:'Call',exact:true})).toBeVisible();
+  await page.keyboard.press('Escape');
   if((width===1366&&theme==='dark')||(width===320&&theme==='light'))await page.screenshot({path:test.info().outputPath(`preview-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
  }
  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início',exact:true}).click();

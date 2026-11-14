@@ -11,6 +11,7 @@
 html {
   background: var(--bg);
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
 }
 body {
   margin: 0;
@@ -25,7 +26,8 @@ body {
 }
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 button,
@@ -65,7 +67,7 @@ summary {
     box-shadow var(--duration) var(--ease);
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus);
   outline-offset: 4px;
 }
 main:focus {
@@ -110,19 +112,19 @@ results-table {
 }
 .panel {
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--panel);
   box-shadow: var(--shadow);
 }
 .button {
-  min-height: 42px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-3);
   padding: 10px 18px;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.45;
@@ -135,6 +137,7 @@ results-table {
 .primary:hover:not(:disabled) {
   background: var(--accent-hover);
   box-shadow: var(--shadow);
+  transform: translateY(-1px);
 }
 .secondary {
   background: transparent;
@@ -146,14 +149,14 @@ results-table {
   color: var(--text);
 }
 .icon-button {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--line);
   background: var(--panel);
   color: var(--secondary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
 }
 .icon-button:hover {
   color: var(--accent);
@@ -166,7 +169,7 @@ results-table {
   padding: 5px 10px;
   background: var(--accent-soft);
   color: var(--accent);
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   font-size: var(--text-sm);
   font-weight: 600;
 }
@@ -256,6 +259,7 @@ results-table {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *,
   *::before,
   *::after {

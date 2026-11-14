@@ -118,3 +118,20 @@ test("Sudoku destaca contexto e mostra progresso",async ({page})=>{
   await expect(page.locator(".arcade-sudoku .sudoku-cell").nth(12)).toHaveClass(/selected/);
   expect(await page.locator(".arcade-sudoku .sudoku-cell.related").count()).toBeGreaterThan(10);
 });
+
+test("TERMO cabe em celulares estreitos nos dois temas",async({page})=>{
+ for(const width of [320,390])for(const theme of ["dark","light"]){
+  await page.setViewportSize({width,height:844});
+  await page.goto("/#/games/palavra-secreta");
+  await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
+  await expect(page.locator(".termo-topline")).toBeVisible();
+  await expect(page.locator(".termo-keyboard .termo-key")).toHaveCount(26);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  for(const selector of [".termo-topline",".termo-play",".termo-keyboard"]){
+   const box=await page.locator(selector).boundingBox();
+   expect(box).not.toBeNull();
+   expect(box!.x).toBeGreaterThanOrEqual(0);
+   expect(box!.x+box!.width).toBeLessThanOrEqual(width+1);
+  }
+ }
+});

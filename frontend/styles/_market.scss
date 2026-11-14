@@ -199,22 +199,28 @@ market-page.market-terminal .market-quotes-frame {
 /* Scoped Ações sub-navigation. Keep other workspaces and the TradingView surface intact. */
 market-page.market-terminal .ws-analysis-links {
   display: flex;
-  align-items: stretch;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0 22px;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 4px;
+  margin: 10px 0 20px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--line-soft);
   font-size: 13px;
 }
 market-page.market-terminal .ws-analysis-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 11px 15px;
-  min-height: 42px;
+  flex: 0 0 auto;
+  padding: 10px 13px;
+  min-height: 40px;
   min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--panel);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
   color: var(--secondary);
   text-align: center;
   text-decoration: none;
@@ -224,30 +230,23 @@ market-page.market-terminal .ws-analysis-links a {
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 market-page.market-terminal .ws-analysis-links a:hover {
-  background: var(--raised);
-  border-color: var(--secondary);
+  background: var(--hover);
+  border-bottom-color: var(--secondary);
   color: var(--text);
 }
 market-page.market-terminal .ws-analysis-links a:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
   color: var(--text);
 }
 market-page.market-terminal .ws-analysis-links a[aria-current="page"] {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
+  border-bottom-color:var(--text);
+  color:var(--text);
   cursor: default;
 }
 @media (max-width: 600px) {
-  market-page.market-terminal .ws-analysis-links a {
-    flex: 1 1 calc(50% - 8px);
-  }
-}
-@media (max-width: 360px) {
-  market-page.market-terminal .ws-analysis-links a {
-    flex-basis: 100%;
-  }
+  market-page.market-terminal .ws-analysis-links { gap:2px; }
+  market-page.market-terminal .ws-analysis-links a { padding-inline:10px; font-size:12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   market-page.market-terminal .ws-analysis-links a { transition: none; }

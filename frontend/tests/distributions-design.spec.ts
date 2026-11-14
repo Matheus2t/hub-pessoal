@@ -37,7 +37,7 @@ for(const width of [1366,768,390,320]) {
   await expect(listing.getByRole('heading',{name:'Resultados da consulta'})).toBeVisible();
   await expect(listing.locator('.dp-results-content tbody tr')).toHaveCount(25);
   await expect(listing.locator('.dp-results-counter')).toContainText('26 registros');
-  await listing.getByLabel('Empresa',{exact:true}).selectOption('PETR4');
+  await listing.getByRole('combobox',{name:'Empresa',exact:true}).selectOption('PETR4');
   await expect(listing.locator('.dp-results-content tbody')).toContainText('PETR4');
   await listing.getByRole('button',{name:'Calendário',exact:true}).click();
   await expect(listing.locator('.distribution-month')).toBeVisible();

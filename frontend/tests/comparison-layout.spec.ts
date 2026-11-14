@@ -29,7 +29,7 @@ for (const width of [1366,768,390,320]){
   await expect(compare.locator('.cvm-history-table caption')).toContainText('Receita');
   await page.evaluate(()=>document.documentElement.dataset.theme='light');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(compare.locator('.cvm-selection')).toHaveCSS('background-color','rgb(242, 242, 242)');
+  await expect(compare.locator('.cvm-selection')).toHaveCSS('background-color','rgb(255, 255, 255)');
   const l=compare.locator('.cvm-table-scroll');
   await l.evaluate(el=>el.scrollLeft=999);
   expect(await l.evaluate(el=>el.scrollLeft)).toBeGreaterThanOrEqual(0);
