@@ -9,7 +9,7 @@ export const GAMES: {id:GameId;name:string;category:string;description:string;gl
   {id:"2048",name:"2048",category:"Estratégia",description:"Combine peças e alcance 2048.",glyph:"2048"},
   {id:"breakout",name:"Breakout",category:"Arcade",description:"Rebata a bola e destrua os blocos.",glyph:"▤"},
   {id:"pong",name:"Pong",category:"Arcade",description:"Dispute uma partida contra a máquina.",glyph:"◦"},
-  {id:"palavra-secreta",name:"Palavra Secreta",category:"Palavras",description:"Descubra palavras com níveis progressivos.",glyph:"ABC"},
+  {id:"palavra-secreta",name:"Termo",category:"Palavras",description:"Descubra a palavra em até seis tentativas.",glyph:"ABC"},
   {id:"digitacao",name:"Digitação",category:"Habilidade",description:"Teste velocidade e precisão no teclado.",glyph:"⌨"},
   {id:"jogo-da-velha",name:"Jogo da Velha",category:"Estratégia",description:"Desafie a máquina ou um amigo.",glyph:"×○"},
   {id:"reflexos",name:"Reflexos",category:"Habilidade",description:"Meça o tempo de reação em milissegundos.",glyph:"◎"},
@@ -44,7 +44,7 @@ const preview=(id:GameId)=>{
     case "2048": return html`<div class="game-art-2048"><span>2</span><span>4</span><span>8</span><span>16</span></div>`;
     case "breakout": return html`<div class="game-art-breakout"><div class="game-art-bricks">${Array.from({length:15},(_,i)=>html`<i class=${i%5===1?"soft":""}></i>`)}</div><b></b><span></span></div>`;
     case "pong": return html`<div class="game-art-pong"><span class="paddle-left"></span><i></i><span class="paddle-right"></span><b></b></div>`;
-    case "palavra-secreta": return html`<div class="game-art-word"><span>P</span><span>_</span><span>A</span><span>_</span><span>R</span><span>_</span></div>`;
+    case "palavra-secreta": return html`<div class="game-art-word"><span>T</span><span>E</span><span>R</span><span>M</span><span>O</span></div>`;
     case "digitacao": return html`<div class="game-art-typing"><span>const progress = true;</span><span>focus · accuracy · speed</span><i></i></div>`;
     case "jogo-da-velha": return html`<div class="game-art-tic">${["X","","O","","X","","O","","X"].map(v=>html`<span>${v}</span>`)}</div>`;
     case "reflexos": return html`<div class="game-art-reflex"><span></span><i></i><strong>0.248</strong><small>SEG</small></div>`;
