@@ -1,0 +1,401 @@
+/* Renda Fixa — experiência focada: entrada, resultado e evolução.
+   Mantém todas as funcionalidades existentes e reduz o peso visual dos detalhes. */
+
+.fixed-workspace .rf-page.rf-minimal { min-width: 0; }
+.fixed-workspace .rf-minimal .rf-hero {
+  padding: 0 0 21px;
+}
+.fixed-workspace .rf-minimal .rf-hero h1 {
+  font-size: clamp(29px, 3vw, 37px);
+  line-height: 1.12;
+  margin: 0 0 7px;
+  font-weight: 650;
+  letter-spacing: -.045em;
+}
+.fixed-workspace .rf-minimal .rf-hero p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--secondary);
+  margin: 0;
+}
+.fixed-workspace .rf-minimal .rf-results > .workspace-panel {
+  min-height: 0;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+.fixed-workspace .rf-minimal .rf-results > [slot="form"],
+.fixed-workspace .rf-minimal .rf-results > [slot="empty"],
+.fixed-workspace .rf-minimal .rf-results > [slot="summary"] {
+  padding: 22px 23px;
+  background: var(--panel);
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  height: 100%;
+  min-height: 0;
+}
+.fixed-workspace .rf-minimal .rf-section-header {
+  border: 0;
+  padding: 0;
+  margin-bottom: 17px;
+  align-items: center;
+}
+.fixed-workspace .rf-minimal .rf-section-header h2 {
+  font-size: 16px;
+  font-weight: 630;
+  margin: 2px 0 0;
+  letter-spacing: -.025em;
+}
+.fixed-workspace .rf-minimal .rf-eyebrow {
+  font-size: 9px;
+  letter-spacing: .105em;
+  color: var(--muted);
+}
+.fixed-workspace .rf-minimal .rf-reset {
+  border: 0;
+  background: transparent;
+  padding: 6px 7px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-fields {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px 14px;
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-field {
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 550;
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-field > span small {
+  font-size: 10px;
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-field :is(input,select) {
+  min-height: 43px;
+  border-radius: 5px;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-weight: 550;
+  background: var(--raised);
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-cost-inputs {
+  margin-top: 9px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line-soft);
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-cost-inputs > summary {
+  font-size: 11px;
+  padding: 7px 0;
+  font-weight: 550;
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-advanced-fields > .rf-fields {
+  margin: 11px 0 8px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-date-field {
+  max-width: 100%;
+  margin-top: 12px;
+}
+.fixed-workspace .rf-minimal .rf-simulation-actions {
+  border: 0;
+  padding: 0;
+  margin-top: 15px;
+}
+.fixed-workspace .rf-minimal .rf-simulation .rf-primary-action {
+  min-height: 45px;
+  font-size: 12px;
+  font-weight: 630;
+  border-radius: 6px;
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-result-meta,
+.fixed-workspace .rf-minimal .rf-result-meta {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-section-header { margin-bottom: 12px; }
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics {
+  display: grid;
+  gap: 0 15px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics > div {
+  min-width: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics > .rf-primary {
+  grid-column: 1 / -1;
+  border: 0;
+  padding: 3px 0 16px;
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics dt {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--secondary);
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics dd {
+  margin: 5px 0 0;
+  font-size: clamp(17px,1.65vw,22px);
+  font-weight: 620;
+  letter-spacing: -.035em;
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-metrics .rf-primary dd {
+  font-size: clamp(30px,3.2vw,43px);
+  font-weight: 660;
+  letter-spacing: -.055em;
+}
+.fixed-workspace .rf-minimal .rf-result-panel .rf-rescue {
+  margin: 13px 0 0;
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--line-soft);
+  background: none;
+  padding: 11px 0 0;
+  color: var(--secondary);
+  line-height: 1.45;
+  font-size: 11px;
+}
+.fixed-workspace .rf-minimal .rf-result-empty .rf-empty-balance {
+  padding: 9px 0 4px;
+  gap: 5px;
+}
+.fixed-workspace .rf-minimal .rf-empty-balance strong { font-size: clamp(38px,4vw,49px); }
+.fixed-workspace .rf-minimal .rf-result-empty .rf-empty {
+  padding: 0 0 10px;
+  font-size: 12px;
+}
+.fixed-workspace .rf-minimal .rf-empty-metrics { gap: 12px; }
+.fixed-workspace .rf-minimal .rf-empty-metrics > div { padding: 14px 0 0; }
+.fixed-workspace .rf-minimal .rf-empty-metrics strong { font-size: 18px; }
+
+.fixed-workspace .rf-minimal .rf-results > [slot="chart"] {
+  padding: 9px 0 14px;
+}
+.fixed-workspace .rf-minimal .rf-chart-panel .rf-chart-caption {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.fixed-workspace .rf-minimal .rf-chart-panel fixed-income-chart .rf-chart figcaption {
+  margin-bottom: 9px;
+}
+.fixed-workspace .rf-minimal .rf-chart-terminal .rf-chart-title > span {
+  display: none;
+}
+.fixed-workspace .rf-minimal .rf-chart-terminal .rf-chart-title > strong {
+  font-size: 15px;
+  font-weight: 620;
+}
+.fixed-workspace .rf-minimal .rf-chart-panel .rf-chart-legend {
+  border: 0;
+  padding: 0;
+  gap: 7px;
+  margin-top: 8px;
+}
+.fixed-workspace .rf-minimal .rf-chart-terminal .rf-chart-legend li {
+  padding: 9px 10px;
+  border-radius: 6px;
+  border-color: var(--line-soft);
+  background: transparent;
+}
+
+/* O bloco de detalhes é uma lista silenciosa, não outro dashboard. */
+.fixed-workspace .rf-minimal .rf-more-heading {
+  margin: 9px 0 9px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 630;
+  color: var(--secondary);
+  letter-spacing: -.01em;
+}
+.fixed-workspace .rf-minimal .rf-results > [slot="taxes"],
+.fixed-workspace .rf-minimal .rf-results > [slot="table"],
+.fixed-workspace .rf-minimal .rf-results > [slot="tools"],
+.fixed-workspace .rf-minimal .rf-results > [slot="comparison"] {
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0;
+  padding: 0 !important;
+  margin: 0;
+  width: 100%;
+  overflow: visible;
+}
+.fixed-workspace .rf-minimal .rf-results > [slot="taxes"] {
+  border-top: 0;
+}
+.fixed-workspace .rf-minimal .rf-breakdown,
+.fixed-workspace .rf-minimal .rf-evolution,
+.fixed-workspace .rf-minimal .rf-tool-drawer,
+.fixed-workspace .rf-minimal .rf-comparison-section { margin: 0; border: 0; padding: 0; }
+.fixed-workspace .rf-minimal .rf-breakdown > summary,
+.fixed-workspace .rf-minimal .rf-evolution > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 4px;
+  margin: 0;
+  min-height: 47px;
+  font-size: 13px;
+  font-weight: 565;
+  color: var(--text);
+  list-style: none;
+  cursor: pointer;
+}
+.fixed-workspace .rf-minimal .rf-breakdown > summary::-webkit-details-marker,
+.fixed-workspace .rf-minimal .rf-evolution > summary::-webkit-details-marker { display: none; }
+.fixed-workspace .rf-minimal .rf-breakdown > summary::after,
+.fixed-workspace .rf-minimal .rf-evolution > summary::after {
+  content: '⌄';
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--secondary);
+  line-height: 1;
+  transform: rotate(0deg);
+}
+.fixed-workspace .rf-minimal .rf-breakdown[open] > summary::after,
+.fixed-workspace .rf-minimal .rf-evolution[open] > summary::after { transform: rotate(180deg); }
+.fixed-workspace .rf-minimal .rf-tool-drawer > summary,
+.fixed-workspace .rf-minimal .rf-comparison-section > summary {
+  min-height: 47px;
+  padding: 13px 4px;
+  margin: 0;
+  gap: 14px;
+  font-weight: 565;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.fixed-workspace .rf-minimal .rf-utility-panel :is(.rf-tool-drawer,.rf-comparison-section) > summary strong {
+  font-size: 13px;
+  font-weight: 565;
+  letter-spacing: 0;
+}
+.fixed-workspace .rf-minimal .rf-utility-panel .rf-utility-index,
+.fixed-workspace .rf-minimal .rf-utility-panel :is(.rf-tool-drawer,.rf-comparison-section) > summary small {
+  display: none;
+}
+.fixed-workspace .rf-minimal .rf-utility-panel :is(.rf-tool-drawer,.rf-comparison-section)[open] > summary {
+  background: none;
+}
+.fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools,
+.fixed-workspace .rf-minimal .rf-comparison-section > fixed-income-comparison {
+  padding: 15px 0 18px;
+  border: 0;
+}
+.fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools > .rf-panel {
+  padding: 16px 15px 19px;
+  min-height: 0;
+  background: var(--panel);
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+}
+.fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools > .rf-tool-equivalent {
+  border-left: 1px solid var(--line-soft);
+}
+.fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools {
+  gap: 12px;
+}
+.fixed-workspace .rf-minimal .rf-tool-inner-title h2 {
+  font-size: 17px;
+  margin-top: 4px;
+}
+.fixed-workspace .rf-minimal .rf-breakdown[open] dl {
+  margin: 0;
+  padding: 5px 4px 18px;
+}
+.fixed-workspace .rf-minimal .rf-evolution[open] > :not(summary) {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.fixed-workspace .rf-minimal .rf-evolution .rf-table-wrap {
+  margin-top: 0;
+}
+.fixed-workspace .rf-minimal .rf-assumptions {
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
+  margin-top: 0;
+}
+.fixed-workspace .rf-minimal .rf-assumptions > summary {
+  min-height: 47px;
+  padding: 13px 4px;
+  font-size: 13px;
+}
+.fixed-workspace .rf-minimal .rf-assumptions > summary strong { font-weight: 565; font-size: 13px; }
+.fixed-workspace .rf-minimal .rf-assumptions > summary small { display: none; }
+.fixed-workspace .rf-minimal .rf-assumptions-content {
+  border-top: 0;
+  padding: 9px 4px 20px;
+}
+.fixed-workspace .rf-minimal .rf-assumptions-content p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.fixed-workspace .rf-minimal .rf-chart-terminal .rf-chart-slider { margin-top: 8px; }
+.fixed-workspace .rf-minimal :is(summary,button,input,select):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+@media (max-width: 900px) {
+  .fixed-workspace .rf-minimal .rf-results > [slot="form"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="summary"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="empty"] { height: auto; }
+}
+@media (max-width: 600px) {
+  .fixed-workspace .rf-minimal .rf-hero { padding-bottom: 16px; }
+  .fixed-workspace .rf-minimal .rf-hero h1 { font-size: 29px; }
+  .fixed-workspace .rf-minimal .rf-results > [slot="form"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="empty"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="summary"] { padding: 18px 15px; }
+  .fixed-workspace .rf-minimal .rf-simulation .rf-fields { grid-template-columns: 1fr; gap: 12px; }
+  .fixed-workspace .rf-minimal .rf-simulation .rf-advanced-fields > .rf-fields { grid-template-columns: 1fr; }
+  .fixed-workspace .rf-minimal .rf-result-panel .rf-metrics .rf-primary dd { font-size: 33px; }
+  .fixed-workspace .rf-minimal .rf-result-panel .rf-metrics dd { font-size: 18px; }
+  .fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools { grid-template-columns: 1fr; }
+  .fixed-workspace .rf-minimal .rf-tool-drawer > fixed-income-tools > .rf-panel { padding: 16px; }
+  .fixed-workspace .rf-minimal .rf-chart-panel { padding: 0; }
+  .fixed-workspace .rf-minimal .rf-chart-terminal .rf-chart-head { gap: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fixed-workspace .rf-minimal .rf-breakdown > summary::after,
+  .fixed-workspace .rf-minimal .rf-evolution > summary::after { transition: none; }
+}
+
+/* Layout das células (declaradas dentro do shadow DOM do workspace). */
+:host([area="fixed-income-simulator"]) .ws-grid {
+  gap: 0 14px;
+  align-items: start;
+}
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="form"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="summary"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="empty"] {
+  grid-column: span 6 !important;
+  grid-row: auto !important;
+  align-self: stretch;
+  padding-bottom: 13px;
+}
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="chart"] {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+  padding-bottom: 20px;
+}
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="taxes"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="table"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="tools"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="comparison"] {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+}
+@media (max-width: 900px) {
+  :host([area="fixed-income-simulator"]) .ws-cell {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+}

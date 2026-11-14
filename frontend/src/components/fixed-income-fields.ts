@@ -8,6 +8,7 @@ import {newInvestment,type InvestmentDraft,type NumericKey} from '../fixed-incom
 export class FixedIncomeFields extends LightElement {
   @property({attribute:false}) draft:InvestmentDraft=newInvestment();
   @property({type:Boolean}) shared=false;
+  @property({type:Boolean}) compact=false;
   private change(key:keyof InvestmentDraft,value:string) {
     const next={...this.draft,[key]:value};
     if(key==='product'){next.indexation='cdi';next.grace='0';next.liquidity=['lci','lca','ipca'].includes(value)?'maturity':'daily';}
@@ -15,6 +16,9 @@ export class FixedIncomeFields extends LightElement {
   }
   private number(key:NumericKey,label:string,unit:string,hint='') {
     return html`<label class="rf-field"><span>${label} <small>${unit}</small></span><input inputmode="decimal" autocomplete="off" .value=${this.draft[key]} @input=${(e:Event)=>this.change(key,(e.target as HTMLInputElement).value)} aria-description=${hint||nothing} title=${hint||nothing} /><small>${hint||nothing}</small></label>`;
+  }
+  private liquiditySettings(letter:boolean) {
+    return html`<label class="rf-field"><span>Liquidez contratada</span><select .value=${this.draft.liquidity} @change=${(e:Event)=>this.change('liquidity',(e.target as HTMLSelectElement).value)}><option value="daily">Diária após carência</option><option value="maturity">Somente no vencimento</option></select><small>Resgates dependem dos dias e condições do contrato.</small></label>${this.number('grace','Carência contratual','dias',letter?'Mínimo efetivo de seis meses, mesmo com carência menor.':'Zero se não houver carência.')}`;
   }
   render() {
     const d=this.draft,treasury=isTreasury(d.product),letter=d.product==='lci'||d.product==='lca',cdi=d.product==='cdb'||letter&&d.indexation==='cdi';
@@ -28,7 +32,9 @@ export class FixedIncomeFields extends LightElement {
       ${d.product==='ipca'?html`${!this.shared?this.number('inflation','IPCA anual','% a.a.','Inflação hipotética constante.'):nothing}${this.number('real','Taxa real acima do IPCA','% a.a.')}`:nothing}
       ${!this.shared?html`<label class="rf-field"><span>Data da aplicação</span><input type="date" .value=${d.start} @input=${(e:Event)=>this.change('start',(e.target as HTMLInputElement).value)} /></label>`:nothing}
       <label class="rf-field"><span>Vencimento</span><input type="date" .value=${d.maturity} @input=${(e:Event)=>this.change('maturity',(e.target as HTMLInputElement).value)} /></label>
-      ${!treasury?html`<label class="rf-field"><span>Liquidez contratada</span><select .value=${d.liquidity} @change=${(e:Event)=>this.change('liquidity',(e.target as HTMLSelectElement).value)}><option value="daily">Diária após carência</option><option value="maturity">Somente no vencimento</option></select><small>Resgates dependem dos dias e condições do contrato.</small></label>${this.number('grace','Carência contratual','dias',letter?'Mínimo efetivo de seis meses, mesmo com carência menor.':'Zero se não houver carência.')}`:nothing}
-    </div>${treasury?html`<details class="rf-cost-inputs"><summary>Custos e condições</summary><div class="rf-fields">${this.number('custody','Custódia B3','% a.a.','Premissa inicial: 0,20% ao ano, provisionada diariamente.')}${this.number('fee','Taxa da instituição','% a.a.','Premissa inicial: zero. Informe a taxa do seu contrato.')}${d.product==='selic'?this.number('otherSelic','Outros títulos Tesouro Selic','R$','Estoque do CPF mantido constante. Zero: cenário isolado.'):nothing}</div></details>`:nothing}`;
+      ${!treasury&&!this.compact?this.liquiditySettings(letter):nothing}
+    </div>
+      ${!treasury&&this.compact?html`<details class="rf-cost-inputs rf-advanced-fields"><summary>Liquidez e carência</summary><div class="rf-fields">${this.liquiditySettings(letter)}</div></details>`:nothing}
+      ${treasury?html`<details class="rf-cost-inputs"><summary>Custos e condições</summary><div class="rf-fields">${this.number('custody','Custódia B3','% a.a.','Premissa inicial: 0,20% ao ano, provisionada diariamente.')}${this.number('fee','Taxa da instituição','% a.a.','Premissa inicial: zero. Informe a taxa do seu contrato.')}${d.product==='selic'?this.number('otherSelic','Outros títulos Tesouro Selic','R$','Estoque do CPF mantido constante. Zero: cenário isolado.'):nothing}</div></details>`:nothing}`;
   }
 }
