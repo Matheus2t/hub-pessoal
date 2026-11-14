@@ -31,6 +31,9 @@ export class CallPage extends LightElement {
  @state() private channel?:Extract<ChannelStatus,{room:string}>;
  @state() private lobby?:ChannelStatus;
  @state() private lobbyError='';
+ @state() private lobbyWaitLong=false;
+ private lobbyFetchedAt=0;
+ private lobbyWaitTimer?:number;
  @state() private channelLoading=false;
  @state() private channelError='';
  @state() private speakers=new Set<string>();
@@ -219,6 +222,7 @@ export class CallPage extends LightElement {
   this.releaseTalk();this.microphoneDiagnostics.detach();
   this.setCallAudioSession(false);
   this.channelQuery?.abort();this.channelQuery=undefined;this.channelLoading=false;
+  window.clearTimeout(this.lobbyWaitTimer);this.lobbyWaitTimer=undefined;this.lobbyWaitLong=false;
   this.stopSpeakers();this.restoredPeople.clear();this.channelParticipant=undefined;this.screenOwner=undefined;this.watchOwner=undefined;this.watchGeneration=undefined;
   this.fullscreen.close();this.pictureInPicture.sync(null);this.voice.stop(true);this.output.reset();this.release();this.call.leave();this.lastMedia='';
  };
@@ -226,7 +230,8 @@ export class CallPage extends LightElement {
   // A mounted Call page is owned by the application shell, not its current route.
   // Navigating to Ações, Learn or Calculadoras must not stop an ongoing call.
   if(this.call.session){this.fullscreen.close();this.requestUpdate();return}
-  this.teardown();this.channel=undefined;this.lobby=undefined;
+  this.teardown();this.channel=undefined;
+  if(performance.now()-this.lobbyFetchedAt>10000)this.lobby=undefined;
   this.channelError='';this.lobbyError='';this.roomError='';this.copied=false;
   this.loadChannel();this.requestUpdate();
  };
@@ -247,14 +252,36 @@ export class CallPage extends LightElement {
  private async loadChannel(){
   const room=parseChannel(location.href);
   if(this.channelQuery||!room&&location.hash!=='#/call')return;
+  // Returning to Call shortly after browsing the site should not trigger a
+  // second network round-trip. Never persist the private room identifier.
+  if(!room&&this.lobby&&performance.now()-this.lobbyFetchedAt<10000)return;
   const controller=this.channelQuery=new AbortController();
-  this.channelLoading=true;if(room)this.channelError='';else this.lobbyError='';
+  this.channelLoading=true;this.lobbyWaitLong=false;
+  if(room)this.channelError='';else this.lobbyError='';
+  if(!room)this.lobbyWaitTimer=window.setTimeout(()=>{
+   if(this.channelQuery===controller&&!controller.signal.aborted){
+    this.lobbyWaitLong=true;this.requestUpdate();
+   }
+  },4500);
   try{
    const status=room?await requestChannel({type:'channel_info',room},controller.signal):await requestChannelLobby(controller.signal);
-   if(!controller.signal.aborted){if(room&&status.room)this.channel=status;else if(!room)this.lobby=status}
-  }catch(error){if(!controller.signal.aborted){if(room)this.channelError=(error as Error).message;else this.lobbyError=(error as Error).message}}
-  finally{if(this.channelQuery===controller){this.channelQuery=undefined;this.channelLoading=false}}
+   if(!controller.signal.aborted){
+    if(room&&status.room)this.channel=status;
+    else if(!room){this.lobby=status;this.lobbyFetchedAt=performance.now()}
+   }
+  }catch(error){
+   if(!controller.signal.aborted){
+    if(room)this.channelError=(error as Error).message;
+    else{this.lobby=undefined;this.lobbyError=(error as Error).message}
+   }
+  }finally{
+   if(this.channelQuery===controller){
+    window.clearTimeout(this.lobbyWaitTimer);this.lobbyWaitTimer=undefined;
+    this.channelQuery=undefined;this.channelLoading=false;this.lobbyWaitLong=false;
+   }
+  }
  }
+
  private joinChannel(event:SubmitEvent){
   event.preventDefault();
   const form=event.currentTarget as HTMLFormElement,data=new FormData(form);
@@ -621,7 +648,7 @@ export class CallPage extends LightElement {
     <div class="call-panel-copy"><h2>Sala Permanente</h2><p class="call-note">Acesso pelo link do canal.</p></div>
     ${this.lobby?.name?html`<div class="call-lobby-status"><strong>${this.lobby.name}</strong><span>${this.lobby.online}/5 participantes</span></div>`:nothing}
     ${this.lobby?.room?html`<a class="button call-lobby-enter call-primary-action" href=${channelLink(this.lobby.room)}>Entrar na sala <span aria-hidden="true">→</span></a>`:
-     html`<p class="call-note" role="status">${this.channelLoading?'Consultando a sala…':this.lobbyError||
+     html`<p class="call-note" role="status">${this.channelLoading?(this.lobbyWaitLong?'Iniciando o servidor da Sala Permanente. Após inatividade, isso pode demorar um pouco…':'Consultando a sala…'):this.lobbyError||
       (this.lobby?.room===null&&this.lobby.setupRequired?'A entrada por aqui fica disponível depois que o proprietário definir a senha.':'Nenhuma sala permanente configurada.')}</p>`}
     ${this.lobbyError?html`<button type="button" @click=${this.loadChannel}>Atualizar sala permanente</button>`:nothing}
     <a class="call-manage-link" href="#/call/gerenciar">Gerenciar sala permanente <span aria-hidden="true">↗</span></a>

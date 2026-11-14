@@ -39,3 +39,56 @@ for(const width of [1366,768,390,320])for(const theme of ['dark','light']){
   if(width===1366&&theme==='dark'||width===390&&theme==='light')await page.screenshot({path:info.outputPath('call-'+width+'-'+theme+'.png'),fullPage:true,animations:'disabled'});
  });
 }
+
+
+test('Sala Permanente responde imediatamente sem consulta de saúde em série',async({page})=>{
+ let lobbyRequests=0,healthRequests=0;
+ const room='a'.repeat(32);
+ await page.route('**/call/health',route=>{
+  healthRequests++;
+  return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'ok',mode:'single-process',media:false})});
+ });
+ await page.route('**/call/lobby',route=>{
+  lobbyRequests++;
+  return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
+   type:'channel',room,name:'Canal de testes',online:2,requiresPassword:true
+  })});
+ });
+ await page.goto('/#/call');
+ const root=page.locator('call-page');
+ await expect(root.getByRole('link',{name:'Entrar na sala'})).toBeVisible();
+ await expect(root.locator('.call-lobby-status')).toContainText('Canal de testes');
+ expect(lobbyRequests).toBe(1);
+ expect(healthRequests).toBe(0);
+
+ // Short internal navigation does not expose or store the room ID.
+ await page.evaluate(()=>{location.hash='#/acoes'});
+ await expect(root).toBeHidden();
+ await page.evaluate(()=>{location.hash='#/call'});
+ await expect(root.getByRole('link',{name:'Entrar na sala'})).toBeVisible();
+ expect(lobbyRequests).toBe(1);
+ expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain(room);
+});
+
+test('Sala Permanente retoma a consulta quando a resposta inicial falha',async({page})=>{
+ let lobbyRequests=0,healthRequests=0;
+ await page.route('**/call/health',route=>{
+  healthRequests++;
+  return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'ok',mode:'single-process',media:false})});
+ });
+ await page.route('**/call/lobby',route=>{
+  lobbyRequests++;
+  return route.fulfill({status:lobbyRequests===1?503:200,contentType:'application/json',body:
+   lobbyRequests===1?'{}':JSON.stringify({type:'channel',room:null})
+  });
+ });
+ await page.goto('/#/call');
+ const root=page.locator('call-page');
+ await expect.poll(()=>page.evaluate(()=>{
+  const call=document.querySelector('call-page') as any;
+  return !call.channelLoading&&call.lobby?.room===null;
+ })).toBe(true);
+ expect(lobbyRequests).toBe(2);
+ expect(healthRequests).toBe(1);
+ await expect(root).toContainText('Nenhuma sala permanente configurada.');
+});
