@@ -7,6 +7,7 @@ import {
 } from '../extended-finance';
 import './form-field';
 import './panel-workspace';
+import './year-navigation';
 
 type Kind = 'retirement' | 'housing' | 'amortization' | 'clt';
 type Field = { key: string; label: string; unit: string; value: string; min: number; max: number; integer?: boolean; advanced?: boolean; hint?: string };
@@ -26,7 +27,7 @@ const configurations: Record<Kind, { title: string; button: string; note: string
       field('currentAge','Idade atual','anos','30',99,false,true,18),
       field('retirementAge','Idade de aposentadoria','anos','65',100,false,true,19),
       field('currentAssets','Patrimônio já investido','R$','25.000,00',1e10),
-      field('monthlyContribution','Aporte mensal','R$','1.000,00',1e8),
+      field('monthlyContribution','Aporte mensal que pretendo investir','R$','1.000,00',1e8,true),
       field('desiredIncome','Renda mensal desejada, de hoje','R$','5.000,00',1e8),
       field('annualReturn','Rentabilidade efetiva anual','% a.a.','8',40,true),
       field('inflation','Inflação anual estimada','% a.a.','4',30,true),
@@ -64,9 +65,11 @@ const configurations: Record<Kind, { title: string; button: string; note: string
   },
   clt: {
     title: 'Custo de funcionário CLT', button: 'Calcular custo CLT',
-    note: 'Visão de custo para o empregador. O salário de férias integra os 12 salários; só o adicional de 1/3 é somado novamente. Encargos patronais ajustáveis.',
+    note: 'Provisão contábil média por mês: 13º e adicional de férias são distribuídos em 12 meses. O desembolso real varia conforme o calendário e as regras da categoria.',
     fields: [
-      field('salary','Salário bruto mensal','R$','3.500,00',1e8,false,false,0.01),
+      field('salary','Salário bruto mensal por funcionário','R$','3.500,00',1e8,false,false,0.01),
+      field('employees','Quantidade de funcionários','pessoas','1',10000,false,true,1),
+      field('projectionYears','Anos de projeção','anos','5',30,false,true,1),
       field('benefits','Benefícios mensais','R$','600,00',1e8),
       field('transport','Vale-transporte — custo da empresa','R$','200,00',1e8),
       field('otherMonthly','Outros custos mensais não salariais','R$','0',1e8),
@@ -74,6 +77,9 @@ const configurations: Record<Kind, { title: string; button: string; note: string
       field('rat','RAT/FAP efetivo','%','2',100,true),
       field('thirdParties','Terceiros/outras entidades','%','5,8',100,true),
       field('fgts','FGTS','%','8',100,true),
+      field('salaryGrowth','Aumento salarial anual estimado','% a.a.','0',30,true),
+      field('benefitsGrowth','Reajuste anual de benefícios/custos','% a.a.','0',30,true),
+      field('contingencyPercent','Reserva gerencial opcional sobre folha','%','0',30,true),
     ]
   },
 };
@@ -101,6 +107,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   @state() private system: LoanSystem = 'price';
   @state() private mode: ExtraMode = 'term';
   @state() private regime: CltRegime = 'general';
+  @state() private retirementMode: 'goal' | 'contribution' = 'goal';
   connectedCallback() { super.connectedCallback(); this.classList.add('workspace-v2', 'calculator-workspace', 'extended-calculator'); }
   protected updated() {
     const chart = this.querySelector<HTMLElement>('.extended-chart-terminal') ?? undefined;
@@ -124,7 +131,7 @@ export class ExtendedFinanceCalculator extends LightElement {
   protected willUpdate(changes: Map<PropertyKey, unknown>) {
     if (changes.has('kind') || !Object.keys(this.values).length) {
       this.values = Object.fromEntries(configurations[this.kind].fields.map(f => [f.key, f.value]));
-      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0; this.chartIndex = -1; this.advancedOpen = false;
+      this.output = null; this.errors = {}; this.error = ''; this.stale = false; this.tablePage = 0; this.chartIndex = -1; this.advancedOpen = false; this.retirementMode = 'goal';
     }
   }
   private change(event: CustomEvent<{ name: string; value: string }>) {
@@ -146,7 +153,8 @@ export class ExtendedFinanceCalculator extends LightElement {
     const data: Record<string, number> = {};
     const errors: Record<string, string> = {};
     for (const f of entries) {
-      const n = parseFinanceField(this.values[f.key] ?? '', f.unit);
+      const n = this.kind === 'retirement' && f.key === 'monthlyContribution' && this.retirementMode === 'goal'
+        ? 0 : parseFinanceField(this.values[f.key] ?? '', f.unit);
       data[f.key] = n;
       if (!Number.isFinite(n) || n < f.min || n > f.max || (f.integer && !Number.isInteger(n))) {
         errors[f.key] = f.integer ? `Informe um inteiro entre ${f.min} e ${f.max}.` : `Informe um valor entre ${f.min} e ${f.max}.`;
@@ -164,7 +172,7 @@ export class ExtendedFinanceCalculator extends LightElement {
     }
     try {
       switch (this.kind) {
-        case 'retirement': this.output = { kind: 'retirement', data: simulateRetirement(data as unknown as Parameters<typeof simulateRetirement>[0]) }; break;
+        case 'retirement': this.output = { kind: 'retirement', data: simulateRetirement({ ...data, mode: this.retirementMode } as unknown as Parameters<typeof simulateRetirement>[0]) }; break;
         case 'housing': this.output = { kind: 'housing', data: compareHousing({ ...data, system: this.system } as Parameters<typeof compareHousing>[0]) }; break;
         case 'amortization': this.output = { kind: 'amortization', data: simulateAmortization({ ...data, system: this.system, mode: this.mode } as Parameters<typeof simulateAmortization>[0]) }; break;
         case 'clt': this.output = { kind: 'clt', data: calculateClt(data as unknown as Parameters<typeof calculateClt>[0]) }; break;
@@ -177,14 +185,35 @@ export class ExtendedFinanceCalculator extends LightElement {
   private renderField(f: Field) {
     return html`<form-field .name=${f.key} .idPrefix=${'extended-' + this.kind} .label=${f.label} .unit=${f.unit} .value=${this.values[f.key] || ''} .integer=${!!f.integer} .hint=${f.hint || ''} .error=${this.errors[f.key] || ''}></form-field>`;
   }
+
+  private goalPreview(): ReturnType<typeof simulateRetirement> | null {
+    if (this.kind !== 'retirement' || this.retirementMode !== 'goal') return null;
+    try {
+      const input = Object.fromEntries(configurations.retirement.fields.map(f => [
+        f.key, f.key === 'monthlyContribution' ? 0 : parseFinanceField(this.values[f.key] ?? '', f.unit)
+      ])) as Record<string, number>;
+      if (!Number.isInteger(input.currentAge) || !Number.isInteger(input.retirementAge)) return null;
+      return simulateRetirement({ ...input, mode: 'goal' } as unknown as Parameters<typeof simulateRetirement>[0]);
+    } catch { return null; }
+  }
+  private changeRetirementMode(mode: 'goal' | 'contribution') {
+    this.retirementMode = mode;
+    this.stale = !!this.output;
+    this.error = '';
+  }
+
   private summary(): Summary[] {
     const out = this.output;
     if (!out) return [];
     switch (out.kind) {
-      case 'retirement': return [
-        { label: 'Patrimônio projetado', amount: out.data.finalAssets },
+      case 'retirement': return out.data.mode === 'goal' ? [
+        { label: 'Aporte mensal necessário', amount: out.data.usedMonthlyContribution },
+        { label: 'Patrimônio ao se aposentar', amount: out.data.finalAssets },
         { label: 'Meta de patrimônio', amount: out.data.targetAssets },
-        { label: 'Aporte mensal necessário', amount: out.data.requiredMonthlyContribution, detail: 'Para alcançar a meta, desde hoje' },
+      ] : [
+        { label: 'Patrimônio projetado', amount: out.data.finalAssets },
+        { label: 'Renda mensal estimada em reais de hoje', amount: out.data.projectedMonthlyIncomeToday },
+        { label: 'Aporte necessário para sua meta', amount: out.data.requiredMonthlyContribution },
       ];
       case 'housing': return [
         { label: 'Patrimônio ao comprar', amount: out.data.buyWealth },
@@ -197,9 +226,9 @@ export class ExtendedFinanceCalculator extends LightElement {
         { label: 'Novo total a pagar', amount: out.data.accelerated.totalPaid },
       ];
       case 'clt': return [
-        { label: 'Custo médio mensal', amount: out.data.averageMonthlyCost },
-        { label: 'Custo anual estimado', amount: out.data.annualCost },
-        { label: 'Além do salário por mês', amount: out.data.additionalMonthlyCost },
+        { label: out.data.employees === 1 ? 'Custo médio mensal' : 'Custo mensal da equipe', amount: out.data.teamMonthlyCost },
+        { label: out.data.employees === 1 ? 'Custo anual estimado' : 'Custo anual da equipe', amount: out.data.teamAnnualCost },
+        { label: 'Custo total no horizonte', amount: out.data.totalProjectedCost },
       ];
     }
   }
@@ -209,6 +238,13 @@ export class ExtendedFinanceCalculator extends LightElement {
     if (out.kind === 'retirement') return { points: out.data.points, a: 'Patrimônio', b: 'Capital investido' };
     if (out.kind === 'housing') return { points: out.data.points, a: 'Comprar', b: 'Alugar' };
     if (out.kind === 'amortization') return { points: out.data.points, a: 'Sem amortização extra', b: 'Com amortização extra' };
+    if (out.kind === 'clt') {
+      const points = [
+        { period: 0, first: out.data.teamAnnualCost, second: out.data.annualRows[0].salary * 12 * out.data.employees },
+        ...out.data.annualRows.map(r => ({period:r.year, first:r.annualCost, second:r.salary * 12 * out.data.employees}))
+      ];
+      return { points, a:'Custo anual total', b:'Salários anuais (12 meses)' };
+    }
     return null;
   }
   private renderChart(points: FinancePoint[], a: string, b: string) {
@@ -272,35 +308,51 @@ export class ExtendedFinanceCalculator extends LightElement {
     const out = this.output;
     if (!out) return { heads: [], rows: [], title: '' };
     if (out.kind === 'retirement') return {
-      title: 'Evolução anual', heads: ['Idade','Patrimônio','Total aplicado'],
-      rows: out.data.points.map(p => [String(p.period), money(p.first), money(p.second)]),
+      title: 'Evolução mês a mês', heads: ['Mês','Idade','Aporte','Juros no mês','Total investido','Patrimônio'],
+      rows: out.data.monthlyRows.map(r => [String(r.month), r.age.toLocaleString('pt-BR',{maximumFractionDigits:2}), money(r.deposit), money(r.interest), money(r.invested), money(r.balance)]),
     };
     if (out.kind === 'housing') return {
-      title: 'Comparação anual', heads: ['Ano','Comprar: patrimônio','Alugar: patrimônio','Saldo devedor','Aluguel mensal'],
-      rows: out.data.rows.map(r => [String(r.year),money(r.buyWealth),money(r.rentWealth),money(r.loanBalance),money(r.rentMonthly)]),
+      title: 'Comparação mensal', heads: ['Mês','Comprar: patrimônio','Alugar: patrimônio','Prestação','Aluguel','Saldo devedor'],
+      rows: out.data.monthlyRows.map(r => [String(r.month),money(r.buyWealth),money(r.rentWealth),money(r.payment),money(r.rentMonthly),money(r.loanBalance)]),
     };
     if (out.kind === 'amortization') return {
-      title: 'Parcelas com amortização extra', heads: ['Mês','Parcela total','Juros','Amortização normal','Extra','Saldo'],
-      rows: out.data.accelerated.rows.map(r => [String(r.month),money(r.payment),money(r.interest),money(r.amortization),money(r.extra),money(r.balance)]),
+      title: 'Antes e depois da amortização', heads: ['Mês','Parcela original','Parcela com extra','Juros com extra','Extra aplicado','Saldo original','Saldo com extra'],
+      rows: out.data.accelerated.rows.map((r,i) => [
+        String(r.month),money(out.data.baseline.rows[i]?.payment ?? 0),money(r.payment),
+        money(r.interest),money(r.extra),money(out.data.baseline.rows[i]?.balance ?? 0),money(r.balance)
+      ]),
     };
     return {
-      title: 'Composição do custo anual', heads: ['Componente','Valor anual'],
-      rows: out.data.parts.map(p => [p.label,money(p.amount)]),
+      title: 'Provisões e custos mensais da equipe',
+      heads: ['Mês','Salários','13º + férias','FGTS + encargos','Benefícios','Outros + reserva','Total do mês','Acumulado'],
+      rows: out.data.monthlyRows.map(r => [
+        String(r.month), money(r.salary), money(r.thirteenth+r.vacationBonus),
+        money(r.fgts+r.employerCharges), money(r.benefits),
+        money(r.other+r.contingency), money(r.total),money(r.cumulative)
+      ]),
     };
   }
   private details() {
     const out = this.output;
     if (!out) return nothing;
-    if (out.kind === 'retirement') return html`<p class="extended-detail">Renda desejada na data futura: <strong>${money(out.data.futureMonthlyIncome)}/mês</strong>. Capacidade estimada de retirada em reais de hoje: <strong>${money(out.data.projectedMonthlyIncomeToday)}/mês</strong>. Diferença para a meta: <strong>${money(out.data.gap)}</strong>.</p>`;
+    if (out.kind === 'retirement') return html`<p class="extended-detail">Renda desejada em valores de hoje: <strong>${money(out.data.requestedIncomeToday)}/mês</strong>. Renda necessária na data futura, corrigida pela inflação: <strong>${money(out.data.futureMonthlyIncome)}/mês</strong>. Capacidade projetada em valores de hoje: <strong>${money(out.data.projectedMonthlyIncomeToday)}/mês</strong>. ${out.data.gap > 0 ? html`Faltariam <strong>${money(out.data.gap)}</strong> para a meta.` : html`Meta de patrimônio atingida ou superada sob as premissas informadas.`}</p>`;
     if (out.kind === 'housing') return html`<p class="extended-detail">Entrada e custos iniciais: <strong>${money(out.data.initialCash)}</strong>. Valor financiado: <strong>${money(out.data.financed)}</strong>. Primeira prestação estimada: <strong>${money(out.data.firstPayment)}</strong>.</p>`;
     if (out.kind === 'amortization') return html`<p class="extended-detail">Sem extras: <strong>${money(out.data.baseline.totalInterest)}</strong> em juros e ${out.data.baseline.rows.length} parcelas. Com extras: <strong>${money(out.data.accelerated.totalInterest)}</strong> em juros e ${out.data.accelerated.rows.length} parcelas.</p>`;
-    return html`<p class="extended-detail">Custo equivalente a <strong>${out.data.multiplier.toLocaleString('pt-BR',{maximumFractionDigits:2})}×</strong> o salário bruto mensal. INSS e IRRF descontados do empregado não são somados como despesa patronal adicional.</p>`;
+    return html`<div class="extended-detail"><p>Equipe de <strong>${out.data.employees} ${out.data.employees===1?'pessoa':'pessoas'}</strong> · Custo equivalente a <strong>${out.data.multiplier.toLocaleString('pt-BR',{maximumFractionDigits:2})}×</strong> o salário mensal por funcionário. Custo por pessoa: <strong>${money(out.data.averageMonthlyCost)}/mês</strong>.</p>
+      <details class="extended-cost-breakdown"><summary>Ver composição do custo do primeiro ano por funcionário</summary>
+        <div class="table-scroll" role="region" tabindex="0" aria-label="Composição anual dos custos CLT">
+          <table><thead><tr><th scope="col">Componente</th><th scope="col">Valor anual</th></tr></thead>
+          <tbody>${out.data.parts.map(p=>html`<tr><th scope="row">${p.label}</th><td>${money(p.amount)}</td></tr>`)}</tbody></table>
+        </div>
+      </details>
+      <p>INSS e IRRF retidos do trabalhador não são novos custos patronais. FGTS, CPP e terceiros dependem do enquadramento; a reserva gerencial é opcional.</p></div>`;
   }
   render() {
     const config = configurations[this.kind];
     const chart = this.chartData();
     const table = this.tableData();
     const rows = table.rows.slice(this.tablePage * 12, this.tablePage * 12 + 12);
+    const goal = this.goalPreview();
     return html`<div class="ws-page-heading"><h1>${config.title}</h1></div>
       <panel-workspace fixed-layout .area=${`calculator-${this.kind}`} .panels=${[
         { id:'form', title:'Simulação', required:true, essential:true, size:'small', resizable:false, role:'form' },
@@ -312,6 +364,13 @@ export class ExtendedFinanceCalculator extends LightElement {
         <section slot="form" class="workspace-panel simulation-panel">
           <div class="panel-heading"><h2>Simulação</h2></div>
           <form novalidate @field-input=${this.change} @submit=${this.calculate}>
+            ${this.kind === 'retirement' ? html`<div class="retirement-intent" role="group" aria-label="Como planejar a aposentadoria">
+              <button type="button" class="retirement-mode-button" aria-pressed=${this.retirementMode==='goal'} @click=${()=>this.changeRetirementMode('goal')}>Quero receber uma renda</button>
+              <button type="button" class="retirement-mode-button" aria-pressed=${this.retirementMode==='contribution'} @click=${()=>this.changeRetirementMode('contribution')}>Quero testar um aporte</button>
+            </div>
+            ${goal ? html`<div class="retirement-goal-preview" aria-live="polite"><span>APORTE MENSAL PARA SUA RENDA DESEJADA</span>
+              <strong>${money(goal.requiredMonthlyContribution)}<small>/mês</small></strong>
+              <p>Meta de ${money(goal.targetAssets)} aos ${this.values.retirementAge} anos, com o patrimônio e as taxas informadas.</p></div>` : nothing}` : nothing}
             ${this.kind === 'clt' ? html`<label class="extended-select">Regime tributário
               <select .value=${this.regime} @change=${this.selectRegime}>
                 <option value="general">Regime geral / lucro presumido ou real</option>
@@ -326,10 +385,14 @@ export class ExtendedFinanceCalculator extends LightElement {
                 <select .value=${this.mode} @change=${this.selectMode}><option value="term">Reduzir prazo</option><option value="payment">Reduzir parcelas</option></select>
               </label>` : nothing}
             </div>` : nothing}
-            <div class="form-grid finance-extended-fields">${config.fields.filter(f => !f.advanced).map(f => this.renderField(f))}</div>
+            <div class="form-grid finance-extended-fields">${config.fields.filter(f =>
+              !f.advanced || (this.kind==='retirement' && f.key==='monthlyContribution' && this.retirementMode==='contribution')
+            ).map(f => this.renderField(f))}</div>
             ${config.fields.some(f => f.advanced) ? html`<details class="extended-advanced" ?open=${this.advancedOpen || Object.keys(this.errors).some(k => config.fields.find(f => f.key === k)?.advanced)} @toggle=${(e: Event) => { this.advancedOpen = (e.currentTarget as HTMLDetailsElement).open; }}>
               <summary>Parâmetros avançados</summary>
-              <div class="form-grid finance-extended-fields">${config.fields.filter(f => f.advanced).map(f => this.renderField(f))}</div>
+              <div class="form-grid finance-extended-fields">${config.fields.filter(f => f.advanced &&
+                !(this.kind==='retirement' && f.key==='monthlyContribution')
+              ).map(f => this.renderField(f))}</div>
             </details>` : nothing}
             <p class="form-note extended-note">${config.note}</p>
             <div class="form-bottom"><button type="submit" class="button primary">${config.button}</button></div>
@@ -345,10 +408,13 @@ export class ExtendedFinanceCalculator extends LightElement {
         <section slot="chart" class="workspace-panel">${chart ? this.renderChart(chart.points, chart.a, chart.b) : nothing}</section>
         <section slot="table" class="workspace-panel">
           ${this.output ? html`<div class="extended-table">
-            <h2>${table.title}</h2><div class="table-scroll" role="region" tabindex="0" aria-label=${table.title}><table><thead><tr>${table.heads.map(h => html`<th scope="col">${h}</th>`)}</tr></thead>
-              <tbody>${rows.map(row => html`<tr>${row.map(cell => html`<td>${cell}</td>`)}</tr>`)}</tbody></table></div>
-            ${table.rows.length > 12 ? html`<div class="table-pagination"><button type="button" class="button secondary" ?disabled=${this.tablePage === 0} @click=${() => this.tablePage--}>Anterior</button>
-            <span>Página ${this.tablePage + 1} de ${Math.ceil(table.rows.length / 12)}</span><button type="button" class="button secondary" ?disabled=${(this.tablePage + 1) * 12 >= table.rows.length} @click=${() => this.tablePage++}>Próxima</button></div>` : nothing}
+            <div class="extended-table-top"><div><span class="extended-table-kicker">DEMONSTRATIVO</span><h2>${table.title}</h2></div>
+              <span class="extended-table-count">${table.rows.length} meses</span></div>
+            <year-navigation .year=${this.tablePage + 1} .years=${Math.ceil(table.rows.length / 12)}
+              .range=${`Meses ${this.tablePage * 12 + 1}–${Math.min((this.tablePage + 1) * 12,table.rows.length)}`}
+              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
+            <div class="table-scroll" role="region" tabindex="0" aria-label=${table.title}><table><thead><tr>${table.heads.map(h => html`<th scope="col">${h}</th>`)}</tr></thead>
+              <tbody>${rows.map((row,i) => html`<tr><th scope="row">${row[0]}</th>${row.slice(1).map(cell => html`<td>${cell}</td>`)}</tr>`)}</tbody></table></div>
           </div>` : nothing}
           ${this.output ? html`<p class="extended-disclosure">${this.kind === 'retirement' ? 'Projeção sem impostos, taxas e volatilidade; taxa de retirada é hipótese, não garantia de renda.' : this.kind === 'housing' ? 'Não considera corretagem de venda, imposto sobre ganho de capital, custos comuns a aluguel e compra ou mudanças de juros. Rendimento dos investimentos bruto de tributos.' : this.kind === 'amortization' ? 'Não inclui seguros, correção por TR/IPCA, tarifas, CET, multas ou mudanças contratuais. Confirme as regras da instituição.' : 'Estimativa sem custos de rescisão, adicionais por categoria, horas extras e convenções coletivas. Benefícios são tratados como não salariais; ajuste o cenário conforme sua empresa.'}</p>` : nothing}
         </section>
