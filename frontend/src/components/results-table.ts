@@ -2,6 +2,7 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { LightElement, money, icon } from "../ui";
 import type { EvolutionRow } from "../types";
+import "./year-navigation";
 @customElement("results-table")
 export class ResultsTable extends LightElement {
   @property({ attribute: false }) rows: EvolutionRow[] = [];
@@ -24,6 +25,9 @@ export class ResultsTable extends LightElement {
           ></span
         ><span class="details-chevron">${icon("chevron")}</span>
       </summary>
+      <year-navigation .year=${this.page + 1} .years=${Math.max(1, pages)}
+        .range=${`Meses ${this.page * count + 1}–${Math.min((this.page + 1) * count, this.rows.length)} de ${this.rows.length}`}
+        @year-change=${(event: CustomEvent<number>) => this.page = event.detail - 1}></year-navigation>
       <div
         class="table-scroll"
         tabindex="0"
@@ -57,32 +61,7 @@ export class ResultsTable extends LightElement {
           </tbody>
         </table>
       </div>
-      <div class="table-pagination">
-        <span
-          >Meses
-          ${this.page * count + 1}–${Math.min(
-            (this.page + 1) * count,
-            this.rows.length,
-          )}
-          de ${this.rows.length}</span
-        >
-        <div>
-          <button
-            class="button secondary"
-            ?disabled=${this.page === 0}
-            @click=${() => this.page--}
-          >
-            Anterior</button
-          ><span>${this.page + 1} / ${pages}</span
-          ><button
-            class="button secondary"
-            ?disabled=${this.page >= pages - 1}
-            @click=${() => this.page++}
-          >
-            Próxima
-          </button>
-        </div>
-      </div>
+
     </details>`;
   }
 }
