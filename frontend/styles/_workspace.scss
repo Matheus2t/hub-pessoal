@@ -89,6 +89,11 @@ market-page.workspace-v2 { display: block; }
 :host([area="actions-overview"]) .ws-cell[data-panel="quotes"],
 :host([area="actions-overview"]) .ws-cell[data-panel="panorama"] { grid-column: span 4 !important; }
 :host([area="actions-overview"]) .ws-cell[data-panel="directory"] { grid-column: 1 / -1 !important; }
+/* Expanded panorama leaves the side rail and occupies a complete row below the index chart. */
+@media(min-width:901px) {
+ :host([area="actions-overview"][panorama-open]) .ws-cell[data-panel="chart"] { grid-row: auto !important; }
+ :host([area="actions-overview"][panorama-open]) .ws-cell[data-panel="panorama"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+}
 @media(max-width:900px) {
  :host([area="actions-overview"]) .ws-cell[data-panel="chart"],
  :host([area="actions-overview"]) .ws-cell[data-panel="quotes"],
