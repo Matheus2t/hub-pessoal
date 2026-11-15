@@ -71,6 +71,30 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
       await expect(page.locator('tv-market-overview')).toHaveCount(0);
       await page.locator('.market-home-panorama summary').click();
       await expect(page.locator('tv-market-overview')).toHaveAttribute('symbol-sectors', /BMFBOVESPA:IBOV/);
+      await expect(workspace).toHaveAttribute('panorama-open', '');
+      const expandedChart = await chart.boundingBox();
+      const expandedQuotes = await quotes.boundingBox();
+      const expandedPanorama = await panorama.boundingBox();
+      expect(expandedChart && expandedQuotes && expandedPanorama).toBeTruthy();
+      if (width > 900) {
+        // The open panorama should be a full-width row, not a tall right rail leaving a blank area.
+        const firstRowBottom = Math.max(expandedChart!.y + expandedChart!.height, expandedQuotes!.y + expandedQuotes!.height);
+        expect(expandedPanorama!.y).toBeGreaterThanOrEqual(firstRowBottom);
+        expect(expandedPanorama!.y - firstRowBottom).toBeLessThan(32);
+        expect(Math.abs(expandedPanorama!.x - expandedChart!.x)).toBeLessThan(4);
+        expect(Math.abs(expandedPanorama!.width - (expandedQuotes!.x + expandedQuotes!.width - expandedChart!.x))).toBeLessThan(4);
+      } else {
+        expect(expandedPanorama!.y).toBeGreaterThan(expandedQuotes!.y);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await page.locator('.market-home-panorama summary').click();
+      await expect(workspace).not.toHaveAttribute('panorama-open', '');
+      await expect(page.locator('tv-market-overview')).toHaveCount(0);
+      if (width > 900) {
+        const restoredChart = await chart.boundingBox();
+        const restoredQuotes = await quotes.boundingBox();
+        expect(Math.abs(restoredChart!.y - restoredQuotes!.y)).toBeLessThan(4);
+      }
       await page.locator('.market-directory-toggle').click();
       await expect(page.locator('.stock-item')).toHaveCount(65);
       await expect(page.getByLabel('Buscar ação', { exact: true })).toBeVisible();
