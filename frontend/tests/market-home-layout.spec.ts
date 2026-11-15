@@ -51,12 +51,12 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
       // Every shortcut must look and behave like a link, even without hover or with keyboard navigation.
       expect(await page.locator('.market-home-tools nav a').evaluateAll(nodes => nodes.every(node => {
         const style = getComputedStyle(node);
-        const arrow = getComputedStyle(node, '::after').content;
+        const arrow = node.querySelector('.market-tool-arrow');
         return node.getBoundingClientRect().height >= 40
           && style.borderTopStyle === 'solid'
           && style.borderTopWidth === '1px'
           && style.backgroundColor !== 'rgba(0, 0, 0, 0)'
-          && arrow !== 'none' && arrow !== 'normal';
+          && arrow?.getAttribute('aria-hidden') === 'true';
       }))).toBe(true);
       expect(await page.locator('.market-home-tools nav a').evaluateAll(nodes => nodes.map(node => (node as HTMLAnchorElement).getAttribute('href')))).toEqual([
         '#/acoes/comparar', '#/acoes/rankings', '#/acoes/aportes', '#/acoes/proventos', '#/acoes/dy',
