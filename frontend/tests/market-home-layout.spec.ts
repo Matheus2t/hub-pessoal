@@ -77,6 +77,12 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
       const expandedPanorama = await panorama.boundingBox();
       expect(expandedChart && expandedQuotes && expandedPanorama).toBeTruthy();
       if (width > 900) {
+        // The quote rail and main chart should end together, without the empty strip seen on desktop.
+        expect(Math.abs((expandedQuotes!.y + expandedQuotes!.height) - (expandedChart!.y + expandedChart!.height))).toBeLessThan(4);
+        const quotePanel = await page.locator(".market-home-watchlist").boundingBox();
+        const quoteFrame = await page.locator(".market-quotes-frame").boundingBox();
+        expect(quotePanel && quoteFrame).toBeTruthy();
+        expect(quoteFrame!.y + quoteFrame!.height).toBeLessThan(quotePanel!.y + quotePanel!.height);
         // The open panorama should be a full-width row, not a tall right rail leaving a blank area.
         const firstRowBottom = Math.max(expandedChart!.y + expandedChart!.height, expandedQuotes!.y + expandedQuotes!.height);
         expect(expandedPanorama!.y).toBeGreaterThanOrEqual(firstRowBottom);
