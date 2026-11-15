@@ -177,6 +177,35 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
 .calculator-workspace .simulation-panel > form { display:flex; flex:1; flex-direction:column; min-height:0; }
 .calculator-workspace .simulation-panel > form > .form-grid { flex:1; align-content:space-evenly; }
 
+/* Only reserve a second label line when narrow, multi-column calculator fields need it. */
+@media (min-width:901px) {
+  @container (max-width:1000px) {
+    .calculator-workspace .simulation-panel .form-grid:not(.finance-fields):not(.finance-extended-fields) > form-field .form-field > label,
+    .calculator-workspace .simulation-panel .finance-extended-fields > form-field .form-field > label {
+      min-height:2.7em;
+      line-height:1.35;
+    }
+  }
+}
+
+@media (min-width:701px) and (max-width:900px), (min-width:1151px) {
+  @container (max-width:800px) {
+    .calculator-workspace .simulation-panel .finance-extended-fields > form-field .form-field > label {
+      min-height:2.7em;
+      line-height:1.35;
+    }
+  }
+}
+
+@media (min-width:1151px) {
+  @container (max-width:800px) {
+    .calculator-workspace .simulation-panel .loan-simulation .finance-fields > form-field .form-field > label {
+      min-height:2.7em;
+      line-height:1.35;
+    }
+  }
+}
+
 @media (min-width:901px) {
   /* With no chart, use the available width to form a balanced input/results pair. */
   finance-calculator .loan-simulation .finance-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
