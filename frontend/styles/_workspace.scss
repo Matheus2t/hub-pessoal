@@ -92,6 +92,8 @@ market-page.workspace-v2 { display: block; }
 /* Expanded panorama leaves the side rail and occupies a complete row below the index chart. */
 @media(min-width:901px) {
  :host([area="actions-overview"][panorama-open]) .ws-cell[data-panel="chart"] { grid-row: auto !important; }
+ /* The quote rail must stretch to the chart baseline when the panorama moves below both. */
+ :host([area="actions-overview"][panorama-open]) .ws-cell[data-panel="quotes"] { align-self: stretch; }
  :host([area="actions-overview"][panorama-open]) .ws-cell[data-panel="panorama"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
 }
 @media(max-width:900px) {
