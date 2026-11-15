@@ -1139,3 +1139,6 @@ call-page[hidden] { display:none !important; }
 .call-channel-panel[aria-busy="true"] .call-note[role="status"]::before { content:""; display:inline-block; width:9px; height:9px; margin-right:8px; border:1px solid currentColor; border-top-color:transparent; border-radius:50%; vertical-align:-1px; animation:call-lobby-spin .8s linear infinite; }
 @keyframes call-lobby-spin { to { transform:rotate(360deg); } }
 @media(prefers-reduced-motion:reduce) { .call-channel-panel[aria-busy="true"] .call-note[role="status"]::before { animation:none; border-style:dashed; } }
+@media(min-width:1021px) {
+  .call-page .call-join-grid .call-channel-panel:not(:has(.call-lobby-enter)) .call-manage-link { margin-top:auto; }
+}

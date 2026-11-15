@@ -28,7 +28,7 @@ for (const width of [320, 390, 600, 768, 1366]) {
       expect(themeBox!.x + themeBox!.width).toBeLessThanOrEqual(width);
 
       await expect(nav.getByRole("link", { name:"Início",exact:true })).toBeVisible();
-      await expect(nav.locator('.nav-team-icons')).toBeHidden();
+      await expect(nav.locator('.nav-team-icons')).toHaveCount(0);
       await nav.locator('.teams-menu summary').click();
       for (const name of ["Philadelphia 76ers", "São Paulo Futebol Clube", "FC Barcelona"])
         await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();

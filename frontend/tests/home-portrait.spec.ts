@@ -6,10 +6,13 @@ for(const width of [1920,1366,1024,768,600,390,320])test(`editorial home, theme 
   await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   await expect(page.locator('home-page .home-call[href="#/call"]')).toBeVisible();
   await expect(page.locator('home-page .home-call[href="#/games"]')).toBeVisible();
-  const icons=page.locator('app-sidebar .nav-team-icons a');
-  await expect(icons).toHaveCount(3);
-  await expect.poll(()=>icons.locator('img').evaluateAll(imgs=>imgs.every(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0))).toBe(true);
+  const teamsMenu=page.locator('app-sidebar .teams-menu');
+  await teamsMenu.locator('summary').click();
+  await expect(teamsMenu.getByRole('link')).toHaveCount(4);
+  await expect(teamsMenu.getByRole('link',{name:'FC Barcelona'})).toBeVisible();
+  await page.keyboard.press('Escape');
   const cards=page.locator('home-page .area-card');await expect(cards).toHaveCount(4);
+  const quickLinks=page.locator('home-page .home-utilities .home-call');await expect(quickLinks).toHaveCount(2);
   const boxes=await cards.evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height}}));
   for(const b of boxes)expect(b.w).toBeGreaterThan(0);
   if(width>=1200){
@@ -24,6 +27,10 @@ for(const width of [1920,1366,1024,768,600,390,320])test(`editorial home, theme 
   }else{
    for(let i=1;i<boxes.length;i++)expect(boxes[i].y).toBeGreaterThan(boxes[i-1].y);
   }
+  const quickBoxes=await quickLinks.evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height}}));
+  if(width>700)expect(Math.abs(quickBoxes[0].y-quickBoxes[1].y)).toBeLessThan(2);
+  else expect(quickBoxes[1].y).toBeGreaterThan(quickBoxes[0].y);
+  expect(quickBoxes[0].y).toBeGreaterThan(Math.max(...boxes.map(b=>b.y+b.h)));
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:info.outputPath(`${width}-${theme}.png`),fullPage:true,animations:'disabled'});
   await page.getByRole('button',{name:'Abrir calendário de feriados'}).click();
