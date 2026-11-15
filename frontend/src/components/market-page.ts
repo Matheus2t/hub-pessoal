@@ -136,8 +136,8 @@ export class MarketPage extends LightElement {
         <section slot="directory" class="workspace-panel market-directory-panel">
          <div class="market-directory">
            <button type="button" class="market-directory-toggle" aria-expanded=${this.directoryOpen} aria-controls="market-directory-content" @click=${this.toggleDirectory}>
-             <span class="market-directory-heading"><strong>Empresas</strong><small>${matches.length} ${matches.length===1?'ação':'ações'} no catálogo</small></span>
-             <span class="market-directory-action">${this.directoryOpen?'Recolher lista':'Explorar empresas'}</span>
+             <span class="market-directory-heading"><strong>Catálogo de empresas</strong><small>${matches.length} ${matches.length===1?'ação disponível':'ações disponíveis'}</small></span>
+             <span class="market-directory-action">${this.directoryOpen?'Ocultar lista':'Explorar empresas'}</span>
            </button>
            ${this.directoryOpen?html`<div id="market-directory-content" class="market-directory-content">
              <form class="market-search" @submit=${this.search}>
