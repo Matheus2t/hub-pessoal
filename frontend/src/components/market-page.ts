@@ -86,7 +86,7 @@ export class MarketPage extends LightElement {
     location.hash = `#/acoes/${selected.symbol}`;
   }
   // Shared local navigation: the active tool remains discoverable on its own route.
-  private renderAnalysisLinks(active = '') {
+  private renderAnalysisLinks(active = '', home = false) {
     const links = [
       {id:'COMPARAR',href:'#/acoes/comparar',label:'Comparar empresas',detail:'Dados CVM'},
       {id:'RANKINGS',href:'#/acoes/rankings',label:'Rankings por setor',detail:''},
@@ -95,7 +95,7 @@ export class MarketPage extends LightElement {
       {id:'DY',href:'#/acoes/dy',label:'DY manual',detail:''},
     ];
     return html`<nav class="ws-analysis-links" aria-label="Ferramentas de análise">
-      ${links.map(link=>html`<a href=${link.href} aria-current=${active===link.id?'page':nothing} title=${link.detail?`${link.label} · ${link.detail}`:link.label}>${link.label}</a>`)}
+      ${links.map(link=>html`<a href=${link.href} aria-current=${active===link.id?'page':nothing} title=${link.detail?`${link.label} · ${link.detail}`:link.label}>${link.label}${home?html`<span class="market-tool-arrow" aria-hidden="true">↗</span>`:nothing}</a>`)}
     </nav>`;
   }
   render() {
@@ -130,7 +130,7 @@ export class MarketPage extends LightElement {
         <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
         <section slot="distributions" class="workspace-panel market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?'Fechar proventos':'Dividendos e JCP'}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:html`
         <section slot="quotes" class="workspace-panel market-home-watchlist"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe>
-          <section class="market-home-tools" aria-labelledby="market-home-tools-title"><h3 id="market-home-tools-title">Ferramentas</h3>${this.renderAnalysisLinks()}</section>
+          <section class="market-home-tools" aria-labelledby="market-home-tools-title"><h3 id="market-home-tools-title">Ferramentas</h3>${this.renderAnalysisLinks('',true)}</section>
         </section>
         <section slot="panorama" class="workspace-panel market-home-panorama"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary><span>Panorama do mercado</span><small>Ibovespa e ativos selecionados</small></summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
         <section slot="directory" class="workspace-panel market-directory-panel">
