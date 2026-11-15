@@ -84,6 +84,18 @@ market-page.workspace-v2 { display: block; }
  :host([area="actions-company"]) .ws-cell { grid-column: 1 / -1 !important; grid-row: auto !important; }
 }
 
+/* Ações home: pair the full-height index chart with the meaningful market rail. */
+:host([area="actions-overview"]) .ws-cell[data-panel="chart"] { grid-row: span 2; }
+:host([area="actions-overview"]) .ws-cell[data-panel="quotes"],
+:host([area="actions-overview"]) .ws-cell[data-panel="panorama"] { grid-column: span 4 !important; }
+:host([area="actions-overview"]) .ws-cell[data-panel="directory"] { grid-column: 1 / -1 !important; }
+@media(max-width:900px) {
+ :host([area="actions-overview"]) .ws-cell[data-panel="chart"],
+ :host([area="actions-overview"]) .ws-cell[data-panel="quotes"],
+ :host([area="actions-overview"]) .ws-cell[data-panel="panorama"],
+ :host([area="actions-overview"]) .ws-cell[data-panel="directory"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+}
+
 /* Simulator surfaces stay local to financial tools. */
 .calculator-workspace {
  display: block;

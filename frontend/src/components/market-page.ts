@@ -115,13 +115,13 @@ export class MarketPage extends LightElement {
       {id:'company',title:'Informações da empresa',size:'small'},
       {id:'distributions',title:'Dividendos e JCP',size:'large',available:this.coverage==='known'?this.hasDistributions:this.coverage==='failed',hint:this.coverage==='pending'?'Verificando cobertura':'Sem registros verificados nesta versão'},
     ]:[
-      {id:'chart',title:'Gráfico do Ibovespa',required:true,essential:true,size:'medium'},
+      {id:'chart',title:'Gráfico do Ibovespa',required:true,essential:true,size:'medium',rowSpan:2},
       {id:'quotes',title:'Ações acompanhadas',size:'small'},
-      {id:'panorama',title:'Panorama do mercado',size:'large'},
+      {id:'panorama',title:'Panorama do mercado',size:'small'},
       {id:'directory',title:'Catálogo de ações',size:'large'},
     ];
     return html`<header class="ws-page-heading"><div><p class="ws-context">${stock?'Ações / '+stock.sector:'Mercado brasileiro'}</p><h1>${stock?stock.symbol:'Mercado de Ações'}</h1>${stock?html`<h2 class="ws-company-name">${stock.name}</h2>`:nothing}</div>${stock?html`<a class="market-back" href="#/acoes">← Voltar à lista de ações</a>`:nothing}</header>
-      ${this.renderAnalysisLinks()}
+      ${stock?this.renderAnalysisLinks():nothing}
       <panel-workspace fixed-layout area=${stock?'actions-company':'actions-overview'} .panels=${panels}>
        <section slot="chart" class="workspace-panel ws-main-chart"><header class="ws-panel-heading"><h2>${stock?'Gráfico · '+stock.symbol:'Ibovespa'}</h2>${stock?html`<div class="market-chart-modes" role="group" aria-label="Tipo de gráfico"><button class="button secondary" aria-pressed=${!this.advanced} @click=${()=>{this.advanced=false}}>Simples</button><button class="button secondary" aria-pressed=${this.advanced} @click=${()=>{this.advanced=true}}>Avançado</button></div>`:nothing}</header>
         ${!stock||this.advanced?html`<market-embed kind="advanced-chart" .symbol=${stock?.symbol||'IBOV'}></market-embed>`:html`<tradingview-widget kind="overview" .symbol=${stock.symbol}></tradingview-widget>`}
@@ -129,8 +129,10 @@ export class MarketPage extends LightElement {
        ${stock?html`<section slot="financial" class="workspace-panel"><financial-analysis .symbol=${stock.symbol}></financial-analysis></section>
         <section slot="company" class="workspace-panel"><company-sections .symbol=${stock.symbol}></company-sections></section>
         <section slot="distributions" class="workspace-panel market-distributions"><button class="button secondary" aria-expanded=${this.distributions} @click=${()=>this.distributions=!this.distributions}>${this.distributions?'Fechar proventos':'Dividendos e JCP'}</button>${this.distributions?html`<distributions-host .symbol=${stock.symbol}></distributions-host>`:nothing}</section>`:html`
-        <section slot="quotes" class="workspace-panel"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe></section>
-        <section slot="panorama" class="workspace-panel"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary>Panorama do Mercado · Ibovespa</summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
+        <section slot="quotes" class="workspace-panel market-home-watchlist"><h2>Ações acompanhadas</h2><iframe class="market-quotes-frame" title="TradingView — cotações acompanhadas" src="/ticker-isolated.html" loading="eager"></iframe>
+          <section class="market-home-tools" aria-labelledby="market-home-tools-title"><h3 id="market-home-tools-title">Ferramentas</h3>${this.renderAnalysisLinks()}</section>
+        </section>
+        <section slot="panorama" class="workspace-panel market-home-panorama"><details class="market-panorama" @toggle=${(e:Event)=>{this.panorama=(e.target as HTMLDetailsElement).open}}><summary><span>Panorama do mercado</span><small>Ibovespa e ativos selecionados</small></summary>${this.panorama?html`<market-embed kind="market-overview"></market-embed><p class="market-note">Índice e ativos brasileiros selecionados. Não representa um ranking da B3.</p>`:nothing}</details></section>
         <section slot="directory" class="workspace-panel market-directory-panel">
          <div class="market-directory">
            <button type="button" class="market-directory-toggle" aria-expanded=${this.directoryOpen} aria-controls="market-directory-content" @click=${this.toggleDirectory}>
