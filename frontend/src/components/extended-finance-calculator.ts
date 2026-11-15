@@ -36,19 +36,19 @@ const configurations: Record<Kind, { title: string; button: string; note: string
   },
   housing: {
     title: 'Aluguel x Financiamento', button: 'Comparar cenários',
-    note: 'Comparação de patrimônio líquido com o mesmo orçamento: a diferença do custo mensal de moradia é investida pelo cenário mais econômico.',
+    note: 'A comparação considera o mesmo dinheiro inicial para as duas opções. Quem gastar menos por mês com moradia investe a diferença.',
     fields: [
       field('propertyPrice','Preço do imóvel','R$','400.000,00',1e10,false,false,0.01),
-      field('downPercent','Entrada','%','20',100),
-      field('rent','Aluguel mensal inicial','R$','2.000,00',1e8),
-      field('mortgageRate','Juros efetivos anuais do financiamento','% a.a.','11',100),
-      field('mortgageYears','Prazo do financiamento','anos','30',50,false,true,1),
-      field('horizonYears','Horizonte da comparação','anos','20',50,false,true,1),
-      field('closingPercent','ITBI, escritura e custos iniciais','% do imóvel','4',20,true),
-      field('rentGrowth','Reajuste anual do aluguel','% a.a.','4',30,true),
-      field('propertyGrowth','Valorização anual do imóvel','% a.a.','4',30,true),
-      field('investmentReturn','Rendimento efetivo anual investido','% a.a.','8',40,true),
-      field('ownerMonthlyCosts','Custo extra mensal do proprietário','R$','300,00',1e8,true),
+      field('downPercent','Entrada do imóvel','%','20',100,false,false,0,'Porcentagem do preço paga à vista'),
+      field('rent','Aluguel por mês (hoje)','R$','2.000,00',1e8),
+      field('mortgageRate','Juros do financiamento por ano','% a.a.','11',100),
+      field('mortgageYears','Anos para quitar o financiamento','anos','30',50,false,true,1,'Prazo do contrato com o banco'),
+      field('horizonYears','Por quantos anos comparar?','anos','20',50,false,true,1,'Não altera o prazo do financiamento'),
+      field('closingPercent','Documentação e taxas da compra','% do imóvel','4',20,true,false,0,'ITBI, escritura, registro e despesas iniciais'),
+      field('rentGrowth','Aumento do aluguel por ano','% a.a.','4',30,true),
+      field('propertyGrowth','Valorização do imóvel por ano','% a.a.','4',30,true),
+      field('investmentReturn','Rendimento dos investimentos por ano','% a.a.','8',40,true),
+      field('ownerMonthlyCosts','Despesas extras de quem compra, por mês','R$','300,00',1e8,true,false,0,'Gastos adicionais que não existiriam ao alugar'),
     ]
   },
   amortization: {
@@ -216,9 +216,13 @@ export class ExtendedFinanceCalculator extends LightElement {
         { label: 'Aporte necessário para sua meta', amount: out.data.requiredMonthlyContribution },
       ];
       case 'housing': return [
-        { label: 'Patrimônio ao comprar', amount: out.data.buyWealth },
-        { label: 'Patrimônio ao alugar', amount: out.data.rentWealth },
-        { label: 'Vantagem de comprar', amount: out.data.difference, detail: out.data.difference >= 0 ? 'Compra supera aluguel' : 'Aluguel supera compra' },
+        { label: 'Total que você teria se comprasse', amount: out.data.buyWealth, detail: 'Valor do imóvel − dívida + investimentos' },
+        { label: 'Total investido se continuasse alugando', amount: out.data.rentWealth, detail: 'Dinheiro que não foi gasto na compra, aplicado' },
+        { label: Math.abs(out.data.difference) < 0.01 ? 'Resultado da comparação' :
+            out.data.difference > 0 ? 'Comprar termina com mais' : 'Alugar termina com mais',
+          amount: Math.abs(out.data.difference),
+          detail: Math.abs(out.data.difference) < 0.01 ? 'Mesmo resultado nas duas opções' :
+            `Diferença após ${out.data.comparisonYears} ${out.data.comparisonYears===1?'ano':'anos'}` },
       ];
       case 'amortization': return [
         { label: 'Juros economizados', amount: out.data.interestSaved },
@@ -236,7 +240,7 @@ export class ExtendedFinanceCalculator extends LightElement {
     const out = this.output;
     if (!out) return null;
     if (out.kind === 'retirement') return { points: out.data.points, a: 'Patrimônio', b: 'Capital investido' };
-    if (out.kind === 'housing') return { points: out.data.points, a: 'Comprar', b: 'Alugar' };
+    if (out.kind === 'housing') return { points: out.data.points, a: 'Comprando: patrimônio líquido', b: 'Alugando: investimentos' };
     if (out.kind === 'amortization') return { points: out.data.points, a: 'Sem amortização extra', b: 'Com amortização extra' };
     if (out.kind === 'clt') {
       const points = [
@@ -302,6 +306,7 @@ export class ExtendedFinanceCalculator extends LightElement {
           aria-label="Período exibido no gráfico"
           @input=${(event: Event)=>{this.chartIndex=Number((event.target as HTMLInputElement).value)}} />
       </label>
+      ${this.kind === 'housing' ? html`<p class="housing-chart-explanation">Comprando: valor do imóvel menos a dívida, mais investimentos. Alugando: dinheiro que você investiu em vez de dar a entrada e pagar as taxas.</p>` : nothing}
     </div>`;
   }
   private tableData(): { heads: string[]; rows: string[][]; title: string } {
@@ -312,7 +317,8 @@ export class ExtendedFinanceCalculator extends LightElement {
       rows: out.data.monthlyRows.map(r => [String(r.month), r.age.toLocaleString('pt-BR',{maximumFractionDigits:2}), money(r.deposit), money(r.interest), money(r.invested), money(r.balance)]),
     };
     if (out.kind === 'housing') return {
-      title: 'Comparação de cenários', heads: ['Mês','Comprar: patrimônio','Alugar: patrimônio','Prestação','Aluguel','Saldo devedor'],
+      title: 'Como os valores evoluem mês a mês',
+      heads: ['Mês','Total se comprar','Investimentos se alugar','Parcela do imóvel','Aluguel do mês','Dívida ainda a pagar'],
       rows: out.data.monthlyRows.map(r => [String(r.month),money(r.buyWealth),money(r.rentWealth),money(r.payment),money(r.rentMonthly),money(r.loanBalance)]),
     };
     if (out.kind === 'amortization') return {
@@ -336,7 +342,40 @@ export class ExtendedFinanceCalculator extends LightElement {
     const out = this.output;
     if (!out) return nothing;
     if (out.kind === 'retirement') return html`<p class="extended-detail">Renda desejada em valores de hoje: <strong>${money(out.data.requestedIncomeToday)}/mês</strong>. Renda necessária na data futura, corrigida pela inflação: <strong>${money(out.data.futureMonthlyIncome)}/mês</strong>. Capacidade projetada em valores de hoje: <strong>${money(out.data.projectedMonthlyIncomeToday)}/mês</strong>. ${out.data.gap > 0 ? html`Faltariam <strong>${money(out.data.gap)}</strong> para a meta.` : html`Meta de patrimônio atingida ou superada sob as premissas informadas.`}</p>`;
-    if (out.kind === 'housing') return html`<p class="extended-detail">Entrada e custos iniciais: <strong>${money(out.data.initialCash)}</strong>. Valor financiado: <strong>${money(out.data.financed)}</strong>. Primeira prestação estimada: <strong>${money(out.data.firstPayment)}</strong>.</p>`;
+    if (out.kind === 'housing') return html`<div class="housing-explainer extended-detail">
+      <div class="housing-explainer-header"><strong>Entenda de onde vem esse dinheiro</strong>
+        <span>Valores da simulação de ${out.data.comparisonYears} ${out.data.comparisonYears === 1 ? 'ano' : 'anos'}</span>
+      </div>
+      <div class="housing-explainer-grid">
+        <section class="housing-explainer-group" aria-label="Quanto você gastaria para comprar hoje">
+          <h3>Se você comprar hoje</h3>
+          <dl>
+            <div><dt>Entrada (vira parte do imóvel)</dt><dd>${money(out.data.downPayment)}</dd></div>
+            <div><dt>Documentação e taxas (despesa)</dt><dd>${money(out.data.buyingFees)}</dd></div>
+            <div class="housing-explainer-total"><dt>Dinheiro que sai do bolso</dt><dd>${money(out.data.initialCash)}</dd></div>
+          </dl>
+          <p>A entrada não desaparece: ela representa sua parte inicial no imóvel. Esse valor <strong>não é dinheiro disponível na conta</strong>.</p>
+        </section>
+        <section class="housing-explainer-group" aria-label="O que acontece se você alugar">
+          <h3>Se você continuar alugando</h3>
+          <dl>
+            <div><dt>Entrada e taxas que não foram pagas</dt><dd>${money(out.data.initialCash)}</dd></div>
+            <div><dt>Esse valor começa investido</dt><dd>${money(out.data.initialCash)}</dd></div>
+            <div class="housing-explainer-total"><dt>Investimentos ao final</dt><dd>${money(out.data.rentWealth)}</dd></div>
+          </dl>
+          <p>Além do valor inicial, são investidas as diferenças mensais de custo quando alugar sai mais barato.</p>
+        </section>
+      </div>
+      <details class="housing-breakdown">
+        <summary>Como chegamos ao total de quem compra?</summary>
+        <dl>
+          <div><dt>Valor estimado do imóvel ao final</dt><dd>${money(out.data.projectedHomeValue)}</dd></div>
+          <div><dt>Menos: dívida restante com o banco</dt><dd>− ${money(out.data.remainingLoan)}</dd></div>
+          <div><dt>Mais: investimentos acumulados pelo comprador</dt><dd>+ ${money(out.data.buyersInvestments)}</dd></div>
+          <div class="housing-explainer-total"><dt>Seu patrimônio total comprando</dt><dd>${money(out.data.buyWealth)}</dd></div>
+        </dl>
+      </details>
+    </div>`;
     if (out.kind === 'amortization') return html`<p class="extended-detail">Sem extras: <strong>${money(out.data.baseline.totalInterest)}</strong> em juros e ${out.data.baseline.rows.length} parcelas. Com extras: <strong>${money(out.data.accelerated.totalInterest)}</strong> em juros e ${out.data.accelerated.rows.length} parcelas.</p>`;
     return html`<div class="extended-detail"><p>Equipe de <strong>${out.data.employees} ${out.data.employees===1?'pessoa':'pessoas'}</strong> · Custo equivalente a <strong>${out.data.multiplier.toLocaleString('pt-BR',{maximumFractionDigits:2})}×</strong> o salário mensal por funcionário. Custo por pessoa: <strong>${money(out.data.averageMonthlyCost)}/mês</strong>.</p>
       <details class="extended-cost-breakdown"><summary>Ver composição do custo do primeiro ano por funcionário</summary>
@@ -378,8 +417,8 @@ export class ExtendedFinanceCalculator extends LightElement {
                 <option value="annex4">Simples Nacional — Anexo IV</option>
               </select></label>` : nothing}
             ${this.kind === 'housing' || this.kind === 'amortization' ? html`<div class="extended-select-grid">
-              <label class="extended-select">Sistema de amortização
-                <select .value=${this.system} @change=${this.selectSystem}><option value="price">PRICE</option><option value="sac">SAC</option></select>
+              <label class="extended-select">${this.kind === 'housing' ? 'Como serão as parcelas do financiamento?' : 'Sistema de amortização'}
+                <select .value=${this.system} @change=${this.selectSystem}><option value="price">PRICE — parcela aproximadamente fixa</option><option value="sac">SAC — parcela vai diminuindo</option></select>
               </label>
               ${this.kind === 'amortization' ? html`<label class="extended-select">Aplicar extra para
                 <select .value=${this.mode} @change=${this.selectMode}><option value="term">Reduzir prazo</option><option value="payment">Reduzir parcelas</option></select>
@@ -394,6 +433,7 @@ export class ExtendedFinanceCalculator extends LightElement {
                 !(this.kind==='retirement' && f.key==='monthlyContribution')
               ).map(f => this.renderField(f))}</div>
             </details>` : nothing}
+            ${this.kind === 'housing' ? html`<p class="housing-input-help"><strong>Prazo do financiamento</strong> é quando você termina de pagar o banco. <strong>Anos da comparação</strong> é só até quando quer analisar as duas opções.</p>` : nothing}
             <p class="form-note extended-note">${config.note}</p>
             <div class="form-bottom"><button type="submit" class="button primary">${config.button}</button></div>
             ${this.error ? html`<p class="message error" role="alert">${this.error}</p>` : nothing}
@@ -402,6 +442,7 @@ export class ExtendedFinanceCalculator extends LightElement {
         <section slot="empty" class="workspace-panel calculator-empty" aria-live="polite"><div><h2>Resultados</h2><p>Preencha os campos e simule.</p></div></section>
         <section slot="summary" class="workspace-panel" aria-live="polite">
           ${this.output ? html`<div class="section-heading result-heading"><h2>Resultados</h2><span class="result-status ${this.stale ? 'stale':''}">${this.stale ? 'Parâmetros alterados. Simule novamente.' : 'Simulação concluída'}</span></div>
+            ${this.kind === 'housing' && this.stale ? html`<p class="housing-stale-warning" role="status">Você mudou os valores. Os resultados abaixo ainda são da simulação anterior. Clique em <strong>Comparar cenários</strong> para atualizá-los.</p>` : nothing}
             <div class="metrics-grid">${this.summary().map((m,i) => html`<article class="metric-card ${i === 0 ? 'accent':''}"><div class="metric-label">${m.label}</div><strong>${m.unit === 'meses' ? `${m.amount} meses` : money(m.amount)}</strong>${m.detail ? html`<p>${m.detail}</p>` : nothing}</article>`)}</div>
             ${this.details()}` : nothing}
         </section>
@@ -414,7 +455,7 @@ export class ExtendedFinanceCalculator extends LightElement {
             <year-navigation .year=${this.tablePage + 1} .years=${Math.ceil(table.rows.length / 12)}
               @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
           </div>` : nothing}
-          ${this.output ? html`<p class="extended-disclosure">${this.kind === 'retirement' ? 'Projeção sem impostos, taxas e volatilidade; taxa de retirada é hipótese, não garantia de renda.' : this.kind === 'housing' ? 'Não considera corretagem de venda, imposto sobre ganho de capital, custos comuns a aluguel e compra ou mudanças de juros. Rendimento dos investimentos bruto de tributos.' : this.kind === 'amortization' ? 'Não inclui seguros, correção por TR/IPCA, tarifas, CET, multas ou mudanças contratuais. Confirme as regras da instituição.' : 'Estimativa sem custos de rescisão, adicionais por categoria, horas extras e convenções coletivas. Benefícios são tratados como não salariais; ajuste o cenário conforme sua empresa.'}</p>` : nothing}
+          ${this.output ? html`<p class="extended-disclosure">${this.kind === 'retirement' ? 'Projeção sem impostos, taxas e volatilidade; taxa de retirada é hipótese, não garantia de renda.' : this.kind === 'housing' ? 'A comparação usa valores estimados. Não inclui custos de venda, imposto sobre lucro na venda, gastos comuns às duas opções nem impostos sobre rendimentos dos investimentos. O dinheiro do imóvel não está disponível como saldo bancário.' : this.kind === 'amortization' ? 'Não inclui seguros, correção por TR/IPCA, tarifas, CET, multas ou mudanças contratuais. Confirme as regras da instituição.' : 'Estimativa sem custos de rescisão, adicionais por categoria, horas extras e convenções coletivas. Benefícios são tratados como não salariais; ajuste o cenário conforme sua empresa.'}</p>` : nothing}
         </section>
       </panel-workspace>`;
   }

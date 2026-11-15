@@ -62,7 +62,7 @@ test('CLT shows annual provisions once and switches tax regime', async ({ page }
 test('housing compare uses same capital and monthly cashflow', async ({ page }) => {
   await page.goto('/#/aluguel-vs-financiamento');
   const tool = page.locator('extended-finance-calculator');
-  await tool.getByLabel('Horizonte da comparação').fill('2');
+  await tool.getByLabel('Por quantos anos comparar?').fill('2');
   await tool.getByRole('button',{name:'Comparar cenários'}).click();
   await expect(tool.locator('.metric-card')).toHaveCount(3);
   await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
@@ -120,4 +120,42 @@ test('finance chart polish keeps keyboard, period filters and negative-value axi
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
  expect(errors).toEqual([]);
+});
+
+
+test('housing labels explain entry, equity, initial cash and who actually wins', async ({ page }) => {
+  await page.goto('/#/aluguel-vs-financiamento');
+  const tool = page.locator('extended-finance-calculator');
+  await expect(tool.getByLabel('Por quantos anos comparar?')).toBeVisible();
+  await expect(tool.getByLabel('Anos para quitar o financiamento')).toBeVisible();
+  await tool.getByRole('button',{name:'Comparar cenários'}).click();
+  await expect(tool.locator('.metric-card').first()).toContainText('Total que você teria se comprasse');
+  await expect(tool.locator('.metric-card').nth(1)).toContainText('Total investido se continuasse alugando');
+  const explainer = tool.locator('.housing-explainer');
+  await expect(explainer).toContainText('Entrada (vira parte do imóvel)');
+  await expect(explainer).toContainText('R$ 80.000,00');
+  await expect(explainer).toContainText('R$ 16.000,00');
+  await expect(explainer).toContainText('R$ 96.000,00');
+  await expect(explainer).toContainText('não é dinheiro disponível na conta');
+  await explainer.getByText('Como chegamos ao total de quem compra?').click();
+  await expect(explainer).toContainText('Menos: dívida restante com o banco');
+  await expect(explainer).toContainText('Mais: investimentos acumulados pelo comprador');
+  await expect(tool.locator('.extended-table thead')).toContainText('Dívida ainda a pagar');
+  await expect(tool.locator('.housing-chart-explanation')).toBeVisible();
+  await tool.getByLabel('Aluguel por mês (hoje)').fill('3100');
+  await expect(tool.locator('.housing-stale-warning')).toContainText('simulação anterior');
+  await tool.getByRole('button',{name:'Comparar cenários'}).click();
+  await expect(tool.locator('.housing-stale-warning')).toHaveCount(0);
+});
+
+test('housing comparison never labels a negative difference as buying advantage', async ({ page }) => {
+  await page.goto('/#/aluguel-vs-financiamento');
+  const tool = page.locator('extended-finance-calculator');
+  await tool.getByLabel('Por quantos anos comparar?').fill('1');
+  await tool.locator('details.extended-advanced summary').click();
+  await tool.getByLabel('Valorização do imóvel por ano').fill('0');
+  await tool.getByLabel('Rendimento dos investimentos por ano').fill('30');
+  await tool.getByRole('button',{name:'Comparar cenários'}).click();
+  await expect(tool.locator('.metric-card').nth(2)).toContainText('Alugar termina com mais');
+  await expect(tool.locator('.metric-card').nth(2).locator('strong')).not.toContainText('-');
 });
