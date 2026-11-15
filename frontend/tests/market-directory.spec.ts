@@ -10,7 +10,7 @@ for (const width of [1366,390]) test(`ações: catálogo recolhível e panorama 
   await page.goto('/#/acoes');
   const workspace = page.locator('panel-workspace[area="actions-overview"]');
   await expect(workspace).toHaveAttribute('fixed-layout','');
-  await expect(page.locator('.market-directory-toggle')).toContainText('Empresas');
+  await expect(page.locator('.market-directory-toggle')).toContainText('Catálogo de empresas');
   await expect(page.locator('.market-directory-toggle')).toContainText(String(stocks.length));
   await expect(page.locator('.market-search')).toHaveCount(0);
   await expect(page.locator('.stock-item')).toHaveCount(0);
