@@ -522,13 +522,13 @@ market-page.market-terminal .market-home-tools .ws-analysis-links a {
   text-align: left; white-space: normal; line-height: 1.35; font-size: 12px; font-weight: 550;
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
-market-page.market-terminal .market-home-tools .ws-analysis-links a::after {
-  content: '↗'; flex: 0 0 auto; color: var(--secondary); font-size: 15px; line-height: 1;
+market-page.market-terminal .market-home-tools .ws-analysis-links .market-tool-arrow {
+  flex: 0 0 auto; color: var(--secondary); font-size: 15px; line-height: 1;
 }
 market-page.market-terminal .market-home-tools .ws-analysis-links a:hover {
   background: var(--hover); border-color: var(--line); color: var(--text);
 }
-market-page.market-terminal .market-home-tools .ws-analysis-links a:hover::after {
+market-page.market-terminal .market-home-tools .ws-analysis-links a:hover .market-tool-arrow {
   color: var(--text);
 }
 market-page.market-terminal .market-home-tools .ws-analysis-links a:focus-visible {
