@@ -68,6 +68,18 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
       const panoramaBox = await panorama.boundingBox();
       expect(chartBox && quotesBox && panoramaBox).toBeTruthy();
       if (width > 900) {
+        // Closed rail: keep full-size clickable shortcuts while avoiding excess vertical gaps.
+        const compactTools = await page.locator('.market-home-tools').evaluate(section => {
+          const heading = section.querySelector('h3')!;
+          const nav = section.querySelector('nav')!;
+          return {
+            margin: getComputedStyle(section).marginTop,
+            padding: getComputedStyle(section).paddingTop,
+            titleGap: getComputedStyle(heading).marginBottom,
+            rowGap: getComputedStyle(nav).rowGap,
+          };
+        });
+        expect(compactTools).toEqual({ margin: '8px', padding: '8px', titleGap: '6px', rowGap: '4px' });
         expect(chartBox!.x).toBeLessThan(quotesBox!.x);
         expect(Math.abs(chartBox!.y - quotesBox!.y)).toBeLessThan(4);
         expect(Math.abs(chartBox!.y + chartBox!.height - (panoramaBox!.y + panoramaBox!.height))).toBeLessThan(115);

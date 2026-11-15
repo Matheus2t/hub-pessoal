@@ -540,6 +540,20 @@ market-page.market-terminal .market-home-tools .ws-analysis-links a:focus-visibl
 @media (prefers-reduced-motion: reduce) {
   market-page.market-terminal .market-home-tools .ws-analysis-links a { transition: none; }
 }
+/* Keep the collapsed rail aligned with the Ibovespa after adding five clickable shortcuts.
+   Preserve the 40px targets and the TradingView iframe; reclaim only excess vertical spacing. */
+@media (min-width: 901px) {
+  market-page.market-terminal panel-workspace[area="actions-overview"]:not([panorama-open]) .market-home-tools {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  market-page.market-terminal panel-workspace[area="actions-overview"]:not([panorama-open]) .market-home-tools h3 {
+    margin-bottom: 6px;
+  }
+  market-page.market-terminal panel-workspace[area="actions-overview"]:not([panorama-open]) .market-home-tools .ws-analysis-links {
+    row-gap: 4px;
+  }
+}
 market-page.market-terminal .market-home-panorama { padding-block: 13px; }
 market-page.market-terminal .market-home-panorama .market-panorama { margin: 0; }
 market-page.market-terminal .market-home-panorama .market-panorama summary {
