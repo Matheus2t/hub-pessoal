@@ -14,7 +14,7 @@ for (const width of [1366,390]) test(`ações: catálogo recolhível e panorama 
   await expect(page.locator('.market-directory-toggle')).toContainText(String(stocks.length));
   await expect(page.locator('.market-search')).toHaveCount(0);
   await expect(page.locator('.stock-item')).toHaveCount(0);
-  await expect(workspace.locator('[data-panel=panorama]')).toHaveAttribute('style',/span 12/);
+  await expect(workspace.locator('[data-panel=panorama]')).toHaveAttribute('style',/span 4/);
   await page.locator('.market-panorama summary').click();
   await expect(page.locator('tv-market-overview')).toHaveAttribute('symbol-sectors',/BMFBOVESPA:IBOV/);
   const summary = await request.get('/financials/directory-summary.json');
