@@ -68,7 +68,9 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
           await expect(page.locator('.financial-metrics')).toBeVisible();
           await expect(page.getByRole('group', { name: 'Tipo de gráfico' })).toBeVisible();
           await expect(page.getByText('Classificação setorial editorial')).toHaveCount(0);
-          await expect(page.locator('.financial-controls > label')).toHaveCount(2);
+          await expect(page.locator('.financial-controls > .financial-control')).toHaveCount(2);
+          await expect(page.getByLabel('Frequência', { exact: true })).toBeVisible();
+          await expect(page.getByLabel('Referência', { exact: true })).toBeVisible();
           await expect(page.locator('.financial-metrics > div')).toHaveCount(6);
           const companyGrid = await page.locator('panel-workspace[area="actions-company"]').evaluate(host => {
             const root = host.shadowRoot!;
