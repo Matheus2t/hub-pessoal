@@ -66,7 +66,7 @@ test('housing compare uses same capital and monthly cashflow', async ({ page }) 
   await tool.getByRole('button',{name:'Comparar cenários'}).click();
   await expect(tool.locator('.metric-card')).toHaveCount(3);
   await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
-  await tool.locator('year-navigation').getByRole('combobox',{name:'Ir para o ano'}).selectOption('2');
+  await tool.locator('year-navigation').getByRole('button',{name:'Ano 2',exact:true}).click();
   await expect(tool.locator('.extended-table tbody tr').first()).toContainText('13');
   await expect(tool.locator('svg[role=img]')).toBeVisible();
 });

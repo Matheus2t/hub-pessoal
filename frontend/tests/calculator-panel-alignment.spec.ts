@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -52,14 +52,14 @@ async function assertEmptyLayout(page: Page, tool: ReturnType<Page['locator']>) 
 }
 
 const calculators = [
-  { route: 'calculadora', selector: 'compound-calculator', button: 'Simular investimento', resultState: 'results-chart' },
-  { route: 'juros-simples', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-chart' },
-  { route: 'price', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-summary' },
-  { route: 'sac', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-summary' },
-  { route: 'aposentadoria', selector: 'extended-finance-calculator', button: 'Projetar aposentadoria', resultState: 'results-chart' },
-  { route: 'aluguel-vs-financiamento', selector: 'extended-finance-calculator', button: 'Comparar cenários', resultState: 'results-chart' },
-  { route: 'amortizacao', selector: 'extended-finance-calculator', button: 'Simular amortização', resultState: 'results-chart' },
-  { route: 'custo-clt', selector: 'extended-finance-calculator', button: 'Calcular custo CLT', resultState: 'results-chart' },
+  { route: 'calculadora', selector: 'compound-calculator', button: 'Simular investimento', resultState: 'results-chart', tableTitle: 'Evolução do investimento' },
+  { route: 'juros-simples', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-chart', tableTitle: 'Evolução do investimento' },
+  { route: 'price', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-summary', tableTitle: 'Evolução do financiamento' },
+  { route: 'sac', selector: 'finance-calculator', button: 'Calcular', resultState: 'results-summary', tableTitle: 'Evolução do financiamento' },
+  { route: 'aposentadoria', selector: 'extended-finance-calculator', button: 'Projetar aposentadoria', resultState: 'results-chart', tableTitle: 'Evolução da aposentadoria' },
+  { route: 'aluguel-vs-financiamento', selector: 'extended-finance-calculator', button: 'Comparar cenários', resultState: 'results-chart', tableTitle: 'Comparação de cenários' },
+  { route: 'amortizacao', selector: 'extended-finance-calculator', button: 'Simular amortização', resultState: 'results-chart', tableTitle: 'Evolução da amortização' },
+  { route: 'custo-clt', selector: 'extended-finance-calculator', button: 'Calcular custo CLT', resultState: 'results-chart', tableTitle: 'Evolução do custo CLT' },
 ] as const;
 
 for (const calculator of calculators) {
@@ -81,12 +81,43 @@ for (const calculator of calculators) {
     const summaryPanel = workspace.locator('[data-panel="summary"]');
     await expect(summaryPanel).toBeVisible();
     await expect(summaryPanel).not.toContainText('NaN');
-    await expect(workspace.locator('[data-panel="table"]')).toBeVisible();
+    const tablePanel = workspace.locator('[data-panel="table"]');
+    await expect(tablePanel).toBeVisible();
+    let monthlyTable: Locator;
+    if (calculator.route === 'calculadora' || calculator.route === 'juros-simples') {
+      const summary = tool.locator('results-table summary');
+      await summary.click();
+      await expect(summary).toContainText(calculator.tableTitle);
+      await expect(tool.locator('results-table summary small')).toHaveCount(0);
+      monthlyTable = tool.locator('results-table table');
+    } else if (calculator.route === 'price' || calculator.route === 'sac') {
+      await expect(tool.locator('.loan-ledger-header h2')).toHaveText(calculator.tableTitle);
+      await expect(tool.locator('.loan-ledger-header p')).toHaveCount(0);
+      monthlyTable = tool.locator('.loan-ledger table');
+    } else {
+      await expect(tool.locator('.extended-table-top h2')).toHaveText(calculator.tableTitle);
+      await expect(tool.locator('.extended-table-kicker,.extended-table-count')).toHaveCount(0);
+      monthlyTable = tool.locator('.extended-table table');
+    }
+    const pagination = tool.locator('year-navigation');
+    await expect(pagination).toBeVisible();
+    await expect(pagination.getByRole('button', { name: 'Ano 1', exact: true })).toHaveAttribute('aria-current', 'page');
+    await expect(pagination.getByText('PERÍODO CONSULTADO')).toHaveCount(0);
+    await expect(pagination.getByLabel('Ir para o ano')).toHaveCount(0);
+    const tableBox = await monthlyTable.boundingBox();
+    const paginationBox = await pagination.boundingBox();
+    expect(tableBox && paginationBox).toBeTruthy();
+    expect(paginationBox!.y).toBeGreaterThanOrEqual(tableBox!.y + tableBox!.height);
+    expect(paginationBox!.y - tableBox!.y - tableBox!.height).toBeLessThan(22);
+    await pagination.getByRole('button', { name: 'Ano 2', exact: true }).click();
+    await expect(pagination.getByRole('button', { name: 'Ano 2', exact: true })).toHaveAttribute('aria-current', 'page');
+    await expect(monthlyTable.locator('tbody tr').first().locator('th').first()).toHaveText('13');
 
     for (const width of [1920, 1366, 1024, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 1000 });
       for (const theme of ['dark', 'light']) {
         await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+        await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
         const form = await workspace.locator('[data-panel="form"]').boundingBox();
         const summary = await workspace.locator('[data-panel="summary"]').boundingBox();
         const chart = calculator.resultState === 'results-chart'
@@ -100,7 +131,7 @@ for (const calculator of calculators) {
         expect(form && summary && table && grid).toBeTruthy();
         const resultBottom = chart ? chart.y + chart.height : summary!.y + summary!.height;
         if (width > 900) {
-          expect(Math.abs(form!.y - summary!.y)).toBeLessThan(3);
+          expect(Math.abs(form!.y - summary!.y), JSON.stringify({ route: calculator.route, width, theme, form, summary, chart, scrollY: await page.evaluate(() => scrollY) })).toBeLessThan(3);
           expect(Math.abs(form!.y + form!.height - resultBottom), JSON.stringify({ width, form, summary, chart, resultBottom, debug })).toBeLessThan(3);
           expect(Math.abs(table!.x - grid!.x)).toBeLessThan(3);
           expect(Math.abs(table!.width - grid!.width)).toBeLessThan(3);
@@ -121,3 +152,42 @@ for (const calculator of calculators) {
     }
   });
 }
+
+test('year pagination stays compact for 50 years and exposes every page', async ({ page }) => {
+  await useBuiltPreview(page);
+  await page.goto('/#/calculadora');
+  const calculator = page.locator('compound-calculator');
+  await calculator.getByRole('button', { name: 'Simular investimento' }).click();
+  const results = calculator.locator('results-table');
+  await calculator.locator('results-table summary').click();
+  await results.evaluate(element => {
+    (element as HTMLElement & { rows: unknown[] }).rows = Array.from({ length: 600 }, (_, index) => ({
+      month: index + 1, deposit: '100', interest: '10', invested: String((index + 1) * 100), balance: String((index + 1) * 110),
+    }));
+  });
+  const pagination = calculator.locator('year-navigation');
+  await expect(pagination.getByRole('button', { name: 'Ano 50', exact: true })).toBeVisible();
+  await expect(pagination.locator('.year-page-jump')).toHaveCount(1);
+  expect(await pagination.getByRole('button').allTextContents()).toEqual(['1', '2', '3', '4', '…', '50']);
+  const year25 = pagination.getByRole('button', { name: 'Ano 25', exact: true });
+  for (let index = 0; index < 8; index++) {
+    if (await year25.count()) {
+      if (await year25.getAttribute('aria-current') === 'page') break;
+      await year25.click();
+    } else await pagination.locator('.year-page-jump').last().click();
+  }
+  await expect(year25).toHaveAttribute('aria-current', 'page');
+  expect(await pagination.getByRole('button').allTextContents()).toEqual(['1', '…', '24', '25', '26', '…', '50']);
+  await expect(pagination.locator('.year-page-jump')).toHaveCount(2);
+  await pagination.getByRole('button', { name: 'Ano 50', exact: true }).click();
+  await expect(results.locator('tbody tr').first().locator('th')).toHaveText('589');
+
+  await page.goto('/#/custo-clt');
+  const clt = page.locator('extended-finance-calculator');
+  await clt.getByRole('button', { name: 'Calcular custo CLT' }).click();
+  const fiveYearPagination = clt.locator('year-navigation');
+  expect(await fiveYearPagination.getByRole('button').allTextContents()).toEqual(['1', '2', '3', '4', '5']);
+  await expect(fiveYearPagination.locator('.year-page-jump')).toHaveCount(0);
+  await fiveYearPagination.getByRole('button', { name: 'Ano 3', exact: true }).click();
+  await expect(clt.locator('.extended-table tbody tr').first().locator('th')).toHaveText('25');
+});

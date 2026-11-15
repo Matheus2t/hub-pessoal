@@ -308,22 +308,22 @@ export class ExtendedFinanceCalculator extends LightElement {
     const out = this.output;
     if (!out) return { heads: [], rows: [], title: '' };
     if (out.kind === 'retirement') return {
-      title: 'Evolução mês a mês', heads: ['Mês','Idade','Aporte','Juros no mês','Total investido','Patrimônio'],
+      title: 'Evolução da aposentadoria', heads: ['Mês','Idade','Aporte','Juros no mês','Total investido','Patrimônio'],
       rows: out.data.monthlyRows.map(r => [String(r.month), r.age.toLocaleString('pt-BR',{maximumFractionDigits:2}), money(r.deposit), money(r.interest), money(r.invested), money(r.balance)]),
     };
     if (out.kind === 'housing') return {
-      title: 'Comparação mensal', heads: ['Mês','Comprar: patrimônio','Alugar: patrimônio','Prestação','Aluguel','Saldo devedor'],
+      title: 'Comparação de cenários', heads: ['Mês','Comprar: patrimônio','Alugar: patrimônio','Prestação','Aluguel','Saldo devedor'],
       rows: out.data.monthlyRows.map(r => [String(r.month),money(r.buyWealth),money(r.rentWealth),money(r.payment),money(r.rentMonthly),money(r.loanBalance)]),
     };
     if (out.kind === 'amortization') return {
-      title: 'Antes e depois da amortização', heads: ['Mês','Parcela original','Parcela com extra','Juros com extra','Extra aplicado','Saldo original','Saldo com extra'],
+      title: 'Evolução da amortização', heads: ['Mês','Parcela original','Parcela com extra','Juros com extra','Extra aplicado','Saldo original','Saldo com extra'],
       rows: out.data.accelerated.rows.map((r,i) => [
         String(r.month),money(out.data.baseline.rows[i]?.payment ?? 0),money(r.payment),
         money(r.interest),money(r.extra),money(out.data.baseline.rows[i]?.balance ?? 0),money(r.balance)
       ]),
     };
     return {
-      title: 'Provisões e custos mensais da equipe',
+      title: 'Evolução do custo CLT',
       heads: ['Mês','Salários','13º + férias','FGTS + encargos','Benefícios','Outros + reserva','Total do mês','Acumulado'],
       rows: out.data.monthlyRows.map(r => [
         String(r.month), money(r.salary), money(r.thirteenth+r.vacationBonus),
@@ -408,13 +408,11 @@ export class ExtendedFinanceCalculator extends LightElement {
         <section slot="chart" class="workspace-panel">${chart ? this.renderChart(chart.points, chart.a, chart.b) : nothing}</section>
         <section slot="table" class="workspace-panel">
           ${this.output ? html`<div class="extended-table">
-            <div class="extended-table-top"><div><span class="extended-table-kicker">DEMONSTRATIVO</span><h2>${table.title}</h2></div>
-              <span class="extended-table-count">${table.rows.length} meses</span></div>
-            <year-navigation .year=${this.tablePage + 1} .years=${Math.ceil(table.rows.length / 12)}
-              .range=${`Meses ${this.tablePage * 12 + 1}–${Math.min((this.tablePage + 1) * 12,table.rows.length)}`}
-              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
+            <div class="extended-table-top"><h2>${table.title}</h2></div>
             <div class="table-scroll" role="region" tabindex="0" aria-label=${table.title}><table><thead><tr>${table.heads.map(h => html`<th scope="col">${h}</th>`)}</tr></thead>
               <tbody>${rows.map((row,i) => html`<tr><th scope="row">${row[0]}</th>${row.slice(1).map(cell => html`<td>${cell}</td>`)}</tr>`)}</tbody></table></div>
+            <year-navigation .year=${this.tablePage + 1} .years=${Math.ceil(table.rows.length / 12)}
+              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
           </div>` : nothing}
           ${this.output ? html`<p class="extended-disclosure">${this.kind === 'retirement' ? 'Projeção sem impostos, taxas e volatilidade; taxa de retirada é hipótese, não garantia de renda.' : this.kind === 'housing' ? 'Não considera corretagem de venda, imposto sobre ganho de capital, custos comuns a aluguel e compra ou mudanças de juros. Rendimento dos investimentos bruto de tributos.' : this.kind === 'amortization' ? 'Não inclui seguros, correção por TR/IPCA, tarifas, CET, multas ou mudanças contratuais. Confirme as regras da instituição.' : 'Estimativa sem custos de rescisão, adicionais por categoria, horas extras e convenções coletivas. Benefícios são tratados como não salariais; ajuste o cenário conforme sua empresa.'}</p>` : nothing}
         </section>

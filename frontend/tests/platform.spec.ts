@@ -186,7 +186,7 @@ test("validation, loading, API error and 600-month pagination", async ({
   await expect(page.locator(".chart-panel")).toContainText("600 meses");
   await page.locator("compound-calculator summary").click();
   await expect(page.locator("tbody tr")).toHaveCount(12);
-  await page.getByRole("button", { name: "Próximo ano" }).click();
+  await page.getByRole("button", { name: "Ano 2", exact: true }).click();
   await expect(page.locator("tbody tr").first()).toContainText("13");
   await page.getByLabel("Capital inicial", { exact: true }).fill("2000");
   await expect(page.locator(".result-status")).toContainText(

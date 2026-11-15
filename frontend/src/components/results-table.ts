@@ -18,16 +18,9 @@ export class ResultsTable extends LightElement {
       <summary>
         <span class="summary-title"
           ><span class="section-index">03</span
-          ><span
-            >Detalhamento mensal<small
-              >Consulte os valores de cada mês da simulação</small
-            ></span
-          ></span
+          ><span>Evolução do investimento</span></span
         ><span class="details-chevron">${icon("chevron")}</span>
       </summary>
-      <year-navigation .year=${this.page + 1} .years=${Math.max(1, pages)}
-        .range=${`Meses ${this.page * count + 1}–${Math.min((this.page + 1) * count, this.rows.length)} de ${this.rows.length}`}
-        @year-change=${(event: CustomEvent<number>) => this.page = event.detail - 1}></year-navigation>
       <div
         class="table-scroll"
         tabindex="0"
@@ -61,7 +54,8 @@ export class ResultsTable extends LightElement {
           </tbody>
         </table>
       </div>
-
+      <year-navigation .year=${this.page + 1} .years=${Math.max(1, pages)}
+        @year-change=${(event: CustomEvent<number>) => this.page = event.detail - 1}></year-navigation>
     </details>`;
   }
 }
