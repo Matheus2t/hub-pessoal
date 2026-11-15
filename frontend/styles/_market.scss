@@ -507,17 +507,38 @@ market-page.market-terminal panel-workspace[area="actions-overview"] [slot="quot
 }
 market-page.market-terminal .market-home-watchlist > h2 { margin-bottom: 10px; }
 market-page.market-terminal .market-home-tools { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
-market-page.market-terminal .market-home-tools h3 { margin: 0 0 7px; font-size: 12px; font-weight: 600; color: var(--secondary); }
+/* Ações homepage: compact, unmistakably interactive shortcuts, not bare text links. */
+market-page.market-terminal .market-home-tools h3 {
+  margin: 0 0 10px; font-size: 13px; font-weight: 650; color: var(--text);
+}
 market-page.market-terminal .market-home-tools .ws-analysis-links {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 8px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px;
   overflow: visible; margin: 0; border: 0; font-size: 12px;
 }
 market-page.market-terminal .market-home-tools .ws-analysis-links a {
-  justify-content: flex-start; min-height: 36px; padding: 6px 7px; border: 1px solid transparent;
-  border-radius: 5px; text-align: left; white-space: normal; line-height: 1.3;
+  display: flex; justify-content: space-between; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 10px; border: 1px solid var(--line-soft);
+  border-radius: 7px; background: var(--raised); color: var(--text);
+  text-align: left; white-space: normal; line-height: 1.35; font-size: 12px; font-weight: 550;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+market-page.market-terminal .market-home-tools .ws-analysis-links .market-tool-arrow {
+  flex: 0 0 auto; color: var(--secondary); font-size: 15px; line-height: 1;
 }
 market-page.market-terminal .market-home-tools .ws-analysis-links a:hover {
-  background: var(--raised); border-color: var(--line-soft);
+  background: var(--hover); border-color: var(--line); color: var(--text);
+}
+market-page.market-terminal .market-home-tools .ws-analysis-links a:hover .market-tool-arrow {
+  color: var(--text);
+}
+market-page.market-terminal .market-home-tools .ws-analysis-links a:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+@media (max-width: 360px) {
+  market-page.market-terminal .market-home-tools .ws-analysis-links { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  market-page.market-terminal .market-home-tools .ws-analysis-links a { transition: none; }
 }
 market-page.market-terminal .market-home-panorama { padding-block: 13px; }
 market-page.market-terminal .market-home-panorama .market-panorama { margin: 0; }
