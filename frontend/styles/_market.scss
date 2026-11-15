@@ -436,6 +436,19 @@ market-page.market-terminal panel-workspace[area="actions-overview"] [slot="quot
   height: auto;
   min-height: 0;
 }
+/* Fill the small bottom gap next to the index chart with more room for live quotes.
+   This affects only the expanded-panorama desktop layout; closed and mobile stay unchanged. */
+@media (min-width:901px) {
+  market-page.market-terminal panel-workspace[area="actions-overview"][panorama-open] [slot="quotes"] {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  market-page.market-terminal panel-workspace[area="actions-overview"][panorama-open] .market-quotes-frame {
+    flex: 1 1 320px;
+    min-height: 0;
+  }
+}
 market-page.market-terminal .market-home-watchlist > h2 { margin-bottom: 10px; }
 market-page.market-terminal .market-home-tools { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
 market-page.market-terminal .market-home-tools h3 { margin: 0 0 7px; font-size: 12px; font-weight: 600; color: var(--secondary); }
