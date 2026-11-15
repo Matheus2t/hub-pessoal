@@ -2,11 +2,12 @@ import {html,nothing,svg} from 'lit';
 import {customElement,state} from 'lit/decorators.js';
 import {LightElement} from '../ui';
 import {stocks} from '../market-catalog';
-import {manifest,loadFinancial,fields,formatFinancial,type FinancialData} from '../financial-data';
+import {manifest,loadFinancial,eligibleAnnualSymbols,fields,formatFinancial,type FinancialData} from '../financial-data';
 
 @customElement('financial-comparison')
 export class FinancialComparison extends LightElement {
  @state() private selected=['PETR4','VALE3','',''];
+ @state() private eligibleStocks:typeof stocks=[];
  @state() private data:FinancialData[]=[];
  @state() private error='';
  @state() private loading=false;
@@ -14,9 +15,10 @@ export class FinancialComparison extends LightElement {
  @state() private historyMetric='profit';
  @state() private normalized=false;
  private controller?:AbortController;
+ private initialized=false;
  connectedCallback(){super.connectedCallback();void this.load();}
  disconnectedCallback(){this.controller?.abort();super.disconnectedCallback();}
- private async load(){this.controller?.abort();const controller=this.controller=new AbortController();this.loading=true;this.error='';try{const m=await manifest(controller.signal);const result=await Promise.all(this.selected.filter(Boolean).map(s=>loadFinancial(m,s,controller.signal)));if(controller.signal.aborted)return;const unique=new Map<string,FinancialData>();for(const d of result)if(d)unique.set(d.issuer.cnpj,d);this.data=[...unique.values()];if(result.some(d=>!d))this.error='Uma das empresas não possui cobertura CVM nesta versão.';this.period='';}catch(e){if((e as Error).name!=='AbortError')this.error=(e as Error).message;}finally{if(!controller.signal.aborted)this.loading=false;}}
+ private async load(){this.controller?.abort();const controller=this.controller=new AbortController();this.loading=true;this.error='';try{const m=await manifest(controller.signal);const available=new Set(eligibleAnnualSymbols(m));this.eligibleStocks=stocks.filter(stock=>available.has(stock.symbol));const symbols=new Set(this.eligibleStocks.map(stock=>stock.symbol));if(!this.initialized){const initial=this.selected.filter(symbol=>symbols.has(symbol));for(const stock of this.eligibleStocks)if(initial.length<2&&!initial.includes(stock.symbol))initial.push(stock.symbol);this.selected=[...initial.slice(0,4),...Array(Math.max(0,4-initial.length)).fill('')];this.initialized=true;}else this.selected=this.selected.map(symbol=>symbols.has(symbol)?symbol:'');const result=await Promise.all(this.selected.filter(Boolean).map(s=>loadFinancial(m,s,controller.signal)));if(controller.signal.aborted)return;const unique=new Map<string,FinancialData>();for(const d of result)if(d)unique.set(d.issuer.cnpj,d);this.data=[...unique.values()];if(result.some(d=>!d))this.error='Os dados CVM selecionados deixaram de estar disponíveis. Escolha outra empresa.';if(this.eligibleStocks.length<2)this.error='Não há emissores com cobertura anual suficiente para comparar.';this.period='';}catch(e){if((e as Error).name!=='AbortError')this.error=(e as Error).message;}finally{if(!controller.signal.aborted)this.loading=false;}}
  render(){
  const common=this.data[0]?.periods.filter(p=>p.kind==='annual'&&this.data.every(d=>d.periods.some(other=>other.kind==='annual'&&other.end===p.end))).map(p=>p.end)||[];
  const date=this.period||common.at(-1);const periods=this.data.map(d=>d.periods.find(p=>p.kind==='annual'&&p.end===date));
@@ -39,7 +41,7 @@ export class FinancialComparison extends LightElement {
     ${this.selected.map((s,i)=>html`<div class="cvm-company-field"><label for=${`cvm-company-${i}`}>Empresa ${i+1}</label>
      <select id=${`cvm-company-${i}`} .value=${s} @change=${(e:Event)=>{this.selected=this.selected.map((v,j)=>i===j?(e.target as HTMLSelectElement).value:v);void this.load();}}>
       <option value="" .selected=${!s}>${i>=2?'Opcional':'Selecione'}</option>
-      ${stocks.map(stock=>html`<option value=${stock.symbol} .selected=${s===stock.symbol}>${stock.symbol} · ${stock.name}</option>`)}
+      ${this.eligibleStocks.map(stock=>html`<option value=${stock.symbol} .selected=${s===stock.symbol}>${stock.symbol} · ${stock.name}</option>`)}
      </select>
     </div>`)}
    </div>

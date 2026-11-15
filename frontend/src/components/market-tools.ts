@@ -2,7 +2,7 @@ import {html,nothing} from 'lit';
 import {customElement,state} from 'lit/decorators.js';
 import {LightElement,money} from '../ui';
 import {projectContributions} from '../market-tools';
-import {manifest,loadFinancial,formatFinancial,fields,type FinancialData} from '../financial-data';
+import {manifest,loadFinancial,formatFinancial,hasFinancialValue,fields,type FinancialData} from '../financial-data';
 import {stocks} from '../market-catalog';
 
 @customElement('market-contributions')
@@ -148,7 +148,7 @@ export class MarketRankings extends LightElement {
   const sectors=[...new Set(this.data.map(sectorOf))].sort();
   const candidates=this.data.filter(d=>!this.sector||sectorOf(d)===this.sector);
   const rows=candidates.map(d=>({d,p:d.periods.find(p=>p.kind==='annual'&&p.end===date)}))
-   .filter(r=>r.p?.values[this.metric]!=null)
+   .filter(r=>hasFinancialValue(r.p?.values[this.metric]))
    .sort((a,b)=>`${sectorOf(a.d)}:${a.p!.document.scope}`.localeCompare(`${sectorOf(b.d)}:${b.p!.document.scope}`)||(b.p!.values[this.metric]!-a.p!.values[this.metric]!));
   const groups:{sector:string;scope:string;items:typeof rows}[]=[];
   for(const row of rows){
