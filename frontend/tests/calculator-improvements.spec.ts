@@ -69,7 +69,7 @@ test('PRICE and SAC ledger is open and jumps directly to last year',async({page}
   const tool=page.locator('finance-calculator');
   await tool.getByRole('button',{name:'Calcular'}).click();
   const ledger=tool.locator('.loan-ledger');
-  await expect(ledger.getByRole('heading',{name:'Parcelas e saldo devedor'})).toBeVisible();
+  await expect(ledger.getByRole('heading',{name:'Evolução do financiamento'})).toBeVisible();
   await expect(ledger.locator('tbody tr')).toHaveCount(12);
   await ledger.getByRole('button',{name:'Ano 3',exact:true}).click();
   await expect(ledger.getByRole('button',{name:'Ano 3',exact:true})).toHaveAttribute('aria-current','page');
