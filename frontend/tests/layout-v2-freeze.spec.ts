@@ -15,10 +15,11 @@ for(const width of [1920,1366,768,390,320])test(`approved team visuals unchanged
   // The next fixture is featured above and excluded from the remaining schedule.
   await expect(page.locator('.sports-next')).toContainText('Adversário');
   await expect(page.locator('.sports-schedule .sports-games li')).toHaveCount(2);
-  // The compact header now shows the three local club crests directly.
-  const crests=page.locator('app-sidebar .nav-team-icons img');
-  await expect(crests).toHaveCount(3);
-  await expect.poll(()=>crests.evaluateAll(images=>images.every(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0))).toBe(true);
+  // Keep club destinations available in the single Times menu.
+  const teamsMenu=page.locator('app-sidebar .teams-menu');
+  await teamsMenu.locator('summary').click();
+  await expect(teamsMenu.getByRole('link')).toHaveCount(4);
+  await page.keyboard.press('Escape');
   await page.evaluate(()=>document.fonts.ready);
   await expect.poll(()=>page.locator('team-page img').evaluateAll(imgs=>imgs.every(img=>(img as HTMLImageElement).complete))).toBe(true);
   for(const theme of ['dark','light']){

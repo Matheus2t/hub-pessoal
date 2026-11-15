@@ -9,17 +9,6 @@ export class HomePage extends LightElement {
       <section class="platform-intro">
         <h1>Início</h1>
       </section>
-      <a class="home-call" href="#/call" aria-label="Acessar Call">
-        <span class="home-call-icon" aria-hidden="true">
-          <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="6" y="11" width="24" height="22" rx="4"/>
-            <path d="m30 18 8-5v18l-8-5"/>
-            <path d="M12 39h18"/>
-          </svg>
-        </span>
-        <span class="home-call-copy"><strong>Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
-        <span class="home-call-action">Acessar <span aria-hidden="true">↗</span></span>
-      </a>
       <section class="platform-areas" aria-label="Áreas disponíveis">
         <a class="tool-card area-card area-calculators" href="#/calculadoras"><span class="area-icon">${icon("calculator")}</span>
           <div class="area-content"><div class="area-copy"><h2>Calculadoras</h2><p>Simule juros, aportes e parcelas de financiamentos.</p></div>
@@ -44,6 +33,21 @@ export class HomePage extends LightElement {
           </div><div class="area-access"><span>Explorar</span><span class="area-arrow" aria-hidden="true">↗</span></div>
         </a>
       </section>
-      <a class="home-call home-games-entry" href="#/games" aria-label="Explorar Games"><span class="home-call-icon home-games-icon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"><rect x="4" y="10" width="32" height="20" rx="7"/><path d="M12 17v7m-3.5-3.5h7M26 18h.1M30 22h.1"/></svg></span><span class="home-call-copy"><strong>Games</strong><span>10 jogos clássicos. Arcade, lógica, palavras e desafios de habilidade.</span></span><span class="home-call-action">Explorar jogos <span aria-hidden="true">↗</span></span></a>`;
+      <section class="home-utilities" aria-label="Acesso rápido">
+        <a class="home-call" href="#/call" aria-label="Acessar Call">
+          <span class="home-call-icon" aria-hidden="true">
+            <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="11" width="24" height="22" rx="4"/><path d="m30 18 8-5v18l-8-5"/><path d="M12 39h18"/>
+            </svg>
+          </span>
+          <span class="home-call-copy"><strong>Call</strong><span>Salas privadas para até 5 pessoas, com voz, câmera e compartilhamento de tela.</span></span>
+          <span class="home-call-action">Acessar <span aria-hidden="true">↗</span></span>
+        </a>
+        <a class="home-call home-games-entry" href="#/games" aria-label="Explorar Games">
+          <span class="home-call-icon home-games-icon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"><rect x="4" y="10" width="32" height="20" rx="7"/><path d="M12 17v7m-3.5-3.5h7M26 18h.1M30 22h.1"/></svg></span>
+          <span class="home-call-copy"><strong>Games</strong><span>10 jogos clássicos. Arcade, lógica, palavras e desafios de habilidade.</span></span>
+          <span class="home-call-action">Explorar jogos <span aria-hidden="true">↗</span></span>
+        </a>
+      </section>`;
   }
 }

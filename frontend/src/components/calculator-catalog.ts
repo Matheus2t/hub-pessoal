@@ -9,11 +9,12 @@ export class ToolCard extends LightElement {
   render() {
     const tool = this.tool;
     return html`<a class="tool-card" href=${tool.href} aria-label=${tool.id === 'compound' ? 'Abrir calculadora' : `Abrir ${tool.name}`}>
+      <div class="tool-card-top"><span class="tool-card-icon" aria-hidden="true">${icon(tool.icon)}</span><span class="tool-card-category">${tool.category}</span></div>
       <div class="tool-card-content">
         <h2>${tool.name}</h2>
         <p>${tool.description}</p>
       </div>
-      <span class="tool-arrow" aria-hidden="true">${icon("arrow")}</span>
+      <span class="tool-card-footer"><span>Abrir calculadora</span><span class="tool-arrow" aria-hidden="true">${icon("arrow")}</span></span>
     </a>`;
   }
 }

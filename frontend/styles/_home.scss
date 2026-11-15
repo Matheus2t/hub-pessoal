@@ -3,9 +3,8 @@
 .main-content:has(home-page) .page-footer { margin-top:auto; }
 home-page { display:flex; flex:1; flex-direction:column; gap:20px; padding-block:8px 28px; }
 home-page > .platform-intro { order:0; width:100%; max-width:1440px; margin-inline:auto; }
-home-page > .home-call[href="#/call"] { order:1; }
-home-page > .platform-areas { order:2; }
-home-page > .home-call[href="#/games"] { order:3; }
+home-page > .platform-areas { order:1; }
+home-page > .home-utilities { order:2; }
 .platform-intro h1 { font-size:clamp(28px,3vw,40px); font-weight:590; letter-spacing:-.055em; line-height:1.12; }
 .platform-areas { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); width:100%; max-width:1440px; margin-inline:auto; gap:16px 20px; align-items:stretch; }
 .platform-areas::before { content:"Áreas"; grid-column:1/-1; margin:2px 0 1px; color:var(--secondary); font-size:13px; font-weight:560; letter-spacing:.01em; }
@@ -36,10 +35,12 @@ home-page .area-card:hover .area-preview { opacity:1; transform:translateY(-2px)
 home-page .area-access { display:flex; justify-content:space-between; align-items:center; min-height:34px; padding-top:10px; border-top:1px solid var(--line-soft); color:var(--secondary); font-size:12px; }
 home-page .area-arrow { color:var(--text); font-size:20px; line-height:1; }
 
-/* Call and Games remain easy to reach without taking the visual weight of an area card. */
+/* Call and Games share a compact, clearly secondary access row. */
+home-page .home-utilities { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 16px; width:100%; max-width:1440px; margin-inline:auto; }
+home-page .home-utilities::before { content:"Acesso rápido"; grid-column:1/-1; margin:0 0 1px; color:var(--secondary); font-size:13px; font-weight:560; }
 home-page .home-call {
   display:grid; grid-template-columns:40px minmax(0,1fr) auto; align-items:center; gap:14px;
-  width:100%; max-width:1440px; min-height:78px; margin-inline:auto; padding:13px 17px;
+  width:100%; min-width:0; min-height:88px; margin:0; padding:15px 17px;
   border:1px solid var(--line-soft); border-radius:var(--radius); background:transparent; color:var(--text);
   text-decoration:none; transition:background var(--duration),border-color var(--duration);
 }
@@ -52,7 +53,7 @@ home-page .home-call:focus-visible { outline:2px solid var(--focus); outline-off
 .home-call-copy > span { color:var(--secondary); font-size:12px; line-height:1.45; }
 .home-call-action { display:inline-flex; align-items:center; gap:10px; padding-left:16px; border-left:1px solid var(--line-soft); color:var(--secondary); font-size:12px; white-space:nowrap; }
 .home-call-action span { color:var(--text); font-size:18px; line-height:1; }
-home-page .home-games-entry { min-height:62px; }
+home-page .home-games-entry { min-height:88px; }
 home-page .home-games-entry .home-call-icon { width:34px; height:34px; border:0; }
 home-page .home-games-entry .home-call-icon svg { width:25px; height:25px; }
 
@@ -65,8 +66,18 @@ home-page .home-games-entry .home-call-icon svg { width:25px; height:25px; }
 .category-filters { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; }
 .category-filters .button { min-height:40px; padding:8px 14px; border-color:transparent; border-radius:999px; color:var(--secondary); }
 .category-filters [aria-pressed="true"] { border-color:var(--line); background:var(--raised); color:var(--text); }
-.tool-collection { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.tool-collection { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; align-items:stretch; }
 tool-card { height:100%; }
+.tool-collection .tool-card { display:grid; grid-template-rows:auto 1fr auto; align-items:stretch; justify-content:initial; min-height:254px; padding:22px; gap:18px; border-radius:var(--radius-lg); }
+.tool-collection .tool-card-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.tool-collection .tool-card-icon { display:grid; place-items:center; width:40px; height:40px; border:1px solid var(--line-soft); border-radius:var(--radius); color:var(--secondary); }
+.tool-collection .tool-card-icon .icon { width:19px; height:19px; }
+.tool-collection .tool-card-category { color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; }
+.tool-collection .tool-card-content { align-self:center; }
+.tool-collection .tool-card h2 { font-size:clamp(17px,1.3vw,20px); }
+.tool-collection .tool-card p { max-width:34ch; }
+.tool-collection .tool-card-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:12px; border-top:1px solid var(--line-soft); color:var(--secondary); font-size:12px; }
+.tool-collection .tool-arrow { color:var(--text); }
 .tool-card { display:flex; align-items:center; justify-content:space-between; gap:24px; height:100%; min-height:132px; padding:24px; border:1px solid var(--line-soft); border-radius:var(--radius); background:var(--panel); color:var(--text); text-decoration:none; transition:background var(--duration),border-color var(--duration),transform var(--duration); }
 .tool-card:hover { transform:translateY(-1px); background:var(--raised); border-color:var(--line); }
 .tool-card:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
@@ -81,6 +92,8 @@ tool-card { height:100%; }
   home-page .area-calculators,home-page .area-market,home-page .area-fixed-income,home-page .area-learn { grid-column:span 6; }
   home-page .area-card { min-height:240px; }
   home-page .area-content { grid-template-columns:minmax(0,1fr) minmax(100px,.55fr); }
+  .tool-collection { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .tool-collection .tool-card { min-height:230px; }
 }
 @media(max-width:700px) {
   .main-content:has(home-page) { min-height:0; padding-top:20px; }
@@ -92,6 +105,7 @@ tool-card { height:100%; }
   home-page .area-copy h2 { font-size:20px; }
   home-page .area-copy p { font-size:13px; }
   home-page .area-preview { max-height:76px; }
+  home-page .home-utilities { grid-template-columns:minmax(0,1fr); gap:10px; }
   home-page .home-call { grid-template-columns:38px minmax(0,1fr); gap:9px 12px; min-height:0; padding:13px; }
   home-page .home-call-action { grid-column:2; padding:0; border:0; }
   .home-intro { align-items:stretch; flex-direction:column; gap:16px; }
@@ -99,6 +113,7 @@ tool-card { height:100%; }
   .tool-collection { grid-template-columns:minmax(0,1fr); gap:10px; }
   .tool-card { min-height:112px; padding:19px; gap:15px; }
   .tool-card h2 { font-size:18px; }
+  .tool-collection .tool-card { min-height:196px; padding:19px; gap:13px; }
 }
 @media(max-width:360px) {
   .platform-areas { gap:10px; }

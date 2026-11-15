@@ -64,7 +64,10 @@ financial-analysis th, financial-analysis td, financial-comparison th, financial
 .tradingview-widget-container__widget { height: calc(100% - 32px); width: 100%; }
 .tv-panel .tradingview-widget-copyright { min-height: 32px; display: flex; align-items: center; font-size: 13px; }
 .tv-panel .tradingview-widget-copyright a { color: var(--secondary); }
-.tv-loading { position: absolute; top: 0; z-index: 1; padding: 16px; background: var(--panel); color: var(--secondary); font-size: 14px; pointer-events: none; }
+.tv-loading { position:absolute; top:50%; left:50%; z-index:1; display:flex; align-items:center; gap:9px; margin:0; padding:9px 13px; transform:translate(-50%,-50%); border:1px solid var(--line); border-radius:999px; background:var(--bg); color:var(--secondary); font-size:12px; box-shadow:0 5px 18px #00000014; pointer-events:none; white-space:nowrap; }
+.tv-loading::before { content:""; width:10px; height:10px; flex:0 0 auto; border:1px solid currentColor; border-top-color:transparent; border-radius:50%; animation:tv-loading-spin .8s linear infinite; }
+@keyframes tv-loading-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .tv-loading::before { animation:none; border-style:dashed; } }
 .tv-availability { font-size: 12px; }
 .tv-availability a { text-decoration: underline; text-underline-offset: 3px; }
 tv-tickers { display: block; width: 100%; --tv-widget-background-color: var(--bg); --tv-widget-font-family: var(--font-body); --tv-widget-accent-color: var(--text); --tv-widget-text-color: var(--text); --tv-widget-price-text-color: var(--text); }
