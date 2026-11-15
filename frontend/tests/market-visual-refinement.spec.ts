@@ -87,6 +87,8 @@ for (const width of [1920, 1366, 1024, 768, 390, 320]) {
         if (view.id === 'distributions') {
           const columnCount = await page.locator('.dp-filter-fields').evaluate(node => getComputedStyle(node).gridTemplateColumns.split(' ').length);
           expect(columnCount).toBe(width > 1100 ? 4 : width <= 360 ? 1 : 2);
+          await page.locator('.dp-filter-fields > .rf-fields select').nth(0).selectOption('PETR4');
+          await expect(page.locator('.distributions tbody')).toContainText('PETR4');
           if (width > 360 && width <= 580) {
             const spans = await page.locator('.dp-filter-fields .distribution-basis, .dp-filter-fields .distribution-date-nature').evaluateAll(nodes => nodes.map(node => getComputedStyle(node).gridColumnEnd));
             expect(spans).toEqual(['-1', '-1']);

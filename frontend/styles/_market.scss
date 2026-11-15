@@ -926,8 +926,9 @@ distributions-page .dp-history-embedded .dp-hero { margin-top:0; }
 
 /* Proventos filters share one grid instead of leaving isolated fields on new rows. */
 distributions-page .dp-filter-inner > .dp-filter-fields {
-  grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px 14px; margin:0;
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px 14px; margin:0;
 }
+distributions-page .dp-filter-inner > .dp-filter-fields > .rf-fields { display:contents; }
 distributions-page .dp-filter-inner > .dp-filter-fields .distribution-basis { grid-column:auto; width:auto; }
 distributions-page .dp-filter-inner > .dp-filter-fields .rf-field { align-content:start; }
 @media(max-width:1100px) {
