@@ -4,8 +4,8 @@ import path from 'node:path';
 
 const widths=[320,390,768,1024,1366,1440,1920] as const;
 const themes=['dark','light'] as const;
-const stage=process.env.UX_STAGE||'before';
-const evidence=path.resolve('docs/ux-layout-refinement/evidence',stage);
+const stage=process.env.UX_STAGE||'after';
+const evidence=path.resolve('docs/ux-refinement-deep/evidence',stage);
 
 for(const width of widths)for(const theme of themes){
  test(`layout composition ${width}px ${theme}`,async({page})=>{
@@ -19,8 +19,8 @@ for(const width of widths)for(const theme of themes){
   const form=income.locator('[slot="form"]'),empty=income.locator('[slot="empty"]');
   await expect(form).toBeVisible();await expect(empty).toBeVisible();
   const formBox=await form.boundingBox(),emptyBox=await empty.boundingBox();
-  if(formBox&&emptyBox&&width>=1024&&formBox.height-emptyBox.height<100)
-   violations.push(`Renda Fixa empty panel too tall: form=${Math.round(formBox.height)} result=${Math.round(emptyBox.height)}`);
+  if(formBox&&emptyBox&&width>=1024&&Math.abs(formBox.height-emptyBox.height)>3)
+   violations.push(`Renda Fixa form and result panels are misaligned: form=${Math.round(formBox.height)} result=${Math.round(emptyBox.height)}`);
   if(width===1366)console.log('UX_GEOMETRY fixed-income',JSON.stringify({width,theme,form:formBox,empty:emptyBox}));
   if([1366,390].includes(width)){
    fs.mkdirSync(evidence,{recursive:true});

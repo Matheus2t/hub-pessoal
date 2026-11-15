@@ -57,7 +57,11 @@ test('fixed calculator layout ignores old preferences and does not offer customi
 for(const route of ['calculadora','juros-simples','price','sac','renda-fixa']){
  test(`calculator ${route} has a complete fixed layout`,async({page})=>{
    await page.goto('/#/'+route);
-   const workspace=page.locator('panel-workspace');
+   const workspace=route==='calculadora'
+    ?page.locator('compound-calculator panel-workspace')
+    :route==='renda-fixa'
+     ?page.locator('fixed-income-page panel-workspace[area="fixed-income-simulator"]')
+     :page.locator('finance-calculator panel-workspace');
    await expect(workspace).toHaveCount(1);
    await expect(workspace).toHaveAttribute('fixed-layout','');
    await expect(workspace.getByRole('button',{name:'Personalizar painel'})).toHaveCount(0);

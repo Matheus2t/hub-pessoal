@@ -1,0 +1,1806 @@
+[
+  {
+    "name": "home",
+    "route": "#/",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Início",
+    "panels": [
+      {
+        "x": 41,
+        "y": 333,
+        "width": 732,
+        "height": 258
+      },
+      {
+        "x": 793,
+        "y": 333,
+        "width": 517,
+        "height": 258
+      },
+      {
+        "x": 41,
+        "y": 607,
+        "width": 517,
+        "height": 258
+      },
+      {
+        "x": 578,
+        "y": 607,
+        "width": 732,
+        "height": 258
+      }
+    ]
+  },
+  {
+    "name": "home",
+    "route": "#/",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Início",
+    "panels": [
+      {
+        "x": 41,
+        "y": 333,
+        "width": 732,
+        "height": 258
+      },
+      {
+        "x": 793,
+        "y": 333,
+        "width": 517,
+        "height": 258
+      },
+      {
+        "x": 41,
+        "y": 607,
+        "width": 517,
+        "height": 258
+      },
+      {
+        "x": 578,
+        "y": 607,
+        "width": 732,
+        "height": 258
+      }
+    ]
+  },
+  {
+    "name": "home",
+    "route": "#/",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Início",
+    "panels": [
+      {
+        "x": 18,
+        "y": 340,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 560,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 780,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 1000,
+        "width": 339,
+        "height": 206
+      }
+    ]
+  },
+  {
+    "name": "home",
+    "route": "#/",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Início",
+    "panels": [
+      {
+        "x": 18,
+        "y": 340,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 560,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 780,
+        "width": 339,
+        "height": 206
+      },
+      {
+        "x": 18,
+        "y": 1000,
+        "width": 339,
+        "height": 206
+      }
+    ]
+  },
+  {
+    "name": "calculator-catalog",
+    "route": "#/calculadoras",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Calculadoras",
+    "panels": [
+      {
+        "x": 41,
+        "y": 228,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 228,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 374,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 374,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 520,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 520,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 666,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 666,
+        "width": 628,
+        "height": 132
+      }
+    ]
+  },
+  {
+    "name": "calculator-catalog",
+    "route": "#/calculadoras",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Calculadoras",
+    "panels": [
+      {
+        "x": 41,
+        "y": 228,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 228,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 374,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 374,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 520,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 520,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 41,
+        "y": 666,
+        "width": 628,
+        "height": 132
+      },
+      {
+        "x": 683,
+        "y": 666,
+        "width": 628,
+        "height": 132
+      }
+    ]
+  },
+  {
+    "name": "calculator-catalog",
+    "route": "#/calculadoras",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Calculadoras",
+    "panels": [
+      {
+        "x": 18,
+        "y": 310,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 432,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 554,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 676,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 798,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 920,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 1042,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 1164,
+        "width": 339,
+        "height": 112
+      }
+    ]
+  },
+  {
+    "name": "calculator-catalog",
+    "route": "#/calculadoras",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Calculadoras",
+    "panels": [
+      {
+        "x": 18,
+        "y": 310,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 432,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 554,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 676,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 798,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 920,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 1042,
+        "width": 339,
+        "height": 112
+      },
+      {
+        "x": 18,
+        "y": 1164,
+        "width": 339,
+        "height": 112
+      }
+    ]
+  },
+  {
+    "name": "compound",
+    "route": "#/calculadora",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 722
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "compound",
+    "route": "#/calculadora",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 722
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "compound",
+    "route": "#/calculadora",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 247,
+        "width": 339,
+        "height": 762
+      },
+      {
+        "x": 18,
+        "y": 1024,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "compound",
+    "route": "#/calculadora",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 247,
+        "width": 339,
+        "height": 762
+      },
+      {
+        "x": 18,
+        "y": 1024,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "simple",
+    "route": "#/juros-simples",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 556
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "simple",
+    "route": "#/juros-simples",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 556
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "simple",
+    "route": "#/juros-simples",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 543
+      },
+      {
+        "x": 18,
+        "y": 777,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "simple",
+    "route": "#/juros-simples",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 543
+      },
+      {
+        "x": 18,
+        "y": 777,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "price",
+    "route": "#/price",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 556
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "price",
+    "route": "#/price",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 556
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "price",
+    "route": "#/price",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 561
+      },
+      {
+        "x": 18,
+        "y": 795,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "price",
+    "route": "#/price",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 561
+      },
+      {
+        "x": 18,
+        "y": 795,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "retirement",
+    "route": "#/aposentadoria",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 819
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "retirement",
+    "route": "#/aposentadoria",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 41,
+        "y": 190,
+        "width": 412,
+        "height": 819
+      },
+      {
+        "x": 469,
+        "y": 190,
+        "width": 841,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "retirement",
+    "route": "#/aposentadoria",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 1064
+      },
+      {
+        "x": 18,
+        "y": 1298,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "retirement",
+    "route": "#/aposentadoria",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Calculadora de juros compostos",
+    "panels": [
+      {
+        "x": 18,
+        "y": 218,
+        "width": 339,
+        "height": 1064
+      },
+      {
+        "x": 18,
+        "y": 1298,
+        "width": 339,
+        "height": 120
+      }
+    ]
+  },
+  {
+    "name": "actions-overview",
+    "route": "#/acoes",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Mercado de Ações",
+    "panels": [
+      {
+        "x": 41,
+        "y": 274,
+        "width": 841,
+        "height": 628
+      },
+      {
+        "x": 898,
+        "y": 274,
+        "width": 412,
+        "height": 520
+      },
+      {
+        "x": 41,
+        "y": 918,
+        "width": 1269,
+        "height": 85
+      },
+      {
+        "x": 41,
+        "y": 1019,
+        "width": 1269,
+        "height": 89
+      }
+    ]
+  },
+  {
+    "name": "actions-overview",
+    "route": "#/acoes",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Mercado de Ações",
+    "panels": [
+      {
+        "x": 41,
+        "y": 274,
+        "width": 841,
+        "height": 628
+      },
+      {
+        "x": 898,
+        "y": 274,
+        "width": 412,
+        "height": 520
+      },
+      {
+        "x": 41,
+        "y": 918,
+        "width": 1269,
+        "height": 85
+      },
+      {
+        "x": 41,
+        "y": 1019,
+        "width": 1269,
+        "height": 89
+      }
+    ]
+  },
+  {
+    "name": "actions-overview",
+    "route": "#/acoes",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Mercado de Ações",
+    "panels": [
+      {
+        "x": 18,
+        "y": 302,
+        "width": 339,
+        "height": 608
+      },
+      {
+        "x": 18,
+        "y": 926,
+        "width": 339,
+        "height": 520
+      },
+      {
+        "x": 18,
+        "y": 1462,
+        "width": 339,
+        "height": 73
+      },
+      {
+        "x": 18,
+        "y": 1551,
+        "width": 339,
+        "height": 85
+      }
+    ]
+  },
+  {
+    "name": "actions-overview",
+    "route": "#/acoes",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Mercado de Ações",
+    "panels": [
+      {
+        "x": 18,
+        "y": 302,
+        "width": 339,
+        "height": 608
+      },
+      {
+        "x": 18,
+        "y": 926,
+        "width": 339,
+        "height": 520
+      },
+      {
+        "x": 18,
+        "y": 1462,
+        "width": 339,
+        "height": 73
+      },
+      {
+        "x": 18,
+        "y": 1551,
+        "width": 339,
+        "height": 85
+      }
+    ]
+  },
+  {
+    "name": "actions-company",
+    "route": "#/acoes/PETR4",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "PETR4",
+    "panels": [
+      {
+        "x": 41,
+        "y": 369,
+        "width": 841,
+        "height": 664
+      },
+      {
+        "x": 898,
+        "y": 369,
+        "width": 412,
+        "height": 131
+      },
+      {
+        "x": 898,
+        "y": 663,
+        "width": 412,
+        "height": 223
+      },
+      {
+        "x": 41,
+        "y": 1073,
+        "width": 1269,
+        "height": 90
+      }
+    ]
+  },
+  {
+    "name": "actions-company",
+    "route": "#/acoes/PETR4",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "PETR4",
+    "panels": [
+      {
+        "x": 41,
+        "y": 369,
+        "width": 841,
+        "height": 664
+      },
+      {
+        "x": 898,
+        "y": 369,
+        "width": 412,
+        "height": 131
+      },
+      {
+        "x": 898,
+        "y": 663,
+        "width": 412,
+        "height": 223
+      },
+      {
+        "x": 41,
+        "y": 1073,
+        "width": 1269,
+        "height": 90
+      }
+    ]
+  },
+  {
+    "name": "actions-company",
+    "route": "#/acoes/PETR4",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "PETR4",
+    "panels": [
+      {
+        "x": 18,
+        "y": 397,
+        "width": 339,
+        "height": 636
+      },
+      {
+        "x": 18,
+        "y": 1049,
+        "width": 339,
+        "height": 119
+      },
+      {
+        "x": 18,
+        "y": 1184,
+        "width": 339,
+        "height": 211
+      },
+      {
+        "x": 18,
+        "y": 1434,
+        "width": 339,
+        "height": 78
+      }
+    ]
+  },
+  {
+    "name": "actions-company",
+    "route": "#/acoes/PETR4",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "PETR4",
+    "panels": [
+      {
+        "x": 18,
+        "y": 397,
+        "width": 339,
+        "height": 636
+      },
+      {
+        "x": 18,
+        "y": 1049,
+        "width": 339,
+        "height": 119
+      },
+      {
+        "x": 18,
+        "y": 1184,
+        "width": 339,
+        "height": 211
+      },
+      {
+        "x": 18,
+        "y": 1434,
+        "width": 339,
+        "height": 78
+      }
+    ]
+  },
+  {
+    "name": "fixed-income",
+    "route": "#/renda-fixa",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Renda Fixa",
+    "panels": [
+      {
+        "x": 41,
+        "y": 220,
+        "width": 628,
+        "height": 498
+      },
+      {
+        "x": 683,
+        "y": 220,
+        "width": 628,
+        "height": 498
+      },
+      {
+        "x": 41,
+        "y": 731,
+        "width": 1269,
+        "height": 135
+      },
+      {
+        "x": 41,
+        "y": 866,
+        "width": 1269,
+        "height": 101
+      }
+    ]
+  },
+  {
+    "name": "fixed-income",
+    "route": "#/renda-fixa",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Renda Fixa",
+    "panels": [
+      {
+        "x": 41,
+        "y": 220,
+        "width": 628,
+        "height": 498
+      },
+      {
+        "x": 683,
+        "y": 220,
+        "width": 628,
+        "height": 498
+      },
+      {
+        "x": 41,
+        "y": 731,
+        "width": 1269,
+        "height": 135
+      },
+      {
+        "x": 41,
+        "y": 866,
+        "width": 1269,
+        "height": 101
+      }
+    ]
+  },
+  {
+    "name": "fixed-income",
+    "route": "#/renda-fixa",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Renda Fixa",
+    "panels": [
+      {
+        "x": 18,
+        "y": 240,
+        "width": 163,
+        "height": 792
+      },
+      {
+        "x": 195,
+        "y": 240,
+        "width": 163,
+        "height": 348
+      },
+      {
+        "x": 18,
+        "y": 1045,
+        "width": 339,
+        "height": 121
+      },
+      {
+        "x": 18,
+        "y": 1166,
+        "width": 339,
+        "height": 87
+      }
+    ]
+  },
+  {
+    "name": "fixed-income",
+    "route": "#/renda-fixa",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Renda Fixa",
+    "panels": [
+      {
+        "x": 18,
+        "y": 240,
+        "width": 163,
+        "height": 792
+      },
+      {
+        "x": 195,
+        "y": 240,
+        "width": 163,
+        "height": 348
+      },
+      {
+        "x": 18,
+        "y": 1045,
+        "width": 339,
+        "height": 121
+      },
+      {
+        "x": 18,
+        "y": 1166,
+        "width": 339,
+        "height": 87
+      }
+    ]
+  },
+  {
+    "name": "call-lobby",
+    "route": "#/call",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Call",
+    "panels": []
+  },
+  {
+    "name": "call-lobby",
+    "route": "#/call",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Call",
+    "panels": []
+  },
+  {
+    "name": "call-lobby",
+    "route": "#/call",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Call",
+    "panels": []
+  },
+  {
+    "name": "call-lobby",
+    "route": "#/call",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Call",
+    "panels": []
+  },
+  {
+    "name": "learn-overview",
+    "route": "#/learn",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Escolha o idioma",
+    "panels": []
+  },
+  {
+    "name": "learn-overview",
+    "route": "#/learn",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Escolha o idioma",
+    "panels": []
+  },
+  {
+    "name": "learn-overview",
+    "route": "#/learn",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Escolha o idioma",
+    "panels": []
+  },
+  {
+    "name": "learn-overview",
+    "route": "#/learn",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Escolha o idioma",
+    "panels": []
+  },
+  {
+    "name": "learn-en",
+    "route": "#/learn/en",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en",
+    "route": "#/learn/en",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en",
+    "route": "#/learn/en",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en",
+    "route": "#/learn/en",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en-vocabulary",
+    "route": "#/learn/en/vocabulary",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en-vocabulary",
+    "route": "#/learn/en/vocabulary",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en-vocabulary",
+    "route": "#/learn/en/vocabulary",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-en-vocabulary",
+    "route": "#/learn/en/vocabulary",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Inglês",
+    "panels": []
+  },
+  {
+    "name": "learn-ru",
+    "route": "#/learn/ru",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru",
+    "route": "#/learn/ru",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru",
+    "route": "#/learn/ru",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru",
+    "route": "#/learn/ru",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru-vocabulary",
+    "route": "#/learn/ru/vocabulary",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru-vocabulary",
+    "route": "#/learn/ru/vocabulary",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru-vocabulary",
+    "route": "#/learn/ru/vocabulary",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "learn-ru-vocabulary",
+    "route": "#/learn/ru/vocabulary",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Russo",
+    "panels": []
+  },
+  {
+    "name": "teams-overview",
+    "route": "#/times",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Times",
+    "panels": []
+  },
+  {
+    "name": "teams-overview",
+    "route": "#/times",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Times",
+    "panels": []
+  },
+  {
+    "name": "teams-overview",
+    "route": "#/times",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Times",
+    "panels": []
+  },
+  {
+    "name": "teams-overview",
+    "route": "#/times",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Times",
+    "panels": []
+  },
+  {
+    "name": "team-76ers",
+    "route": "#/76ers",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Philadelphia 76ers",
+    "panels": []
+  },
+  {
+    "name": "team-76ers",
+    "route": "#/76ers",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Philadelphia 76ers",
+    "panels": []
+  },
+  {
+    "name": "team-76ers",
+    "route": "#/76ers",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Philadelphia 76ers",
+    "panels": []
+  },
+  {
+    "name": "team-76ers",
+    "route": "#/76ers",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Philadelphia 76ers",
+    "panels": []
+  },
+  {
+    "name": "team-spfc",
+    "route": "#/spfc",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "São Paulo Futebol Clube",
+    "panels": []
+  },
+  {
+    "name": "team-spfc",
+    "route": "#/spfc",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "São Paulo Futebol Clube",
+    "panels": []
+  },
+  {
+    "name": "team-spfc",
+    "route": "#/spfc",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "São Paulo Futebol Clube",
+    "panels": []
+  },
+  {
+    "name": "team-spfc",
+    "route": "#/spfc",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "São Paulo Futebol Clube",
+    "panels": []
+  },
+  {
+    "name": "team-barcelona",
+    "route": "#/barcelona",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "FC Barcelona",
+    "panels": []
+  },
+  {
+    "name": "team-barcelona",
+    "route": "#/barcelona",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "FC Barcelona",
+    "panels": []
+  },
+  {
+    "name": "team-barcelona",
+    "route": "#/barcelona",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "FC Barcelona",
+    "panels": []
+  },
+  {
+    "name": "team-barcelona",
+    "route": "#/barcelona",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "FC Barcelona",
+    "panels": []
+  },
+  {
+    "name": "games-catalog",
+    "route": "#/games",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Games.",
+    "panels": [
+      {
+        "x": 76,
+        "y": 490,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 490,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 724,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 724,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 958,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 958,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 1192,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 1192,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 1426,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 1426,
+        "width": 593,
+        "height": 220
+      }
+    ]
+  },
+  {
+    "name": "games-catalog",
+    "route": "#/games",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Games.",
+    "panels": [
+      {
+        "x": 76,
+        "y": 490,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 490,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 724,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 724,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 958,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 958,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 1192,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 1192,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 76,
+        "y": 1426,
+        "width": 593,
+        "height": 220
+      },
+      {
+        "x": 683,
+        "y": 1426,
+        "width": 593,
+        "height": 220
+      }
+    ]
+  },
+  {
+    "name": "games-catalog",
+    "route": "#/games",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Games.",
+    "panels": [
+      {
+        "x": 18,
+        "y": 528,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 697,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 866,
+        "width": 339,
+        "height": 164
+      },
+      {
+        "x": 18,
+        "y": 1044,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1213,
+        "width": 339,
+        "height": 159
+      },
+      {
+        "x": 18,
+        "y": 1386,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1555,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1724,
+        "width": 339,
+        "height": 160
+      },
+      {
+        "x": 18,
+        "y": 1898,
+        "width": 339,
+        "height": 166
+      },
+      {
+        "x": 18,
+        "y": 2078,
+        "width": 339,
+        "height": 155
+      }
+    ]
+  },
+  {
+    "name": "games-catalog",
+    "route": "#/games",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Games.",
+    "panels": [
+      {
+        "x": 18,
+        "y": 528,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 697,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 866,
+        "width": 339,
+        "height": 164
+      },
+      {
+        "x": 18,
+        "y": 1044,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1213,
+        "width": 339,
+        "height": 159
+      },
+      {
+        "x": 18,
+        "y": 1386,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1555,
+        "width": 339,
+        "height": 155
+      },
+      {
+        "x": 18,
+        "y": 1724,
+        "width": 339,
+        "height": 160
+      },
+      {
+        "x": 18,
+        "y": 1898,
+        "width": 339,
+        "height": 166
+      },
+      {
+        "x": 18,
+        "y": 2078,
+        "width": 339,
+        "height": 155
+      }
+    ]
+  },
+  {
+    "name": "game-sudoku",
+    "route": "#/games/sudoku",
+    "viewport": 1366,
+    "theme": "dark",
+    "document": 1351,
+    "title": "Sudoku",
+    "panels": []
+  },
+  {
+    "name": "game-sudoku",
+    "route": "#/games/sudoku",
+    "viewport": 1366,
+    "theme": "light",
+    "document": 1351,
+    "title": "Sudoku",
+    "panels": []
+  },
+  {
+    "name": "game-sudoku",
+    "route": "#/games/sudoku",
+    "viewport": 390,
+    "theme": "dark",
+    "document": 375,
+    "title": "Sudoku",
+    "panels": []
+  },
+  {
+    "name": "game-sudoku",
+    "route": "#/games/sudoku",
+    "viewport": 390,
+    "theme": "light",
+    "document": 375,
+    "title": "Sudoku",
+    "panels": []
+  }
+]

@@ -245,8 +245,21 @@ market-page.market-terminal .ws-analysis-links a[aria-current="page"] {
   cursor: default;
 }
 @media (max-width: 600px) {
-  market-page.market-terminal .ws-analysis-links { gap:2px; }
-  market-page.market-terminal .ws-analysis-links a { padding-inline:10px; font-size:12px; }
+  market-page.market-terminal .ws-analysis-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 3px 6px;
+    overflow: visible;
+  }
+  market-page.market-terminal .ws-analysis-links a {
+    min-height: 44px;
+    padding: 8px 6px;
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   market-page.market-terminal .ws-analysis-links a { transition: none; }

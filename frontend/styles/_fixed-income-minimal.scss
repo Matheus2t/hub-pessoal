@@ -38,6 +38,12 @@
   min-height: 0;
   align-self: start;
 }
+.fixed-workspace .rf-minimal .rf-results > [slot="form"],
+.fixed-workspace .rf-minimal .rf-results > [slot="empty"],
+.fixed-workspace .rf-minimal .rf-results > [slot="summary"] {
+  height: 100%;
+  align-self: stretch;
+}
 .fixed-workspace .rf-minimal .rf-section-header {
   border: 0;
   padding: 0;
@@ -413,5 +419,23 @@
   :host([area="fixed-income-simulator"]) .ws-cell[data-panel="empty"] {
     grid-column: 1 / -1 !important;
     grid-row: auto !important;
+  }
+}
+
+/* The explicit area selector wins over the desktop six-column placement above. */
+@media (max-width: 900px) {
+  .ws-grid[data-area="fixed-income-simulator"] {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .ws-grid[data-area="fixed-income-simulator"] .ws-cell[data-panel="form"],
+  .ws-grid[data-area="fixed-income-simulator"] .ws-cell[data-panel="summary"],
+  .ws-grid[data-area="fixed-income-simulator"] .ws-cell[data-panel="empty"] {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+  .fixed-workspace .rf-minimal .rf-results > [slot="form"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="empty"],
+  .fixed-workspace .rf-minimal .rf-results > [slot="summary"] {
+    height: auto;
   }
 }
