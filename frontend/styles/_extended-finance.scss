@@ -246,3 +246,38 @@ extended-finance-calculator { display:block; min-width:0; max-width:100%; }
 .extended-calculator .extended-detail > p {margin:0;font-size:12px;color:var(--secondary);line-height:1.7;}
 .extended-calculator .extended-detail > p:last-child:not(:first-child) {margin-top:12px;}
 @media(max-width:600px){.extended-calculator .retirement-intent {grid-template-columns:minmax(0,1fr);}.extended-calculator .retirement-goal-preview {padding:16px;}}
+
+/* Aluguel x Financiamento: explicação clara de entrada, dívida e patrimônio. */
+.extended-calculator .housing-input-help {margin:18px 0 6px;color:var(--secondary);font-size:12px;line-height:1.65;max-width:64ch;}
+.extended-calculator .housing-input-help strong {color:var(--text);font-weight:650;}
+.extended-calculator .housing-stale-warning {padding:12px 15px;margin:12px 0 18px;border:1px solid var(--line);border-radius:7px;background:var(--raised);font-size:12px;color:var(--secondary);line-height:1.6;}
+.extended-calculator .housing-stale-warning strong {color:var(--text);}
+.extended-calculator .housing-explainer.extended-detail {margin-top:18px;padding:20px 22px;background:var(--panel);}
+.extended-calculator .housing-explainer-header {display:flex;gap:7px 18px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px;}
+.extended-calculator .housing-explainer-header > strong {font-size:14px;font-weight:670;color:var(--text);}
+.extended-calculator .housing-explainer-header > span {font-size:11px;color:var(--muted);}
+.extended-calculator .housing-explainer-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
+.extended-calculator .housing-explainer-group {min-width:0;}
+.extended-calculator .housing-explainer-group + .housing-explainer-group {border-left:1px solid var(--line-soft);padding-left:20px;}
+.extended-calculator .housing-explainer-group h3 {font-size:13px;font-weight:650;line-height:1.4;margin:0 0 12px;color:var(--text);}
+.extended-calculator .housing-explainer dl {margin:0;}
+.extended-calculator .housing-explainer dl > div {display:flex;align-items:baseline;justify-content:space-between;gap:8px 14px;padding:9px 0;border-bottom:1px solid var(--line-soft);}
+.extended-calculator .housing-explainer dt {min-width:0;color:var(--secondary);font-size:12px;line-height:1.45;}
+.extended-calculator .housing-explainer dd {margin:0;color:var(--text);font-size:12px;font-weight:620;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
+.extended-calculator .housing-explainer dl > .housing-explainer-total {border-bottom:0;margin-top:3px;}
+.extended-calculator .housing-explainer-total dt,.extended-calculator .housing-explainer-total dd {font-weight:700;color:var(--text);}
+.extended-calculator .housing-explainer-group > p {color:var(--secondary);font-size:12px;line-height:1.65;margin:12px 0 0;}
+.extended-calculator .housing-explainer-group > p strong {color:var(--text);}
+.extended-calculator .housing-breakdown {margin-top:17px;padding-top:14px;border-top:1px solid var(--line-soft);}
+.extended-calculator .housing-breakdown summary {font-size:12px;font-weight:650;color:var(--text);cursor:pointer;line-height:1.5;list-style:revert;padding:4px 0;}
+.extended-calculator .housing-breakdown dl {margin-top:8px;}
+.extended-calculator .housing-chart-explanation {margin:5px 0 0;color:#a6b3c2;font-size:11px;line-height:1.65;}
+@media(max-width:950px) {
+  .extended-calculator .housing-explainer-grid {grid-template-columns:minmax(0,1fr);gap:18px;}
+  .extended-calculator .housing-explainer-group + .housing-explainer-group {border-left:0;border-top:1px solid var(--line-soft);padding:16px 0 0;}
+}
+@media(max-width:600px) {
+  .extended-calculator .housing-explainer.extended-detail {padding:16px 13px;}
+  .extended-calculator .housing-explainer dl > div {flex-wrap:wrap;}
+  .extended-calculator .housing-explainer dd {white-space:normal;overflow-wrap:anywhere;}
+}

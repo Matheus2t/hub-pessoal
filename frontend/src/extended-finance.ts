@@ -163,6 +163,15 @@ export function compareHousing(input: HousingInput) {
     rows, monthlyRows, points, buyWealth: last.buyWealth, rentWealth: last.rentWealth,
     difference: roundCurrency(last.buyWealth - last.rentWealth), initialCash: roundCurrency(down + fees),
     financed: roundCurrency(financed), firstPayment: loan?.firstPayment ?? 0,
+    // Read-only breakdown of the exact SAME result, to explain the difference
+    // between cash paid upfront and equity owned in the property.
+    downPayment: roundCurrency(down),
+    buyingFees: roundCurrency(fees),
+    initialHomeEquity: roundCurrency(propertyPrice - financed),
+    projectedHomeValue: roundCurrency(propertyValue),
+    remainingLoan: roundCurrency(last.loanBalance),
+    buyersInvestments: roundCurrency(buyerInvestments),
+    comparisonYears: horizonYears,
   };
 }
 
