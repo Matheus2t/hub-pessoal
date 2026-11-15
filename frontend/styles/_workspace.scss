@@ -169,6 +169,32 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  }
 }
 
+/* Calculator result rows share one height without leaving a void under the form. */
+.ws-grid[data-area^="calculator-"] { align-items:stretch; }
+
+/* Calculator result rows use the same height for the form and its output group. */
+.calculator-workspace .simulation-panel { display:flex; flex-direction:column; }
+.calculator-workspace .simulation-panel > form { display:flex; flex:1; flex-direction:column; min-height:0; }
+.calculator-workspace .simulation-panel > form > .form-grid { flex:1; align-content:space-evenly; }
+
+@media (min-width:901px) {
+  /* With no chart, use the available width to form a balanced input/results pair. */
+  finance-calculator .loan-simulation .finance-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  finance-calculator .loan-summary { display:flex; flex-direction:column; }
+  finance-calculator .loan-summary .metrics-grid { grid-template-columns:minmax(0,1fr); flex:1; align-content:space-evenly; gap:4px; }
+  finance-calculator .loan-summary .metrics-grid > metric-card:not(:last-child) { padding:10px 0 12px; border:0; border-bottom:1px solid var(--line-soft); }
+  finance-calculator .loan-summary .metrics-grid > metric-card:last-child { padding-top:10px; }
+
+  /* Before a result exists, give the form a full row instead of a blank side column. */
+  panel-workspace[data-calculator-state="empty"] .simulation-panel .form-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  panel-workspace[data-calculator-state="empty"] .simulation-panel .finance-fields { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  panel-workspace[data-calculator-state="empty"] .simulation-panel .finance-extended-fields { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+
+@media (min-width:901px) and (max-width:1150px) {
+  finance-calculator .loan-simulation .finance-fields { grid-template-columns:minmax(0,1fr); }
+}
+
 /* 2T / Renda Fixa: o conteúdo essencial primeiro, detalhes técnicos sob demanda. */
 .fixed-workspace .rf-page.rf-refined { min-width:0; }
 .fixed-workspace .rf-refined .rf-hero { padding: 5px 0 28px; }

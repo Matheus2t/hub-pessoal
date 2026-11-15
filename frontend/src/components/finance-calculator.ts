@@ -70,7 +70,7 @@ export class FinanceCalculator extends LightElement {
         {id:'chart',title:'Gráfico de evolução',essential:true,available:!!investment,size:'medium',hint:'Disponível em juros simples'},
         {id:'table',title:simple?'Tabela mensal':'Parcelas e saldo devedor',available:!!result,size:'large'}
       ]}>
-      <section slot="form" class="workspace-panel simulation-panel" aria-label="Simulação">
+      <section slot="form" class="workspace-panel simulation-panel ${simple ? 'investment-simulation' : 'loan-simulation'}" aria-label="Simulação">
         <div class="panel-heading"><h2>Simulação</h2></div>
         <form novalidate @submit=${this.calculate} @field-input=${(event: CustomEvent) => { this.values = { ...this.values, [event.detail.name]: event.detail.value }; this.changed(); }}>
           <div class="unit-controls" @unit-change=${(event: CustomEvent) => { if (event.detail.name === 'period') this.periodUnit = event.detail.value; else this.rateUnit = event.detail.value; this.changed(); }}>
@@ -88,7 +88,7 @@ export class FinanceCalculator extends LightElement {
       </section>
 
       <section slot="empty" class="workspace-panel calculator-empty" aria-live="polite"><div><h2>Resultados</h2><p>${this.loading?'Calculando…':'Preencha os campos e calcule.'}</p></div></section>
-      <section slot="summary" class="workspace-panel" aria-live="polite" aria-busy=${this.loading}>${result?html`<div class="section-heading result-heading"><h2>Resultados</h2><span class="result-status">${this.stale ? 'Valores alterados. Calcule novamente.' : 'Simulação concluída'}</span></div>
+      <section slot="summary" class="workspace-panel ${simple ? 'investment-summary' : 'loan-summary'}" aria-live="polite" aria-busy=${this.loading}>${result?html`<div class="section-heading result-heading"><h2>Resultados</h2><span class="result-status">${this.stale ? 'Valores alterados. Calcule novamente.' : 'Simulação concluída'}</span></div>
           <div class="metrics-grid">
             <metric-card tone="accent" .label=${simple ? 'Valor final' : 'Total a pagar'} .value=${investment?.final_amount ?? loan?.total_paid}></metric-card>
             <metric-card .label=${simple ? 'Capital inicial' : 'Primeira parcela'} .value=${investment?.total_invested ?? loan?.first_payment}></metric-card>
