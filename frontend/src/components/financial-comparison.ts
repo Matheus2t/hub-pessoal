@@ -14,10 +14,23 @@ export class FinancialComparison extends LightElement {
  @state() private period='';
  @state() private historyMetric='profit';
  @state() private normalized=false;
+ @state() private activeHistoryPoint=-1;
+ @state() private chartWidth=760;
  private controller?:AbortController;
+ private chartObserver?:ResizeObserver;
+ private chartTarget?:Element;
  private initialized=false;
  connectedCallback(){super.connectedCallback();void this.load();}
- disconnectedCallback(){this.controller?.abort();super.disconnectedCallback();}
+ disconnectedCallback(){this.controller?.abort();this.chartObserver?.disconnect();this.chartTarget=undefined;super.disconnectedCallback();}
+ protected updated(){
+  const target=this.renderRoot.querySelector('.cvm-chart-canvas');
+  if(target===this.chartTarget)return;
+  this.chartObserver?.disconnect();this.chartObserver=undefined;this.chartTarget=target||undefined;
+  if(target&&typeof ResizeObserver!=='undefined'){
+   this.chartObserver=new ResizeObserver(entries=>{const next=Math.max(220,Math.floor(entries[0]?.contentRect.width||220));if(next!==this.chartWidth)this.chartWidth=next;});
+   this.chartObserver.observe(target);
+  }
+ }
  private async load(){this.controller?.abort();const controller=this.controller=new AbortController();this.loading=true;this.error='';try{const m=await manifest(controller.signal);const available=new Set(eligibleAnnualSymbols(m));this.eligibleStocks=stocks.filter(stock=>available.has(stock.symbol));const symbols=new Set(this.eligibleStocks.map(stock=>stock.symbol));if(!this.initialized){const initial=this.selected.filter(symbol=>symbols.has(symbol));for(const stock of this.eligibleStocks)if(initial.length<2&&!initial.includes(stock.symbol))initial.push(stock.symbol);this.selected=[...initial.slice(0,4),...Array(Math.max(0,4-initial.length)).fill('')];this.initialized=true;}else this.selected=this.selected.map(symbol=>symbols.has(symbol)?symbol:'');const result=await Promise.all(this.selected.filter(Boolean).map(s=>loadFinancial(m,s,controller.signal)));if(controller.signal.aborted)return;const unique=new Map<string,FinancialData>();for(const d of result)if(d)unique.set(d.issuer.cnpj,d);this.data=[...unique.values()];if(result.some(d=>!d))this.error='Os dados CVM selecionados deixaram de estar disponíveis. Escolha outra empresa.';if(this.eligibleStocks.length<2)this.error='Não há emissores com cobertura anual suficiente para comparar.';this.period='';}catch(e){if((e as Error).name!=='AbortError')this.error=(e as Error).message;}finally{if(!controller.signal.aborted)this.loading=false;}}
  render(){
  const common=this.data[0]?.periods.filter(p=>p.kind==='annual'&&this.data.every(d=>d.periods.some(other=>other.kind==='annual'&&other.end===p.end))).map(p=>p.end)||[];
@@ -81,31 +94,52 @@ export class FinancialComparison extends LightElement {
   const values=this.data.map(d=>dates.map(date=>{const p=d.periods.find(p=>p.kind==='annual'&&p.end===date);const peers=this.data.map(other=>other.periods.find(p=>p.kind==='annual'&&p.end===date));return p&&peers.every(other=>other&&other.start===p.start&&other.document.scope===p.document.scope)?p.values[this.historyMetric]??null:null}));
   const base=dates.findIndex((_,i)=>values.every(v=>v[i]!=null&&v[i]!>0));
   const series=values.map(v=>v.map((n,i)=>this.normalized?(base>=0&&i>=base&&n!=null?n/v[base]!*100:null):n));
-  const nums=series.flat().filter((v):v is number=>v!=null),min=Math.min(0,...nums),max=Math.max(1,...nums);
-  const x=(i:number)=>40+i*620/Math.max(1,dates.length-1),y=(v:number)=>180-(v-min)/(max-min)*150;
+  const nums=series.flat().filter((v):v is number=>v!=null),hasValues=nums.length>0,rawMin=hasValues?Math.min(...nums):0,rawMax=hasValues?Math.max(...nums):1,span=Math.max(rawMax-rawMin,Math.abs(rawMin)*.06,Math.abs(rawMax)*.06,1);
+  const min=this.normalized?rawMin-span*.08:Math.min(0,rawMin-span*.03),max=this.normalized?rawMax+span*.08:Math.max(0,rawMax+span*.03);
+  const width=this.chartWidth,height=width<500?270:330,left=Math.min(76,Math.max(54,width*.13)),right=width-16,top=22,bottom=height-42;
+  const x=(i:number)=>left+i*(right-left)/Math.max(1,dates.length-1),y=(v:number)=>bottom-(v-min)/(max-min)*(bottom-top);
+  const tickCount=width<420?3:width<700?4:6;
+  const xTicks=[...new Set(Array.from({length:Math.min(dates.length,tickCount)},(_,i)=>Math.round(i*(dates.length-1)/Math.max(1,Math.min(dates.length,tickCount)-1))))];
+  const activeIndex=Math.min(this.activeHistoryPoint<0?dates.length-1:this.activeHistoryPoint,dates.length-1);
+  const axisValue=(v:number)=>this.normalized?v.toLocaleString('pt-BR',{maximumFractionDigits:0}):formatFinancial(v,fields[this.historyMetric][1]);
+  const displayValue=(v:number|null)=>v==null?'Não disponível':this.normalized?v.toLocaleString('pt-BR',{maximumFractionDigits:2}):formatFinancial(v,fields[this.historyMetric][1]);
+  const marker=(j:number,cx:number,cy:number,pointIndex:number,active:boolean)=>{
+   const size=active?5:3.5,cls=`cvm-chart-point cvm-series-${j+1}${active?' is-active':''}`;
+   if(j===1)return svg`<rect class=${cls} x=${cx-size} y=${cy-size} width=${size*2} height=${size*2} tabindex="0" aria-label=${`${this.data[j].issuer.symbol}, ${dates[pointIndex]}, ${displayValue(series[j][pointIndex])}`} @focus=${()=>this.activeHistoryPoint=pointIndex} @pointerenter=${()=>this.activeHistoryPoint=pointIndex}><title>${this.data[j].issuer.symbol} · ${dates[pointIndex]} · ${displayValue(series[j][pointIndex])}</title></rect>`;
+   if(j===2)return svg`<path class=${cls} d=${`M${cx},${cy-size-1} L${cx+size+1},${cy} L${cx},${cy+size+1} L${cx-size-1},${cy} Z`} tabindex="0" aria-label=${`${this.data[j].issuer.symbol}, ${dates[pointIndex]}, ${displayValue(series[j][pointIndex])}`} @focus=${()=>this.activeHistoryPoint=pointIndex} @pointerenter=${()=>this.activeHistoryPoint=pointIndex}><title>${this.data[j].issuer.symbol} · ${dates[pointIndex]} · ${displayValue(series[j][pointIndex])}</title></path>`;
+   if(j===3)return svg`<path class=${cls} d=${`M${cx},${cy-size-1} L${cx+size+1},${cy+size} L${cx-size-1},${cy+size} Z`} tabindex="0" aria-label=${`${this.data[j].issuer.symbol}, ${dates[pointIndex]}, ${displayValue(series[j][pointIndex])}`} @focus=${()=>this.activeHistoryPoint=pointIndex} @pointerenter=${()=>this.activeHistoryPoint=pointIndex}><title>${this.data[j].issuer.symbol} · ${dates[pointIndex]} · ${displayValue(series[j][pointIndex])}</title></path>`;
+   return svg`<circle class=${cls} cx=${cx} cy=${cy} r=${size} tabindex="0" aria-label=${`${this.data[j].issuer.symbol}, ${dates[pointIndex]}, ${displayValue(series[j][pointIndex])}`} @focus=${()=>this.activeHistoryPoint=pointIndex} @pointerenter=${()=>this.activeHistoryPoint=pointIndex}><title>${this.data[j].issuer.symbol} · ${dates[pointIndex]} · ${displayValue(series[j][pointIndex])}</title></circle>`;
+  };
   return html`<section class="financial-chart financial-history cvm-panel" aria-labelledby="cvm-history-title">
    <div class="cvm-panel-heading"><div><p class="cvm-kicker">03 / EVOLUÇÃO</p><h2 id="cvm-history-title">Evolução financeira comparada</h2></div></div>
    <div class="cvm-chart-toolbar">
-    <label>Indicador histórico
-     <select .value=${this.historyMetric} @change=${(e:Event)=>this.historyMetric=(e.target as HTMLSelectElement).value}>
+    <label for="cvm-history-metric">Indicador histórico
+     <select id="cvm-history-metric" .value=${this.historyMetric} @change=${(e:Event)=>{this.historyMetric=(e.target as HTMLSelectElement).value;this.activeHistoryPoint=-1;}}>
       ${['revenue','profit','equity','roe','roa','net_margin','cash','loans','operating_cash'].map(k=>html`<option value=${k} .selected=${k===this.historyMetric}>${fields[k][0]}</option>`)}
      </select>
     </label>
     <label class="financial-normalize"><input type="checkbox" .checked=${this.normalized} @change=${(e:Event)=>this.normalized=(e.target as HTMLInputElement).checked}> Normalizar em base 100</label>
    </div>
-   <p class="market-note cvm-chart-note">Somente períodos com início, fim e escopo compatíveis. Lacunas interrompem as linhas. Base 100 exige valor inicial positivo para todos os emissores; não representa retorno da ação.</p>
+   <p class="market-note cvm-chart-note">Comparação limitada a períodos compatíveis; lacunas não são interpoladas. Base 100 exige valor inicial positivo e não representa retorno da ação.</p>
    <div class="cvm-chart-canvas">
-    ${this.normalized&&base<0?html`<p class="cvm-empty">Sem base positiva comum para normalizar.</p>`:html`<svg viewBox="0 0 700 220" role="img" aria-label="Comparação histórica financeira">
-      <line class="cvm-chart-gridline" x1="40" x2="660" y1="40" y2="40"></line>
-      <line class="cvm-chart-gridline" x1="40" x2="660" y1="110" y2="110"></line>
-      <line class="cvm-chart-gridline" x1="40" x2="660" y1="180" y2="180"></line>
-      ${series.map((v,j)=>svg`<path class="stock-line" stroke-dasharray=${['none','8 4','2 4','10 3 2 3'][j]} d=${v.map((n,i)=>n==null?'':`${i&&v[i-1]!=null?'L':'M'}${x(i)},${y(n)}`).join(' ')}><title>${this.data[j].issuer.symbol}</title></path>`)}
-      <text fill="currentColor" font-size="12" x="40" y="210">${dates[0]}</text><text fill="currentColor" font-size="12" x="660" y="210" text-anchor="end">${dates.at(-1)}</text>
+    ${this.normalized&&base<0?html`<p class="cvm-empty">Sem base positiva comum para normalizar.</p>`:!hasValues?html`<p class="cvm-empty">Não há valores compatíveis para este indicador no período selecionado.</p>`:html`<svg viewBox=${`0 0 ${width} ${height}`} role="group" aria-label="Comparação histórica financeira">
+      ${Array.from({length:5},(_,i)=>{const value=max-(max-min)*i/4,py=top+(bottom-top)*i/4;return svg`<g><line class="cvm-chart-gridline" x1=${left} x2=${right} y1=${py} y2=${py}></line><text class="cvm-chart-axis-label" x=${left-8} y=${py+4} text-anchor="end">${axisValue(value)}</text></g>`})}
+      ${min<0&&max>0?svg`<line class="cvm-chart-zero" x1=${left} x2=${right} y1=${y(0)} y2=${y(0)}></line>`:nothing}
+      <line class="cvm-chart-guide" x1=${x(activeIndex)} x2=${x(activeIndex)} y1=${top} y2=${bottom}></line>
+      ${series.map((v,j)=>{const path=v.map((n,i)=>n==null?'':`${i&&v[i-1]!=null?'L':'M'}${x(i)},${y(n)}`).join(' ');return svg`<g class="cvm-series-${j+1}"><path class="stock-line" d=${path}><title>${this.data[j].issuer.symbol}</title></path>${v.map((n,i)=>n==null?nothing:marker(j,x(i),y(n),i,i===activeIndex))}</g>`})}
+      ${xTicks.map(i=>svg`<text class="cvm-chart-axis-label cvm-chart-year" x=${x(i)} y=${height-12} text-anchor=${i===0?'start':i===dates.length-1?'end':'middle'} aria-label=${dates[i]}>${dates[i].slice(0,4)}</text>`)}
      </svg>`}
    </div>
-   <div class="cvm-chart-legend" aria-label="Empresas no gráfico">
-    ${this.data.map((d,i)=>html`<span class="cvm-legend-item"><span class="cvm-legend-line cvm-legend-line-${i+1}" aria-hidden="true"></span><strong>${d.issuer.symbol}</strong><small>${['contínua','tracejada','pontilhada','traço e ponto'][i]}</small></span>`)}
+   <div class="cvm-chart-readout" role="status" aria-live="polite">
+    <span class="cvm-chart-readout-date">${dates[activeIndex]} <small>Exercício ${dates[activeIndex]?.slice(0,4)}</small></span>
+    ${this.data.map((d,i)=>html`<span class="cvm-chart-readout-value cvm-series-${i+1}"><strong>${d.issuer.symbol}</strong><b>${displayValue(series[i][activeIndex])}</b></span>`)}
    </div>
+   <div class="cvm-chart-legend" aria-label="Identificação das séries">
+    ${this.data.map((d,i)=>html`<span class="cvm-legend-item cvm-series-${i+1}"><span class="cvm-legend-mark" aria-hidden="true"></span><strong>${d.issuer.symbol}</strong></span>`)}
+   </div>
+   <label class="cvm-chart-inspector" for="cvm-history-point">Consultar exercício
+    <input id="cvm-history-point" type="range" min="0" max=${dates.length-1} .value=${String(activeIndex)} aria-valuetext=${`Exercício ${dates[activeIndex]}`} @input=${(e:Event)=>this.activeHistoryPoint=Number((e.target as HTMLInputElement).value)}>
+   </label>
    <div class="financial-table-scroll cvm-history-table" tabindex="0" role="region" aria-label="Tabela de evolução financeira">
     <table class="cvm-table"><caption>${fields[this.historyMetric][0]} · ${this.normalized?'Índice base 100':fields[this.historyMetric][1]}</caption><thead><tr><th scope="col">Exercício</th>${this.data.map(d=>html`<th scope="col">${d.issuer.symbol}</th>`)}</tr></thead><tbody>${dates.map((date,i)=>html`<tr><th scope="row">${date}</th>${series.map(v=>html`<td>${this.normalized?(v[i]==null?'Não disponível':v[i]!.toLocaleString('pt-BR',{maximumFractionDigits:2})):formatFinancial(v[i],fields[this.historyMetric][1])}</td>`)}</tr>`)}</tbody></table>
    </div>

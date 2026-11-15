@@ -23,6 +23,25 @@ test('date filters are chronological and do not replace unknowns by deadlines',(
  expect(selectDistributions(events,'CPFE3','','2026','','payment_date')).toHaveLength(0);
 });
 
+test('distribution chart exposes its amount scale without causing page overflow',async({page},info)=>{
+ for(const width of [1920,768,390,320]){
+  await page.setViewportSize({width,height:1000});
+  await page.goto('/#/acoes/proventos');
+  await page.evaluate(()=>document.documentElement.dataset.theme='dark');
+  await page.locator('.distributions .rf-fields select').nth(0).selectOption('CPFE3');
+  const chart=page.locator('.distribution-chart');
+  await expect(chart.locator('.distribution-gridline')).toHaveCount(5);
+  await expect(chart.locator('.distribution-axis-label').first()).toContainText('R$');
+  await chart.scrollIntoViewIfNeeded();
+  await expect(chart.locator('.distribution-chart-scroll svg rect').first()).toBeInViewport();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  for(const theme of ['dark','light']){
+   await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
+   await chart.locator('.distribution-chart-scroll').screenshot({path:info.outputPath(`distribution-chart-${width}-${theme}.png`),animations:'disabled'});
+  }
+ }
+});
+
 for(const width of [1920,1366,768,390,320])test(`verified units, graph and precise calendar ${width}`,async({page,request},info)=>{
  await page.setViewportSize({width,height:1000});
  const m=await(await request.get('/financials/distributions-unit/manifest.json')).json();expect(m.events).toBe(26);expect(m.companies).toHaveLength(22);
@@ -31,6 +50,9 @@ for(const width of [1920,1366,768,390,320])test(`verified units, graph and preci
  await page.locator('.distributions .rf-fields select').nth(0).selectOption('CPFE3');
  await expect(page.locator('.distributions tbody')).toContainText('Até 2026-12-31');
  await expect(page.locator('.distribution-chart')).toContainText('Cada base de elegibilidade');
+ await expect(page.locator('.distribution-chart .distribution-gridline')).toHaveCount(5);
+ await expect(page.locator('.distribution-chart-scroll')).toBeVisible();
+ await expect(page.locator('.distribution-axis-label').first()).toContainText('R$');
  await page.getByRole('button',{name:'Calendário',exact:true}).click();await page.locator('input[type=month]').fill('2026-12');
  await expect(page.getByRole('button',{name:'2026-12-31: 0 registros',exact:true})).toBeVisible();
  await page.locator('.distributions .rf-fields select').nth(0).selectOption('GGBR3');
@@ -40,6 +62,5 @@ for(const width of [1920,1366,768,390,320])test(`verified units, graph and preci
  for(const theme of ['dark','light']){await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath(`proceeds-${theme}.png`),fullPage:true,animations:'disabled'});}
  await page.goto('/#/acoes/simulador-dividendos');await page.getByRole('combobox',{name:'Ação',exact:true}).selectOption('B3SA3');
  await page.getByRole('button',{name:'Simular anúncios',exact:true}).click();await expect(page.getByRole('status')).toContainText('22,66');
- await page.getByRole('combobox',{name:'Ação',exact:true}).selectOption('CPFE3');await page.getByRole('button',{name:'Simular anúncios',exact:true}).click();
- await expect(page.locator('.distributions')).toContainText('Nenhum anúncio elegível');await expect(page.locator('.distributions')).not.toContainText('Total bruto programado');
+ await expect(page.getByRole('combobox',{name:'Ação',exact:true}).locator('option[value="CPFE3"]')).toHaveCount(0);
 });

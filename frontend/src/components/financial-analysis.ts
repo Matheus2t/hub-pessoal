@@ -18,9 +18,21 @@ export class FinancialAnalysis extends LightElement {
  @state() private series='revenue';
  @state() private point=-1;
  @state() private window='all';
+ @state() private chartWidth=760;
  private controller?:AbortController;
- disconnectedCallback(){this.controller?.abort();super.disconnectedCallback();}
- protected updated(changed:Map<PropertyKey,unknown>){if(changed.has('symbol') && this.opened)void this.load();}
+ private chartObserver?:ResizeObserver;
+ private chartTarget?:Element;
+ disconnectedCallback(){this.controller?.abort();this.chartObserver?.disconnect();this.chartTarget=undefined;super.disconnectedCallback();}
+ protected updated(changed:Map<PropertyKey,unknown>){
+  if(changed.has('symbol') && this.opened)void this.load();
+  const target=this.renderRoot.querySelector('.cvm-analysis-chart');
+  if(target===this.chartTarget)return;
+  this.chartObserver?.disconnect();this.chartObserver=undefined;this.chartTarget=target||undefined;
+  if(target&&typeof ResizeObserver!=='undefined'){
+   this.chartObserver=new ResizeObserver(entries=>{const next=Math.max(220,Math.floor(entries[0]?.contentRect.width||220));if(next!==this.chartWidth)this.chartWidth=next;});
+   this.chartObserver.observe(target);
+  }
+ }
  private async load(){this.controller?.abort();const controller=this.controller=new AbortController();this.loading=true;this.error='';try{const m=await manifest(controller.signal);const data=await loadFinancial(m,this.symbol,controller.signal);if(controller.signal.aborted)return;this.data=data;this.snapshotPath=m.companies[this.symbol]?.path||'';this.updatedAt=m.processed_at;this.end='';if(this.kind==='ttm'&&!data?.ttm_periods?.length)this.kind='annual';}catch(e){if((e as Error).name!=='AbortError')this.error=(e as Error).message;}finally{if(!controller.signal.aborted)this.loading=false;}}
  render(){
  const periods=[...(this.data?.periods||[]),...(this.data?.ttm_periods||[])].filter(p=>p.kind===this.kind);
@@ -66,7 +78,22 @@ export class FinancialAnalysis extends LightElement {
  }
  private chart(periods:Period[]){
  const latest=periods.at(-1)?.end;const cutoff=latest&&this.window!=='all'?Number(latest.slice(0,4))-Number(this.window)+1:0;
- const rows=periods.filter(p=>Number(p.end.slice(0,4))>=cutoff&&p.values[this.series]!=null);const values=rows.map(p=>p.values[this.series]!);const min=Math.min(0,...values),max=Math.max(1,...values);const x=(i:number)=>40+i*620/Math.max(1,rows.length-1);const y=(v:number)=>180-(v-min)/(max-min)*150;const active=rows[this.point>=0?Math.min(this.point,rows.length-1):rows.length-1];
- return html`<div class="financial-chart"><label for="cvm-window">Histórico</label><select id="cvm-window" .value=${this.window} @change=${(e:Event)=>{this.window=(e.target as HTMLSelectElement).value;this.point=-1;}}><option value="3">Últimos 3 anos</option><option value="5">Últimos 5 anos</option><option value="all">Histórico disponível</option></select><label for="cvm-series">Evolução</label><select id="cvm-series" .value=${this.series} @change=${(e:Event)=>{this.series=(e.target as HTMLSelectElement).value;this.point=-1;}}>${(this.kind==='ttm'?['profit']:['revenue','profit','equity','assets','cash','loans','roe','roa','net_margin','operating_margin','operating_cash']).map(k=>html`<option value=${k}>${fields[k][0]}</option>`)}</select>${rows.length>=2?html`<svg viewBox="0 0 700 220" role="img" aria-label=${`Evolução de ${fields[this.series][0]}`}><path class="stock-line" d=${rows.map((p,i)=>`${i?'L':'M'}${x(i)},${y(p.values[this.series]!)}`).join(' ')}></path>${rows.map((p,i)=>svg`<circle class="stock-dot" cx=${x(i)} cy=${y(p.values[this.series]!)} r="5" tabindex="0" @focus=${()=>{this.point=i;}} @pointerenter=${()=>{this.point=i;}}><title>${p.end}: ${formatFinancial(p.values[this.series],fields[this.series][1])}</title></circle>`)}<text x="40" y="210" fill="currentColor" font-size="12">${rows[0]?.end}</text><text x="660" y="210" text-anchor="end" fill="currentColor" font-size="12">${rows.at(-1)?.end}</text></svg><p role="status">${active?.end}: ${formatFinancial(active?.values[this.series],fields[this.series][1])}</p><label for="cvm-point">Consultar período</label><input id="cvm-point" type="range" min="0" max=${rows.length-1} .value=${String(this.point<0?rows.length-1:this.point)} @input=${(e:Event)=>{this.point=Number((e.target as HTMLInputElement).value);}}><details><summary>Valores do gráfico</summary><table><tbody>${rows.map(p=>html`<tr><th scope="row">${p.end}</th><td>${formatFinancial(p.values[this.series],fields[this.series][1])}</td></tr>`)}</tbody></table></details>`:html`<p>Não há dados suficientes para este gráfico.</p>`}</div>`;
+ const rows=periods.filter(p=>Number(p.end.slice(0,4))>=cutoff),values=rows.map(p=>p.values[this.series]??null),nums=values.filter((v):v is number=>v!=null),hasValues=nums.length>0,rawMin=hasValues?Math.min(...nums):0,rawMax=hasValues?Math.max(...nums):1,span=Math.max(rawMax-rawMin,Math.abs(rawMin)*.06,Math.abs(rawMax)*.06,1),min=Math.min(0,rawMin-span*.03),max=Math.max(0,rawMax+span*.03);
+ const width=this.chartWidth,height=width<500?270:320,left=Math.min(76,Math.max(54,width*.13)),right=width-16,top=22,bottom=height-42,x=(i:number)=>left+i*(right-left)/Math.max(1,rows.length-1),y=(v:number)=>bottom-(v-min)/(max-min)*(bottom-top);
+ const activeIndex=Math.min(this.point<0?rows.length-1:this.point,rows.length-1),active=rows[activeIndex],ticks=Array.from({length:5},(_,i)=>{const value=max-(max-min)*i/4,py=top+(bottom-top)*i/4;return {value,py};}),tickCount=width<420?3:width<700?4:6,xTicks=[...new Set(Array.from({length:Math.min(rows.length,tickCount)},(_,i)=>Math.round(i*(rows.length-1)/Math.max(1,Math.min(rows.length,tickCount)-1))))];
+ const line=values.map((v,i)=>v==null?'':`${i&&values[i-1]!=null?'L':'M'}${x(i)},${y(v)}`).join(' ');
+ const displayValue=(v:number|null|undefined)=>formatFinancial(v,fields[this.series][1]);
+ return html`<div class="financial-chart cvm-analysis-chart-wrap">
+  <div class="cvm-analysis-controls"><label for="cvm-window">Histórico<select id="cvm-window" .value=${this.window} @change=${(e:Event)=>{this.window=(e.target as HTMLSelectElement).value;this.point=-1;}}><option value="3">Últimos 3 anos</option><option value="5">Últimos 5 anos</option><option value="all">Histórico disponível</option></select></label><label for="cvm-series">Indicador<select id="cvm-series" .value=${this.series} @change=${(e:Event)=>{this.series=(e.target as HTMLSelectElement).value;this.point=-1;}}>${(this.kind==='ttm'?['profit']:['revenue','profit','equity','assets','cash','loans','roe','roa','net_margin','operating_margin','operating_cash']).map(k=>html`<option value=${k}>${fields[k][0]}</option>`)}</select></label></div>
+  ${rows.length>=2&&hasValues?html`<div class="cvm-analysis-chart"><svg viewBox=${`0 0 ${width} ${height}`} role="group" aria-label=${`Evolução de ${fields[this.series][0]}`}>
+   ${ticks.map(t=>svg`<g><line class="cvm-chart-gridline" x1=${left} x2=${right} y1=${t.py} y2=${t.py}></line><text class="cvm-chart-axis-label" x=${left-8} y=${t.py+4} text-anchor="end">${formatFinancial(t.value,fields[this.series][1])}</text></g>`)}
+   ${min<0&&max>0?svg`<line class="cvm-chart-zero" x1=${left} x2=${right} y1=${y(0)} y2=${y(0)}></line>`:nothing}
+   <line class="cvm-chart-guide" x1=${x(activeIndex)} x2=${x(activeIndex)} y1=${top} y2=${bottom}></line><path class="stock-line cvm-analysis-line" d=${line}></path>
+   ${values.map((v,i)=>v==null?nothing:svg`<circle class="stock-dot cvm-analysis-dot${i===activeIndex?' is-active':''}" cx=${x(i)} cy=${y(v)} r=${i===activeIndex?5:3.5} tabindex="0" aria-label=${`${rows[i].end}: ${displayValue(v)}`} @focus=${()=>this.point=i} @pointerenter=${()=>this.point=i}><title>${rows[i].end}: ${displayValue(v)}</title></circle>`)}
+   ${xTicks.map(i=>svg`<text class="cvm-chart-axis-label cvm-chart-year" x=${x(i)} y=${height-12} text-anchor=${i===0?'start':i===rows.length-1?'end':'middle'} aria-label=${rows[i].end}>${rows[i].end.slice(0,4)}</text>`)}
+  </svg></div><p class="cvm-analysis-readout" role="status" aria-live="polite"><time datetime=${active?.end||''}>${active?.end}</time><strong>${displayValue(active?.values[this.series])}</strong></p>
+  <label class="cvm-analysis-inspector" for="cvm-point">Consultar período<input id="cvm-point" type="range" min="0" max=${rows.length-1} .value=${String(activeIndex)} aria-valuetext=${`${active?.end||'Período'}: ${displayValue(active?.values[this.series])}`} @input=${(e:Event)=>this.point=Number((e.target as HTMLInputElement).value)}></label>
+  <details class="cvm-analysis-values"><summary>Valores do gráfico</summary><div class="financial-table-scroll" tabindex="0"><table><tbody>${rows.map(p=>html`<tr><th scope="row">${p.end}</th><td>${displayValue(p.values[this.series])}</td></tr>`)}</tbody></table></div></details>`:html`<p class="cvm-empty">${rows.length<2?'Não há períodos suficientes para este gráfico.':'Não há valores disponíveis para o indicador neste intervalo.'}</p>`}
+ </div>`;
  }
 }
