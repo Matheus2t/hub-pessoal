@@ -30,6 +30,9 @@ year-navigation {display:block;min-width:0;}
 .year-page-button {display:inline-grid;place-items:center;min-width:36px;min-height:36px;padding:0 8px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--secondary);font:600 13px var(--font-body);font-variant-numeric:tabular-nums;cursor:pointer;transition:background-color var(--duration),color var(--duration),border-color var(--duration);}
 .year-page-button:hover {background:var(--hover);color:var(--text);}
 .year-page-button:focus-visible {outline:2px solid var(--text);outline-offset:2px;}
+.year-page-button.year-page-arrow {min-width:32px;color:var(--muted);font-size:18px;}
+.year-page-button:disabled {opacity:.42;cursor:not-allowed;}
+.year-page-button:disabled:hover {background:transparent;color:var(--muted);}
 .year-page-button[aria-current="page"] {background:var(--text);border-color:var(--text);color:var(--bg);}
 .year-page-button.year-page-jump {min-width:28px;color:var(--muted);font-size:16px;}
 /* Ledger opens directly; the year summary stays visible while selecting years. */

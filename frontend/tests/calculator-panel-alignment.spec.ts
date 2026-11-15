@@ -166,9 +166,29 @@ test('year pagination stays compact for 50 years and exposes every page', async 
     }));
   });
   const pagination = calculator.locator('year-navigation');
+  const previousYear = pagination.getByRole('button', { name: 'Ano anterior' });
+  const nextYear = pagination.getByRole('button', { name: 'Próximo ano' });
   await expect(pagination.getByRole('button', { name: 'Ano 50', exact: true })).toBeVisible();
   await expect(pagination.locator('.year-page-jump')).toHaveCount(1);
-  expect(await pagination.getByRole('button').allTextContents()).toEqual(['1', '2', '3', '4', '…', '50']);
+  expect(await pagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '2', '3', '4', '…', '50']);
+  await expect(previousYear).toBeDisabled();
+  await expect(nextYear).toBeEnabled();
+  if (process.env.CAPTURE_YEAR_NAV === '1') {
+    const directory = path.resolve('test-results/year-navigation');
+    fs.mkdirSync(directory, { recursive: true });
+    await pagination.screenshot({ path: path.join(directory, '50-years-first-page.png') });
+  }
+  await nextYear.click();
+  await expect(pagination.getByRole('button', { name: 'Ano 2', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(results.locator('tbody tr').first().locator('th')).toHaveText('13');
+  await previousYear.click();
+  await expect(pagination.getByRole('button', { name: 'Ano 1', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(results.locator('tbody tr').first().locator('th')).toHaveText('01');
+  for (let year = 0; year < 4; year++) await nextYear.click();
+  await expect(pagination.getByRole('button', { name: 'Ano 5', exact: true })).toHaveAttribute('aria-current', 'page');
+  expect(await pagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '…', '4', '5', '6', '…', '50']);
+  await previousYear.click();
+  expect(await pagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '2', '3', '4', '…', '50']);
   const year25 = pagination.getByRole('button', { name: 'Ano 25', exact: true });
   for (let index = 0; index < 8; index++) {
     if (await year25.count()) {
@@ -177,17 +197,51 @@ test('year pagination stays compact for 50 years and exposes every page', async 
     } else await pagination.locator('.year-page-jump').last().click();
   }
   await expect(year25).toHaveAttribute('aria-current', 'page');
-  expect(await pagination.getByRole('button').allTextContents()).toEqual(['1', '…', '24', '25', '26', '…', '50']);
+  expect(await pagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '…', '24', '25', '26', '…', '50']);
   await expect(pagination.locator('.year-page-jump')).toHaveCount(2);
   await pagination.getByRole('button', { name: 'Ano 50', exact: true }).click();
+  await expect(nextYear).toBeDisabled();
+  await expect(previousYear).toBeEnabled();
   await expect(results.locator('tbody tr').first().locator('th')).toHaveText('589');
 
   await page.goto('/#/custo-clt');
   const clt = page.locator('extended-finance-calculator');
   await clt.getByRole('button', { name: 'Calcular custo CLT' }).click();
   const fiveYearPagination = clt.locator('year-navigation');
-  expect(await fiveYearPagination.getByRole('button').allTextContents()).toEqual(['1', '2', '3', '4', '5']);
+  expect(await fiveYearPagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '2', '3', '4', '5']);
+  await expect(fiveYearPagination.getByRole('button', { name: 'Ano anterior' })).toBeDisabled();
+  await expect(fiveYearPagination.getByRole('button', { name: 'Próximo ano' })).toBeEnabled();
   await expect(fiveYearPagination.locator('.year-page-jump')).toHaveCount(0);
   await fiveYearPagination.getByRole('button', { name: 'Ano 3', exact: true }).click();
   await expect(clt.locator('.extended-table tbody tr').first().locator('th')).toHaveText('25');
+
+  await clt.getByLabel('Anos de projeção').fill('10');
+  await clt.getByRole('button', { name: 'Calcular custo CLT' }).click();
+  const tenYearPagination = clt.locator('year-navigation');
+  const tenYearPrevious = tenYearPagination.getByRole('button', { name: 'Ano anterior' });
+  const tenYearNext = tenYearPagination.getByRole('button', { name: 'Próximo ano' });
+  expect(await tenYearPagination.locator('.year-page-button:not(.year-page-arrow)').allTextContents()).toEqual(['1', '2', '3', '4', '…', '10']);
+  await expect(tenYearPrevious).toBeDisabled();
+  await tenYearNext.click();
+  await tenYearNext.click();
+  await expect(tenYearPagination.getByRole('button', { name: 'Ano 3', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(clt.locator('.extended-table tbody tr').first().locator('th')).toHaveText('25');
+  await tenYearPrevious.click();
+  await expect(tenYearPagination.getByRole('button', { name: 'Ano 2', exact: true })).toHaveAttribute('aria-current', 'page');
+  await tenYearPagination.locator('.year-page-jump').click();
+  await expect(tenYearPagination.getByRole('button', { name: 'Ano 7', exact: true })).toHaveAttribute('aria-current', 'page');
+  if (process.env.CAPTURE_YEAR_NAV === '1') {
+    const directory = path.resolve('test-results/year-navigation');
+    fs.mkdirSync(directory, { recursive: true });
+    await tenYearPagination.screenshot({ path: path.join(directory, '10-years-middle-page.png') });
+  }
+  await tenYearNext.click();
+  await expect(tenYearPagination.getByRole('button', { name: 'Ano 8', exact: true })).toHaveAttribute('aria-current', 'page');
+  await tenYearPrevious.click();
+  await expect(tenYearPagination.getByRole('button', { name: 'Ano 7', exact: true })).toHaveAttribute('aria-current', 'page');
+  await tenYearPagination.getByRole('button', { name: 'Ano 10', exact: true }).click();
+  await expect(tenYearNext).toBeDisabled();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(tenYearPagination).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

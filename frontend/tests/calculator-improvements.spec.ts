@@ -35,7 +35,7 @@ test('all extended tables offer direct year selection and monthly rows',async({p
   await tool.getByRole('button',{name:action}).click();
   await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
   const nav=tool.locator('year-navigation');
-  await nav.getByRole('button').last().click();
+  await nav.locator('.year-page-button:not(.year-page-arrow):not(.year-page-jump)').last().click();
   const selected=Number(await nav.locator('[aria-current="page"]').innerText());
   if(path!=='amortizacao')expect(selected).toBe(Number(last));
   await expect(tool.locator('.extended-table tbody tr').first().locator('th')).toHaveText(String((selected-1)*12+1));

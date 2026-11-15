@@ -28,6 +28,8 @@ export class YearNavigation extends LightElement {
     const selected = Math.max(1, Math.min(years, this.year));
     return html`<nav class="year-navigation" aria-label="Navegação por ano da simulação">
       <div class="year-navigation-pages">
+        <button type="button" class="year-page-button year-page-arrow" aria-label="Ano anterior"
+          ?disabled=${selected === 1} @click=${() => this.jump(selected - 1)}>←</button>
         ${this.pageItems(years, selected).map(item => typeof item === 'number'
           ? html`<button type="button" class="year-page-button" aria-label=${`Ano ${item}`}
               aria-current=${selected === item ? 'page' : nothing}
@@ -35,6 +37,8 @@ export class YearNavigation extends LightElement {
           : html`<button type="button" class="year-page-button year-page-jump"
               aria-label=${item.direction === 'back' ? `Voltar para o ano ${item.target}` : `Avançar para o ano ${item.target}`}
               @click=${() => this.jump(item.target)}>…</button>`)}
+        <button type="button" class="year-page-button year-page-arrow" aria-label="Próximo ano"
+          ?disabled=${selected === years} @click=${() => this.jump(selected + 1)}>→</button>
       </div>
     </nav>`;
   }
