@@ -511,6 +511,34 @@ market-page.market-terminal panel-workspace[area="actions-overview"] [slot="pano
   market-page.market-terminal .stock-directory .stock-metric.is-profit { margin-top: 7px; }
 }
 
+/* Stock detail: consistent identity, wide CVM analysis and a compact control row. */
+market-page.market-terminal .ws-page-heading { align-items:center; gap:16px; margin-bottom:12px; }
+market-page.market-terminal .ws-page-heading > div { min-width:0; }
+market-page.market-terminal .ws-page-heading .market-back { flex:0 0 auto; margin:0; white-space:nowrap; }
+market-page.market-terminal .ws-company-name { margin:3px 0 0; }
+market-page.market-terminal .workspace-panel .financial-controls {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:end; gap:12px 16px;
+  margin:16px 0;
+}
+market-page.market-terminal .workspace-panel .financial-controls > label {
+  display:grid; gap:8px; min-width:0; color:var(--secondary); font-size:13px; line-height:1.4;
+}
+market-page.market-terminal .workspace-panel .financial-controls select { width:100%; min-width:0; }
+@media(max-width:600px) {
+  market-page.market-terminal .ws-page-heading { align-items:flex-start; }
+  market-page.market-terminal .ws-page-heading .market-back { margin-top:5px; }
+  market-page.market-terminal .workspace-panel .financial-controls { grid-template-columns:1fr; gap:10px; }
+}
+
+/* Dense catalog rows keep every company and both CVM indicators readable. */
+@media(min-width:931px) {
+  market-page.market-terminal .stock-directory .stock-item,
+  market-page.market-terminal .stock-directory-heading { gap:10px; }
+  market-page.market-terminal .stock-directory .stock-item { min-height:58px; padding:10px 12px; }
+  market-page.market-terminal .stock-directory .stock-metric { font-size:12px; }
+  market-page.market-terminal .stock-directory .stock-metric small { margin-top:2px; font-size:10px; }
+}
+
 
 /* Simulador de aportes — interface editorial 2T, sem alterar o motor financeiro. */
 market-contributions .mc-page { --mc-outline:var(--line-soft); display:grid; gap:0; min-width:0; }
@@ -894,3 +922,32 @@ distributions-page .dp-history-embedded .dp-hero { margin-top:0; }
  distributions-page .dp-history-detail .distribution-chart { padding:17px; }
 }
 @media(prefers-reduced-motion:reduce) { distributions-page .dp-tool-nav .button { transition:none; } }
+
+/* Proventos filters share one grid instead of leaving isolated fields on new rows. */
+distributions-page .dp-filter-inner > .dp-filter-fields {
+  grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px 14px; margin:0;
+}
+distributions-page .dp-filter-inner > .dp-filter-fields .distribution-basis { grid-column:auto; width:auto; }
+distributions-page .dp-filter-inner > .dp-filter-fields .rf-field { align-content:start; }
+@media(max-width:1100px) {
+  distributions-page .dp-filter-inner > .dp-filter-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:580px) {
+  distributions-page .dp-filter-inner > .dp-filter-fields { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  distributions-page .dp-filter-inner > .dp-filter-fields :is(.distribution-basis,.distribution-date-nature) { grid-column:1/-1; }
+}
+@media(max-width:360px) {
+  distributions-page .dp-filter-inner > .dp-filter-fields { grid-template-columns:minmax(0,1fr); }
+}
+
+/* The announcement simulator uses four aligned fields on wide screens. */
+distributions-page .distributions form.rf-panel .rf-fields { grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+@media(max-width:900px) {
+  distributions-page .distributions form.rf-panel .rf-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:580px) {
+  distributions-page .distributions form.rf-panel .rf-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:360px) {
+  distributions-page .distributions form.rf-panel .rf-fields { grid-template-columns:minmax(0,1fr); }
+}

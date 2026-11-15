@@ -74,6 +74,16 @@ market-page.workspace-v2 { display: block; }
 .workspace-v2 .workspace-panel .market-chart-modes { flex-wrap: wrap; }
 @media(max-width:700px) { .workspace-v2 .ws-main-chart .tv-overview { min-height: 512px; } }
 
+/* Stock detail: keep the chart prominent, then give CVM analysis room to breathe. */
+:host([area="actions-company"]) .ws-grid { gap: 14px; }
+:host([area="actions-company"]) .ws-cell[data-panel="chart"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+:host([area="actions-company"]) .ws-cell[data-panel="financial"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+:host([area="actions-company"]) .ws-cell[data-panel="company"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+:host([area="actions-company"]) .ws-cell[data-panel="distributions"] { grid-column: 1 / -1 !important; grid-row: auto !important; }
+@media(max-width:900px) {
+ :host([area="actions-company"]) .ws-cell { grid-column: 1 / -1 !important; grid-row: auto !important; }
+}
+
 /* Simulator surfaces stay local to financial tools. */
 .calculator-workspace {
  display: block;
