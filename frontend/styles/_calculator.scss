@@ -495,13 +495,6 @@
   font-size: 16px;
   font-weight: 600;
 }
-.summary-title small {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-  margin-top: var(--space-1);
-}
 .details-chevron {
   color: var(--muted);
   transition: transform var(--duration);
@@ -763,9 +756,6 @@ tbody tr:hover {
   }
   .table-pagination > div {
     margin-left: auto;
-  }
-  .summary-title small {
-    font-size: 11px;
   }
   .results-details summary {
     padding: 16px;

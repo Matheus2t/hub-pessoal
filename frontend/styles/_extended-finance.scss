@@ -229,10 +229,8 @@ extended-finance-calculator { display:block; min-width:0; max-width:100%; }
 .extended-calculator .retirement-goal-preview > strong {display:block;font-size:clamp(25px,2.7vw,40px);letter-spacing:-.06em;line-height:1.25;font-weight:680;color:var(--text);font-variant-numeric:tabular-nums;margin:6px 0;overflow-wrap:anywhere;}
 .extended-calculator .retirement-goal-preview strong small {font-size:13px;letter-spacing:0;color:var(--secondary);font-weight:500;margin-left:5px;}
 .extended-calculator .retirement-goal-preview p {font-size:12px;line-height:1.55;color:var(--secondary);}
-.extended-calculator .extended-table-top {display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap;}
-.extended-calculator .extended-table-top h2 {margin:4px 0 0;font-size:19px;}
-.extended-calculator .extended-table-kicker {font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--muted);}
-.extended-calculator .extended-table-count {color:var(--secondary);border:1px solid var(--line-soft);border-radius:6px;padding:8px 12px;font-size:11px;white-space:nowrap;}
+.extended-calculator .extended-table-top {display:flex;align-items:start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line-soft);padding-bottom:14px;margin-bottom:0;}
+.extended-calculator .extended-table-top h2 {margin:0;font-size:19px;}
 .extended-calculator .extended-table table {min-width:650px;}
 .extended-calculator .extended-table th {font-size:12px;}
 .extended-calculator .extended-table thead {background:var(--raised);}
@@ -247,4 +245,4 @@ extended-finance-calculator { display:block; min-width:0; max-width:100%; }
 .extended-calculator .extended-cost-breakdown td {text-align:right;}
 .extended-calculator .extended-detail > p {margin:0;font-size:12px;color:var(--secondary);line-height:1.7;}
 .extended-calculator .extended-detail > p:last-child:not(:first-child) {margin-top:12px;}
-@media(max-width:600px){.extended-calculator .retirement-intent {grid-template-columns:minmax(0,1fr);}.extended-calculator .retirement-goal-preview {padding:16px;}.extended-calculator .extended-table-count {white-space:normal;}}
+@media(max-width:600px){.extended-calculator .retirement-intent {grid-template-columns:minmax(0,1fr);}.extended-calculator .retirement-goal-preview {padding:16px;}}

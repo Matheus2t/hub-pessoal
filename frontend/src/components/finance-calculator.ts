@@ -100,10 +100,7 @@ export class FinanceCalculator extends LightElement {
         ${investment?html`<results-table .rows=${investment.evolution}></results-table>`:nothing}
           ${loan ? html`<section class="loan-ledger" aria-label="Parcelas e saldo devedor">
             <header class="loan-ledger-header">
-              <div><span class="loan-ledger-eyebrow">DEMONSTRATIVO DO FINANCIAMENTO</span>
-                <h2>Parcelas e saldo devedor</h2>
-                <p>${this.kind === 'price' ? 'PRICE · parcelas regulares aproximadamente constantes, com juros decrescentes.' : 'SAC · amortização constante e parcelas que diminuem com o saldo.'}</p></div>
-              <span class="loan-ledger-total">${loan.schedule.length} parcelas</span>
+              <h2>Evolução do financiamento</h2>
             </header>
             <div class="loan-ledger-metrics" aria-label=${`Resumo financeiro do ano ${this.tablePage+1}`}>
               <div><span>Pago no ano</span><strong>${money(yearPaid)}</strong></div>
@@ -111,9 +108,6 @@ export class FinanceCalculator extends LightElement {
               <div><span>Amortizado no ano</span><strong>${money(yearAmortized)}</strong></div>
               <div><span>Saldo ao fim do ano</span><strong>${money(endingBalance)}</strong></div>
             </div>
-            <year-navigation .year=${this.tablePage+1} .years=${years}
-              .range=${`Meses ${this.tablePage*12+1}–${Math.min((this.tablePage+1)*12,loan.schedule.length)} de ${loan.schedule.length}`}
-              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
             <div class="loan-ledger-scroll table-scroll" tabindex="0" role="region" aria-label="Parcelas mensais do financiamento">
               <table><caption class="sr-only">Demonstrativo de parcelas e evolução do saldo devedor</caption>
                 <thead><tr><th scope="col">Mês</th><th scope="col">Parcela paga</th><th scope="col">Juros</th><th scope="col">Amortização</th><th scope="col">Saldo devedor</th></tr></thead>
@@ -124,6 +118,8 @@ export class FinanceCalculator extends LightElement {
                 <tfoot><tr><th scope="row">Total do período</th><td>${money(yearPaid)}</td><td>${money(yearInterest)}</td><td>${money(yearAmortized)}</td><td>${money(endingBalance)}</td></tr></tfoot>
               </table>
             </div>
+            <year-navigation .year=${this.tablePage+1} .years=${years}
+              @year-change=${(event:CustomEvent<number>)=>this.tablePage=event.detail-1}></year-navigation>
             <p class="loan-ledger-caption">Última parcela do contrato: ${money(loan.last_payment)}. A cobrança real pode incluir tarifas, seguros e tributos não simulados.</p>
           </section>` : nothing}
 

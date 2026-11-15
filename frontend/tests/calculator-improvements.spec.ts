@@ -13,8 +13,8 @@ test('goal retirement is calculated from desired income, not a frozen contributi
  await tool.getByRole('button',{name:'Projetar aposentadoria'}).click();
  await expect(tool.locator('.metric-card').first()).toContainText((await preview.locator('strong').innerText()).replace('/mês','').trim());
  const periods=tool.locator('year-navigation');
- await periods.getByRole('button',{name:'Último ano'}).click();
- await expect(periods.getByRole('combobox',{name:'Ir para o ano'})).toHaveValue('35');
+ await periods.getByRole('button',{name:'Ano 35',exact:true}).click();
+ await expect(periods.getByRole('button',{name:'Ano 35',exact:true})).toHaveAttribute('aria-current','page');
  await expect(tool.locator('.extended-table tbody tr').last()).toContainText('420');
  await tool.getByRole('button',{name:'Quero testar um aporte'}).click();
  await tool.getByLabel('Aporte mensal que pretendo investir').fill('300');
@@ -35,10 +35,9 @@ test('all extended tables offer direct year selection and monthly rows',async({p
   await tool.getByRole('button',{name:action}).click();
   await expect(tool.locator('.extended-table tbody tr')).toHaveCount(12);
   const nav=tool.locator('year-navigation');
-  if(path==='amortizacao')await nav.getByRole('button',{name:'Último ano'}).click();
-  else await nav.getByRole('combobox',{name:'Ir para o ano'}).selectOption(last);
-  const selected=Number(await nav.getByRole('combobox',{name:'Ir para o ano'}).inputValue());
-  expect(selected).toBe(path==='amortizacao'?Number(await nav.getByRole('combobox',{name:'Ir para o ano'}).locator('option').last().getAttribute('value')):Number(last));
+  await nav.getByRole('button').last().click();
+  const selected=Number(await nav.locator('[aria-current="page"]').innerText());
+  if(path!=='amortizacao')expect(selected).toBe(Number(last));
   await expect(tool.locator('.extended-table tbody tr').first().locator('th')).toHaveText(String((selected-1)*12+1));
  }
 });
@@ -54,7 +53,7 @@ test('CLT: project a team, different regimes, years and a readable breakdown',as
  await expect(tool.locator('.extended-detail')).toContainText('3 pessoas');
  await tool.locator('.extended-cost-breakdown summary').click();
  await expect(tool.locator('.extended-cost-breakdown tbody tr')).toHaveCount(11);
- await tool.locator('year-navigation').getByRole('combobox',{name:'Ir para o ano'}).selectOption('2');
+ await tool.locator('year-navigation').getByRole('button',{name:'Ano 2',exact:true}).click();
  await expect(tool.locator('.extended-table tbody tr').first()).toContainText('13');
 });
 
@@ -72,8 +71,8 @@ test('PRICE and SAC ledger is open and jumps directly to last year',async({page}
   const ledger=tool.locator('.loan-ledger');
   await expect(ledger.getByRole('heading',{name:'Parcelas e saldo devedor'})).toBeVisible();
   await expect(ledger.locator('tbody tr')).toHaveCount(12);
-  await ledger.getByRole('button',{name:'Último ano'}).click();
-  await expect(ledger.getByRole('combobox',{name:'Ir para o ano'})).toHaveValue('3');
+  await ledger.getByRole('button',{name:'Ano 3',exact:true}).click();
+  await expect(ledger.getByRole('button',{name:'Ano 3',exact:true})).toHaveAttribute('aria-current','page');
   await expect(ledger.locator('tbody tr').first()).toContainText('25');
   await expect(ledger.locator('.loan-ledger-metrics')).toContainText('Saldo ao fim do ano');
  }
@@ -89,7 +88,7 @@ test('interest table reaches last year without dozens of clicks',async({page})=>
  await tool.getByRole('button',{name:'Calcular'}).click();
  await tool.locator('results-table summary').click();
  const nav=tool.locator('results-table year-navigation');
- await nav.getByRole('combobox',{name:'Ir para o ano'}).selectOption('30');
+ await nav.getByRole('button',{name:'Ano 30',exact:true}).click();
  await expect(tool.locator('results-table tbody tr').first()).toContainText('349');
 });
 test('math engines honor exact retirement target and CLT team multipliers',()=>{
