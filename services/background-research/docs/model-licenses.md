@@ -20,3 +20,7 @@ Revisão técnica de alto nível em 2026-11-17. Não substitui revisão jurídic
 Antes de executar `scripts/fetch_p3m.py`, leia o [acordo oficial](https://jizhizili.github.io/files/p3m_dataset_agreement/P3M-10k_Dataset_Release_Agreement.pdf). O script exige `--accept-p3m-terms`, limita a split face-blurred `P3M_500_P` e não escreve URLs temporárias assinadas em logs ou manifestos. O manifest local registra origem, IDs, dimensões e SHA-256; o repositório inclui apenas a estrutura de esquema, nunca as imagens.
 
 Fontes: [P3M-10K oficial](https://github.com/JizhiziLi/P3M), [acordo de liberação](https://jizhizili.github.io/files/p3m_dataset_agreement/P3M-10k_Dataset_Release_Agreement.pdf), [espelho que documenta os campos e split](https://huggingface.co/datasets/nobg/P3M-10K).
+
+## Atualização Fase 4.2 — 2026-11-17
+
+Nenhuma imagem ou peso foi importado/republicado nesta fase. A página oficial Open Images V7 declara anotações sob CC BY 4.0 e fotos listadas como CC BY 2.0, mas ressalva que não garante a licença de cada foto; conferir a página de origem e atribuição para cada item continua obrigatório. Consulte [descrição oficial/licenças](https://storage.googleapis.com/openimages/web/factsfigures_v7.html). Os hashes locais continuam sendo metadados do inventário Fase 4.1; a revisão de proveniência dos checkpoints convertidos não foi concluída nesta fase. Detalhes: [resultados Fase 4.2](phase-4.2-results.md).

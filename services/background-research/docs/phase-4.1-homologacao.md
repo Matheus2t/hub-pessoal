@@ -95,3 +95,7 @@ O ambiente de shell não resolveu `storage.googleapis.com` (`host not known`) ao
 6. Revisar licenças dos checkpoints convertidos/hashes exatos e estimar operação somente com medições e infraestrutura escolhida.
 
 Até essas pendências serem concluídas, o modelo permanece **não selecionado** e a Fase 5 não está pronta para uma implementação de produção baseada num vencedor.
+
+## Continuação Fase 4.2 — 2026-11-17
+
+Houve uma tentativa real de smoke U²-Net usando o runner existente, mas `rembg` não estava instalado no ambiente e nenhuma inferência ocorreu (0/1). Foi corrigida a leitura da versão do ONNX Runtime quando o módulo não tem metadados de distribuição. O dataset segue sem fotos; o runtime local segue sem CUDA. Nenhuma dependência foi instalada, nenhum serviço pago foi usado e o modelo não foi selecionado. Consulte [relatório da Fase 4.2](phase-4.2-results.md) para a execução, fontes oficiais, comandos de retomada e limitações.

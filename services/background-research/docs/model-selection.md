@@ -25,3 +25,7 @@ BiRefNet HR/Matting e InSPyReNet permanecem na trilha investigativa. BRIA RMBG-2
 - Custos por operação calculados a partir de benchmark real e plano/infra escolhidos. Não presumir preço zero.
 
 Sem um conjunto fotográfico e a revisão humana não há base para afirmar “melhor modelo”. Uma métrica média sintética ou de retratos não prediz desempenho em objetos/produtos.
+
+## Atualização Fase 4.2 — 2026-11-17
+
+O smoke U²-Net desta fase foi tentado no harness, mas terminou em erro de importação (`rembg` ausente) antes da inferência. Não há nova evidência de qualidade nem mudança na decisão: **nenhum modelo selecionado**. O runtime GPU não está disponível, não há fotos reais no dataset local e não ocorreu avaliação humana. Veja [relatório da Fase 4.2](phase-4.2-results.md).
