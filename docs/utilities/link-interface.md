@@ -20,7 +20,7 @@ SCSS monocromático da área de Utilitários. Formulário empilha em telas estre
 
 Testes automatizados cobrem envio, validação, erros, caminhos parciais, cancelamento, duplicação, clipboard, texto não confiável, foco, movimento reduzido e flags. A validação executada nesta branch inclui typecheck/build, 89 testes Python focados e 12 testes Playwright aprovados (mais 1 teste público não aplicável ao bundle local). Um teste Python usa FastAPI real, resolvedor e transporte com pinagem, incluindo handshake TLS local e rejeição de certificado inválido/nome incompatível. O teste integrado do navegador inicia a API local e confirma o resultado real na tela. O gate público foi verificado em build Vercel: 2 testes aprovados e 2 testes específicos da prévia ignorados.
 
-O harness TLS de teste resolve para o endereço público reservado `93.184.216.34` apenas para exercitar a política; o transporte controlado redireciona a conexão validada exclusivamente para `127.0.0.1`. Nenhum site público é contactado.
+O harness retorna `93.184.216.34` como valor sintético de DNS para exercitar a validação de IP público; esse endereço não é contatado. `LoopbackTestBackend` aceita apenas esse IP e a porta esperada, e redireciona a conexão validada exclusivamente para `127.0.0.1`. Nenhum site público é contactado.
 
 ## Limites
 
