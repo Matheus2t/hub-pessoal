@@ -14,7 +14,8 @@
 ## Evidência e limites restantes do resolvedor
 
 - Os testes adicionados exercitam URLs/IPs/DNS sintéticos e um backend HTTPCore controlado. O teste de transporte verifica que o socket recebe o IP fixado e que HTTPCore recebe o hostname original para SNI, com `CERT_REQUIRED` e `check_hostname` habilitados.
-- O backend controlado não executa handshake TLS criptográfico real. A homologação local desta execução foi limitada pela política do Windows, que negou a criação do socketpair de loopback necessário ao event loop assíncrono; portanto, testes async e tráfego real aguardam execução no CI.
+- GitHub Actions aprovou a suíte Python completa no Ubuntu (439 aprovados, 5 ignorados) e Windows (443 aprovados, 1 ignorado), além de typecheck, build e browser smoke tests. Localmente, o sandbox Windows negou o socketpair do event loop padrão; os 104 testes direcionados foram executados com loop sem sockets e transports simulados.
+- Os testes não executam handshake TLS criptográfico real nem acessam destinos externos. A configuração de verificação TLS e o caminho de pinagem são cobertos por teste controlado; homologação de rede externa permanece pendente.
 - A lista de DNS é validada integralmente, mas no máximo quatro IPs válidos são tentados por consulta. O limite de concorrência é por processo, não uma taxa global. A API é destinada somente ao loopback e permanece forçada a 404 em Vercel; não é um serviço público.
 - Uma alteração de DNS após a validação não muda o IP conectado naquele salto. Cada redirect faz nova resolução e validação. Nenhum resolvedor atesta reputação, benignidade do conteúdo ou segurança da página final.
 

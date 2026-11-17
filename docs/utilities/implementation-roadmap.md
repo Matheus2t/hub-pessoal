@@ -14,7 +14,7 @@
 - Tipos TypeScript e modelos Pydantic futuros; testes de contrato e bloqueio.
 - Documentação de arquitetura, escopo, segurança e release.
 
-## Fase 2 — Motor do Desencurtador (implementado nesta branch; aguardando CI e revisão)
+## Fase 2 — Motor do Desencurtador (implementado; CI aprovado, aguardando revisão do PR)
 
 1. Definir política de esquemas, portas, limites e respostas.
 2. Implementar cliente HTTP com redirecionamentos manuais e timeouts/budgets.
@@ -24,7 +24,7 @@
 6. Adicionar testes controlados para DNS/IP, redirects, loops, timeout, TLS/SNI, limites e guardas locais, sem destinos arbitrários.
 7. Manter flags desativadas por padrão; Vercel retorna 404 mesmo se as flags forem configuradas.
 
-Limitação da validação desta branch: o ambiente Windows local bloqueou a criação do socketpair de loopback usado pelo event loop async, interrompendo os testes assíncronos; a suíte completa precisa passar no CI antes de qualquer integração. Os testes TLS usam backend controlado e não substituem handshake real.
+Validação no GitHub Actions: suíte Python completa aprovada no Ubuntu (439 aprovados, 5 ignorados) e Windows (443 aprovados, 1 ignorado). Typecheck, build e browser smoke tests também passaram. O sandbox Windows local bloqueou o socketpair do event loop padrão; os testes direcionados locais usaram transportes sintéticos. Não houve handshake TLS real nem acesso a destinos externos. Revisão de segurança ainda é necessária antes de integrar.
 
 ## Fase 3 — Upload e contratos de trabalhos do Removedor (não iniciada)
 
