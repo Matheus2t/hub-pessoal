@@ -1,0 +1,7 @@
+data/
+models/
+results/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "u2net-baseline",
+    "adapter": "rembg",
+    "rembg_model": "u2net",
+    "family": "U2-Net",
+    "role": "baseline",
+    "source": "https://github.com/xuebinqin/U-2-Net",
+    "weights_source": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx",
+    "license_status": "upstream Apache-2.0 reported; converted artifact provenance requires review",
+    "expected_provider": "CPUExecutionProvider"
+  },
+  {
+    "id": "birefnet-general-lite-advanced",
+    "adapter": "rembg",
+    "rembg_model": "birefnet-general-lite",
+    "family": "BiRefNet general lite",
+    "role": "advanced",
+    "source": "https://github.com/ZhengPeng7/BiRefNet",
+    "weights_source": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-bb_swin_v1_tiny-epoch_232.onnx",
+    "license_status": "upstream code and checkpoints MIT; verify exact converted artifact hash before release",
+    "expected_provider": "CPUExecutionProvider"
+  },
+  {
+    "id": "birefnet-general-advanced",
+    "adapter": "rembg",
+    "rembg_model": "birefnet-general",
+    "family": "BiRefNet general",
+    "role": "advanced",
+    "source": "https://github.com/ZhengPeng7/BiRefNet",
+    "weights_source": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-epoch_244.onnx",
+    "license_status": "upstream code and checkpoints MIT; verify exact converted artifact hash before release",
+    "expected_provider": "CPUExecutionProvider"
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "note": "Metadata only; actual checkpoint files are ignored and not committed.",
+  "artifacts": [
+    {
+      "id": "u2net-baseline",
+      "artifact": "u2net.onnx",
+      "bytes": 175997641,
+      "sha256": "8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491",
+      "weights_source": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx",
+      "source": "https://github.com/xuebinqin/U-2-Net",
+      "license_status": "upstream Apache-2.0 reported; converted artifact provenance requires review"
+    },
+    {
+      "id": "birefnet-general-lite-advanced",
+      "artifact": "birefnet-general-lite.onnx",
+      "bytes": 224005088,
+      "sha256": "5600024376f572a557870a5eb0afb1e5961636bef4e1e22132025467d0f03333",
+      "weights_source": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-bb_swin_v1_tiny-epoch_232.onnx",
+      "source": "https://github.com/ZhengPeng7/BiRefNet",
+      "license_status": "upstream code and checkpoints MIT; verify exact converted artifact hash before release"
+    }
+  ]
+}

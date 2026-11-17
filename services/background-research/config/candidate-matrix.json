@@ -1,0 +1,12 @@
+[
+  {"candidate":"U²-Net / rembg u2net","status":"executed-full","evidence":"80/80 generated synthetic samples; local CPUExecutionProvider","reason":"baseline"},
+  {"candidate":"BiRefNet General Lite / rembg ONNX","status":"executed-smoke-only","evidence":"1/1 generated synthetic sample; CPUExecutionProvider","reason":"one inference took ~54.6 s after ~109.6 s warm-up, so full run was deferred on this CPU-only provider"},
+  {"candidate":"BiRefNet General","status":"not-run","reason":"larger checkpoint and high estimated memory/latency; no CUDA provider/runtime is installed; not safe to assume fit from RTX model name"},
+  {"candidate":"BiRefNet HR / HR-matting / general-2K","status":"not-run","reason":"high-resolution variants; require a separate resource and checkpoint smoke test"},
+  {"candidate":"BEN2 Base ONNX","status":"not-run","reason":"official preprocessing/output contract has not been implemented and checked against upstream ONNX runner; avoid unverified adapter"},
+  {"candidate":"InSPyReNet","status":"research-only","reason":"code is MIT; exact checkpoint artifact and commercial-use provenance not confirmed; also salient-object detection is not automatically equivalent to alpha matting"},
+  {"candidate":"BRIA RMBG-2.0","status":"excluded","reason":"official self-hosted weights are CC BY-NC 4.0; no commercial agreement is available"},
+  {"candidate":"BRIA RMBG-3.0","status":"excluded","reason":"official non-commercial terms and 32 GB+ VRAM class reported; exceeds local GPU memory and is not eligible for commercial deployment without permission"},
+  {"candidate":"FeyNobg","status":"blocked-license-review","reason":"the exact checkpoint revision must be reconciled against differing license statements before download/recommendation"},
+  {"candidate":"SAM3 / SDMatte / CineMatte","status":"out-of-scope","reason":"prompt-conditioned, interactive, or captured-background tasks; not direct drop-in automatic background removal"}
+]
