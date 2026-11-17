@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     database_url: str|None=None
     api_cors_origins: str='http://localhost:3000'
     public_history_enabled: bool=True
+    utilities_enabled: bool=False
+    link_resolver_enabled: bool=False
+    background_remover_enabled: bool=False
     brapi_api_key: SecretStr|None=None
     market_data_public_enabled: bool=False
     sportsdb_api_key: SecretStr|None=None

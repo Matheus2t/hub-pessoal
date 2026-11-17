@@ -1,10 +1,11 @@
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import "./team-shortcuts";
 import type { Page } from "../catalog";
+import { utilitiesCatalogEnabled } from "../utilities/flags";
 
-const toolPages: Page[] = ["call", "catalog", "calculator", "simple", "price", "sac", "retirement", "housing", "amortization", "clt", "market", "fixedIncome", "learn", "learnEn", "learnRu", "learnInvalid"];
+const toolPages: Page[] = ["call", "catalog", "calculator", "simple", "price", "sac", "retirement", "housing", "amortization", "clt", "market", "fixedIncome", "utilities", "utilityLink", "utilityBackground", "learn", "learnEn", "learnRu", "learnInvalid"];
 
 @customElement("app-sidebar")
 export class AppSidebar extends LightElement {
@@ -34,6 +35,7 @@ export class AppSidebar extends LightElement {
           <a href="#/calculadoras" aria-current=${this.page === "catalog" || ["calculator", "simple", "price", "sac", "retirement", "housing", "amortization", "clt"].includes(this.page) ? "page" : "false"}>Calculadoras</a>
           <a href="#/acoes" aria-current=${this.page === "market" ? "page" : "false"}>Mercado de Ações</a>
           <a href="#/renda-fixa" aria-current=${this.page === "fixedIncome" ? "page" : "false"}>Renda Fixa</a>
+          ${utilitiesCatalogEnabled() ? html`<a href="#/utilitarios" aria-current=${["utilities", "utilityLink", "utilityBackground"].includes(this.page) ? "page" : "false"}>Utilitários</a>` : nothing}
           <a href="#/learn" aria-current=${["learn", "learnEn", "learnRu", "learnInvalid"].includes(this.page) ? "page" : "false"}>Learn / Изучать</a>
         </div>
       </details>

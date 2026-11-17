@@ -1,6 +1,7 @@
 import type { IconName } from "./ui";
+import { backgroundRemoverPreviewEnabled, linkResolverPreviewEnabled, utilitiesCatalogEnabled } from "./utilities/flags";
 import { isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled } from "./learn/pilot-preview";
-export type Page = "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "76ers" | "spfc" | "barcelona";
+export type Page = "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "utilities" | "utilityLink" | "utilityBackground" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -36,6 +37,9 @@ export const pages: Record<Page, { title: string; section: string }> = {
   learnRu: {title:'Russo',section:'Learn / Изучать'},
   learnInvalid: {title:'Página não encontrada',section:'Learn / Изучать'},
   fixedIncome: { title: 'Renda Fixa', section: 'Renda Fixa' },
+  utilities: { title: 'Utilitários', section: 'Utilitários' },
+  utilityLink: { title: 'Desencurtador de Links', section: 'Utilitários' },
+  utilityBackground: { title: 'Removedor de Fundo', section: 'Utilitários' },
   '76ers': { title: 'Philadelphia 76ers', section: 'Philadelphia 76ers' },
   spfc: { title: 'São Paulo Futebol Clube', section: 'São Paulo Futebol Clube' },
   barcelona: { title: 'FC Barcelona', section: 'FC Barcelona' },
@@ -52,6 +56,9 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
+  location.hash.split("?")[0] === "#/utilitarios" && utilitiesCatalogEnabled() ? "utilities" :
+  location.hash.split("?")[0] === "#/utilitarios/desencurtador" ? linkResolverPreviewEnabled() ? "utilityLink" : utilitiesCatalogEnabled() ? "utilities" : "overview" :
+  location.hash.split("?")[0] === "#/utilitarios/remover-fundo" ? backgroundRemoverPreviewEnabled() ? "utilityBackground" : utilitiesCatalogEnabled() ? "utilities" : "overview" :
   /^#\/games(?:\/(?:snake|sudoku|2048|breakout|pong|palavra-secreta|digitacao|jogo-da-velha|reflexos|memoria))?$/.test(location.hash) ? 'games' :
   /^#\/call(?:\/.*|\?.*)?$/.test(location.hash) ? 'call' :
   location.hash === '#/learn' ? 'learn' : /^#\/learn\/(en|ru)\/progress-v17$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/dictation-v14$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/listening-v13$/.test(location.hash)&&isLearnListeningV13PreviewEnabled() ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/reading-b1$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/bridges$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/audio-v19$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : location.hash==='#/learn/en/pilot-c1'&&isLearnPilotPreviewEnabled('c1') ? 'learnEn' : location.hash==='#/learn/ru/pilot-c2'&&isLearnPilotPreviewEnabled('c2') ? 'learnRu' : location.hash==='#/learn/en/diagnostic'&&isLearnDiagnosticPreviewEnabled('en') ? 'learnEn' : location.hash==='#/learn/ru/diagnostic'&&isLearnDiagnosticPreviewEnabled('ru') ? 'learnRu' : /^#\/learn\/(en|ru)\/reviews$/.test(location.hash)&&isLearnDelayedReviewPreviewEnabled() ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/integration$/.test(location.hash)&&isLearnIntegrationPreviewEnabled() ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/(en|ru)\/progression$/.test(location.hash) ? (location.hash.includes('/en/')?'learnEn':'learnRu') : /^#\/learn\/en(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnEn' : /^#\/learn\/ru(?:\/(?:vocabulary|flashcards|listening|dictation|writing|reading|grammar|test|errors|targeted|daily|dashboard|backup|path))?$/.test(location.hash) ? 'learnRu' : /^#\/learn(?:\/|$)/.test(location.hash) ? 'learnInvalid' :
