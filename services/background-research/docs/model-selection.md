@@ -2,7 +2,7 @@
 
 **Não há modelo selecionado para produção nesta fase.** O baseline teve avaliação completa apenas em 80 imagens sintéticas. O modelo avançado tem somente um smoke test sintético e foi muito lento em CPU. Faltam fotos autorizadas, benchmark pareado suficiente, inspeção humana e revisão de licença dos arquivos exatos.
 
-**Atualização em 2026-11-17:** a Fase 4.1 não obteve fotos reais nem CUDA ativo no ambiente local. O U²-Net permanece somente baseline e BiRefNet permanece pendente; não há vencedor provisório ou definitivo novo. Ver [bloqueios e próxima execução](phase-4.1-homologacao.md).
+**Atualização em 2026-11-17:** houve inferência U²-Net CPU repetível em sintéticos e uma comparação exploratória de um único ID com o smoke histórico BiRefNet. Isso comprova funcionamento do harness e PNG RGBA, mas não altera a decisão: sem fotos reais, revisão humana, GPU e licenças dos ONNX exatos, não há vencedor. Ver [resultados da Fase 4.2](phase-4.2-results.md).
 
 Os checkpoints ONNX locais foram encontrados e os SHA-256 coincidem com o inventário versionado, mas a baixa RAM disponível e o histórico de pico de 6,55 GB do BiRefNet Lite desaconselharam repetir inferências nesta sessão. A ausência de dados fotográficos, e não a falta dos arquivos de pesos, é o bloqueio para uma seleção representativa.
 
@@ -25,3 +25,7 @@ BiRefNet HR/Matting e InSPyReNet permanecem na trilha investigativa. BRIA RMBG-2
 - Custos por operação calculados a partir de benchmark real e plano/infra escolhidos. Não presumir preço zero.
 
 Sem um conjunto fotográfico e a revisão humana não há base para afirmar “melhor modelo”. Uma métrica média sintética ou de retratos não prediz desempenho em objetos/produtos.
+
+## Atualização final Fase 4.2 — 2026-11-17
+
+O bloqueio de importação foi resolvido em venv isolado de caminho curto após a instalação no venv profundo falhar por limite de caminho do Windows. U²-Net concluiu seis inferências em cinco imagens sintéticas distintas e produziu PNG com canal alpha válido. O BiRefNet Lite tem um smoke histórico na mesma imagem sintética, mas pico RSS de 6,55 GB e sem associação do hash no JSON daquele run. Runtime CUDA, fotos autorizadas e revisão humana seguem ausentes. Decisão permanece: **nenhum modelo selecionado para produção**. Detalhes e hashes constam no [relatório da Fase 4.2](phase-4.2-results.md).

@@ -95,3 +95,7 @@ O ambiente de shell não resolveu `storage.googleapis.com` (`host not known`) ao
 6. Revisar licenças dos checkpoints convertidos/hashes exatos e estimar operação somente com medições e infraestrutura escolhida.
 
 Até essas pendências serem concluídas, o modelo permanece **não selecionado** e a Fase 5 não está pronta para uma implementação de produção baseada num vencedor.
+
+## Continuação Fase 4.2 — 2026-11-17
+
+Este registro descreve o estado da primeira tentativa, quando `rembg` ausente impediu a inferência. A retomada posterior corrigiu a execução em um venv isolado curto e obteve seis inferências U²-Net CPU em cinco imagens sintéticas, sem fotos ou CUDA. A decisão segue sem modelo selecionado; consulte o [relatório atualizado da Fase 4.2](phase-4.2-results.md) para as medições e limitações atuais.

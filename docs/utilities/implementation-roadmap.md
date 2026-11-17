@@ -39,3 +39,7 @@ Revisão de segurança, acessibilidade, limites, privacidade, observabilidade, t
 - O PR da Fase 4.1 deriva do head `18bd31911a958abe814213205b51ee57aac92efa` de #182 e deve ter #182 como base. As cadeias são paralelas; não afirmar que as Fases 2/3 ou o Removedor já estão em produção.
 
 A Fase 4.1 está **parcialmente concluída**: harness e relatório foram preparados, mas fotografias reais/licenciadas, execução pareada em fotos, validação CUDA, revisão visual humana e decisão de modelo permanecem pendentes. Consulte `services/background-research/docs/phase-4.1-homologacao.md`.
+
+### Atualização Fase 4.2 — 2026-11-17
+
+A Fase 4.2 tentou executar o próximo smoke com o harness real. U²-Net não chegou à inferência porque o ambiente isolado não tinha `rembg`; o acesso local ao PyPI havia falhado por DNS. A RTX 4050 foi detectada, mas ONNX Runtime só listou Azure/CPU, sem Toolkit/cuDNN/provider CUDA. Continuam 80 amostras sintéticas e 0 fotos reais; não houve comparação pareada, avaliação humana ou custo por imagem. O runner agora reporta a versão importável do pacote mesmo se faltar seu metadata de distribuição. **Nenhum modelo selecionado; Fase 5 não iniciada.** Relatório: `services/background-research/docs/phase-4.2-results.md`.

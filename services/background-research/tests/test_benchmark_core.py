@@ -197,6 +197,21 @@ def test_runner_keeps_photo_items_paired_and_omits_metrics_without_truth(tmp_pat
     assert (output / "fake" / "cutouts" / "visual-1.png").is_file()
 
 
+def test_package_version_falls_back_to_imported_module(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(
+        runner.importlib.metadata,
+        "version",
+        lambda _name: (_ for _ in ()).throw(runner.importlib.metadata.PackageNotFoundError()),
+    )
+    monkeypatch.setattr(
+        runner.importlib,
+        "import_module",
+        lambda _name: type("Module", (), {"__version__": "1.32.0"})(),
+    )
+
+    assert runner._package_version("onnxruntime") == "1.32.0"
+
+
 def test_summary_separates_categories_and_reports_percentiles():
     rows = [
         {"model_id":"a", "category":"real", "status":"ok", "inference_seconds":1.0, "mae":0.1},
