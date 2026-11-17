@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import importlib
 import importlib.metadata
 import json
 import os
@@ -312,4 +313,10 @@ def _package_version(name: str) -> str | None:
     try:
         return importlib.metadata.version(name)
     except importlib.metadata.PackageNotFoundError:
-        return None
+        module_name = {"Pillow": "PIL"}.get(name, name)
+        try:
+            module = importlib.import_module(module_name)
+        except Exception:
+            return None
+        version = getattr(module, "__version__", None)
+        return str(version) if version is not None else None
