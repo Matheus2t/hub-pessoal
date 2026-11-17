@@ -98,4 +98,4 @@ Até essas pendências serem concluídas, o modelo permanece **não selecionado*
 
 ## Continuação Fase 4.2 — 2026-11-17
 
-Houve uma tentativa real de smoke U²-Net usando o runner existente, mas `rembg` não estava instalado no ambiente e nenhuma inferência ocorreu (0/1). Foi corrigida a leitura da versão do ONNX Runtime quando o módulo não tem metadados de distribuição. O dataset segue sem fotos; o runtime local segue sem CUDA. Nenhuma dependência foi instalada, nenhum serviço pago foi usado e o modelo não foi selecionado. Consulte [relatório da Fase 4.2](phase-4.2-results.md) para a execução, fontes oficiais, comandos de retomada e limitações.
+Este registro descreve o estado da primeira tentativa, quando `rembg` ausente impediu a inferência. A retomada posterior corrigiu a execução em um venv isolado curto e obteve seis inferências U²-Net CPU em cinco imagens sintéticas, sem fotos ou CUDA. A decisão segue sem modelo selecionado; consulte o [relatório atualizado da Fase 4.2](phase-4.2-results.md) para as medições e limitações atuais.

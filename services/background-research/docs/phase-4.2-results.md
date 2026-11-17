@@ -1,87 +1,116 @@
 # Fase 4.2 — Execução real e decisão de modelo
 
-**Data da verificação:** 2026-11-17
-**Estado:** homologação parcial; nenhum modelo selecionado.
-**Base:** PR #183, HEAD `690e6846e839f467cc30696b13eaed4dd3797866`.
+**Atualizado:** 2026-11-17
+**Estado:** execução CPU corrigida e demonstrada em sintéticos; homologação fotográfica parcial; nenhum modelo selecionado.
+**Branch:** `feature/2t-remover-fundo-benchmark-real` · **PR:** [#184](https://github.com/Matheus2t/hub-pessoal/pull/184), ainda aberto e baseado em #183.
 
-## Resultado executivo
+## Resultado desta retomada
 
-A infraestrutura de pesquisa da Fase 4.1 foi reutilizada. Nenhuma fotografia real pôde ser importada nesta execução, e não foi possível carregar o adaptador de inferência local. Portanto, não há benchmark fotográfico, comparação pareada, métricas novas de qualidade ou decisão fundamentada de IA. Os resultados sintéticos anteriores continuam sendo apenas evidência mecânica, não são reapresentados como fotos.
-
-| Verificação | Resultado real | Interpretação |
+| Frente | Evidência atual | Estado |
 |---|---|---|
-| Dataset disponível | 80 imagens sintéticas; 0 fotos reais | Nenhuma categoria fotográfica coberta |
-| Smoke U²-Net | 1 amostra sintética solicitada; 0/1 inferências concluídas | `model_load_error: ModuleNotFoundError: No module named 'rembg'`; sem máscara ou métricas |
-| Provider CUDA | Não disponível | Runtime observado apenas com Azure e CPU; nenhuma operação GPU confirmada |
-| BiRefNet Lite | Não executado nesta fase | Histórico de ~6,55 GB RSS e ~54,6 s CPU por imagem permanece fora do orçamento de RAM livre observado |
-| Comparação por foto | Não executada | Não há IDs fotográficos comuns entre modelos |
-| Revisão humana cega | Não realizada | Não há avaliadores nem notas registradas |
-| Modelo de produção | Nenhum selecionado | Qualidade real, licenças finais e custo operacional continuam sem evidência suficiente |
+| Ambiente Python | Venv isolado curto; `rembg 2.0.87`, `onnxruntime 1.32.0`; `pip check` limpo | Resolvido para pesquisa local |
+| U²-Net | 6 inferências CPU em 5 IDs sintéticos; todas concluídas | Inferência real aprovada em sintéticos |
+| PNG transparente | PNG RGBA 512×512, alpha de 0 a 255; máscara 512×512 | Transparência comprovada |
+| Segundo modelo | Um smoke histórico do BiRefNet Lite em `synthetic-001`; 54,59 s e pico RSS 6,55 GB | Evidência técnica limitada, não repetida nesta retomada |
+| Comparação pareada | U²-Net atual e smoke BiRefNet anterior usam o mesmo ID e o mesmo hash de manifesto; n=1 sintético | Apenas observação exploratória |
+| Fotografias | 0 fotos importadas; os 80 itens locais continuam sintéticos | Bloqueado por fonte/acesso e revisão individual de direitos |
+| GPU | Só `AzureExecutionProvider` e `CPUExecutionProvider`; 730 nós do perfil U²-Net executaram na CPU | Não homologada |
+| Revisão visual | Inspeção técnica de uma galeria sintética cega; sem avaliador humano independente | Não homologada |
+| Produção/custo | Nenhum recurso externo criado ou pago | Nenhum modelo recomendado para produção |
 
-## Ambiente e teste executado
+## Ambiente e causa da falha anterior
 
-- Windows 11 build 26200; Python 3.13.9; 16 CPUs lógicas; RAM total de 16,44 GB.
-- No início do smoke: 1.916.678.144 bytes de RAM disponíveis.
-- NVIDIA GeForce RTX 4050 Laptop, 6141 MiB de VRAM, driver 596.21. O campo CUDA 13.2 de `nvidia-smi` representa compatibilidade do driver, não presença do Toolkit.
-- ONNX Runtime importável 1.32.0 com `AzureExecutionProvider` e `CPUExecutionProvider`; `CUDAExecutionProvider`, `onnxruntime-gpu`, Toolkit (`nvcc`), CUDA/cuDNN/cuBLAS correspondentes não foram encontrados.
-- O smoke pediu `CPUExecutionProvider` para `synthetic-001`; o adaptador falhou ao importar `rembg` antes de criar sessão. O runner registrou 0 sucessos e 1 falha, sem latência de inferência, RSS de modelo, máscara ou métricas. O `nvidia-smi` mediu somente o sistema (670/6141 MiB, 56 °C, 4% na amostragem), valores não atribuíveis ao processo.
-- A primeira execução mostrou `onnxruntime: null` no manifesto de ambiente, embora o módulo fosse importável sem metadados de distribuição. O runner agora recorre a `module.__version__` e o teste cobre esse cenário; o smoke repetido registra corretamente 1.32.0.
+O venv de pesquisa mais profundo, em `services/background-research/.venv`, não tinha `rembg`. A tentativa de instalar o lock nesse caminho falhou no Windows ao gravar um módulo do ONNX Runtime cujo caminho excedia o limite de caminho (`MAX_PATH`). O DNS local também havia expirado ao consultar PyPI/Open Images (`getaddrinfo failed` / resolvedor `127.0.0.1` sem resposta).
 
-Comando do smoke repetido:
+Para não mudar o Python global nem desabilitar TLS, criei um venv descartável fora do repositório, em um caminho curto sob o diretório de visualizações desta tarefa, e instalei `services/background-research/requirements.lock.txt` contra `https://pypi.org/simple`. Os wheels disponíveis no cache foram usados com validação TLS normal. O ambiente isolado importa `rembg`, ONNX Runtime, NumPy e Pillow; `pip check` retornou **No broken requirements found**. Nenhum pacote global, driver ou variável permanente foi alterado. O venv curto e seu cache não são versionados.
 
-```powershell
-.\.venv\Scripts\python.exe scripts\run_benchmark.py --limit 1 --model u2net-baseline --sample-id synthetic-001 --provider CPUExecutionProvider --output results\phase-4.2\u2net-cpu-smoke
-```
+Versões verificadas: Python 3.13.9, `rembg 2.0.87`, `onnxruntime 1.32.0`, NumPy 2.3.5, Pillow 12.3.0 e psutil 7.1.0.
 
-Nenhum pacote foi instalado, nenhum driver foi alterado e nenhum serviço GPU externo foi criado. A tentativa local anterior de instalar/consultar pacotes falhou por DNS (`getaddrinfo failed`); não foi repetida. A documentação oficial do ONNX Runtime exige compatibilidade entre versão do runtime, CUDA e cuDNN; as combinações da tabela oficial associam CUDA 13.x a cuDNN 9.x e advertem incompatibilidade entre cuDNN 8 e 9. Não escolhi uma matriz para instalação sem acesso às wheels e validação do ambiente ([matriz oficial CUDA/cuDNN](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html)).
+## Inferências e artefatos
 
-## Dados e direitos
+### U²-Net — smoke principal
 
-O conjunto local continua com 80 amostras sintéticas e nenhuma fotografia real. O acesso local a `storage.googleapis.com` falhou por DNS na tentativa documentada da Fase 4.1. Foi possível consultar a página oficial Open Images V7 por pesquisa web: ela aponta o fluxo de download oficial e declara que as fotos são listadas como CC BY 2.0, mas avisa que não garante a licença de cada imagem e exige verificação individual da página de origem. As anotações são CC BY 4.0; máscaras de segmentação de instância não equivalem a alpha matte de remoção do fundo ([download oficial](https://storage.googleapis.com/openimages/web/download_v7.html), [descrição/licenças](https://storage.googleapis.com/openimages/web/factsfigures_v7.html)). Nenhuma fotografia ou máscara foi baixada/importada.
+Entrada `synthetic-001` (512×512, `synthetic-fine_edges`), manifesto SHA-256 `dd1c40ef69699fcce52a1cc205fac2456588b4fb182dd5dac0dd1a63d9c538cc`. O checkpoint `u2net.onnx` foi lido e verificado antes da inferência: 175.997.641 bytes, SHA-256 `8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491`, igual ao inventário versionado.
 
-O acordo P3M continua sem aceite e não foi baixado. Nenhuma outra fonte alternativa foi adquirida ou verificada item a item. A opção operacional mais concreta segue sendo obter dados do canal oficial Open Images, revisar manualmente cada URL/licença, ou disponibilizar fotos locais com direitos documentados. Para futura importação, preencher `config/openimages-rights-review-template.csv` e manter arquivos em `data/` (ignorado pelo Git). Exemplo após obter localmente os dois CSVs oficiais e as imagens correspondentes:
+- Carga do modelo: **2,979 s**; warm-up: **0,765 s**; inferência fim a fim do adaptador: **0,730 s**.
+- RSS máximo do processo: **1.041.973.248 bytes**. RAM disponível no início: **1.409.294.336 bytes** (a carga ficou próxima do limite disponível; não escalonar resolução ou concorrência local sem nova checagem).
+- Entrada/modelo/saída: 512×512 / `[1, 3, 320, 320]` / máscara e PNG 512×512.
+- Métricas desta única imagem sintética: MAE 0,00684; MSE 0,00334; SAD 1,792; F1@0,5 0,9880; IoU@0,5 0,9763; Boundary F1@2 px 0,8834; Gradient MAE 0,00577. São métricas contra matte sintética, não qualidade fotográfica.
+- O PNG `cutouts/synthetic-001.png` está em RGBA; alpha min/max 0/255, com 199.058 pixels totalmente transparentes, 53.894 parcialmente transparentes e 9.192 opacos. A máscara L mede 512×512 e não está vazia. Isso comprova transparência real e dimensões coerentes.
+- O perfil ONNX registrou **730 eventos de nós, todos `CPUExecutionProvider`**, zero nós CUDA; `cuda_execution_confirmed=false`. O `nvidia-smi` é telemetria de sistema, não atribuível ao processo.
 
-```powershell
-.\.venv\Scripts\python.exe scripts\import_openimages.py --data-root data\openimages --metadata data\openimages\validation-images-with-rotation.csv --segmentations data\openimages\validation-annotations-object-segmentation.csv --rights-review data\openimages\rights-review.csv --output data\openimages\manifest.json --limit 30
-```
+Saída ignorada pelo Git: `results/phase-4.2/u2net-cpu-smoke-20261117/`.
 
-Esse importador valida dados já presentes; não baixa imagens e não substitui a revisão humana das licenças. Open Images pode compor inspeção visual de fotos e máscaras de instância com escopo próprio, não ground truth de matting. Para avaliar alpha/matting quantitativamente, ainda é necessário um conjunto com alpha mattes licenciadas para esse uso.
+### U²-Net — cinco casos sintéticos adicionais
 
-## Modelos, métricas e inspeção visual
+O runner processou mais cinco IDs, um de cada categoria, todos com status `ok`. Latência de inferência (adaptador, em segundos) e RSS máximo do processo:
 
-Não houve inferência concluída na Fase 4.2, então não existem resultados novos para U²-Net, BiRefNet Lite, BiRefNet General, BEN2 ou variantes HR. A linha histórica U²-Net 80/80 sintéticas e o smoke histórico BiRefNet Lite 1/1 sintética permanecem registrados em [benchmark histórico](model-benchmark.md); não foram atualizados nem comparados nesta fase.
+| ID | Categoria sintética | Segundos | RSS pico |
+|---|---|---:|---:|
+| `synthetic-001` | fine edges | 1,073 | 1.041.240.064 bytes |
+| `synthetic-002` | translucency | 1,120 | 1.045.397.504 bytes |
+| `synthetic-003` | low contrast | 1,028 | 1.045.975.040 bytes |
+| `synthetic-004` | clutter | 0,925 | 1.045.659.648 bytes |
+| `synthetic-005` | thin geometry | 0,951 | 1.045.499.008 bytes |
 
-Não houve MAE, MSE, SAD, F1, IoU, Boundary F1, Gradient Error, avaliação de cabelo/pelos/transparência, comparação de pós-processamento ou teste de alta resolução nesta fase. Não foi gerada galeria fotográfica, pois não há fotos nem resultados de modelos para ocultar/avaliar. Não inventar notas ou métricas para preencher essas lacunas.
+Esse lote repete `synthetic-001` do smoke e totaliza **6 execuções U²-Net, 5 imagens sintéticas distintas**. Saída ignorada pelo Git: `results/phase-4.2/u2net-cpu-five-synthetic-20261117/`. O lote não é uma amostra de pessoas, cabelos, animais ou produtos.
 
-## Licenças e hashes
+### BiRefNet General Lite — evidência anterior
 
-Os inventários locais de U²-Net e BiRefNet Lite em `config/model-artifacts.json` continuam apontando os artefatos e hashes registrados na Fase 4.1; os pesos seguem em `models/` ignorado pelo Git. Esta execução não os descarregou, redistribuiu nem fez nova revisão jurídica. A proveniência/conversão exata do ONNX U²-Net e a revisão/condições de redistribuição dos pesos BiRefNet permanecem pendentes; licença do wrapper não resolve licença do checkpoint.
+O diretório local já contém o smoke histórico `results/smoke-birefnet-lite/`, que registrou sucesso em `synthetic-001`, CPU, 54,588 s de inferência e RSS máximo de 6.546.853.888 bytes. O resultado e o atual U²-Net referenciam o mesmo ID e o mesmo SHA-256 do manifesto. O arquivo local `birefnet-general-lite.onnx` tem 224.005.088 bytes e SHA-256 `5600024376f572a557870a5eb0afb1e5961636bef4e1e22132025467d0f03333`, que coincide hoje com o inventário. **O JSON do smoke histórico não registrou a associação do arquivo** (`model_artifacts` vazio); por isso, essa verificação atual não equivale a uma cadeia de custódia registrada no instante daquele run.
 
-## Desempenho e custo
+| Métrica em `synthetic-001` | U²-Net desta retomada | BiRefNet Lite, smoke anterior |
+|---|---:|---:|
+| MAE | 0,00684 | 0,00515 |
+| SAD | 1,792 | 1,349 |
+| F1@0,5 | 0,98800 | 0,99189 |
+| Boundary F1@2 px | 0,88338 | 0,92792 |
+| Inferência CPU | 0,730 s | 54,588 s |
+| RSS máximo | 1,042 GB | 6,547 GB |
 
-Sem inferência, não há duração de carga, warm-up, inferência, pós-processamento, p50/p95, RSS atribuível, VRAM atribuível ou estabilidade para relatar nesta fase. A medição histórica de RSS do BiRefNet em CPU não é VRAM e não foi convertida em estimativa GPU.
+Esta é uma comparação **exploratória de um único caso sintético**, não uma avaliação representativa. O modelo B não foi repetido agora: seu pico histórico supera a RAM atualmente disponível, e o ambiente não oferece CUDA. Não foi executado lote de cinco imagens para BiRefNet.
 
-Nenhuma conta, cartão, crédito, serviço, workload ou cobrança foi criado. A tabela oficial Modal consultada em 2026-11-17 mostrava L40S a US$ 0,000542/GPU-s, mais CPU, memória e egress; RunPod mostrava Pod L40S a US$ 1,09/h na página atualizada em 12/11/2026. São tarifas publicadas, não custo por imagem. Não projeto 100/1.000/10.000 imagens por mês sem latência GPU, cold start, memória, disco, tráfego, falhas e política de ociosidade medidos ([Modal](https://modal.com/pricing), [RunPod](https://www.runpod.io/pricing)).
+## GPU
 
-## Validação desta entrega
+A RTX 4050 Laptop (driver 596.21, 6.141 MiB de VRAM; 16,44 GB RAM total) foi detectada, mas o ONNX Runtime ativo só disponibiliza Azure e CPU; não há wheel `onnxruntime-gpu` no cache consultado nem runtime CUDA/cuDNN/cuBLAS instalado. `nvidia-smi` mostrar compatibilidade CUDA do driver não significa que Toolkit, bibliotecas, Execution Provider ou inferência GPU estejam disponíveis. Não criei venv GPU nem instalei drivers/runtime sem wheels e matriz compatíveis.
 
-- Harness: **23 testes aprovados** (`.venv\Scripts\python.exe -m pytest -q`).
+A documentação oficial informa que os pacotes GPU atuais precisam de CUDA/cuDNN compatíveis e que versões/cuDNN diferentes não são intercambiáveis; não há validação GPU nesta máquina para a combinação instalada ([matriz CUDA/cuDNN do ONNX Runtime](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html), [instalação oficial](https://onnxruntime.ai/docs/install/)).
+
+## Fotografias, inspeção e métricas de qualidade
+
+O manifesto tem 80 sintéticos e zero fotografias; não encontrei arquivos JPG/JPEG/WebP/TIFF em `data/`. A tentativa de acesso local anterior ao host oficial do Open Images falhou por DNS. A página oficial alerta que a situação de licença precisa ser conferida por imagem; nenhuma foto foi baixada ou importada. P3M não foi aceito nem baixado. A página Open Images e o template de revisão por ativo continuam documentados em [Fase 4.1](phase-4.1-homologacao.md) e `config/openimages-rights-review-template.csv`.
+
+A galeria cega local de `synthetic-001` foi inspecionada tecnicamente. Nesse caso procedural, U²-Net perde alguns traços finos; o BiRefNet conserva mais deles, mas também deixa passar elementos finos do fundo. Isso é uma observação de uma imagem gerada, não aprovação humana nem evidência sobre cabelo/pelos. Não houve avaliador humano independente, imagens de fundo branco/preto/cinza, métrica fotográfica, alpha matte real, teste 1/2/4 MP ou revisão por categoria fotográfica.
+
+## Licenças, custos e decisão
+
+- O código upstream de U-2-Net publica licença Apache-2.0; isso, por si só, não resolve a proveniência/licença do ONNX convertido servido pelo release de rembg. O hash e o tamanho locais batem com o inventário, mas a cadeia do artefato exato ainda exige revisão ([licença U-2-Net](https://github.com/xuebinqin/U-2-Net/blob/master/LICENSE), [rembg](https://github.com/danielgatis/rembg)).
+- O repositório BiRefNet publica MIT; o wrapper rembg também não transfere automaticamente direitos aos pesos. O ONNX local coincide com o hash esperado, porém não houve revisão independente suficiente das condições aplicáveis ao artefato convertido específico ([licença BiRefNet](https://github.com/ZhengPeng7/BiRefNet/blob/main/LICENSE)).
+- Nenhum modelo foi redistribuído pelo PR. Pesos, imagens, máscaras, predições e perfil permanecem ignorados pelo Git.
+- Nenhum serviço, conta, workload, cartão ou cobrança foi criado. Os preços oficiais já consultados (Modal/RunPod) são apenas tarifas de referência; sem execução GPU, cold start, recursos e volume medidos não é possível estimar custo por imagem para 100/1.000/10.000 imagens. Tarifas não equivalem a contratação ([Modal](https://modal.com/pricing), [RunPod](https://www.runpod.io/pricing)).
+
+**Decisão: nenhum modelo para produção.** U²-Net pode continuar como baseline técnico de CPU; BiRefNet Lite é candidato, não vencedor. A amostra sintética n=1 não justifica seleção.
+
+## Validação executada
+
+- Imports: `rembg 2.0.87`; ONNX Runtime `1.32.0` com `AzureExecutionProvider`/`CPUExecutionProvider`; NumPy e Pillow importáveis — aprovados.
+- `pip check`: **No broken requirements found** — aprovado.
+- Smoke U²-Net CPU com profiling: **1/1 sucesso**, saída RGBA e métricas reais sobre matte sintética — aprovado.
+- Lote U²-Net CPU: **5/5 sucessos**, cinco categorias sintéticas — aprovado.
+- PNG/máscara: dimensões e canal alpha validados por Pillow — aprovado.
+- Harness: **23 testes aprovados** (`python -m pytest -q`).
 - `compileall evaluation scripts tests`: aprovado.
-- `npm run typecheck`: aprovado.
-- `npm run build`: aprovado antes da correção isolada no runner; não houve mudança no frontend desde então.
-- Contratos de Utilitários: **9 testes aprovados** (`backend/tests/test_utilities_contracts.py`).
-- Smoke U²-Net: executado e falhou antes da inferência por dependência `rembg` ausente; documentado como bloqueio, não como sucesso.
-- `git diff --check`: executar novamente antes do commit.
-- Sem alterações funcionais em módulos do produto; imagens, máscaras e pesos continuam fora do Git.
+- `npm run typecheck`: aprovado nesta retomada.
+- `npm run build`: aprovado nesta retomada. O script reescreveu um JSON gerado do Learn; como a árvore estava limpa no início, esse arquivo gerado foi restaurado e não integra o diff desta tarefa.
+- `PYTHONPATH=backend python -m pytest backend/tests/test_utilities_contracts.py -q`: **9 testes aprovados**. Sem o `PYTHONPATH`, a primeira coleta falhou por não localizar `app`; a execução com o caminho correto passou. A suíte completa do backend não foi executada.
+- Sem contratação, publicação, alteração de driver ou mudança funcional do produto. Repetir `git diff --check` antes do commit.
 
-## Decisão e ações para desbloquear
+## Pendências que bloqueiam a homologação final
 
-**Decisão: nenhum modelo selecionado por falta de evidências fotográficas, inferência reproduzível e revisão visual humana.** Não iniciar worker nem fase de produção com base nesta execução.
+1. Restabelecer DNS/rede autorizada ou fornecer fotos locais com direitos documentados; revisar individualmente 20–30 ativos antes de usar e ampliar apenas se permitido.
+2. Preparar venv GPU isolado com wheels e bibliotecas compatíveis segundo a matriz oficial; validar `CUDAExecutionProvider` e nós CUDA no profiling. Não alterar o driver global.
+3. Reexecutar BiRefNet (ou outro candidato avançado licenciado) com cadeia de checkpoint registrada, após avaliar RAM/VRAM disponível; comparar ambos numa lista fixa de fotos reais.
+4. Produzir comparações em fundos diversos, alta resolução e condições difíceis; obter avaliação humana registrada para cabelos/pelos, bordas, halos e integridade.
+5. Revisar licença/proveniência dos checkpoints ONNX exatos e calcular custos somente após medições de infraestrutura real.
 
-1. Restaurar acesso autorizado ao índice PyPI ou fornecer wheels verificáveis offline para um ambiente de pesquisa isolado; instalar dependências do harness sem modificar Python global. Confirmar `rembg` e provider CPU primeiro.
-2. Para GPU, usar venv separado e a matriz oficial correspondente; confirmar `CUDAExecutionProvider` ativo e profiling por nó antes de chamar a GPU homologada.
-3. Adquirir 20–30 fotos representativas inicialmente por fonte oficial ou fornecimento local com direitos explícitos; revisar cada licença/página e preencher o CSV de direitos. Não aceitar acordo P3M sem aceite do usuário.
-4. Executar dois modelos na mesma lista de IDs, produzir galerias cegas e obter avaliação humana registrada. Ampliar a 60–100 imagens apenas depois do smoke.
-5. Revisar hashes/licenças dos checkpoints e estimar custos após medições reais.
-
-Fase 4.2: **experimento tentado e bloqueios concretos registrados; homologação parcial, critérios de seleção não atendidos.**
+Até esses itens serem resolvidos, a Fase 4.2 permanece **parcial**; a homologação definitiva e a liberação de produção não estão aprovadas.

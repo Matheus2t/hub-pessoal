@@ -79,9 +79,9 @@ Métricas binárias usam limiar alpha 0,5 e tolerância de borda de 2 px; MAE/MS
 
 Esta entrega não muda aplicação, deployment ou flags de produção. Os verificadores `npm` não substituem a homologação fotográfica nem a revisão humana dos resultados.
 
-## Atualização Fase 4.2 — 2026-11-17
+## Atualização final Fase 4.2 — 2026-11-17
 
-Foi tentado um smoke de U²-Net em `synthetic-001` pelo runner existente. O adaptador não carregou porque `rembg` não estava instalado no venv (`ModuleNotFoundError`): 0/1 inferências, sem máscara ou métricas. O manifesto de ambiente foi corrigido para obter a versão do módulo quando faltam metadados de distribuição; a nova saída registra ONNX Runtime 1.32.0. Não houve inferência fotográfica ou GPU. Ver [resultados completos da Fase 4.2](phase-4.2-results.md).
+A primeira tentativa desta fase falhou antes da inferência porque `rembg` estava ausente. A instalação no venv longo parou por limite de caminho do Windows; um venv isolado de caminho curto instalou o lock com TLS padrão, usando os wheels disponíveis no cache. Nesse ambiente, U²-Net CPU concluiu 1 smoke e mais 5 inferências em IDs sintéticos, todas aprovadas; a saída RGBA 512×512 tem alpha real (0–255). Um perfil registrou 730 nós CPU e zero CUDA. O BiRefNet Lite continua representado por um smoke sintético anterior, lento e de RSS alto; não há lote avançado/fotográfico. A decisão continua sem modelo de produção. Ver [resultados completos da Fase 4.2](phase-4.2-results.md).
 
 ## Atualização Fase 4.1 — 2026-11-17
 
