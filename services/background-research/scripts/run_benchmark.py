@@ -15,8 +15,11 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=base / "data" / "manifest.json")
     parser.add_argument("--models", type=Path, default=base / "config" / "models.json")
     parser.add_argument("--output", type=Path, default=base / "results" / "run")
-    parser.add_argument("--limit", type=int)
+    parser.add_argument("--limit", type=int, help="use the first N manifest items (deterministic)")
     parser.add_argument("--model", action="append", help="limit execution to one or more model IDs")
+    parser.add_argument("--sample-id", action="append", dest="sample_ids", help="select explicit paired sample IDs; repeat as needed")
+    parser.add_argument("--provider", choices=["CPUExecutionProvider", "CUDAExecutionProvider"], help="override provider for every selected model; CUDA is verified with ORT profiling")
+    parser.add_argument("--profile", action="store_true", help="record per-node ONNX Runtime provider events")
     args = parser.parse_args()
     specs = json.loads(args.models.read_text(encoding="utf-8"))
     if args.model:
@@ -30,9 +33,13 @@ def main() -> None:
         models_path = temp
     else:
         models_path = args.models
-    rows = run(args.manifest, models_path, args.output, args.limit)
+    try:
+        rows = run(args.manifest, models_path, args.output, args.limit, args.provider, args.sample_ids, args.profile)
+    except ValueError as exc:
+        parser.error(str(exc))
     ok = sum(row.get("status") == "ok" for row in rows)
-    print(f"benchmark recorded {ok} successful inferences; results: {args.output}")
+    gpu_confirmed = sum(row.get("cuda_execution_confirmed") is True for row in rows)
+    print(f"benchmark recorded {ok} successful inferences ({gpu_confirmed} with CUDA node events); results: {args.output}")
 
 
 if __name__ == "__main__":

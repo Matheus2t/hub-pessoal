@@ -13,6 +13,7 @@ Revisão técnica de alto nível em 2026-11-17. Não substitui revisão jurídic
 | FeyNobg | Repo nobg Apache-2.0 no código observado | Divergência em fontes secundárias; pin exato precisa auditoria | Confirmar termos específicos da revisão dos pesos | Não recomendar ou redistribuir até esclarecer. |
 | P3M-500-P | — | Máscaras alpha liberadas no acordo do dataset | Acordo MIT; imagens de origem continuam sob copyright dos autores originais. Split P é face-blurred. Mirror não apresenta URL de licença individual por linha. | Uso local de avaliação após aceite explícito do acordo; não comitar nem redistribuir fotos/máscaras. |
 | Amostras sintéticas 2T | Gerador no repo | PNG gerados localmente | CC0-1.0 indicado para as amostras geradas | Podem ser regeneradas; não misturar seu resultado com score de foto real. |
+| Open Images V7 | Anotações Google CC BY 4.0 | Fotos listadas como CC BY 2.0, com autor e URL por item | A página oficial não garante a licença de cada fotografia; é necessária revisão manual da página de origem antes de manter o item. A máscara é instância binária. | Importador Fase 4.1 exige planilha local de revisão, conserva atribuição e rejeita licença/URL divergentes. Nenhuma foto foi importada nesta execução. |
 
 ## P3M: condição para baixar
 

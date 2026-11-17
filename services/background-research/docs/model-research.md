@@ -32,3 +32,7 @@
 - [InSPyReNet: repositório oficial](https://github.com/plemeri/InSPyReNet).
 - [BRIA RMBG-2.0: cartão oficial e licença](https://huggingface.co/briaai/RMBG-2.0).
 - [Feyn NoBg: repositório oficial](https://github.com/feyninc/nobg) e [modelo no Hugging Face](https://huggingface.co/feyninc/FeyNobg); validar revisão e licença exatas antes de uso.
+
+## Atualização de homologação — 2026-11-17
+
+A Fase 4.1 ampliou o harness para pareamento por IDs comuns, tipos distintos de referência e registro de provider por evento ONNX, mas não gerou novos resultados de modelo. Há 80 amostras sintéticas, zero fotos reais e dois pesos ONNX locais ignorados pelo Git, com hashes compatíveis com o inventário. A rede do ambiente não resolveu o host oficial consultado para Open Images; CUDA não está disponível no ONNX Runtime instalado. Não há ranking fotográfico, avaliação humana cega válida ou vencedor. O estado completo, inclusive limites de licença e custo, está em [phase-4.1-homologacao.md](phase-4.1-homologacao.md).
