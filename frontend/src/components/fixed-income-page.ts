@@ -25,10 +25,9 @@ export class FixedIncomePage extends LightElement {
   }
   render() {
     const {projection:r,error}=this.result(),p=r?.final;
-    return html`<article class="rf-page rf-refined rf-minimal"><header class="rf-hero"><h1>Renda Fixa</h1><p>Simule seu investimento e veja quanto pode render.</p></header>
-      <panel-workspace fixed-layout class="rf-results" area="fixed-income-simulator" .panels=${[
+    return html`<article class="rf-page rf-refined rf-minimal ${r?'has-result':'is-empty'}"><header class="rf-hero"><h1>Renda Fixa</h1><p>Projeções líquidas de CDB, LCI, LCA e Tesouro.</p></header>
+      <panel-workspace fixed-layout class="rf-results" area="fixed-income-simulator" data-rf-state=${r?'results':'empty'} .panels=${[
         {id:'form',title:'Configuração do investimento',required:true,essential:true,size:'medium',resizable:false,role:'form'},
-        {id:'empty',title:'Resultado',required:true,available:!r,size:'medium',resizable:false},
         {id:'summary',title:'Resultado líquido',essential:true,available:!!r,size:'medium'},
         {id:'chart',title:'Gráfico de evolução',essential:true,available:!!r,size:'large'},
         {id:'tools',title:'Cenários salvos e ferramentas',size:'large'},
@@ -39,16 +38,13 @@ export class FixedIncomePage extends LightElement {
       <section slot="form" class="workspace-panel rf-simulation" aria-labelledby="rf-simulation"><header class="rf-section-header"><div><span class="rf-eyebrow">SIMULAR</span><h2 id="rf-simulation">Monte sua simulação</h2></div><button type="button" class="button button-ghost rf-reset" @click=${()=>{this.draft=newInvestment();this.redemption='';this.touched=false}}>Limpar</button></header>
         <fixed-income-fields .compact=${true} .draft=${this.draft} @draft-change=${(e:CustomEvent<InvestmentDraft>)=>{this.draft=e.detail;this.touched=true;if(e.detail.product==='ipca')this.redemption=''}}></fixed-income-fields>
         ${this.draft.product!=='ipca'?html`<details class="rf-cost-inputs"><summary>Consultar antes do vencimento</summary><label class="rf-field rf-date-field"><span>Data pretendida de resgate</span><input type="date" .value=${this.redemption} @input=${(e:Event)=>{this.redemption=(e.target as HTMLInputElement).value;this.touched=true}} /><small>Em branco: cálculo até o vencimento. Sujeito à liquidez contratada.</small></label></details>`:nothing}
-        <div class="rf-simulation-actions"><button type="button" class="button rf-primary-action" @click=${()=>{this.touched=true;this.updateComplete.then(()=>this.querySelector<HTMLElement>(this.result().projection?'[slot=summary]':'[slot=empty]')?.scrollIntoView({behavior:'smooth',block:'nearest'}))}}>Ver resultado <span aria-hidden="true">↗</span></button></div>
+        <div class="rf-simulation-actions"><button type="button" class="button rf-primary-action" @click=${()=>{this.touched=true;this.updateComplete.then(()=>this.querySelector<HTMLElement>(this.result().projection?'[slot=summary]':'[slot=form]')?.scrollIntoView({behavior:'smooth',block:'nearest'}))}}>Ver resultado <span aria-hidden="true">↗</span></button></div>
+        ${r?nothing:error?html`<p class="rf-alert" role="alert">${error}</p>`:html`<dl class="rf-empty-preview" aria-label="O que aparece no resultado"><div><dt>Patrimônio líquido</dt><dd>—</dd></div><div><dt>Rendimento líquido</dt><dd>—</dd></div><div><dt>Evolução</dt><dd>Gráfico e tabela</dd></div></dl>`}
       </section>
 
-      <section slot="empty" class="workspace-panel rf-result-panel rf-result-empty"><header class="rf-section-header"><div><span class="rf-eyebrow">RESULTADO</span><h2>Seu resultado</h2></div></header>
-        <div class="rf-empty-balance"><span>Patrimônio líquido projetado</span><strong>—</strong></div>
-        ${error?html`<p class="rf-alert" role="status">${error}</p>`:html`<p class="rf-empty">Informe valor, taxa e prazo para ver patrimônio líquido, custos e rentabilidade estimados.</p>`}
-        <div class="rf-empty-metrics" aria-hidden="true"><div><span>Rendimento líquido</span><strong>—</strong></div><div><span>Rentabilidade</span><strong>—</strong></div></div>
-      </section>
       <section slot="summary" class="workspace-panel rf-result-panel" aria-live="polite">${r&&p?html`<header class="rf-section-header"><div><span class="rf-eyebrow">RESULTADO</span><h2 id="rf-results-title">Resultado líquido</h2></div></header><p class="rf-result-meta">${productNames[r.input.product]} · ${p.days} dias · ${fixedDate(p.date)}${r.maturedBefore?' · Vence antes da data consultada; sem reinvestimento.':''}</p>
         <dl class="rf-metrics"><div class="rf-primary"><dt>Patrimônio líquido projetado</dt><dd data-testid="rf-net">${money(p.net)}</dd></div><div><dt>Rendimento líquido</dt><dd>${money(p.netProfit)}</dd></div><div><dt>Rentabilidade líquida</dt><dd>${fixedPercent(p.netReturn)}</dd></div><div><dt>Líquida anualizada</dt><dd>${fixedPercent(p.annualized)}</dd></div></dl>
+        <dl class="rf-result-essentials"><div><dt>Patrimônio bruto</dt><dd>${money(p.gross)}</dd></div><div><dt>Custódia e taxas</dt><dd>${money(p.costs)}</dd></div></dl>
         <p class="rf-rescue" data-testid="rf-redemption">${p.status}${!p.redeemable&&r.input.product!=='ipca'?` · Primeira data possível: ${fixedDate(r.input.liquidity==='maturity'?r.input.maturity:firstRedemption(r.input))}`:''}</p>
         ${r.input.product==='ipca'?html`<dl class="rf-metrics"><div><dt>Poder de compra na data inicial</dt><dd>${money(p.purchasingPower)}</dd></div><div><dt>Rentabilidade real líquida</dt><dd>${fixedPercent(p.realReturn)}</dd></div></dl>`:nothing}
 `:nothing}</section>
