@@ -181,16 +181,13 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
    Usa :host porque a grade é interna ao Shadow DOM de panel-workspace. */
 :host([area="fixed-income-simulator"]) .ws-grid { gap: 14px; align-items: start; }
 :host([area="fixed-income-simulator"]) .ws-cell[data-panel="form"],
+:host([area="fixed-income-simulator"]) .ws-cell[data-panel="empty"],
 :host([area="fixed-income-simulator"]) .ws-cell[data-panel="summary"] {
   grid-column: span 6 !important;
   grid-row: auto !important;
 }
 :host([area="fixed-income-simulator"]) .ws-cell[data-panel="tools"],
 :host([area="fixed-income-simulator"]) .ws-cell[data-panel="comparison"] {
-  grid-column: 1 / -1 !important;
-  grid-row: auto !important;
-}
-:host([area="fixed-income-simulator"][data-rf-state="empty"]) .ws-cell[data-panel="form"] {
   grid-column: 1 / -1 !important;
   grid-row: auto !important;
 }
@@ -353,6 +350,23 @@ finance-calculator.calculator-workspace .field-hint:not(.field-error) { display:
  line-height:1.7; padding:13px 15px; background:var(--raised);
  border:1px solid var(--line-soft); border-radius:6px;
 }
+.fixed-workspace .rf-refined .rf-result-empty .rf-empty-balance {
+ display:grid; gap:10px; padding:20px 0 13px;
+}
+.fixed-workspace .rf-refined .rf-empty-balance span,
+.fixed-workspace .rf-refined .rf-empty-metrics span {
+ color:var(--secondary); font-size:12px;
+}
+.fixed-workspace .rf-refined .rf-empty-balance strong {
+ font-weight:500; font-size:clamp(40px,4.2vw,58px); letter-spacing:-.06em; color:var(--muted);
+}
+.fixed-workspace .rf-refined .rf-result-empty .rf-empty { margin:0; padding:0 0 27px; max-width:360px; }
+.fixed-workspace .rf-refined .rf-empty-metrics {
+ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px;
+ border-top:1px solid var(--line-soft); margin-top:auto;
+}
+.fixed-workspace .rf-refined .rf-empty-metrics > div { display:grid; gap:10px; padding:19px 0 0; }
+.fixed-workspace .rf-refined .rf-empty-metrics strong { font-size:22px; font-weight:500; color:var(--muted); }
 .fixed-workspace .rf-refined .rf-chart-panel { padding:26px; }
 .fixed-workspace .rf-refined .rf-chart-heading h2 {
  margin:6px 0 18px; font-size:20px; letter-spacing:-.035em; font-weight:620;
