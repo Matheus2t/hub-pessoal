@@ -5,14 +5,15 @@
 - O roteamento continua centralizado em `frontend/src/catalog.ts`; `app-shell` apresenta as páginas e breadcrumbs, e `app-sidebar` só mostra Utilitários quando a flag de catálogo está ligada em loopback.
 - As páginas Lit usam `LightElement` e os tokens globais. `frontend/styles/_utilities.scss` contém apenas os estilos desta área.
 - `frontend/src/utilities/flags.ts` combina as flags de build com o hostname loopback. Parâmetros de URL não ativam as páginas.
-- `frontend/src/utilities/api.ts` usa `apiUrl` da configuração existente e consulta somente `GET /api/utilities/capabilities`.
-- FastAPI registra `backend/app/utilities/router.py`. O endpoint de capacidades exige `UTILITIES_ENABLED=true`, cliente loopback e, quando presente, Origin loopback. Está fora do OpenAPI público.
-- Os modelos Pydantic e tipos TypeScript descrevem contratos futuros; não há rota funcional para resolver URLs, enviar arquivos ou executar IA.
+- `frontend/src/utilities/api.ts` usa `apiUrl` da configuração existente e consulta somente `GET /api/utilities/capabilities`. A tela não chama o resolvedor nesta fase.
+- FastAPI registra `backend/app/utilities/router.py`. Capacidades e `POST /api/utilities/links/resolve` exigem as flags respectivas, cliente loopback e Origin loopback quando presente; ambas as rotas são omitidas do OpenAPI. `VERCEL=1` força 404 mesmo com flags ligadas.
+- O motor do link está em `link_security.py`, `link_transport.py` e `link_resolver.py`: política URL/DNS, conexão a IP validado, redirecionamentos manuais e orçamento temporal. Nenhuma URL é persistida nem registrada em log.
+- O endpoint de resolução é uma API local de teste; a interface completa de análise pertence à Fase 3. Não há rota de upload, histórico, reputação ou execução de IA.
 
 ## Rotas locais
 
 - `/#/utilitarios`: catálogo.
-- `/#/utilitarios/desencurtador`: formulário demonstrativo sem requisição à URL informada.
+- `/#/utilitarios/desencurtador`: página demonstrativa; a análise continua sem interface até a Fase 3. A API local só responde quando as duas flags de backend estão ativas.
 - `/#/utilitarios/remover-fundo`: composição estática sem input de arquivo, upload ou processamento.
 
 Rotas de ferramentas com flag individual desativada retornam ao catálogo, se este estiver habilitado. Sem a flag de catálogo, todas caem na experiência existente de Início.
@@ -24,8 +25,10 @@ As três variáveis existem no frontend e no backend e começam em `false`:
 | Variável | Efeito |
 | --- | --- |
 | `UTILITIES_ENABLED` | Habilita o catálogo local e o endpoint de capacidades. |
-| `LINK_RESOLVER_ENABLED` | Habilita a rota local do protótipo de links. |
+| `LINK_RESOLVER_ENABLED` | Habilita a rota local do motor de links. |
 | `BACKGROUND_REMOVER_ENABLED` | Habilita a rota local do protótipo de imagem. |
+
+Limites do motor (fixos no máximo: 8 redirecionamentos, 12 s total, 3 s para conexão e leitura): `LINK_RESOLVER_MAX_REDIRECTS`, `LINK_RESOLVER_TOTAL_TIMEOUT_SECONDS`, `LINK_RESOLVER_CONNECT_TIMEOUT_SECONDS` e `LINK_RESOLVER_READ_TIMEOUT_SECONDS`. O endpoint rejeita corpo acima de 4 KiB e limita a quatro consultas concorrentes por processo.
 
 No build Vercel, todas as flags do frontend são forçadas para `false`, mesmo se variáveis correspondentes forem definidas no ambiente. O hostname também precisa ser loopback. Nenhuma configuração Vercel foi alterada.
 

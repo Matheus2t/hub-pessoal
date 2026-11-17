@@ -15,6 +15,8 @@ export type LinkResolveStatus =
   | "blocked_url"
   | "timeout"
   | "redirect_loop"
+  | "redirect_limit"
+  | "tls_error"
   | "unresolved"
   | "service_unavailable";
 
@@ -37,6 +39,7 @@ export interface LinkResolveResponse {
   status: LinkResolveStatus;
   original_url: string;
   final_url: string | null;
+  final_status_code: number | null;
   redirect_count: number;
   redirects: RedirectHop[];
   security: LinkSecurity;

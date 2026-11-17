@@ -20,6 +20,8 @@ LinkResolveStatus = Literal[
     "blocked_url",
     "timeout",
     "redirect_loop",
+    "redirect_limit",
+    "tls_error",
     "unresolved",
     "service_unavailable",
 ]
@@ -37,13 +39,14 @@ class LinkSecurity(StrictContract):
 
 
 class LinkResolveRequest(StrictContract):
-    url: AnyHttpUrl
+    url: str = Field(min_length=1, max_length=2048)
 
 
 class LinkResolveResponse(StrictContract):
     status: LinkResolveStatus
     original_url: str
     final_url: str | None = None
+    final_status_code: int | None = Field(default=None, ge=100, le=599)
     redirect_count: int = Field(ge=0)
     redirects: list[RedirectHop] = Field(default_factory=list)
     security: LinkSecurity

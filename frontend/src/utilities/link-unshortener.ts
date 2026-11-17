@@ -24,7 +24,7 @@ export class UtilityLinkUnshortener extends LightElement {
 
   render() {
     const backendState = this.capabilities.state === "enabled" && this.capabilities.capabilities.utilities_enabled && this.capabilities.capabilities.link_resolver_enabled
-      ? "Protótipo habilitado; o motor ainda não foi implementado."
+      ? "Motor disponível pela API local. A interface de análise será integrada na próxima fase."
       : this.capabilities.state === "unavailable"
         ? "Backend local indisponível. Nenhuma URL será acessada."
         : "Protótipo desativado no backend local. Nenhuma URL será acessada.";
