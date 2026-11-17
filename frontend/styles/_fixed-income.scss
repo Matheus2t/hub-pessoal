@@ -102,10 +102,19 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
 
 /* Renda Fixa: tratamento visual exclusivo dos gráficos individual e comparativo. */
 .rf-chart-terminal {
-  --rf-graph-tone-1: #a3b1c8;
-  --rf-graph-tone-2: #91afda;
-  --rf-graph-tone-3: #70d7bd;
-  --rf-graph-tone-4: #e6bb8b;
+  --rf-graph-tone-1: #f2f2f2;
+  --rf-graph-tone-2: #bdbdbd;
+  --rf-graph-tone-3: #858585;
+  --rf-graph-tone-4: #5f5f5f;
+  --rf-chart-surface: #0b0b0b;
+  --rf-chart-border: #333333;
+  --rf-chart-foreground: #f2f2f2;
+  --rf-chart-muted: #a5a5a5;
+  --rf-chart-grid: #383838;
+  --rf-chart-cursor: #a4a4a4;
+  --rf-chart-point: #0b0b0b;
+  --rf-chart-tag: #ededed;
+  --rf-chart-tag-text: #111111;
   margin: 0;
   padding: 0;
   border: 0;
@@ -160,13 +169,13 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
 .rf-chart-terminal .rf-chart-periods button:disabled:not(.active) { opacity: .35; cursor: default; }
 .rf-chart-terminal .rf-chart-periods button:focus-visible,
 .rf-chart-terminal .rf-chart-slider input:focus-visible {
-  outline: 2px solid #70d7bd;
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 .rf-chart-terminal .rf-chart-surface {
-  background: #0b0f15;
-  color: #eef3fa;
-  border: 1px solid #252d39;
+  background: var(--rf-chart-surface);
+  color: var(--rf-chart-foreground);
+  border: 1px solid var(--rf-chart-border);
   border-radius: 12px;
   padding: 18px 19px 10px;
   min-width: 0;
@@ -184,7 +193,7 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   font-size: 10px;
   font-weight: 600;
   letter-spacing: .09em;
-  color: #8492a7;
+  color: var(--rf-chart-muted);
 }
 .rf-chart-terminal .rf-chart-readout strong {
   font-size: clamp(19px, 2.1vw, 30px);
@@ -197,7 +206,7 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
 .rf-chart-terminal .rf-chart-readout time {
   flex-shrink: 0;
   padding-bottom: 3px;
-  color: #a7b4c5;
+  color: var(--rf-chart-muted);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
@@ -211,9 +220,9 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   user-select: none;
   touch-action: pan-y;
 }
-.rf-chart-terminal .rf-chart-grid { stroke: #2a3441; stroke-width: .8; stroke-dasharray: 2 5; }
+.rf-chart-terminal .rf-chart-grid { stroke: var(--rf-chart-grid); stroke-width: .8; stroke-dasharray: 2 5; }
 .rf-chart-terminal .rf-chart-axis-label {
-  fill: #8b9aac;
+  fill: var(--rf-chart-muted);
   font-size: 10px;
   font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
@@ -228,17 +237,17 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   pointer-events: none;
 }
 .rf-chart-terminal .rf-chart-line--primary {
-  filter: drop-shadow(0 0 3px rgba(112,215,189,.18));
+  filter: none;
 }
 .rf-chart-terminal .rf-chart-cursor {
-  stroke: #889db2;
+  stroke: var(--rf-chart-cursor);
   stroke-width: 1;
   stroke-dasharray: 3 5;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 .rf-chart-terminal .rf-chart-point {
-  fill: #0b0f15;
+  fill: var(--rf-chart-point);
   stroke: var(--rf-series);
   stroke-width: 2.5;
   vector-effect: non-scaling-stroke;
@@ -263,7 +272,7 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   width: 100%;
   min-height: 24px;
   margin: 3px 0 0;
-  accent-color: #70d7bd;
+  accent-color: var(--focus);
   cursor: pointer;
 }
 .rf-chart-terminal .rf-chart-legend {
@@ -293,9 +302,10 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
 }
 .rf-chart-terminal .rf-chart-legend .rf-line-sample {
   align-self: center;
-  width: 19px;
-  border-top-width: 3px;
-  border-top-color: var(--rf-series);
+  display: block;
+  width: 24px;
+  height: 8px;
+  overflow: visible;
 }
 .rf-chart-terminal .rf-chart-legend strong {
   grid-column: 2;
@@ -321,10 +331,25 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
 
 /* V2.1: fundo e leituras mais próximos de um terminal financeiro, sem afetar os dados. */
 .rf-chart-terminal {
-  --rf-graph-tone-1: #e8edf4;
-  --rf-graph-tone-2: #acbdca;
-  --rf-graph-tone-3: #80a0a8;
-  --rf-graph-tone-4: #b7a7a0;
+  --rf-graph-tone-1: #f2f2f2;
+  --rf-graph-tone-2: #bdbdbd;
+  --rf-graph-tone-3: #858585;
+  --rf-graph-tone-4: #5f5f5f;
+}
+:root[data-theme="light"] .rf-chart-terminal {
+  --rf-chart-surface: #f7f7f7;
+  --rf-chart-border: #d0d0d0;
+  --rf-chart-foreground: #171717;
+  --rf-chart-muted: #5f5f5f;
+  --rf-chart-grid: #d7d7d7;
+  --rf-chart-cursor: #6f6f6f;
+  --rf-chart-point: #f7f7f7;
+  --rf-chart-tag: #171717;
+  --rf-chart-tag-text: #ffffff;
+  --rf-graph-tone-1: #171717;
+  --rf-graph-tone-2: #505050;
+  --rf-graph-tone-3: #858585;
+  --rf-graph-tone-4: #a8a8a8;
 }
 .rf-chart-terminal .rf-chart-head { margin-bottom: 15px; }
 .rf-chart-terminal .rf-chart-title > span { letter-spacing: .14em; }
@@ -333,8 +358,8 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   border-radius: 7px;
 }
 .rf-chart-terminal .rf-chart-surface {
-  border-color: #303843;
-  background: #090c10;
+  border-color: var(--rf-chart-border);
+  background: var(--rf-chart-surface);
   border-radius: 10px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
   padding-top: 20px;
@@ -345,7 +370,7 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   min-height: 59px;
 }
 .rf-chart-terminal .rf-chart-readout strong {
-  color: #f4f6f9;
+  color: var(--rf-chart-foreground);
   font-size: clamp(22px, 2.25vw, 31px);
   font-weight: 650;
   letter-spacing: -.055em;
@@ -359,7 +384,7 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   min-width: 0;
 }
 .rf-chart-terminal .rf-chart-context time {
-  color: #a7b2c0;
+  color: var(--rf-chart-muted);
   font-variant-numeric: tabular-nums;
   padding: 0;
 }
@@ -372,31 +397,31 @@ fixed-income-tools .rf-panel .rf-panel { margin-block:16px; }
   max-width: 100%;
   font-size: 12px;
   font-weight: 650;
-  color: #e1e6ed;
+  color: var(--rf-chart-foreground);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
-.rf-chart-terminal .rf-chart-growth small { font-size: 11px; color: #8f9cab; }
-.rf-chart-terminal .rf-chart-grid { stroke: #28303b; stroke-dasharray: 3 5; }
-.rf-chart-terminal .rf-chart-axis-label { fill: #8592a2; }
+.rf-chart-terminal .rf-chart-growth small { font-size: 11px; color: var(--rf-chart-muted); }
+.rf-chart-terminal .rf-chart-grid { stroke: var(--rf-chart-grid); stroke-dasharray: 3 5; }
+.rf-chart-terminal .rf-chart-axis-label { fill: var(--rf-chart-muted); }
 .rf-chart-terminal .rf-chart-cursor-horizontal {
-  stroke: #778494;
+  stroke: var(--rf-chart-cursor);
   stroke-width: .85;
   stroke-dasharray: 3 5;
   opacity: .75;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
-.rf-chart-terminal .rf-chart-price-tag { fill: #dfe5ed; pointer-events: none; }
+.rf-chart-terminal .rf-chart-price-tag { fill: var(--rf-chart-tag); pointer-events: none; }
 .rf-chart-terminal .rf-chart-price-text {
   font-size: 10px;
   font-weight: 650;
-  fill: #0b0d11;
+  fill: var(--rf-chart-tag-text);
   font-family: var(--font-body);
   pointer-events: none;
 }
 .rf-chart-terminal .rf-chart-line--primary { filter: none; }
-.rf-chart-terminal .rf-chart-point { fill: #090c10; stroke-width: 2.4; }
+.rf-chart-terminal .rf-chart-point { fill: var(--rf-chart-point); stroke-width: 2.4; }
 .rf-chart-terminal .rf-chart-legend {
   gap: 9px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%,175px),1fr));

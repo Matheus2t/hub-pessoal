@@ -11,6 +11,7 @@ const periods:{label:Period;years:number}[]=[
 const patterns=['','7 5','3 5','12 4 2 4'];
 const shortMoney=(value:number)=>'R$ '+new Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1}).format(value);
 const printDate=(date:string)=>date.split('-').reverse().join('/');
+const axisDate=(date:string)=>`${new Date(`${date}T00:00:00Z`).toLocaleDateString('pt-BR',{month:'short',timeZone:'UTC'}).replace('.','')}/${date.slice(2,4)}`;
 
 @customElement('fixed-income-chart')
 export class FixedIncomeChart extends LightElement {
@@ -99,7 +100,7 @@ export class FixedIncomeChart extends LightElement {
         <div class="rf-chart-readout">
           <div><span>VALOR PROJETADO NA DATA</span><strong>${current?money(current.value):'Sem ponto nesta data'}</strong></div>
           <div class="rf-chart-context"><time datetime=${date}>${printDate(date)}</time>
-            <span class="rf-chart-growth" aria-label="Variação desde o início da série selecionada">
+            <span class="rf-chart-growth" aria-label="Variação no período visível">
               ${growthLabel}${percentLabel?html`<small>${percentLabel}</small>`:nothing}</span>
           </div>
         </div>
@@ -114,7 +115,7 @@ export class FixedIncomeChart extends LightElement {
           <rect x=${plotLeft} y=${top} width=${plotWidth} height=${bottom-top} fill="transparent" style="pointer-events:all"/>
           ${ticks.map(value=>svg`<line x1=${plotLeft} x2=${plotRight} y1=${y(value)} y2=${y(value)} class="rf-chart-grid"/>
             <text class="rf-chart-axis-label" x=${this.width-7} y=${y(value)+4} text-anchor="end">${shortMoney(value)}</text>`)}
-          ${axisDates.map((d,i)=>svg`<text class="rf-chart-axis-label" x=${x(d)} y="234" text-anchor=${i===0?'start':i===axisDates.length-1?'end':'middle'}>${d.slice(5,7)}/${d.slice(2,4)}</text>`)}
+          ${axisDates.map((d,i)=>svg`<text class="rf-chart-axis-label" x=${x(d)} y="234" text-anchor=${i===0?'start':i===axisDates.length-1?'end':'middle'}>${axisDate(d)}</text>`)}
           ${lines.map((line,i)=>line.points.length>1&&i===highlighted?svg`<path class="rf-chart-area" d=${`${path(line.points)} L${x(line.points[line.points.length-1].date)},${bottom} L${x(line.points[0].date)},${bottom} Z`} fill=${`url(#${this.gradientId})`}/>`:nothing)}
           ${lines.map((line,i)=>line.points.length?svg`<path d=${path(line.points)}
             class="rf-chart-line ${i===highlighted?'rf-chart-line--primary':''}"
@@ -136,7 +137,9 @@ export class FixedIncomeChart extends LightElement {
       </label>
       <ul class="rf-chart-legend">
         ${this.series.map((line,i)=>{const point=lines[i].points.find(p=>p.date===date);
-          return html`<li><span class="rf-line-sample" style=${`--rf-series:var(--rf-graph-tone-${(i%4)+1});border-top-style:${i===highlighted?'solid':'dashed'}`}></span>
+          return html`<li><svg class="rf-line-sample" viewBox="0 0 24 8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4"
+            stroke=${`var(--rf-graph-tone-${(i%4)+1})`} stroke-width=${i===highlighted?2.8:2.1}
+            stroke-dasharray=${i===highlighted?'none':patterns[i%4]||'none'} /></svg>
           <span>${line.name}</span><strong>${point?money(point.value):'Sem ponto nesta data'}</strong></li>`})}
       </ul>
     </figure>`;
