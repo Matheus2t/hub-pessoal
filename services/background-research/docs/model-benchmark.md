@@ -78,3 +78,7 @@ Métricas binárias usam limiar alpha 0,5 e tolerância de borda de 2 px; MAE/MS
 - `git diff --check`: aprovado antes da revisão final; será repetido no commit.
 
 Esta entrega não muda aplicação, deployment ou flags de produção. Os verificadores `npm` não substituem a homologação fotográfica nem a revisão humana dos resultados.
+
+## Atualização Fase 4.1 — 2026-11-17
+
+O dataset local confirmado segue com **80 amostras sintéticas e 0 fotografias reais**. Dois checkpoints ONNX locais, ignorados pelo Git, tiveram seus hashes conferidos contra `config/model-artifacts.json`; nenhum foi reexecutado nesta etapa. O Lite já havia atingido pico de RSS de 6,55 GB em CPU, enquanto a máquina tinha cerca de 2,85 GB de RAM disponível, então não repeti uma carga com risco de pressão de memória. A rede também não resolveu o host oficial do Open Images. Os resultados sintéticos históricos permanecem intactos; não há nova medição de modelo nem comparação fotográfica pareada. Detalhes e próximos passos estão no [relatório da Fase 4.1](phase-4.1-homologacao.md).

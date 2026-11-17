@@ -2,6 +2,10 @@
 
 **Não há modelo selecionado para produção nesta fase.** O baseline teve avaliação completa apenas em 80 imagens sintéticas. O modelo avançado tem somente um smoke test sintético e foi muito lento em CPU. Faltam fotos autorizadas, benchmark pareado suficiente, inspeção humana e revisão de licença dos arquivos exatos.
 
+**Atualização em 2026-11-17:** a Fase 4.1 não obteve fotos reais nem CUDA ativo no ambiente local. O U²-Net permanece somente baseline e BiRefNet permanece pendente; não há vencedor provisório ou definitivo novo. Ver [bloqueios e próxima execução](phase-4.1-homologacao.md).
+
+Os checkpoints ONNX locais foram encontrados e os SHA-256 coincidem com o inventário versionado, mas a baixa RAM disponível e o histórico de pico de 6,55 GB do BiRefNet Lite desaconselharam repetir inferências nesta sessão. A ausência de dados fotográficos, e não a falta dos arquivos de pesos, é o bloqueio para uma seleção representativa.
+
 ## Shortlist para execução local
 
 1. **U²-Net `u2net`** — baseline histórico, com ressalva sobre a proveniência do ONNX convertido.
