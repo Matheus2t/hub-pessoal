@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 import { resolveUtilityAccess } from "../src/utilities/flags";
 
-const previewBuild = /^(1|true|yes)$/i.test(process.env.UTILITIES_ENABLED ?? "") && process.env.VERCEL !== "1";
+const previewBuild = /^(1|true|yes)$/i.test(process.env.UTILITIES_ENABLED ?? "") &&
+  /^(1|true|yes)$/i.test(process.env.LINK_RESOLVER_ENABLED ?? "") &&
+  /^(1|true|yes)$/i.test(process.env.BACKGROUND_REMOVER_ENABLED ?? "") && process.env.VERCEL !== "1";
 
 test("utility access requires loopback and combines the three flags independently", () => {
   expect(resolveUtilityAccess("matheus2t.com.br", { utilities: true, linkResolver: true, backgroundRemover: true }))
@@ -28,7 +30,7 @@ test("direct utility routes and query parameters stay unavailable in a public/de
   await expect(page.locator("utility-background-remover")).toHaveCount(0);
 });
 
-test("local catalogue, prototypes and legacy navigation work without processing external data", async ({ page }) => {
+test("local catalogue and navigation use the resolver API without loading external destinations", async ({ page }) => {
   test.skip(!previewBuild, "Este bundle não foi compilado com UTILITIES_ENABLED=true.");
   await serveBuiltSite(page);
   const requests: string[] = [];
@@ -36,6 +38,18 @@ test("local catalogue, prototypes and legacy navigation work without processing 
   await page.route("**/api/utilities/capabilities", route => route.fulfill({
     status: 200,
     json: { utilities_enabled: true, link_resolver_enabled: true, background_remover_enabled: true },
+  }));
+  await page.route("**/api/utilities/links/resolve", route => route.fulfill({
+    status: 200,
+    json: {
+      status: "resolved",
+      original_url: "https://example.com/short",
+      final_url: "https://example.com/short",
+      final_status_code: 200,
+      redirect_count: 0,
+      redirects: [],
+      security: { https: true, warnings: [], reputation_checked: false },
+    },
   }));
   await page.setViewportSize({ width: 1366, height: 900 });
   await page.goto("/#/utilitarios");
@@ -49,9 +63,11 @@ test("local catalogue, prototypes and legacy navigation work without processing 
   await page.getByRole("link", { name: /Desencurtador de Links/ }).click();
   await expect(page.getByRole("heading", { name: "Desencurtador de Links", exact: true })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Caminho da página" }).getByRole("link", { name: "Utilitários" })).toBeVisible();
-  await page.getByLabel("URL encurtada").fill("https://example.com/short");
-  await expect(page.getByRole("button", { name: "Analisar link" })).toBeDisabled();
-  await expect(page.getByRole("status")).toContainText("motor ainda não foi implementado");
+  await page.getByRole("textbox", { name: "Endereço" }).fill("https://example.com/short");
+  await page.getByRole("textbox", { name: "Endereço" }).press("Enter");
+  await expect(page.getByRole("heading", { name: "example.com", exact: true })).toBeVisible();
+  await expect(page.getByText("Este endereço não apresentou redirecionamentos HTTP.")).toBeVisible();
+  await expect(page.getByText("A ferramenta identifica redirecionamentos, mas não verifica se o site é confiável.")).toBeVisible();
   expect(requests.some(url => url.startsWith("https://example.com/"))).toBe(false);
 
   await page.getByRole("link", { name: "Utilitários", exact: true }).last().click();

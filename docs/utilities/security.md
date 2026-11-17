@@ -9,13 +9,15 @@
 - Cada destino de redirect passa pela mesma política. Loops, limite configurável de no máximo 8 redirects e deadline total de no máximo 12 segundos são tratados sem seguir o destino bloqueado. Timeout de conexão/leitura é no máximo 3 segundos.
 - Corpo HTTP da API limitado a 4 KiB; até quatro chamadas simultâneas por processo. Não há banco, histórico, cookies do usuário nem persistência. O código de log registra só o tipo da falha, sem URL, query, cabeçalhos ou mensagem de exceção.
 - A resposta sempre define `reputation_checked=false`; não declara que o destino é seguro. HTTP 404/500 são apresentados como status HTTP final efetivamente observado.
+- A interface envia a URL apenas à API local com `credentials: omit`, `cache: no-store` e `referrerPolicy: no-referrer`; cancelamento aborta a requisição. Não abre o destino, não cria link clicável e não persiste a entrada. Respostas são interpoladas como texto pelo Lit.
 - A API exige `UTILITIES_ENABLED=true`, `LINK_RESOLVER_ENABLED=true`, cliente loopback e Origin loopback quando fornecido. `VERCEL=1` sempre força 404, independentemente das flags. A rota não aparece no OpenAPI.
 
 ## Evidência e limites restantes do resolvedor
 
-- Os testes adicionados exercitam URLs/IPs/DNS sintéticos e um backend HTTPCore controlado. O teste de transporte verifica que o socket recebe o IP fixado e que HTTPCore recebe o hostname original para SNI, com `CERT_REQUIRED` e `check_hostname` habilitados.
+- Os testes exercitam URLs/IPs/DNS sintéticos e um backend HTTPCore controlado. Um servidor TLS efêmero valida handshake real, SNI, Host, verificação de hostname/cadeia e pinagem do IP, sem tráfego externo.
 - GitHub Actions aprovou a suíte Python completa no Ubuntu (439 aprovados, 5 ignorados) e Windows (443 aprovados, 1 ignorado), além de typecheck, build e browser smoke tests. Localmente, o sandbox Windows negou o socketpair do event loop padrão; os 104 testes direcionados foram executados com loop sem sockets e transports simulados.
-- Os testes não executam handshake TLS criptográfico real nem acessam destinos externos. A configuração de verificação TLS e o caminho de pinagem são cobertos por teste controlado; homologação de rede externa permanece pendente.
+- A integração com TLS real é exclusivamente loopback; a ferramenta não foi homologada contra destinos públicos. A navegação, o backend e o TLS são verificados por suítes automatizadas distintas e pelo fluxo integrado de teste.
+- Nesta fase, 89 testes Python focados do resolvedor passaram; o teste de proteção Vercel confirma HTTP 404 em capacidades e resolução mesmo com flags locais habilitadas. O teste Playwright da build pública confirma que rotas e parâmetros de prévia não liberam o módulo.
 - A lista de DNS é validada integralmente, mas no máximo quatro IPs válidos são tentados por consulta. O limite de concorrência é por processo, não uma taxa global. A API é destinada somente ao loopback e permanece forçada a 404 em Vercel; não é um serviço público.
 - Uma alteração de DNS após a validação não muda o IP conectado naquele salto. Cada redirect faz nova resolução e validação. Nenhum resolvedor atesta reputação, benignidade do conteúdo ou segurança da página final.
 

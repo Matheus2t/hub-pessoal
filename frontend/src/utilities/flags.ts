@@ -8,11 +8,11 @@ export interface UtilityAccess extends UtilityFeatureFlags {
   loopback: boolean;
 }
 
-type RuntimeFlags = typeof globalThis & {
-  __2T_UTILITIES_ENABLED__?: boolean;
-  __2T_LINK_RESOLVER_ENABLED__?: boolean;
-  __2T_BACKGROUND_REMOVER_ENABLED__?: boolean;
-};
+declare global {
+  var __2T_UTILITIES_ENABLED__: boolean | undefined;
+  var __2T_LINK_RESOLVER_ENABLED__: boolean | undefined;
+  var __2T_BACKGROUND_REMOVER_ENABLED__: boolean | undefined;
+}
 
 export function isLoopbackHostname(hostname: string): boolean {
   const host = hostname.trim().toLowerCase().replace(/^\[|\]$/g, "").replace(/\.$/, "");
@@ -35,9 +35,9 @@ export function resolveUtilityAccess(hostname: string, flags: UtilityFeatureFlag
 export function frontendUtilityAccess(hostname?: string): UtilityAccess {
   const currentHost = hostname ?? (typeof window === "undefined" ? "" : window.location.hostname);
   return resolveUtilityAccess(currentHost, {
-    utilities: (globalThis as RuntimeFlags).__2T_UTILITIES_ENABLED__ === true,
-    linkResolver: (globalThis as RuntimeFlags).__2T_LINK_RESOLVER_ENABLED__ === true,
-    backgroundRemover: (globalThis as RuntimeFlags).__2T_BACKGROUND_REMOVER_ENABLED__ === true,
+    utilities: globalThis.__2T_UTILITIES_ENABLED__ === true,
+    linkResolver: globalThis.__2T_LINK_RESOLVER_ENABLED__ === true,
+    backgroundRemover: globalThis.__2T_BACKGROUND_REMOVER_ENABLED__ === true,
   });
 }
 

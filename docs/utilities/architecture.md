@@ -5,15 +5,15 @@
 - O roteamento continua centralizado em `frontend/src/catalog.ts`; `app-shell` apresenta as páginas e breadcrumbs, e `app-sidebar` só mostra Utilitários quando a flag de catálogo está ligada em loopback.
 - As páginas Lit usam `LightElement` e os tokens globais. `frontend/styles/_utilities.scss` contém apenas os estilos desta área.
 - `frontend/src/utilities/flags.ts` combina as flags de build com o hostname loopback. Parâmetros de URL não ativam as páginas.
-- `frontend/src/utilities/api.ts` usa `apiUrl` da configuração existente e consulta somente `GET /api/utilities/capabilities`. A tela não chama o resolvedor nesta fase.
+- `frontend/src/utilities/api.ts` usa `apiUrl` da configuração existente, consulta `GET /api/utilities/capabilities` e envia `POST /api/utilities/links/resolve` com cancelamento, sem credenciais, cache ou referrer.
 - FastAPI registra `backend/app/utilities/router.py`. Capacidades e `POST /api/utilities/links/resolve` exigem as flags respectivas, cliente loopback e Origin loopback quando presente; ambas as rotas são omitidas do OpenAPI. `VERCEL=1` força 404 mesmo com flags ligadas.
 - O motor do link está em `link_security.py`, `link_transport.py` e `link_resolver.py`: política URL/DNS, conexão a IP validado, redirecionamentos manuais e orçamento temporal. Nenhuma URL é persistida nem registrada em log.
-- O endpoint de resolução é uma API local de teste; a interface completa de análise pertence à Fase 3. Não há rota de upload, histórico, reputação ou execução de IA.
+- A tela do resolvedor consome a API local somente após validar flags de frontend e capacidades do backend. Não há rota de upload, histórico, reputação ou execução de IA.
 
 ## Rotas locais
 
 - `/#/utilitarios`: catálogo.
-- `/#/utilitarios/desencurtador`: página demonstrativa; a análise continua sem interface até a Fase 3. A API local só responde quando as duas flags de backend estão ativas.
+- `/#/utilitarios/desencurtador`: interface local do resolvedor, habilitada somente quando flags de frontend e capacidades do backend permitem. A API só responde quando as duas flags de backend estão ativas.
 - `/#/utilitarios/remover-fundo`: composição estática sem input de arquivo, upload ou processamento.
 
 Rotas de ferramentas com flag individual desativada retornam ao catálogo, se este estiver habilitado. Sem a flag de catálogo, todas caem na experiência existente de Início.
