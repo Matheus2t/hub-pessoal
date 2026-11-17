@@ -1,0 +1,6 @@
+# Isolated evaluation environment only; these are not application dependencies.
+numpy==2.3.5
+Pillow==12.3.0
+psutil==7.1.0
+pytest==8.4.2
+rembg[cpu]==2.0.87

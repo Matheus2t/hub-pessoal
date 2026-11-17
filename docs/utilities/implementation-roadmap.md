@@ -28,9 +28,9 @@
 
 Selecionar armazenamento privado temporário, autorização, URLs assinadas, limites de arquivo e ciclo de vida. Implementar upload e estados sem ativar IA até revisar privacidade, custo e isolamento.
 
-## Fase 4 — Worker de remoção de fundo (não iniciada)
+## Fase 4 — Pesquisa e benchmark de modelos do removedor (harness pronto; homologação pendente)
 
-Comparar modelos/candidatos, incluindo BiRefNet e alternativas, com conjunto de avaliação autorizado. Medir qualidade, bordas, cabelo/transparência, latência, GPU, memória e custo. Isolar processamento e validar limpeza/cancelamento.
+Esta etapa implementa apenas um harness de avaliação isolado em `services/background-research/`; não é worker nem endpoint e não altera as flags/deploy. A execução atual comparou o baseline em 80 casos sintéticos e fez um smoke test de um avançado. A amostra fotográfica P3M depende do aceite humano do acordo; o lote avançado, CUDA, avaliação visual humana mais ampla e revisão final de licença seguem pendentes. A decisão de modelo e o worker de produção dependem dessas evidências.
 
 ## Fase 5 — Homologação e lançamento (não iniciada)
 
