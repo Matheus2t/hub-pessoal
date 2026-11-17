@@ -145,3 +145,21 @@ def test_redirect_is_returned_without_automatic_following_and_duplicate_location
     assert observation.status_code == 302
     assert observation.locations == ("/one", "/two")
     assert len(backend.stream.writes) > 0
+
+
+def test_oversized_response_headers_are_rejected_by_transport_limit():
+    target = parse_target("https://example.com/")
+    backend = _MockBackend(
+        200,
+        b"X-Large: " + b"a" * 20_000 + b"\r\nContent-Length: 0\r\nConnection: close",
+    )
+
+    async def run():
+        return await fetch_headers(
+            target,
+            (ipaddress.ip_address("93.184.216.34"),),
+            backend_factory=lambda: backend,
+        )
+
+    with pytest.raises(httpx.HTTPError):
+        asyncio.run(run())

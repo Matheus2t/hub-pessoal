@@ -19,10 +19,10 @@
 1. Definir política de esquemas, portas, limites e respostas.
 2. Implementar cliente HTTP com redirecionamentos manuais e timeouts/budgets.
 3. Fazer resolução DNS segura e conectar ao IP validado, revalidando cada salto.
-4. Implementar bloqueio de SSRF/DNS rebinding, limite de saltos, bytes e taxa.
+4. Implementar bloqueio de SSRF/DNS rebinding, limite de saltos, corpo da requisição e concorrência local; rate limiting distribuído fica pendente de infraestrutura.
 5. Integrar endpoint tipado local; reputação continua `false`.
 6. Adicionar testes controlados para DNS/IP, redirects, loops, timeout, TLS/SNI, limites e guardas locais, sem destinos arbitrários.
-7. Manter flags desativadas por padrão; Vercel retorna 404 mesmo se as flags forem configuradas.
+7. Manter flags desativadas por padrão; Vercel retorna 404 sem as flags públicas independentes e confirmações operacionais.
 
 Validação histórica da Fase 2 no GitHub Actions: suíte Python aprovada no Ubuntu (439 aprovados, 5 ignorados) e Windows (443 aprovados, 1 ignorado), além de typecheck, build e browser smoke tests. Naquela execução local, o sandbox bloqueou o socketpair e não houve handshake TLS real; a limitação foi superada nesta Fase 3 com servidor TLS controlado em loopback.
 
@@ -30,7 +30,7 @@ Validação histórica da Fase 2 no GitHub Actions: suíte Python aprovada no Ub
 
 - Integrar página Lit ao endpoint local com estados por resposta, validação básica, cancelamento e limite do cliente.
 - Apresentar somente destino final confirmado, status HTTP observado, avisos e saltos realmente registrados; sem navegação ou persistência de URLs.
-- Manter o recurso restrito a loopback e às flags locais; produção Vercel continua bloqueada.
+- Manter loopback e flags locais; permitir apenas a preparação de um gate público explícito, desligado por padrão e sujeito a controles externos.
 - Validar formulário, erros, responsividade, acessibilidade e fluxo completo com API FastAPI real e servidor TLS efêmero em loopback.
 - Validação desta branch: typecheck e builds de prévia e produção aprovados; 89 testes Python focados aprovados; Playwright de prévia 12 aprovados e 1 ignorado, e gate de produção 2 aprovados e 2 testes locais ignorados. Layouts verificados em 320, 390, 768, 1024, 1366, 1440 e 1920 px, nos dois temas. TLS testado somente em loopback.
 

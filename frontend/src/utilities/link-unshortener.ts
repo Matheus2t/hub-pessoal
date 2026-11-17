@@ -54,14 +54,21 @@ export class UtilityLinkUnshortener extends LightElement {
   }
 
   private get serviceMessage(): string {
-    if (!frontendUtilityAccess().linkResolver) return "Prévia disponível somente no ambiente local autorizado.";
-    if (this.checkingCapabilities) return "Verificando o backend local…";
-    if (this.capabilities.state === "unavailable") return "Backend local indisponível. Inicie a API para analisar links.";
-    if (this.capabilities.state === "disabled") return "O serviço de Utilitários está desativado neste backend.";
+    const local = frontendUtilityAccess().loopback;
+    if (!frontendUtilityAccess().linkResolver) return local
+      ? "Prévia disponível somente no ambiente local autorizado."
+      : "O Desencurtador está desativado.";
+    if (this.checkingCapabilities) return local ? "Verificando o backend local…" : "Verificando o serviço…";
+    if (this.capabilities.state === "unavailable") return local
+      ? "Backend local indisponível. Inicie a API para analisar links."
+      : "Serviço indisponível. Tente novamente mais tarde.";
+    if (this.capabilities.state === "disabled") return local
+      ? "O serviço de Utilitários está desativado neste backend."
+      : "O Desencurtador está desativado.";
     if (!this.capabilities.capabilities.utilities_enabled || !this.capabilities.capabilities.link_resolver_enabled) {
-      return "O Desencurtador está desativado neste backend local.";
+      return local ? "O Desencurtador está desativado neste backend local." : "O Desencurtador está desativado.";
     }
-    return "A análise consulta o destino sem abrir o site. Os endereços não são salvos.";
+    return "A URL é enviada à API 2T. A aplicação não guarda consultas nem verifica reputação.";
   }
 
   private onInput(event: Event) {
@@ -136,13 +143,25 @@ export class UtilityLinkUnshortener extends LightElement {
           ? "A consulta excedeu o tempo limite. Tente novamente."
           : "Análise cancelada.";
       } else if (error instanceof UtilityApiError) {
-        this.requestMessage = error.kind === "disabled"
+        this.requestMessage = error.kind === "rate_limited"
+          ? error.retryAfterSeconds === undefined
+            ? "Muitas consultas em sequência. Aguarde um pouco e tente novamente."
+            : `Muitas consultas em sequência. Tente novamente em ${error.retryAfterSeconds} s.`
+          : error.kind === "disabled"
           ? "O serviço de análise está desativado neste ambiente."
           : error.kind === "invalid_response"
             ? "O backend retornou uma resposta inválida. Tente novamente."
-            : "Não foi possível concluir a consulta ao backend local. Tente novamente.";
+            : error.status === 408
+              ? "A leitura da solicitação demorou demais. Tente novamente."
+              : error.status === 413
+                ? "A solicitação excedeu o limite permitido."
+            : frontendUtilityAccess().loopback
+              ? "Não foi possível concluir a consulta ao backend local. Tente novamente."
+              : "Não foi possível concluir a consulta. Tente novamente.";
       } else {
-        this.requestMessage = "Não foi possível conectar ao backend local. Tente novamente.";
+        this.requestMessage = frontendUtilityAccess().loopback
+          ? "Não foi possível conectar ao backend local. Tente novamente."
+          : "Não foi possível conectar ao serviço. Tente novamente.";
       }
       focusResult = true;
     } finally {
@@ -313,7 +332,7 @@ export class UtilityLinkUnshortener extends LightElement {
     const disabled = !serviceReady || this.loading;
     return html`<section class="utilities-page utility-link-page" aria-labelledby="utility-link-title">
       <header class="utilities-heading">
-        <p class="utilities-eyebrow"><a href="#/utilitarios">Utilitários</a> / PRÉVIA LOCAL</p>
+        <p class="utilities-eyebrow"><a href="#/utilitarios">Utilitários</a> / ${frontendUtilityAccess().loopback ? "PRÉVIA LOCAL" : "SERVIÇO"}</p>
         <h1 id="utility-link-title">Desencurtador de Links</h1>
         <p>Descubra o destino de links encurtados antes de acessá-los.</p>
       </header>

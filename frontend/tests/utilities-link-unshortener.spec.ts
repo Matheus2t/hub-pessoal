@@ -254,3 +254,15 @@ test("a backend without the resolver flag keeps submission disabled", async ({ p
   await expect(page.getByRole("button", { name: "Analisar endereço" })).toBeDisabled();
   await expect(page.locator(".link-service-status")).toContainText("desativado neste backend local");
 });
+
+test("shows a clear retry time when the API or edge returns HTTP 429", async ({ page }) => {
+  await openLocalPreview(page);
+  await page.route("**/api/utilities/links/resolve", route => route.fulfill({
+    status: 429,
+    headers: { "Retry-After": "7" },
+    json: { detail: "rate limited" },
+  }));
+  await page.getByRole("textbox", { name: "Endereço" }).fill(originalUrl);
+  await page.getByRole("button", { name: "Analisar endereço" }).click();
+  await expect(page.locator(".link-service-status")).toHaveText("Muitas consultas em sequência. Tente novamente em 7 s.");
+});

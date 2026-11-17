@@ -4,7 +4,7 @@
 
 `Lit (/#/utilitarios/desencurtador) → GET capabilities → POST /api/utilities/links/resolve → política SSRF/DNS → transporte com IP fixado e TLS validado → resposta tipada`
 
-A tela só habilita a análise quando as flags de frontend e backend confirmam a prévia local. A compilação Vercel mantém as flags públicas desativadas; as rotas da API também retornam 404 nesse ambiente.
+A tela só habilita a análise quando a flag apropriada do bundle e as capacidades reais do backend permitem o recurso. Em build público, a UI requer `LINK_RESOLVER_PUBLIC_UI_ENABLED=true`; gates independentes no backend permanecem fechados por padrão. A interface trata HTTP 429 e informa o intervalo de `Retry-After`, quando presente. O Removedor de Fundo não aparece no catálogo fora do loopback.
 
 ## Comportamento
 

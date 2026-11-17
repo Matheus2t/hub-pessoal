@@ -5,6 +5,7 @@ import { resolveUtilityAccess } from "../src/utilities/flags";
 const previewBuild = /^(1|true|yes)$/i.test(process.env.UTILITIES_ENABLED ?? "") &&
   /^(1|true|yes)$/i.test(process.env.LINK_RESOLVER_ENABLED ?? "") &&
   /^(1|true|yes)$/i.test(process.env.BACKGROUND_REMOVER_ENABLED ?? "") && process.env.VERCEL !== "1";
+const publicPreviewBuild = process.env.VERCEL === "1" && /^(1|true|yes)$/i.test(process.env.LINK_RESOLVER_PUBLIC_UI_ENABLED ?? "");
 
 test("utility access requires loopback and combines the three flags independently", () => {
   expect(resolveUtilityAccess("matheus2t.com.br", { utilities: true, linkResolver: true, backgroundRemover: true }))
@@ -15,10 +16,12 @@ test("utility access requires loopback and combines the three flags independentl
     .toEqual({ loopback: true, utilities: true, linkResolver: true, backgroundRemover: false });
   expect(resolveUtilityAccess("localhost", { utilities: false, linkResolver: true, backgroundRemover: true }))
     .toEqual({ loopback: true, utilities: false, linkResolver: false, backgroundRemover: false });
+  expect(resolveUtilityAccess("matheus2t.com.br", { utilities: true, linkResolver: true, backgroundRemover: true }, true))
+    .toEqual({ loopback: false, utilities: true, linkResolver: true, backgroundRemover: false });
 });
 
 test("direct utility routes and query parameters stay unavailable in a public/default build", async ({ page }) => {
-  test.skip(previewBuild, "O bundle atual está configurado para prévia local.");
+  test.skip(previewBuild || publicPreviewBuild, "O bundle atual está configurado para uma prévia explícita.");
   await serveBuiltSite(page);
   await page.goto("/?utilities-preview=1#/utilitarios");
   await expect(page.getByRole("heading", { name: "Início", exact: true })).toBeVisible();
@@ -28,6 +31,26 @@ test("direct utility routes and query parameters stay unavailable in a public/de
   await expect(page.getByRole("heading", { name: "Início", exact: true })).toBeVisible();
   await page.goto("/#/utilitarios/remover-fundo?preview=1");
   await expect(page.locator("utility-background-remover")).toHaveCount(0);
+});
+
+test("explicit public build exposes only the resolver after backend capabilities confirm it", async ({ page }) => {
+  test.skip(!publicPreviewBuild, "Compile com VERCEL=1 e LINK_RESOLVER_PUBLIC_UI_ENABLED=true.");
+  const publicOrigin = "https://matheus2t.com.br";
+  await serveBuiltSite(page, undefined, publicOrigin);
+  await page.route("**/api/utilities/capabilities", route => route.fulfill({
+    status: 200,
+    json: { utilities_enabled: true, link_resolver_enabled: true, background_remover_enabled: false },
+  }));
+  await page.goto(`${publicOrigin}/#/utilitarios`);
+  const navigation = page.getByRole("navigation", { name: "Navegação principal" });
+  await navigation.getByText("Áreas", { exact: true }).click();
+  await expect(navigation.getByRole("link", { name: "Utilitários", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Desencurtador de Links/ })).toBeVisible();
+  await expect(page.getByText("Removedor de Fundo", { exact: true })).toHaveCount(0);
+  await page.getByRole("link", { name: /Desencurtador de Links/ }).click();
+  await expect(page.getByRole("heading", { name: "Desencurtador de Links", exact: true })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Endereço" })).toBeEnabled();
+  await expect(page.locator(".link-service-status")).toContainText("A URL é enviada à API 2T");
 });
 
 test("local catalogue and navigation use the resolver API without loading external destinations", async ({ page }) => {

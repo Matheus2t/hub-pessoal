@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     public_history_enabled: bool=True
     utilities_enabled: bool=False
     link_resolver_enabled: bool=False
+    # Public release is opt-in and requires explicit operational confirmations.
+    link_resolver_public_enabled: bool=False
+    link_resolver_public_rate_limit_confirmed: bool=False
+    link_resolver_public_egress_confirmed: bool=False
     background_remover_enabled: bool=False
     link_resolver_max_redirects: int=Field(default=8,ge=0,le=8)
     link_resolver_total_timeout_seconds: float=Field(default=12.0,gt=0,le=12.0)

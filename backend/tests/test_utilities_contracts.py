@@ -43,7 +43,11 @@ def enable_all(monkeypatch):
 
 
 def test_utility_flags_default_to_disabled(monkeypatch):
-    for variable in ("UTILITIES_ENABLED", "LINK_RESOLVER_ENABLED", "BACKGROUND_REMOVER_ENABLED"):
+    for variable in (
+        "UTILITIES_ENABLED", "LINK_RESOLVER_ENABLED", "BACKGROUND_REMOVER_ENABLED",
+        "LINK_RESOLVER_PUBLIC_ENABLED", "LINK_RESOLVER_PUBLIC_RATE_LIMIT_CONFIRMED",
+        "LINK_RESOLVER_PUBLIC_EGRESS_CONFIRMED",
+    ):
         monkeypatch.delenv(variable, raising=False)
     defaults = Settings(_env_file=None)
     assert defaults.utilities_enabled is False
@@ -157,11 +161,14 @@ def _set_link_flags(monkeypatch):
     monkeypatch.setattr(settings, "link_resolver_enabled", True)
 
 
-def test_vercel_runtime_hard_disables_capabilities_and_resolver(monkeypatch):
+def test_vercel_runtime_stays_closed_without_all_public_release_gates(monkeypatch):
     _set_link_flags(monkeypatch)
     monkeypatch.setenv("VERCEL", "1")
+    monkeypatch.setattr(settings, "link_resolver_public_enabled", True)
+    monkeypatch.setattr(settings, "link_resolver_public_rate_limit_confirmed", True)
+    monkeypatch.setattr(settings, "link_resolver_public_egress_confirmed", False)
     with pytest.raises(HTTPException) as error:
-        capabilities(capability_request())
+        capabilities(capability_request(client=("203.0.113.10", 43120)))
     assert error.value.status_code == 404
 
     async def run():
@@ -171,6 +178,74 @@ def test_vercel_runtime_hard_disables_capabilities_and_resolver(monkeypatch):
         assert response.status_code == 404
 
     asyncio.run(run())
+
+
+def test_vercel_public_gates_allow_only_the_resolver_and_never_the_background_tool(monkeypatch):
+    _set_link_flags(monkeypatch)
+    monkeypatch.setenv("VERCEL", "1")
+    for setting in (
+        "link_resolver_public_enabled",
+        "link_resolver_public_rate_limit_confirmed",
+        "link_resolver_public_egress_confirmed",
+    ):
+        monkeypatch.setattr(settings, setting, True)
+    monkeypatch.setattr(settings, "background_remover_enabled", True)
+
+    response = capabilities(capability_request(
+        client=("203.0.113.10", 43120), origin="https://matheus2t.com.br"
+    ))
+    assert response.model_dump() == {
+        "utilities_enabled": True,
+        "link_resolver_enabled": True,
+        "background_remover_enabled": False,
+    }
+
+    from app.utilities import router as router_module
+
+    async def fake_resolve(url):
+        return LinkResolveResponse(
+            status="resolved", original_url=url, final_url="https://example.com/",
+            final_status_code=200, redirect_count=0, redirects=[],
+            security={"https": True, "warnings": [], "reputation_checked": False},
+        )
+
+    monkeypatch.setattr(router_module, "resolve_link", fake_resolve)
+
+    async def run():
+        transport = httpx.ASGITransport(app=main.app, client=("203.0.113.10", 43120))
+        async with httpx.AsyncClient(transport=transport, base_url="https://matheus2t.com.br") as client:
+            response = await client.post(
+                "/api/utilities/links/resolve", json={"url": "https://example.com/"},
+                headers={"Origin": "https://matheus2t.com.br"},
+            )
+        assert response.status_code == 200
+        assert response.json()["final_url"] == "https://example.com/"
+
+    asyncio.run(run())
+
+
+def test_local_concurrency_limit_returns_retryable_429(monkeypatch):
+    _set_link_flags(monkeypatch)
+    monkeypatch.delenv("VERCEL", raising=False)
+    from app.utilities import router as router_module
+
+    acquired_slots = 0
+    try:
+        while acquired_slots < 4:
+            assert router_module._RESOLVER_SLOTS.acquire(blocking=False)
+            acquired_slots += 1
+
+        async def run():
+            transport = httpx.ASGITransport(app=main.app)
+            async with httpx.AsyncClient(transport=transport, base_url="http://localhost") as client:
+                return await client.post("/api/utilities/links/resolve", json={"url": "https://example.com"})
+
+        response = asyncio.run(run())
+        assert response.status_code == 429
+        assert response.headers["retry-after"] == "2"
+    finally:
+        for _ in range(acquired_slots):
+            router_module._RESOLVER_SLOTS.release()
 
 
 @pytest.mark.parametrize(
@@ -278,3 +353,38 @@ def test_oversized_http_body_is_rejected_before_validation(monkeypatch):
         assert response.status_code == 413
 
     asyncio.run(run())
+
+
+def test_slow_request_body_times_out_before_consuming_a_resolver_slot(monkeypatch):
+    _set_link_flags(monkeypatch)
+    monkeypatch.delenv("VERCEL", raising=False)
+    from app.utilities import router as router_module
+
+    monkeypatch.setattr(router_module, "_REQUEST_BODY_TIMEOUT_SECONDS", 0.01)
+
+    receives = 0
+
+    async def receive():
+        nonlocal receives
+        receives += 1
+        if receives == 1:
+            return {"type": "http.request", "body": b'{"url":', "more_body": True}
+        await asyncio.sleep(0.05)
+        return {"type": "http.request", "body": b'"https://example.com"}', "more_body": False}
+
+    request = Request({
+        "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+        "method": "POST", "scheme": "http", "path": "/api/utilities/links/resolve",
+        "raw_path": b"/api/utilities/links/resolve", "query_string": b"", "root_path": "",
+        "headers": [(b"content-type", b"application/json")], "client": ("127.0.0.1", 43120),
+        "server": ("localhost", 8000),
+    }, receive=receive)
+
+    async def run():
+        with pytest.raises(HTTPException) as error:
+            await router_module._read_request_body(request)
+        assert error.value.status_code == 408
+
+    asyncio.run(run())
+    assert router_module._RESOLVER_SLOTS.acquire(blocking=False)
+    router_module._RESOLVER_SLOTS.release()

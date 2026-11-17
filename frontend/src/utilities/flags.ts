@@ -12,6 +12,7 @@ declare global {
   var __2T_UTILITIES_ENABLED__: boolean | undefined;
   var __2T_LINK_RESOLVER_ENABLED__: boolean | undefined;
   var __2T_BACKGROUND_REMOVER_ENABLED__: boolean | undefined;
+  var __2T_LINK_RESOLVER_PUBLIC_UI_ENABLED__: boolean | undefined;
 }
 
 export function isLoopbackHostname(hostname: string): boolean {
@@ -21,14 +22,19 @@ export function isLoopbackHostname(hostname: string): boolean {
   return octets.length === 4 && octets[0] === 127 && octets.every(value => Number.isInteger(value) && value >= 0 && value <= 255);
 }
 
-export function resolveUtilityAccess(hostname: string, flags: UtilityFeatureFlags): UtilityAccess {
+export function resolveUtilityAccess(
+  hostname: string,
+  flags: UtilityFeatureFlags,
+  publicLinkResolver = false,
+): UtilityAccess {
   const loopback = isLoopbackHostname(hostname);
-  const utilities = loopback && flags.utilities;
+  const publicMode = !loopback && publicLinkResolver;
+  const utilities = (loopback || publicMode) && flags.utilities;
   return {
     loopback,
     utilities,
     linkResolver: utilities && flags.linkResolver,
-    backgroundRemover: utilities && flags.backgroundRemover,
+    backgroundRemover: loopback && utilities && flags.backgroundRemover,
   };
 }
 
@@ -38,7 +44,7 @@ export function frontendUtilityAccess(hostname?: string): UtilityAccess {
     utilities: globalThis.__2T_UTILITIES_ENABLED__ === true,
     linkResolver: globalThis.__2T_LINK_RESOLVER_ENABLED__ === true,
     backgroundRemover: globalThis.__2T_BACKGROUND_REMOVER_ENABLED__ === true,
-  });
+  }, globalThis.__2T_LINK_RESOLVER_PUBLIC_UI_ENABLED__ === true);
 }
 
 export const utilitiesCatalogEnabled = () => frontendUtilityAccess().utilities;

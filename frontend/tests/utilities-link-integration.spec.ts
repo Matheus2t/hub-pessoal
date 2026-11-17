@@ -64,7 +64,7 @@ test("Lit UI resolves through FastAPI, pinned transport, and a real loopback TLS
       }
     });
     await page.goto(`${apiOrigin}/#/utilitarios/desencurtador`);
-    await expect(page.locator(".link-service-status")).toContainText("A análise consulta o destino", { timeout: 10_000 }).catch(async () => {
+    await expect(page.locator(".link-service-status")).toContainText("A URL é enviada à API 2T", { timeout: 10_000 }).catch(async () => {
       const probe = await page.evaluate(async () => {
         try {
           const response = await fetch("/api/utilities/capabilities", { cache: "no-store" });

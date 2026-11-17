@@ -26,9 +26,11 @@ A resposta contém `status`, URL original, última URL alcançada, status HTTP f
 - A tela permite cancelar, limita a espera no cliente, impede que uma resposta antiga substitua uma nova e não salva o endereço. O navegador não abre o destino nem faz requisição a ele.
 - Exibe o percurso observado, avisos, protocolo e status HTTP. URLs são texto simples renderizado pelo Lit.
 
-## Ativação local e publicação
+## Ativação local e gate para publicação
 
-Por padrão, `UTILITIES_ENABLED` e `LINK_RESOLVER_ENABLED` são `false`. Para uso local, ambas precisam estar `true` no processo FastAPI; a requisição ainda precisa vir de cliente loopback e, se houver Origin, ele também precisa ser loopback. Não habilitar fora de máquina local. `VERCEL=1` força 404 independentemente das flags, como defesa adicional. A rota é omitida do OpenAPI.
+Por padrão, todas as flags são `false`. Localmente, as flags base e cliente loopback continuam obrigatórios. No Vercel, além das flags base, o servidor requer `LINK_RESOLVER_PUBLIC_ENABLED=true`, `LINK_RESOLVER_PUBLIC_RATE_LIMIT_CONFIRMED=true` e `LINK_RESOLVER_PUBLIC_EGRESS_CONFIRMED=true`. A UI requer `LINK_RESOLVER_PUBLIC_UI_ENABLED=true` durante o build público e consulta as capacidades reais da API. O Removedor de Fundo não aparece no catálogo público e continua sem endpoint público. A rota é omitida do OpenAPI.
+
+As flags de confirmação são uma trava operacional, não detecção automática de WAF ou rede. Só configure-as depois de verificar os controles externos. O WAF do Vercel pode devolver HTTP 429 antes da função; o limite local de quatro consultas simultâneas também responde 429 e `Retry-After`, mas não é distribuído.
 
 Não há persistência, histórico, consulta de reputação, autenticação de salas ou integração com banco.
 

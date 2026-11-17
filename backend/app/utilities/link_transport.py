@@ -13,6 +13,7 @@ from .link_security import LinkTarget, is_public_ip
 
 
 MAX_ADDRESS_ATTEMPTS = 4
+MAX_RESPONSE_HEADER_BYTES = 16 * 1024
 _USER_AGENT = "2T-Link-Resolver/1.0"
 
 
@@ -107,6 +108,10 @@ class PinnedHTTPXTransport(httpx.AsyncBaseTransport):
             extensions=request.extensions,
         )
         response = await self.pool.handle_async_request(core_request)
+        header_bytes = sum(len(name) + len(value) + 4 for name, value in response.headers)
+        if header_bytes > MAX_RESPONSE_HEADER_BYTES:
+            await response.aclose()
+            raise httpx.RemoteProtocolError("Response headers exceed the configured size limit.")
         return httpx.Response(
             status_code=response.status,
             headers=response.headers,

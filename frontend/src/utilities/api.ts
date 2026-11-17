@@ -72,10 +72,23 @@ export function isLinkResolveResponse(value: unknown): value is LinkResolveRespo
 }
 
 export class UtilityApiError extends Error {
-  constructor(readonly kind: "disabled" | "http" | "invalid_response", readonly status?: number) {
+  constructor(
+    readonly kind: "disabled" | "http" | "invalid_response" | "rate_limited",
+    readonly status?: number,
+    readonly retryAfterSeconds?: number,
+  ) {
     super(kind);
     this.name = "UtilityApiError";
   }
+}
+
+function retryAfterSeconds(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const seconds = Number(value);
+  if (Number.isFinite(seconds) && seconds >= 0) return Math.ceil(seconds);
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return undefined;
+  return Math.max(0, Math.ceil((timestamp - Date.now()) / 1000));
 }
 
 export async function resolveUtilityLink(url: string, signal: AbortSignal): Promise<LinkResolveResponse> {
@@ -90,6 +103,9 @@ export async function resolveUtilityLink(url: string, signal: AbortSignal): Prom
   });
 
   if (response.status === 404) throw new UtilityApiError("disabled", response.status);
+  if (response.status === 429) {
+    throw new UtilityApiError("rate_limited", response.status, retryAfterSeconds(response.headers.get("Retry-After")));
+  }
   if (!response.ok) throw new UtilityApiError("http", response.status);
 
   let payload: unknown;
