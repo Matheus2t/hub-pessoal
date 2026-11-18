@@ -101,6 +101,17 @@ def _unavailable_result(url: str = "") -> LinkResolveResponse:
 
 async def _read_request_body(request: Request) -> bytes:
     body = bytearray()
+    content_length = request.headers.get("content-length")
+    if content_length is not None:
+        try:
+            declared_length = int(content_length)
+        except ValueError as error:
+            raise HTTPException(status_code=400, detail="Tamanho da requisição inválido.") from error
+        if declared_length < 0:
+            raise HTTPException(status_code=400, detail="Tamanho da requisição inválido.")
+        if declared_length > _MAX_REQUEST_BODY_BYTES:
+            raise HTTPException(status_code=413, detail="Corpo da requisição muito grande.")
+
     deadline = time.monotonic() + _REQUEST_BODY_TIMEOUT_SECONDS
     while True:
         remaining = deadline - time.monotonic()
@@ -115,9 +126,9 @@ async def _read_request_body(request: Request) -> bytes:
         if message["type"] != "http.request":
             raise HTTPException(status_code=400, detail="A requisição é inválida.")
         chunk = message.get("body", b"")
-        body.extend(chunk)
-        if len(body) > _MAX_REQUEST_BODY_BYTES:
+        if len(chunk) > _MAX_REQUEST_BODY_BYTES - len(body):
             raise HTTPException(status_code=413, detail="Corpo da requisição muito grande.")
+        body.extend(chunk)
         if not message.get("more_body", False):
             break
     return bytes(body)

@@ -18,6 +18,17 @@ from app.utilities.schemas import (
 from app.utilities.router import capabilities
 
 
+def test_api_cors_exposes_retry_after_for_rate_limit_feedback():
+    async def run():
+        transport = httpx.ASGITransport(app=main.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+            response = await client.get("/api/health", headers={"Origin": "http://localhost:3000"})
+        assert response.status_code == 200
+        assert response.headers["access-control-expose-headers"] == "Retry-After"
+
+    asyncio.run(run())
+
+
 def capability_request(client=("127.0.0.1", 43120), origin=None):
     headers = [(b"origin", origin.encode())] if origin else []
     return Request({
@@ -351,6 +362,50 @@ def test_oversized_http_body_is_rejected_before_validation(monkeypatch):
             response = await client.post("/api/utilities/links/resolve", content=b" " * 4097,
                                          headers={"Content-Type": "application/json"})
         assert response.status_code == 413
+
+    asyncio.run(run())
+
+
+def test_oversized_asgi_chunk_is_rejected_even_with_understated_content_length():
+    from app.utilities.router import _read_request_body
+
+    async def receive():
+        return {"type": "http.request", "body": b"x" * 4097, "more_body": False}
+
+    request = Request({
+        "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+        "method": "POST", "scheme": "http", "path": "/api/utilities/links/resolve",
+        "raw_path": b"/api/utilities/links/resolve", "query_string": b"", "root_path": "",
+        "headers": [(b"content-type", b"application/json"), (b"content-length", b"1")],
+        "client": ("127.0.0.1", 43120), "server": ("localhost", 8000),
+    }, receive=receive)
+
+    async def run():
+        with pytest.raises(HTTPException) as error:
+            await _read_request_body(request)
+        assert error.value.status_code == 413
+
+    asyncio.run(run())
+
+
+def test_declared_oversized_body_is_rejected_before_reading():
+    from app.utilities.router import _read_request_body
+
+    async def unexpected_receive():
+        raise AssertionError("oversized declared body must be rejected before reading")
+
+    request = Request({
+        "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+        "method": "POST", "scheme": "http", "path": "/api/utilities/links/resolve",
+        "raw_path": b"/api/utilities/links/resolve", "query_string": b"", "root_path": "",
+        "headers": [(b"content-type", b"application/json"), (b"content-length", b"4097")],
+        "client": ("127.0.0.1", 43120), "server": ("localhost", 8000),
+    }, receive=unexpected_receive)
+
+    async def run():
+        with pytest.raises(HTTPException) as error:
+            await _read_request_body(request)
+        assert error.value.status_code == 413
 
     asyncio.run(run())
 

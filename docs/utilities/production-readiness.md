@@ -22,6 +22,8 @@ Vercel Static IPs dão endereços de origem estáveis para allowlists; isso não
 - Conecta diretamente ao IP validado, sem resolver novamente; Host, SNI e validação de certificado usam o hostname original. Sem proxy de ambiente, cookies, autenticação, redirects automáticos ou leitura de conteúdo.
 - Máximo de oito redirects, doze segundos de resolução, três segundos de connect/read, até quatro IPs tentados, cabeçalhos de resposta até 16 KiB e body JSON até 4 KiB. A leitura do body tem deadline de três segundos.
 - Quatro chamadas simultâneas por processo; concorrência local. Ao saturar, responde HTTP 429 com `Retry-After`. Isso não é rate limit distribuído.
+- O limite de 4 KiB agora rejeita `Content-Length` excessivo antes de ler o corpo e confere cada chunk antes de copiá-lo ao buffer, inclusive quando o tamanho declarado é menor que o real.
+- A API expõe `Retry-After` via CORS para que o frontend de desenvolvimento consiga mostrar o tempo indicado em respostas 429; o navegador não permite ler esse cabeçalho em respostas cross-origin sem `Access-Control-Expose-Headers`.
 - Logs de erro registram só tipo da exceção. URLs recebidas no body não são persistidas nem logadas pela aplicação. A interface informa que a URL é enviada à API 2T, não abre o destino e não afirma que HTTPS atesta segurança ou reputação.
 - `security.reputation_checked` permanece `false`. O Removedor de Fundo continua sem endpoint/upload público e é ocultado fora do loopback.
 
@@ -49,11 +51,12 @@ O Vercel WAF oferece rate limiting por IP com fixed window nos planos documentad
 
 ## Evidências desta entrega
 
-- `npm run build` e typecheck passaram. `python -m compileall` passou. As suítes focadas de contratos, transporte, segurança, resolver e TLS passaram: 110 testes.
-- Playwright local: 13 passaram e 2 foram ignorados por pertencerem ao modo público. Incluiu integração FastAPI/TLS de loopback e responsividade em 320, 390, 768, 1024, 1366 e 1920 px, nos temas claro e escuro.
-- Playwright de build público: a rota ficou bloqueada por padrão mesmo com parâmetro de prévia (1 teste); o build explícito exibiu somente o Desencurtador quando capabilities mockadas permitiram (1 teste). Não contatou produção nem comprova a configuração remota do WAF.
-- Testes adicionados para gates de produção, Removedor sempre desligado no Vercel, 429 com `Retry-After`, leitura lenta do body, tamanho do body e cabeçalhos excessivos. A suíte também encontrou e corrigiu a ausência de limite explícito para cabeçalhos HTTP grandes.
-- `git diff --check` passou. CI do PR #185: pytest Ubuntu, pytest Windows e frontend concluídos com sucesso. As anotações são avisos de migração do GitHub Actions para Node.js 24 e Ubuntu 26, sem falhas do projeto.
+- `npm run build` (inclui typecheck) passou com o bundle habilitado apenas para a prévia local. O arquivo local `frontend/public/learn/progression-v12.json` foi restaurado byte a byte após cada build.
+- Pytest completo: 453 testes passaram após a atualização CORS e seus testes. O teste específico do corpo HTTP e o novo teste de exposição CORS também passaram dentro da suíte.
+- Playwright dos Utilitários: 13 passaram e 2 foram ignorados por pertencerem a builds públicos; incluiu 9 testes do desencurtador, integração FastAPI/TLS de loopback e responsividade em 320, 390, 768, 1024, 1366 e 1920 px nos dois temas. O caso HTTP 429 foi reproduzido, corrigido e passou isoladamente e na suíte.
+- Builds públicos separados já verificados: acesso direto e parâmetro de prévia permanecem bloqueados por padrão (1 teste); a prévia explícita mostrou apenas o Desencurtador com capabilities simuladas (1 teste). Isso não verifica configuração nem deployment remoto.
+- A regressão ampla Playwright executou 661 testes: 583 passaram, 33 foram ignorados e 45 falharam. Entre as falhas diagnosticadas, a integração usou uma API local ausente no teste amplo; o caso 429 revelou que a resposta de teste não expunha `Retry-After` via CORS. Ambos os testes do escopo foram corrigidos e passaram na suíte direcionada. Permaneceram falhas de outras áreas e verificações antigas fora do escopo; a regressão ampla, portanto, não está aprovada.
+- `git diff --check` passou. Os checks anteriores do PR #185 foram aprovados no commit anterior; o novo push precisa gerar checks atualizados.
 - Nenhum teste com destino externo foi executado: a especificação exige endpoints especificamente autorizados e não foi fornecida uma lista de URLs/alvos. Não foi enviado tráfego a terceiros.
 - A integração TLS existente usa servidor local controlado. Isso prova o handshake e a pinagem no teste, mas não substitui revisão independente de SSRF nem homologação externa.
 - O conector Vercel no escopo disponível não encontrou o projeto `matheus2t` pelo nome nem pelo repositório `Matheus2t/hub-pessoal`. Não foi possível verificar o plano, regras WAF, flags, deployment, custo efetivo ou configurações de egress do projeto exato. Não foi consultado outro projeto como substituto.

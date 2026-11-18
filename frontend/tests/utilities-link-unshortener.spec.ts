@@ -257,9 +257,14 @@ test("a backend without the resolver flag keeps submission disabled", async ({ p
 
 test("shows a clear retry time when the API or edge returns HTTP 429", async ({ page }) => {
   await openLocalPreview(page);
+  const localOrigin = new URL(process.env.BASE_URL || "http://127.0.0.1:8123").origin;
   await page.route("**/api/utilities/links/resolve", route => route.fulfill({
     status: 429,
-    headers: { "Retry-After": "7" },
+    headers: {
+      "Access-Control-Allow-Origin": localOrigin,
+      "Access-Control-Expose-Headers": "Retry-After",
+      "Retry-After": "7",
+    },
     json: { detail: "rate limited" },
   }));
   await page.getByRole("textbox", { name: "Endereço" }).fill(originalUrl);

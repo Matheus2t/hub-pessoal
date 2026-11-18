@@ -22,7 +22,7 @@ app.include_router(finance_router)
 app.include_router(market_router)
 app.include_router(sports_router)
 app.include_router(utilities_router)
-app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.api_cors_origins.split(',')],allow_methods=['*'],allow_headers=['*'])
+app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.api_cors_origins.split(',')],allow_methods=['*'],allow_headers=['*'],expose_headers=['Retry-After'])
 @app.get('/api/health')
 def health():return {'status':'ok'}
 @app.post('/api/calculations',response_model=CalculationResult)
