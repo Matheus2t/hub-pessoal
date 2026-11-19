@@ -5,6 +5,7 @@ import { LightElement, icon } from "../ui";
 import { currentPage, pages, learnActivities } from "../catalog";
 import "./sidebar";
 import "../mind/page";
+import { obsidianMark } from "../mind/obsidian-mark";
 import "./topbar";
 import "./home-page";
 import "./holiday-calendar";
@@ -103,7 +104,10 @@ export class AppShell extends LightElement {
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
           ${["retirement", "housing", "amortization", "clt"].includes(this.page) ? keyed(this.page, html`<extended-finance-calculator .kind=${this.page}></extended-finance-calculator>`) : ""}
           <footer class="page-footer">
-            <span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span>
+            <div class="footer-brand-group">
+              <span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span>
+              <a class="footer-mind-link" href="#/mente" aria-label="Abrir Mente" title="Mente">${obsidianMark}</a>
+            </div>
             <div class="footer-meta">
               <button type="button" class="footer-calendar-trigger" aria-label="Abrir calendário de feriados" title="Calendário de feriados" aria-haspopup="dialog" @click=${this.openCalendar}>${icon("calendar")}</button>
               <span>matheus2t.com.br</span>

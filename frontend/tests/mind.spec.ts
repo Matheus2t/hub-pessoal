@@ -9,6 +9,31 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator(".mind-heading .obsidian-mark")).toBeVisible();
 });
 
+test("footer positions Obsidian to the right of 2T and links back to Mente", async ({ page }) => {
+  const footer = page.locator(".page-footer");
+  const originalLogo = footer.locator(".footer-logo");
+  const mindLink = footer.getByRole("link", { name: "Abrir Mente" });
+  await expect(originalLogo).toBeVisible();
+  await expect(mindLink.locator(".obsidian-mark")).toBeVisible();
+  await expect(mindLink).toHaveAttribute("href", "#/mente");
+  for (const [theme, expected] of [["dark", "rgb(118, 81, 170)"], ["light", "rgb(87, 50, 136)"]] as const) {
+    await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+    await expect(mindLink.locator("svg")).toHaveCSS("color", expected);
+    for (const width of [320, 390, 768, 1366]) {
+      await page.setViewportSize({ width, height: 900 });
+      const left = await originalLogo.boundingBox();
+      const right = await mindLink.boundingBox();
+      expect(left).not.toBeNull();
+      expect(right).not.toBeNull();
+      expect(right!.x).toBeGreaterThanOrEqual(left!.x + left!.width - 1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  }
+  await page.goto("/#/");
+  await page.locator(".page-footer").getByRole("link", { name: "Abrir Mente" }).click();
+  await expect(page.locator("#mind-title")).toHaveText("Mente");
+});
+
 test("the Obsidian symbol alone uses dark purple in both themes", async ({ page }) => {
   for (const [theme, expected] of [["dark", "rgb(118, 81, 170)"], ["light", "rgb(87, 50, 136)"]] as const) {
     await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
