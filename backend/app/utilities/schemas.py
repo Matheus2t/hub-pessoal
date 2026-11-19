@@ -16,6 +16,7 @@ class UtilityCapabilities(StrictContract):
 
 LinkResolveStatus = Literal[
     "resolved",
+    "destination_identified",
     "invalid_url",
     "blocked_url",
     "timeout",

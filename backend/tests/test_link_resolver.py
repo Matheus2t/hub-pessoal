@@ -196,3 +196,90 @@ def test_network_errors_map_to_service_unavailable(error):
     result = asyncio.run(resolve_link("https://example.com/", dns_lookup=lookup,
                                       request_headers=request))
     assert result.status == "service_unavailable"
+
+def test_public_restricted_accepts_only_approved_https_shorteners_without_dns_for_other_inputs():
+    calls = []
+
+    async def never(*args, **kwargs):
+        calls.append(args)
+        raise AssertionError("Unauthorized outgoing DNS/HTTP")
+
+    for url in ("https://example.com/abc", "http://bit.ly/test", "https://evil.bit.ly/test",
+                "https://127.0.0.1/admin", "https://bit.ly:8443/test", "ftp://bit.ly/test"):
+        result = asyncio.run(resolve_link(url, dns_lookup=never, request_headers=never, restricted_public=True))
+        assert result.status in {"blocked_url", "invalid_url"}
+        assert result.final_url is None
+    assert calls == []
+
+
+def test_public_restricted_never_connects_to_reported_final_host():
+    calls = []
+    async def lookup(hostname, port):
+        calls.append(("dns", hostname))
+        if hostname != "bit.ly":
+            raise AssertionError("DNS reached non-approved destination!")
+        return ("93.184.216.34",)
+
+    async def request(target, addresses, **kwargs):
+        calls.append(("http", target.hostname))
+        return HTTPObservation(302, ("https://external.example.com/private?token=sensitive",))
+
+    result = asyncio.run(resolve_link("https://bit.ly/sample", dns_lookup=lookup,
+                                      request_headers=request, restricted_public=True))
+    assert result.status == "destination_identified"
+    assert result.final_url == "https://external.example.com/private?token=sensitive"
+    assert result.final_status_code is None
+    assert result.redirect_count == 1
+    assert result.security.reputation_checked is False
+    assert "não foi acessado" in " ".join(result.security.warnings)
+    assert calls == [("dns", "bit.ly"), ("http", "bit.ly")]
+
+
+def test_public_restricted_follows_only_approved_shortener_chain():
+    calls = []
+    async def lookup(host, port):
+        calls.append(("dns", host))
+        assert host in {"bit.ly", "tinyurl.com"}
+        return ("93.184.216.34",)
+
+    async def request(target, addresses, **kwargs):
+        calls.append(("http", target.hostname))
+        if target.hostname == "bit.ly":
+            return HTTPObservation(301, ("https://tinyurl.com/step",))
+        return HTTPObservation(302, ("http://destination.example.org/article",))
+
+    result = asyncio.run(resolve_link("https://bit.ly/start", dns_lookup=lookup,
+                                      request_headers=request, restricted_public=True))
+    assert result.status == "destination_identified"
+    assert result.final_url == "http://destination.example.org/article"
+    assert result.final_status_code is None
+    assert result.redirect_count == 2
+    assert result.security.https is False
+    assert calls == [("dns", "bit.ly"), ("http", "bit.ly"), ("dns", "tinyurl.com"), ("http", "tinyurl.com")]
+
+
+def test_public_restricted_never_returns_a_private_ip_redirect():
+    lookup, request, seen = _runner([HTTPObservation(301, ("http://169.254.169.254/latest",))])
+    result = asyncio.run(resolve_link("https://bit.ly/demo", dns_lookup=lookup,
+                                      request_headers=request, restricted_public=True))
+    assert result.status == "blocked_url"
+    assert result.final_url != "http://169.254.169.254/latest"
+    assert len(seen) == 1
+
+
+def test_public_restricted_cannot_claim_shortener_error_as_valid_destination():
+    lookup, request, seen = _runner([HTTPObservation(404, ())])
+    result = asyncio.run(resolve_link("https://is.gd/not-found", dns_lookup=lookup,
+                                      request_headers=request, restricted_public=True))
+    assert result.status == "unresolved"
+    assert result.final_url is None
+    assert result.final_status_code is None
+    assert len(seen) == 1
+
+
+def test_default_local_resolver_still_accepts_nonshorteners():
+    lookup, request, seen = _runner([HTTPObservation(200, ())])
+    result = asyncio.run(resolve_link("https://example.com/", dns_lookup=lookup, request_headers=request))
+    assert result.status == "resolved"
+    assert len(seen) == 1
+

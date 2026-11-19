@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     link_resolver_enabled: bool=False
     # Public release is opt-in and requires explicit operational confirmations.
     link_resolver_public_enabled: bool=False
+    # Limited public mode only contacts a fixed set of shortener domains.
+    link_resolver_restricted_public_enabled: bool=False
     link_resolver_public_rate_limit_confirmed: bool=False
     link_resolver_public_egress_confirmed: bool=False
     background_remover_enabled: bool=False
