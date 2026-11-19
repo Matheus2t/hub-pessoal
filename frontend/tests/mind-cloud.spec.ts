@@ -240,13 +240,14 @@ test("adicionar conteúdo exige login, administrador pode editar e sair sem ocul
   const api = mockApi(page); await api.install();
   await page.goto("/#/mente");
   await expect(page.locator(".mind-item")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "Sair da conta" })).toHaveCount(0);
   await page.getByRole("button", { name: "+ Nova nota" }).click();
   await expect(page.getByRole("heading", { name: "Entrar para editar" })).toBeVisible();
   await page.getByLabel("E-mail").fill("admin@example.com");
   await page.getByLabel("Senha").fill("not-a-real-password");
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await expect(page.locator(".mind-editor")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Sair da administração" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sair da conta" })).toBeVisible();
   await page.getByRole("textbox", { name: "Título" }).fill("Nota publicada");
   await page.getByRole("textbox", { name: "Conteúdo" }).fill("Conteúdo público após salvar.");
   await page.getByRole("button", { name: "Salvar" }).click();
@@ -254,6 +255,7 @@ test("adicionar conteúdo exige login, administrador pode editar e sair sem ocul
   await expect(page.locator(".mind-note-view")).toContainText("Conteúdo público após salvar.");
   await page.reload();
   await expect(page.locator(".mind-item")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Sair da conta" })).toBeVisible();
   await page.getByRole("button", { name: /Nota publicada/ }).click();
   await page.getByRole("button", { name: "Editar" }).click();
   await page.getByRole("textbox", { name: "Conteúdo" }).fill("Edição persistida.");
@@ -263,7 +265,8 @@ test("adicionar conteúdo exige login, administrador pode editar e sair sem ocul
   await page.getByRole("button", { name: "Excluir" }).click();
   await expect(page.locator(".mind-item")).toHaveCount(2);
   await expect(page.getByRole("status")).toContainText("Item removido");
-  await page.getByRole("button", { name: "Sair da administração" }).click();
+  await page.getByRole("button", { name: "Sair da conta" }).click();
+  await expect(page.getByRole("button", { name: "Sair da conta" })).toHaveCount(0);
   await expect(page.locator(".mind-item")).toHaveCount(2);
   await expect(page.getByRole("button", { name: "Login do administrador" })).toBeVisible();
   expect(api.requests.some(r => r.path === "/rest/v1/rpc/mind_is_admin")).toBe(true);
