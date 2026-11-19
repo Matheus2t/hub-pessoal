@@ -55,4 +55,6 @@ jobs:
           MIND_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test_fixture_only"
         run: npm run build
       - name: Validate Mente sign-in gate and mock private sync
+        env:
+          MIND_CLOUD_ENABLED: "true"
         run: PW_CHANNEL=chromium npx playwright test frontend/tests/mind-cloud.spec.ts

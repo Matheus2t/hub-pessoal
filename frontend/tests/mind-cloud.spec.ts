@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
+// The general browser-regression workflow uses the standard (local-first) build.
+// These cases must run exclusively against the explicit Cloud preview, otherwise
+// they fail by design and report unrelated regressions.
+test.skip(!/^(true|1|yes)$/i.test(process.env.MIND_CLOUD_ENABLED ?? ""), "Requer build de teste Mente Cloud");
+
+
 const supabase = "https://mocktestproj.supabase.co";
 const cors = {
   "Access-Control-Allow-Origin": "*",
