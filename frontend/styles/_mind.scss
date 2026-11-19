@@ -1,12 +1,16 @@
 /* 2T Mente — calm, monochrome personal knowledge library. */
+.mind-nav-entry { display:inline-flex; align-items:center; justify-content:center; width:40px; min-width:40px; padding:0; }
+.mind-nav-entry .obsidian-mark { display:block; width:24px; height:24px; }
+.mind-nav-entry:hover .obsidian-mark,.mind-nav-entry[aria-current="page"] .obsidian-mark { opacity:1; }
+
 mind-page { display:block; min-width:0; }
 .mind-page { display:grid; gap:24px; padding-bottom:28px; }
 .mind-header { display:flex; align-items:center; justify-content:space-between; gap:22px; }
 .mind-heading { display:flex; align-items:center; gap:22px; min-width:0; }
-.mind-mark { display:grid; place-items:center; flex-shrink:0; width:72px; height:72px; border:1px solid var(--line); border-radius:18px; background:var(--panel); color:var(--text); }
-.mind-mark svg { width:45px; height:45px; }
+.mind-mark { display:grid; place-items:center; flex-shrink:0; width:76px; height:76px; color:var(--text); }
+.mind-mark .obsidian-mark { display:block; width:64px; height:64px; }
 .mind-eyebrow { margin-bottom:6px; color:var(--muted); font-size:10px; letter-spacing:.13em; font-weight:650; }
-.mind-heading h1 { margin:0; font-size:clamp(28px,3vw,40px); font-weight:600; letter-spacing:-.055em; line-height:1.16; }
+.mind-heading h1.sr-only { position:absolute; }
 .mind-tagline { margin-top:8px; color:var(--secondary); font-size:13px; line-height:1.5; }
 .mind-header-actions { display:flex; align-items:center; gap:9px; }
 .mind-page button { font:inherit; cursor:pointer; }
@@ -116,8 +120,8 @@ mind-page { display:block; min-width:0; }
   .mind-page { gap:16px; }
   .mind-header { align-items:stretch; flex-direction:column; gap:16px; }
   .mind-heading { gap:14px; }
-  .mind-mark { width:56px; height:56px; border-radius:13px; }
-  .mind-mark svg { width:36px; height:36px; }
+  .mind-mark { width:60px; height:60px; }
+  .mind-mark .obsidian-mark { width:52px; height:52px; }
   .mind-header-actions { width:100%; }
   .mind-header-actions button { flex:1; }
   .mind-workspace { grid-template-columns:minmax(0,1fr); gap:12px; }

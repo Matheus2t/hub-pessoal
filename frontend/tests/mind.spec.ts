@@ -4,11 +4,18 @@ import { serveBuiltSite } from "./helpers/serve-built-site";
 test.beforeEach(async ({ page }) => {
   await serveBuiltSite(page);
   await page.goto("/#/mente");
-  await expect(page.getByRole("heading", { name: "Mente", exact: true })).toBeVisible();
+  await expect(page.locator("#mind-title")).toHaveText("Mente");
+  await expect(page.locator("#mind-title")).toHaveClass("sr-only");
+  await expect(page.locator(".mind-heading .obsidian-mark")).toBeVisible();
 });
 
 test("Mente appears in main navigation, explains local-only storage and remains responsive", async ({ page }) => {
-  await expect(page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Mente" })).toBeVisible();
+  const mindNav = page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Mente" });
+  await expect(mindNav).toBeVisible();
+  await expect(mindNav.locator(".obsidian-mark")).toBeVisible();
+  await expect(mindNav).toHaveText("");
+  await expect(page.locator(".mind-heading h1")).toHaveClass("sr-only");
+  await expect(page.locator(".breadcrumbs")).toHaveCount(0);
   await expect(page.getByRole("note")).toContainText("somente neste navegador");
   await expect(page.getByRole("button", { name: "Adicionar PDF" })).toBeVisible();
   for (const width of [320, 390, 768, 1366]) {
