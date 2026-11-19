@@ -312,7 +312,8 @@ test("upload público usa caminho versionado e exclusão da linha remove apenas 
   const uploaded = api.items.find(item => item.title === "novo arquivo")!;
   expect(uploaded.storage_path).toMatch(new RegExp("^" + owner + "/" + uploaded.id + "-[0-9a-f-]{36}\\.pdf$", "i"));
   expect(api.objects.has(uploaded.storage_path)).toBe(true);
-  page.on("dialog", dialog => dialog.accept());
+  // Deterministic destructive-action confirmation even when the embedded PDF viewer is present.
+  await page.evaluate(() => { window.confirm = () => true; });
   await page.getByRole("button", { name: /novo arquivo/ }).click();
   await page.getByRole("button", { name: "Excluir" }).click();
   await expect(page.locator(".mind-item")).toHaveCount(2);
