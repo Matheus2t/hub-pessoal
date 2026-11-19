@@ -39,6 +39,7 @@ export class AppSidebar extends LightElement {
           <a href="#/learn" aria-current=${["learn", "learnEn", "learnRu", "learnInvalid"].includes(this.page) ? "page" : "false"}>Learn / Изучать</a>
         </div>
       </details>
+      <a class="nav-item mind-nav-entry" href="#/mente" aria-current=${this.page === "mind" ? "page" : "false"}><svg class="mind-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M5 12l7-8 7 8-7 8-7-8"/><circle cx="12" cy="4" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="20" r="2"/></svg>Mente</a>
       <a class="nav-item" href="#/games" aria-current=${this.page === "games" ? "page" : "false"}>Games</a>
       <details class="teams-menu" @keydown=${this.closeOnEscape} @toggle=${this.keepOneMenuOpen}>
         <summary class="nav-item" aria-current=${["76ers", "spfc", "barcelona", "sports"].includes(this.page) ? "page" : "false"}>Times</summary>

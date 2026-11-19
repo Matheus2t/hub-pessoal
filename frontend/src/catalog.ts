@@ -1,7 +1,7 @@
 import type { IconName } from "./ui";
 import { backgroundRemoverPreviewEnabled, linkResolverPreviewEnabled, utilitiesCatalogEnabled } from "./utilities/flags";
 import { isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled } from "./learn/pilot-preview";
-export type Page = "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "utilities" | "utilityLink" | "utilityBackground" | "76ers" | "spfc" | "barcelona";
+export type Page = "mind" | "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "utilities" | "utilityLink" | "utilityBackground" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -29,6 +29,7 @@ export const tools: Tool[] = [
   { id: 'clt', name: 'Custo de funcionário CLT', category: 'Calculadoras', description: 'Salário, encargos e benefícios do empregador.', icon: 'calculator', href: '#/custo-clt' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
+  mind: {title:'Mente',section:'Conhecimento'},
   games: {title:'Games',section:'Games'},
   call: {title:'Call',section:'Call'},
   sports: {title:'Times',section:'Times'},
@@ -56,6 +57,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   calculator: { title: "Juros compostos", section: "Calculadoras / Finanças" },
 };
 export const currentPage = (): Page =>
+  location.hash.split("?")[0] === "#/mente" ? "mind" :
   location.hash.split("?")[0] === "#/utilitarios" && utilitiesCatalogEnabled() ? "utilities" :
   location.hash.split("?")[0] === "#/utilitarios/desencurtador" ? linkResolverPreviewEnabled() ? "utilityLink" : utilitiesCatalogEnabled() ? "utilities" : "overview" :
   location.hash.split("?")[0] === "#/utilitarios/remover-fundo" ? backgroundRemoverPreviewEnabled() ? "utilityBackground" : utilitiesCatalogEnabled() ? "utilities" : "overview" :
