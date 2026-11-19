@@ -21,6 +21,8 @@ mind-page { display:block; width:100%; min-width:0; }
 .mind-heading h1.sr-only { position:absolute; }
 .mind-tagline { margin-top:3px; color:var(--secondary); font-size:13px; font-weight:400; line-height:1.5; }
 .mind-header-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+/* Visible sign-out action only exists in the authenticated administrator UI. */
+.mind-header-actions .mind-logout-button { border-color:var(--border-highlight); color:var(--text); font-weight:620; }
 .mind-page button { font:inherit; cursor:pointer; }
 .mind-header-actions button,.mind-actions button,.mind-detail-footer button,.mind-backup button {
   min-height:34px; border:1px solid var(--line-soft); border-radius:6px; padding:7px 11px;
