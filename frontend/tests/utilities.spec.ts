@@ -129,3 +129,24 @@ test("local utility pages remain responsive in light and dark themes", async ({ 
     }
   }
 });
+
+test("homepage reserves a discoverable place for the resolver without exposing a disabled tool", async ({ page }) => {
+  const publicOrigin = "https://matheus2t.com.br";
+  await serveBuiltSite(page, undefined, publicOrigin);
+  for (const width of [320, 390, 768, 1366]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${publicOrigin}/#/`);
+    const entry = page.locator("home-page .home-resolver-entry");
+    await expect(entry).toHaveCount(1);
+    await expect(entry).toContainText("Desencurtador de Links");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (publicPreviewBuild) {
+      await expect(entry).toHaveAttribute("href", "#/utilitarios/desencurtador");
+      await expect(entry).toContainText("Abrir ferramenta");
+    } else {
+      await expect(entry).toHaveAttribute("aria-label", "Desencurtador de Links em preparação");
+      await expect(entry).toContainText("Em preparação");
+      await expect(page.locator('home-page a[href="#/utilitarios/desencurtador"]')).toHaveCount(0);
+    }
+  }
+});

@@ -41,14 +41,19 @@ export class UtilitiesHome extends LightElement {
   }
 
   render() {
-    const local = frontendUtilityAccess().loopback;
+    const access = frontendUtilityAccess();
+    const local = access.loopback;
+    const resolverReady = access.linkResolver &&
+      this.capabilities.state === "enabled" &&
+      this.capabilities.capabilities.utilities_enabled &&
+      this.capabilities.capabilities.link_resolver_enabled;
     const status = this.capabilities.state === "unavailable"
       ? local ? "Não foi possível consultar o backend local." : "Não foi possível consultar os Utilitários."
       : this.capabilities.state === "disabled"
         ? local ? "Os protótipos estão desativados no backend local." : "Os Utilitários estão desativados."
         : nothing;
     return html`<section class="utilities-page" aria-labelledby="utilities-title">
-      <header class="utilities-heading"><p class="utilities-eyebrow">2T · ÁREAS</p><h1 id="utilities-title">Utilitários</h1><p>Ferramentas em preparação.</p></header>
+      <header class="utilities-heading"><p class="utilities-eyebrow">2T · ÁREAS</p><h1 id="utilities-title">Utilitários</h1><p>${resolverReady ? "Consulte o destino de links encurtados sem abrir a página." : "Ferramentas em preparação."}</p></header>
       <div class="utilities-list" aria-label="Utilitários disponíveis">${this.entry("links")}${local ? this.entry("background") : nothing}</div>
       ${status !== nothing ? html`<p class="utilities-status" role="status">${status}</p>` : nothing}
     </section>`;

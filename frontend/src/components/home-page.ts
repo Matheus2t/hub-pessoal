@@ -1,10 +1,24 @@
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { LightElement, icon } from "../ui";
+import { linkResolverPreviewEnabled } from "../utilities/flags";
 
 @customElement("home-page")
 export class HomePage extends LightElement {
   render() {
+    const resolverAvailable = linkResolverPreviewEnabled();
+    const resolverContent = html`
+      <span class="home-call-icon home-resolver-icon" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m16 24-2 2a6 6 0 0 1-8-8l6-6a6 6 0 0 1 8 0"/>
+          <path d="m24 16 2-2a6 6 0 0 1 8 8l-6 6a6 6 0 0 1-8 0"/>
+          <path d="m15 25 10-10"/>
+        </svg>
+      </span>
+      <span class="home-call-copy">
+        <strong>Desencurtador de Links</strong>
+        <span>Descubra o destino de links encurtados sem abrir a página.</span>
+      </span>`;
     return html`
       <section class="platform-intro">
         <h1>Início</h1>
@@ -48,6 +62,15 @@ export class HomePage extends LightElement {
           <span class="home-call-copy"><strong>Games</strong><span>10 jogos clássicos. Arcade, lógica, palavras e desafios de habilidade.</span></span>
           <span class="home-call-action">Explorar jogos <span aria-hidden="true">↗</span></span>
         </a>
+        ${resolverAvailable
+          ? html`<a class="home-call home-resolver-entry" href="#/utilitarios/desencurtador" aria-label="Abrir Desencurtador de Links">
+              ${resolverContent}
+              <span class="home-call-action">Abrir ferramenta <span aria-hidden="true">↗</span></span>
+            </a>`
+          : html`<article class="home-call home-resolver-entry home-resolver-entry--pending" aria-label="Desencurtador de Links em preparação">
+              ${resolverContent}
+              <span class="home-call-action">Em preparação</span>
+            </article>`}
       </section>`;
   }
 }
