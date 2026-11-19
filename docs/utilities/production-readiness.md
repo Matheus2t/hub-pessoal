@@ -77,3 +77,27 @@ O Vercel WAF oferece rate limiting por IP com fixed window nos planos documentad
 - Vercel Backend Egress: https://vercel.com/academy/optimize-your-vercel-account/backend-egress
 - Limites de Functions: https://vercel.com/docs/functions/limitations
 - OWASP SSRF Prevention Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
+
+
+## Proposta de liberação limitada (V2, segurança em camadas)
+
+Para liberar a ferramenta sem disponibilizar acesso arbitrário à rede pela API, o novo modo
+LINK_RESOLVER_RESTRICTED_PUBLIC_ENABLED (desativado por padrão) limita o tráfego externo
+a URLs HTTPS/443 de uma lista fechada: bit.ly, tinyurl.com, is.gd, v.gd, t.co, rb.gy.
+
+A aplicação valida cada URL, resolve todos os endereços DNS A/AAAA e utiliza transporte
+IP-pinando antes de cada contato com o domínio aprovado. Quando a resposta do encurtador
+redireciona para um domínio não autorizado, a API **não faz DNS nem HTTP nesse domínio**.
+Apenas registra a URL do cabeçalho Location como "destination_identified", sem afirmar
+HTTP final, existência, segurança ou reputação. O modo público tem máximo de quatro
+redirecionamentos e oito segundos; o modo local permanece com o comportamento prévio.
+
+Isso é um bloqueio de destinos **na aplicação**, não uma política de saída da rede da
+Vercel. O modo amplo continua desativado até haver controles de rede e quotas globais
+independentes. O modo limitado ainda exige WAF ativo por IP para reduzir abuso.
+WAF regional por IP não é limite global; o plano Hobby pode suspender o serviço ao
+exceder suas cotas de uso. Nenhum recurso pago ou compra é autorizado por este documento.
+
+O deploy público de V2 exige observar a regra WAF ativa, confirmar os limites da conta,
+testar capacidades e POST reais e manter um desligamento rápido por variáveis de ambiente.
+Não ativar apenas porque os testes locais passam.

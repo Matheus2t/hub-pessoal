@@ -71,6 +71,29 @@ test("submits JSON with Enter, shows confirmed destination and a truthful HTTP 4
   await expect(page.getByRole("button", { name: /Copiar endereço/ })).toBeVisible();
 });
 
+test("public restricted outcome reports an unvisited final URL without fabricating status", async ({ page }) => {
+  await openLocalPreview(page);
+  await page.route("**/api/utilities/links/resolve", route => route.fulfill({
+    status: 200,
+    json: resolved({
+      status: "destination_identified",
+      original_url: "https://bit.ly/sample",
+      final_url: "https://example.com/2027",
+      final_status_code: null,
+      redirect_count: 1,
+      redirects: [{ url: "https://bit.ly/sample", status_code: 302 }],
+      security: { https: true, warnings: ["O destino foi informado pelo encurtador, mas não foi acessado nem verificado."], reputation_checked: false },
+    }),
+  }));
+  await page.getByRole("textbox", { name: "Endereço" }).fill("https://bit.ly/sample");
+  await page.getByRole("button", { name: "Analisar endereço" }).click();
+  await expect(page.getByText("DESTINO INFORMADO · NÃO VERIFICADO")).toBeVisible();
+  await expect(page.locator(".link-result-url")).toContainText("https://example.com/2027");
+  await expect(page.locator(".link-result-message")).toContainText("A página final não foi acessada");
+  await expect(page.locator(".link-result-meta")).not.toContainText("Resposta HTTP");
+  await expect(page.getByRole("button", { name: /Copiar endereço/ })).toBeVisible();
+});
+
 test("validates empty, malformed, unsupported, credentialed, and oversized input before POST", async ({ page }) => {
   await openLocalPreview(page);
   let requests = 0;

@@ -444,3 +444,44 @@ def test_slow_request_body_times_out_before_consuming_a_resolver_slot(monkeypatc
     asyncio.run(run())
     assert router_module._RESOLVER_SLOTS.acquire(blocking=False)
     router_module._RESOLVER_SLOTS.release()
+
+
+def test_vercel_restricted_mode_requires_waf_and_never_enables_background_or_broad_egress(monkeypatch):
+    _set_link_flags(monkeypatch)
+    monkeypatch.setenv("VERCEL", "1")
+    monkeypatch.setattr(settings, "link_resolver_public_enabled", False)
+    monkeypatch.setattr(settings, "link_resolver_public_egress_confirmed", False)
+    monkeypatch.setattr(settings, "link_resolver_restricted_public_enabled", True)
+    monkeypatch.setattr(settings, "link_resolver_public_rate_limit_confirmed", False)
+    with pytest.raises(HTTPException) as error:
+        capabilities(capability_request(client=("203.0.113.10", 43120)))
+    assert error.value.status_code == 404
+
+    monkeypatch.setattr(settings, "link_resolver_public_rate_limit_confirmed", True)
+    monkeypatch.setattr(settings, "background_remover_enabled", True)
+    response = capabilities(capability_request(client=("203.0.113.10", 43120)))
+    assert response.model_dump() == {
+        "utilities_enabled": True, "link_resolver_enabled": True, "background_remover_enabled": False,
+    }
+
+    from app.utilities import router as router_module
+    called = []
+    async def fake_resolve(url, **kwargs):
+        called.append((url, kwargs))
+        return LinkResolveResponse(
+            status="destination_identified", original_url=url, final_url="https://example.com/land",
+            final_status_code=None, redirect_count=1,
+            redirects=[{"url": url, "status_code": 302}],
+            security={"https": True, "warnings": [], "reputation_checked": False},
+        )
+    monkeypatch.setattr(router_module, "resolve_link", fake_resolve)
+
+    async def run():
+        transport = httpx.ASGITransport(app=main.app, client=("203.0.113.10", 43120))
+        async with httpx.AsyncClient(transport=transport, base_url="https://matheus2t.com.br") as client:
+            response = await client.post("/api/utilities/links/resolve", json={"url": "https://bit.ly/demo"})
+        assert response.status_code == 200
+        assert response.json()["status"] == "destination_identified"
+        assert response.json()["final_status_code"] is None
+    asyncio.run(run())
+    assert called == [("https://bit.ly/demo", {"restricted_public": True})]
