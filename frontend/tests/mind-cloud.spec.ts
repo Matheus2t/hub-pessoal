@@ -42,9 +42,12 @@ test("visitantes podem abrir a Mente, mas não acessar o IndexedDB nem a bibliot
 
 test("administrador autenticado acessa, pesquisa e sai; um visitante não recebe dados", async ({ page }) => {
   await serveBuiltSite(page);
+  page.on('requestfailed', r => console.log('MIND REQUEST FAILED', r.method(), r.url(), r.failure()?.errorText));
+  page.on('console', m => { if(m.type()==='error') console.log('MIND CONSOLE', m.text()); });
   let rows = [item];
   const requested: string[] = [];
   await page.route(supabase + "/**", async route => {
+    console.log("MIND MOCK", route.request().method(), route.request().url());
     if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     const url = new URL(route.request().url());
     requested.push(url.pathname);
@@ -83,7 +86,9 @@ test("administrador autenticado acessa, pesquisa e sai; um visitante não recebe
 
 test("conta sem privilégio de administrador jamais vê as notas privadas", async ({ page }) => {
   await serveBuiltSite(page);
+  page.on('requestfailed', r => console.log('DENIED REQUEST FAILED', r.method(), r.url(), r.failure()?.errorText));
   await page.route(supabase + "/**", route => {
+    console.log("DENIED MOCK", route.request().method(), route.request().url());
     if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     const url = new URL(route.request().url());
     if (url.pathname === "/auth/v1/token") return route.fulfill({ headers: cors, status: 200, json: {
