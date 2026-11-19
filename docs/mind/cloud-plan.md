@@ -58,7 +58,10 @@ Testes locais Playwright usam uma API simulada e não comprovam credenciais de p
 Na validação local desta correção: build/typecheck passaram nos modos local, cloud de teste e
 público sem cloud; Playwright passou 8 testes locais, 14 testes de cloud simulada e 1 teste
 de build público sem cloud; os 4 testes unitários de geração/validação da CSP passaram.
-O teste de produção permanece pendente até o deployment desta correção.
+Após o deployment de produção `dpl_9vHFmhfZ93UQkVTUfVo3g8NPhqKG` (commit
+`c671a9096a41297c5720b0800b499d3ae27ce8ce`), o smoke anônimo e somente de leitura em
+`https://matheus2t.com.br/#/mente` passou 1/1: página e PDF carregaram; download e abertura
+externa funcionaram sem bearer token. Nenhuma mutação foi feita no Supabase de produção.
 Antes desta correção, a produção retornava HTML e PDF válidos, mas sua CSP não autorizava
 o host Supabase em `frame-src`, bloqueando o iframe. A resposta real do PDF não incluía
 `X-Frame-Options` nem `frame-ancestors` restritivo e tinha MIME `application/pdf`. O smoke
