@@ -121,3 +121,46 @@ test("non-PDF uploads are rejected before being saved", async ({ page }) => {
   await expect(page.getByRole("alert")).toContainText("PDF inválido");
   await expect(page.locator(".mind-item")).toHaveCount(0);
 });
+
+
+test("Mente minimal uses aligned panes on desktop and stacked panes on mobile in both themes", async ({ page }) => {
+  for (const theme of ["dark", "light"] as const) {
+    await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+    for (const width of [320, 390, 700, 900, 1200, 1440]) {
+      await page.setViewportSize({ width, height: 860 });
+      const facets = page.locator(".mind-facets");
+      const list = page.locator(".mind-list");
+      const reader = page.locator(".mind-inspector");
+      await expect(facets).toBeVisible();
+      await expect(list).toBeVisible();
+      await expect(reader).toBeVisible();
+      const a = await facets.boundingBox(), b = await list.boundingBox(), c = await reader.boundingBox();
+      expect(a && b && c).toBeTruthy();
+      if (width <= 700) {
+        expect(b!.y).toBeGreaterThan(a!.y);
+        expect(c!.y).toBeGreaterThan(b!.y);
+      } else if (width <= 940) {
+        expect(b!.x).toBeLessThan(c!.x);
+        expect(b!.y).toBeGreaterThanOrEqual(a!.y);
+      } else {
+        expect(a!.x).toBeLessThan(b!.x);
+        expect(b!.x).toBeLessThan(c!.x);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  }
+});
+
+test("on mobile opening a note reveals the reader without losing access to library", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 750 });
+  await page.getByRole("button", { name: "+ Nova nota" }).click();
+  await expect(page.locator(".mind-editor")).toBeInViewport();
+  await page.getByRole("textbox", { name: "Título" }).fill("Nota mobile");
+  await page.getByRole("textbox", { name: "Conteúdo" }).fill("Conteúdo acessível");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(1);
+  await page.locator(".mind-item").click();
+  await expect(page.locator(".mind-detail")).toBeInViewport();
+  await expect(page.locator(".mind-note-view")).toContainText("Conteúdo acessível");
+  await expect(page.getByRole("button", { name: "Editar" })).toBeVisible();
+});
