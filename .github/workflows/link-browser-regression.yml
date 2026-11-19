@@ -111,8 +111,65 @@ jobs:
             browser-stderr.log
             /tmp/link-browser-api.log
           if-no-files-found: ignore
-      - name: Report test status
-        if: steps.browser.outputs.exit_code != '0'
+      - name: Report raw test status (compared in separate job)
+        if: always()
+        run: echo "Playwright raw exit code on ${{ matrix.revision }} is ${{ steps.browser.outputs.exit_code }}. The comparison job evaluates new failures."
+  regression-diff:
+    name: Regressions introduced by candidate
+    needs: compare-browser
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download baseline and candidate summaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: link-browser-*
+          path: reports
+      - name: Compare failures by test identity
+        shell: bash
         run: |
-          echo "Full Playwright regression has failures on ${{ matrix.revision }}. Compare artifacts against baseline." >&2
-          exit 1
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          function findReports(directory, found=[]) {
+            if (!fs.existsSync(directory)) return found;
+            for (const name of fs.readdirSync(directory)) {
+              const entry = path.join(directory,name);
+              if (fs.statSync(entry).isDirectory()) findReports(entry,found);
+              else if (name === 'browser-summary.json') found.push(entry);
+            }
+            return found;
+          }
+          const files=findReports('reports');
+          function readReport(kind) {
+            const match=files.find(file=>file.includes(`link-browser-${kind}`));
+            if (!match) throw new Error(`Missing ${kind} regression artifact`);
+            return JSON.parse(fs.readFileSync(match,'utf8'));
+          }
+          let baseline,candidate;
+          try { baseline=readReport('baseline');candidate=readReport('candidate'); }
+          catch(error) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`Unable to compare: ${error.message}\n`);
+            process.exit(1);
+          }
+          const identity=item=>[item.file,item.title].join(' :: ');
+          const baselineFailed=new Set((baseline.failed||[]).map(identity));
+          const candidateFailed=new Set((candidate.failed||[]).map(identity));
+          const introduced=[...candidateFailed].filter(x=>!baselineFailed.has(x));
+          const resolved=[...baselineFailed].filter(x=>!candidateFailed.has(x));
+          const report=[
+            '# Playwright regression comparison',
+            `Baseline failed: ${baselineFailed.size}`,
+            `Candidate failed: ${candidateFailed.size}`,
+            `New failures: ${introduced.length}`,
+            `Resolved failures: ${resolved.length}`,
+            '',
+            ...introduced.map(x=>`- NEW: ${x}`),
+            ...resolved.map(x=>`- RESOLVED: ${x}`),
+            '',
+            'Existing failures are NOT declared passing. This gate only checks changes relative to main.'
+          ].join('\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,report+'\n');
+          console.log(report);
+          if (introduced.length) process.exit(1);
+          NODE
