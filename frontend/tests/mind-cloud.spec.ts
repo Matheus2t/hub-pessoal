@@ -2,6 +2,12 @@ import { expect, test } from "@playwright/test";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
 const supabase = "https://mocktestproj.supabase.co";
+const cors = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "apikey, authorization, content-type, prefer, x-upsert",
+  "Access-Control-Max-Age": "600",
+};
 const item = {
   id: "98a6ee58-9c8a-4a40-ae1f-3d5537bc4c5a",
   owner_id: "075026fa-4e9f-4e1a-8ef4-a3c443e11442",
@@ -39,25 +45,26 @@ test("administrador autenticado acessa, pesquisa e sai; um visitante não recebe
   let rows = [item];
   const requested: string[] = [];
   await page.route(supabase + "/**", async route => {
+    if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     const url = new URL(route.request().url());
     requested.push(url.pathname);
     if (url.pathname === "/auth/v1/token") {
-      return route.fulfill({ status: 200, json: {
+      return route.fulfill({ headers: cors, status: 200, json: {
         access_token: "test-jwt-not-real", refresh_token: "test-refresh-not-real",
         expires_in: 3600, user: { id: item.owner_id },
       } });
     }
-    if (url.pathname === "/auth/v1/user") return route.fulfill({ status: 200, json: { id: item.owner_id } });
-    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ status: 200, json: true });
+    if (url.pathname === "/auth/v1/user") return route.fulfill({ headers: cors, status: 200, json: { id: item.owner_id } });
+    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ headers: cors, status: 200, json: true });
     if (url.pathname === "/rest/v1/mind_items" && route.request().method() === "GET") {
-      return route.fulfill({ status: 200, json: url.searchParams.get("select") === "id" ? rows.map(x => ({ id: x.id })) : rows });
+      return route.fulfill({ headers: cors, status: 200, json: url.searchParams.get("select") === "id" ? rows.map(x => ({ id: x.id })) : rows });
     }
     if (url.pathname === "/rest/v1/mind_items" && route.request().method() === "DELETE") {
       rows = [];
-      return route.fulfill({ status: 204 });
+      return route.fulfill({ headers: cors, status: 204 });
     }
-    if (url.pathname === "/auth/v1/logout") return route.fulfill({ status: 204 });
-    return route.fulfill({ status: 404, json: {} });
+    if (url.pathname === "/auth/v1/logout") return route.fulfill({ headers: cors, status: 204 });
+    return route.fulfill({ headers: cors, status: 404, json: {} });
   });
   await page.goto("/#/mente");
   await page.getByRole("button", { name: "Acessar biblioteca" }).click();
@@ -77,14 +84,15 @@ test("administrador autenticado acessa, pesquisa e sai; um visitante não recebe
 test("conta sem privilégio de administrador jamais vê as notas privadas", async ({ page }) => {
   await serveBuiltSite(page);
   await page.route(supabase + "/**", route => {
+    if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     const url = new URL(route.request().url());
-    if (url.pathname === "/auth/v1/token") return route.fulfill({ status: 200, json: {
+    if (url.pathname === "/auth/v1/token") return route.fulfill({ headers: cors, status: 200, json: {
       access_token: "test-not-real", refresh_token: "test-refresh-not-real",
       expires_in: 3600, user: { id: item.owner_id },
     } });
-    if (url.pathname === "/auth/v1/user") return route.fulfill({ status: 200, json: { id: item.owner_id } });
-    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ status: 200, json: false });
-    return route.fulfill({ status: 204 });
+    if (url.pathname === "/auth/v1/user") return route.fulfill({ headers: cors, status: 200, json: { id: item.owner_id } });
+    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ headers: cors, status: 200, json: false });
+    return route.fulfill({ headers: cors, status: 204 });
   });
   await page.goto("/#/mente");
   await page.getByRole("button", { name: "Acessar biblioteca" }).click();
