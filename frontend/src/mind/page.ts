@@ -291,6 +291,8 @@ export class MindPage extends LightElement {
     finally { this.busy = false; }
   }
 
+  private closeManageMenu() { this.querySelector<HTMLDetailsElement>(".mind-backup")?.removeAttribute("open"); }
+
   private async backup() {
     if (!this.libraryAvailable || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     this.busy = true; this.clearMessages();
@@ -511,9 +513,9 @@ export class MindPage extends LightElement {
           ${(!mindCloudEnabled() || this.authenticated) ? html`<details class="mind-backup">
             <summary>Gerenciar</summary>
             <div class="mind-backup-menu">
-              ${mindCloudEnabled() ? html`<button type="button" @click=${this.migrateLocal} ?disabled=${this.busy}>Migrar dados deste navegador</button>` : nothing}
-              <button type="button" @click=${this.backup} ?disabled=${this.busy}>Exportar backup</button>
-              <button type="button" @click=${() => this.querySelector<HTMLInputElement>("#mind-backup-input")?.click()} ?disabled=${this.busy}>Restaurar backup</button>
+              ${mindCloudEnabled() ? html`<button type="button" @click=${() => { this.closeManageMenu(); void this.migrateLocal(); }} ?disabled=${this.busy}>Migrar dados deste navegador</button>` : nothing}
+              <button type="button" @click=${() => { this.closeManageMenu(); void this.backup(); }} ?disabled=${this.busy}>Exportar backup</button>
+              <button type="button" @click=${() => { this.closeManageMenu(); this.querySelector<HTMLInputElement>("#mind-backup-input")?.click(); }} ?disabled=${this.busy}>Restaurar backup</button>
               <input id="mind-backup-input" type="file" accept=".json,application/json" hidden @change=${this.restore} />
               <p>O backup inclui PDFs e não é criptografado.</p>
             </div>
