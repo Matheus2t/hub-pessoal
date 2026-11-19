@@ -1,138 +1,129 @@
 import { expect, test } from "@playwright/test";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
-// The general browser-regression workflow uses the standard (local-first) build.
-// These cases must run exclusively against the explicit Cloud preview, otherwise
-// they fail by design and report unrelated regressions.
 test.skip(!/^(true|1|yes)$/i.test(process.env.MIND_CLOUD_ENABLED ?? ""), "Requer build de teste Mente Cloud");
-
 
 const supabase = "https://mocktestproj.supabase.co";
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "apikey, authorization, content-type, prefer, x-upsert",
-  "Access-Control-Max-Age": "600",
 };
-const item = {
-  id: "98a6ee58-9c8a-4a40-ae1f-3d5537bc4c5a",
-  owner_id: "075026fa-4e9f-4e1a-8ef4-a3c443e11442",
-  kind: "note",
-  title: "Investimentos",
-  topic: "Estudos",
-  tags: ["2027"],
-  description: "Cenários",
-  content: "Estudos salvos de forma privada.",
-  favorite: false,
-  file_name: null,
-  file_size: null,
-  storage_path: null,
-  created_at: "2026-11-19T00:00:00.000Z",
-  updated_at: "2026-11-19T00:00:00.000Z",
+const owner = "075026fa-4e9f-4e1a-8ef4-a3c443e11442";
+const note = {
+  id: "98a6ee58-9c8a-4a40-ae1f-3d5537bc4c5a", owner_id: owner,
+  kind: "note", title: "Investimentos", topic: "Estudos", tags: ["2027"],
+  description: "Cenários", content: "Estudos públicos.", favorite: false,
+  file_name: null, file_size: null, storage_path: null,
+  created_at: "2026-11-19T00:00:00.000Z", updated_at: "2026-11-19T00:00:00.000Z",
 };
+const pdf = {
+  ...note, id: "e75dc2e4-2579-426d-9f21-3e1a34dc6ed4", kind: "pdf",
+  title: "Relatório", content: "", file_name: "relatorio.pdf", file_size: 2048,
+  storage_path: owner + "/e75dc2e4-2579-426d-9f21-3e1a34dc6ed4.pdf",
+};
+function mockApi(page: import("@playwright/test").Page, admin = true) {
+  const requests: { path: string; method: string; auth: string | null }[] = [];
+  return {
+    requests,
+    async install() {
+      await page.route(supabase + "/**", route => {
+        const request = route.request();
+        const url = new URL(request.url());
+        requests.push({ path: url.pathname, method: request.method(), auth: request.headers()["authorization"] ?? null });
+        if (request.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+        if (url.pathname === "/rest/v1/mind_items" && request.method() === "GET") {
+          return route.fulfill({ status: 200, headers: cors, json: [note, pdf] });
+        }
+        if (url.pathname === "/auth/v1/token") return route.fulfill({ status: 200, headers: cors, json: {
+          access_token: "mock-jwt", refresh_token: "mock-refresh", expires_in: 3600, user: { id: owner },
+        } });
+        if (url.pathname === "/auth/v1/user") return route.fulfill({ status: 200, headers: cors, json: { id: owner } });
+        if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ status: 200, headers: cors, json: admin });
+        if (url.pathname === "/auth/v1/logout") return route.fulfill({ status: 204, headers: cors });
+        if (url.pathname.startsWith("/storage/v1/object/public/")) {
+          return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/pdf" }, body: "%PDF-1.4\n%%EOF" });
+        }
+        return route.fulfill({ status: 404, headers: cors, json: {} });
+      });
+    },
+  };
+}
 
-test("visitantes podem abrir a Mente, mas não acessar o IndexedDB nem a biblioteca sem login", async ({ page }) => {
+test("visitante acessa notas e PDFs públicos sem login, sem controles de edição", async ({ page }) => {
   await serveBuiltSite(page);
-  const sensitiveRequests: string[] = [];
-  page.on("request", request => { if (request.url().includes("supabase.co")) sensitiveRequests.push(request.url()); });
+  const api = mockApi(page); await api.install();
   await page.goto("/#/mente");
-  await expect(page.getByRole("heading", { name: "Mente" })).toBeAttached();
-  await expect(page.getByRole("button", { name: "Acessar biblioteca" })).toBeVisible();
-  await expect(page.locator(".mind-workspace")).toHaveCount(0);
-  expect(sensitiveRequests).toEqual([]);
-  await page.getByRole("button", { name: "Acessar biblioteca" }).click();
-  await expect(page.getByLabel("E-mail")).toBeVisible();
-  await expect(page.getByLabel("Senha")).toBeVisible();
-  await expect(page.locator(".mind-workspace")).toHaveCount(0);
+  await expect(page.locator(".mind-item")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "+ Nova nota" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Adicionar PDF" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Editar" })).toHaveCount(0);
+  await expect(page.locator(".mind-backup")).toHaveCount(0);
+  await page.getByRole("button", { name: /Investimentos/ }).click();
+  await expect(page.locator(".mind-note-view")).toContainText("Estudos públicos.");
+  await expect(page.getByRole("button", { name: "Excluir" })).toHaveCount(0);
+  expect(api.requests.some(r => r.path === "/rest/v1/mind_items" && !r.auth)).toBe(true);
+  expect(api.requests.some(r => r.path.startsWith("/auth/v1/token"))).toBe(false);
 });
 
-test("administrador autenticado acessa, pesquisa e sai; um visitante não recebe dados", async ({ page }) => {
+test("visitante visualiza PDF na 2T e encontra link externo direto", async ({ page }) => {
   await serveBuiltSite(page);
-  page.on('requestfailed', r => console.log('MIND REQUEST FAILED', r.method(), r.url(), r.failure()?.errorText));
-  page.on('console', m => { if(m.type()==='error') console.log('MIND CONSOLE', m.text()); });
-  let rows = [item];
-  const requested: string[] = [];
-  await page.route(supabase + "/**", async route => {
-    console.log("MIND MOCK", route.request().method(), route.request().url());
-    if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
-    const url = new URL(route.request().url());
-    requested.push(url.pathname);
-    if (url.pathname === "/auth/v1/token") {
-      return route.fulfill({ headers: cors, status: 200, json: {
-        access_token: "test-jwt-not-real", refresh_token: "test-refresh-not-real",
-        expires_in: 3600, user: { id: item.owner_id },
-      } });
-    }
-    if (url.pathname === "/auth/v1/user") return route.fulfill({ headers: cors, status: 200, json: { id: item.owner_id } });
-    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ headers: cors, status: 200, json: true });
-    if (url.pathname === "/rest/v1/mind_items" && route.request().method() === "GET") {
-      return route.fulfill({ headers: cors, status: 200, json: url.searchParams.get("select") === "id" ? rows.map(x => ({ id: x.id })) : rows });
-    }
-    if (url.pathname === "/rest/v1/mind_items" && route.request().method() === "DELETE") {
-      rows = [];
-      return route.fulfill({ headers: cors, status: 204 });
-    }
-    if (url.pathname === "/auth/v1/logout") return route.fulfill({ headers: cors, status: 204 });
-    return route.fulfill({ headers: cors, status: 404, json: {} });
-  });
+  const api = mockApi(page); await api.install();
   await page.goto("/#/mente");
-  await page.getByRole("button", { name: "Acessar biblioteca" }).click();
+  await page.getByRole("button", { name: /Relatório/ }).click();
+  await page.getByRole("button", { name: "Visualizar na 2T" }).click();
+  const iframe = page.locator(".mind-pdf-embed iframe");
+  await expect(iframe).toBeVisible();
+  await expect(iframe).toHaveAttribute("src", supabase + "/storage/v1/object/public/mind-pdfs/" + pdf.storage_path);
+  await expect(page.getByRole("link", { name: /Abrir no navegador/ })).toHaveAttribute("target", "_blank");
+  await expect(page.getByRole("link", { name: /Abrir no navegador/ })).toHaveAttribute("href", supabase + "/storage/v1/object/public/mind-pdfs/" + pdf.storage_path);
+  await page.getByRole("button", { name: "Fechar visualização" }).click();
+  await expect(iframe).toHaveCount(0);
+});
+
+test("adicionar conteúdo exige login, administrador pode editar e sair sem ocultar leitura", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await expect(page.locator(".mind-item")).toHaveCount(2);
+  await page.getByRole("button", { name: "+ Nova nota" }).click();
+  await expect(page.getByRole("heading", { name: "Entrar para editar" })).toBeVisible();
   await page.getByLabel("E-mail").fill("admin@example.com");
   await page.getByLabel("Senha").fill("not-a-real-password");
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
-  await expect(page.locator(".mind-item")).toHaveCount(1);
-  await expect(page.getByRole("button", { name: "Sair" })).toBeVisible();
-  await page.getByRole("searchbox", { name: "Pesquisar na Mente" }).fill("Investimentos");
-  await expect(page.locator(".mind-item")).toHaveCount(1);
-  expect(requested).toContain("/rest/v1/rpc/mind_is_admin");
-  await page.getByRole("button", { name: "Sair" }).click();
-  await expect(page.locator(".mind-workspace")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Acessar biblioteca" })).toBeVisible();
+  await expect(page.locator(".mind-editor")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sair da administração" })).toBeVisible();
+  await page.getByRole("button", { name: "Cancelar" }).click();
+  await page.getByRole("button", { name: "Sair da administração" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "Login do administrador" })).toBeVisible();
+  expect(api.requests.some(r => r.path === "/rest/v1/rpc/mind_is_admin")).toBe(true);
 });
 
-test("conta sem privilégio de administrador jamais vê as notas privadas", async ({ page }) => {
+test("conta sem permissão não obtém acesso à edição", async ({ page }) => {
   await serveBuiltSite(page);
-  page.on('requestfailed', r => console.log('DENIED REQUEST FAILED', r.method(), r.url(), r.failure()?.errorText));
-  await page.route(supabase + "/**", route => {
-    console.log("DENIED MOCK", route.request().method(), route.request().url());
-    if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
-    const url = new URL(route.request().url());
-    if (url.pathname === "/auth/v1/token") return route.fulfill({ headers: cors, status: 200, json: {
-      access_token: "test-not-real", refresh_token: "test-refresh-not-real",
-      expires_in: 3600, user: { id: item.owner_id },
-    } });
-    if (url.pathname === "/auth/v1/user") return route.fulfill({ headers: cors, status: 200, json: { id: item.owner_id } });
-    if (url.pathname === "/rest/v1/rpc/mind_is_admin") return route.fulfill({ headers: cors, status: 200, json: false });
-    return route.fulfill({ headers: cors, status: 204 });
-  });
+  const api = mockApi(page, false); await api.install();
   await page.goto("/#/mente");
-  await page.getByRole("button", { name: "Acessar biblioteca" }).click();
+  await page.getByRole("button", { name: "Adicionar PDF" }).click();
   await page.getByLabel("E-mail").fill("other@example.com");
   await page.getByLabel("Senha").fill("invalid-placeholder");
-  await page.getByRole("button", { name: "Entrar" }).click();
+  await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("não possui permissão de administrador");
-  await expect(page.locator(".mind-workspace")).toHaveCount(0);
+  await expect(page.locator(".mind-item")).toHaveCount(2);
+  await expect(page.locator(".mind-editor")).toHaveCount(0);
 });
 
-
-test("the private Mente login stays compact in mobile and desktop themes", async ({ page }) => {
+test("biblioteca pública é responsiva nos temas claro e escuro", async ({ page }) => {
   await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
   await page.goto("/#/mente");
+  await expect(page.locator(".mind-item")).toHaveCount(2);
   for (const theme of ["dark", "light"] as const) {
     await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
     for (const width of [320, 390, 768, 1366]) {
       await page.setViewportSize({ width, height: 800 });
-      await expect(page.getByRole("button", { name: "Acessar biblioteca" })).toBeVisible();
-      await expect(page.locator(".mind-workspace")).toHaveCount(0);
-      const heading = await page.locator(".mind-private-preview h2").boundingBox();
-      expect(heading).not.toBeNull();
-      expect(heading!.x).toBeGreaterThanOrEqual(0);
-      expect(heading!.x + heading!.width).toBeLessThanOrEqual(width);
+      await expect(page.locator(".mind-workspace")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
   }
-  await page.getByRole("button", { name: "Acessar biblioteca" }).click();
-  await expect(page.getByLabel("E-mail")).toBeVisible();
-  await expect(page.getByLabel("Senha")).toBeVisible();
-  await expect(page.locator(".mind-workspace")).toHaveCount(0);
 });
