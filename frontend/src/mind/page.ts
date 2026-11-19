@@ -476,7 +476,7 @@ export class MindPage extends LightElement {
         ${this.libraryAvailable ? html`<div class="mind-header-actions">
           <button class="mind-primary" type="button" @click=${this.startNote} ?disabled=${this.busy}>+ Nova nota</button>
           <button type="button" @click=${() => { if (this.requireAdmin("pdf")) this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click(); }} ?disabled=${this.busy}>Adicionar PDF</button>
-          ${mindCloudEnabled() ? (this.authenticated ? html`<button type="button" @click=${this.logout} ?disabled=${this.busy}>Sair da administração</button>` : html`<button type="button" @click=${() => { this.pendingAdminAction = null; this.loginVisible = !this.loginVisible; }}>Login do administrador</button>`) : nothing}
+          ${mindCloudEnabled() ? (this.authenticated ? html`<button class="mind-logout-button" type="button" @click=${this.logout} ?disabled=${this.busy || this.authBusy} title="Encerrar sessão da Mente">Sair da conta</button>` : html`<button type="button" @click=${() => { this.pendingAdminAction = null; this.loginVisible = !this.loginVisible; }}>Login do administrador</button>`) : nothing}
           <input id="mind-pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden @change=${this.uploadPdfs} />
         </div>` : nothing}
       </header>
