@@ -110,7 +110,7 @@ export async function createMindBackup(items: MindItem[]): Promise<Blob> {
   return new Blob([JSON.stringify({ format: "2t-mind", version: 1, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
 }
 
-export async function restoreMindBackup(file: File): Promise<MindItem[]> {
+export async function parseMindBackup(file: File): Promise<MindItem[]> {
   if (!file.size || file.size > MAX_MIND_BACKUP_BYTES) throw new Error("O backup ultrapassa o limite de 160 MB.");
   let archive: unknown;
   try { archive = JSON.parse(await file.text()); }
@@ -146,7 +146,12 @@ export async function restoreMindBackup(file: File): Promise<MindItem[]> {
     }
     imported.push(item);
   }
-  // Validate the entire archive before modifying the database.
+  // Validate the complete archive before performing any write.
+  return imported;
+}
+
+export async function restoreMindBackup(file: File): Promise<MindItem[]> {
+  const imported = await parseMindBackup(file);
   for (const item of imported) await saveMindItem(item);
   return imported;
 }

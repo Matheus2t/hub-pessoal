@@ -77,28 +77,31 @@ export async function saveCloudMindItem(item: MindItem): Promise<void> {
       body: item.file,
     }), "Não foi possível enviar o PDF");
   }
+  const existsResponse = await requireOk(await mindApi(
+    "/rest/v1/mind_items?select=id&id=eq." + encodeURIComponent(item.id) + "&limit=1",
+  ), "Não foi possível conferir o registro");
+  const existing = (await existsResponse.json() as Array<{ id: string }>).length > 0;
   const row: Record<string, unknown> = rowFromItem(item);
   if (path) row.storage_path = path;
-  const response = await mindApi("/rest/v1/mind_items?on_conflict=id", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Prefer: "resolution=merge-duplicates,return=representation",
+  const response = await mindApi(
+    existing ? "/rest/v1/mind_items?id=eq." + encodeURIComponent(item.id) : "/rest/v1/mind_items",
+    {
+      method: existing ? "PATCH" : "POST",
+      headers: { "Content-Type": "application/json", Prefer: "return=representation" },
+      body: JSON.stringify(row),
     },
-    body: JSON.stringify(row),
-  });
+  );
   await requireOk(response, "Não foi possível salvar o item");
 }
 export async function deleteCloudMindItem(item: MindItem): Promise<void> {
   // Remove DB record first. An occasional orphan in Storage can be cleaned up later
   // without accidentally deleting the only readable copy.
+  const path = item.kind === "pdf" ? await storedPath(item.id) : null;
   await requireOk(await mindApi("/rest/v1/mind_items?id=eq." + encodeURIComponent(item.id), {
     method: "DELETE",
   }), "Não foi possível excluir o item");
-  if (item.kind === "pdf") {
-    try {
-      const path = await storedPath(item.id);
-      await mindApi("/storage/v1/object/" + BUCKET + "/" + path, { method: "DELETE" });
-    } catch { /* Metadata is deleted; do not report a successful Storage cleanup. */ }
+  if (path) {
+    const response = await mindApi("/storage/v1/object/" + BUCKET + "/" + path, { method: "DELETE" });
+    await requireOk(response, "O item foi excluído, mas não foi possível limpar o PDF da nuvem");
   }
 }
