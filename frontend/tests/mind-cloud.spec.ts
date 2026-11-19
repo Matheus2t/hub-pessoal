@@ -113,3 +113,26 @@ test("conta sem privilégio de administrador jamais vê as notas privadas", asyn
   await expect(page.getByRole("alert")).toContainText("não possui permissão de administrador");
   await expect(page.locator(".mind-workspace")).toHaveCount(0);
 });
+
+
+test("the private Mente login stays compact in mobile and desktop themes", async ({ page }) => {
+  await serveBuiltSite(page);
+  await page.goto("/#/mente");
+  for (const theme of ["dark", "light"] as const) {
+    await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+    for (const width of [320, 390, 768, 1366]) {
+      await page.setViewportSize({ width, height: 800 });
+      await expect(page.getByRole("button", { name: "Acessar biblioteca" })).toBeVisible();
+      await expect(page.locator(".mind-workspace")).toHaveCount(0);
+      const heading = await page.locator(".mind-private-preview h2").boundingBox();
+      expect(heading).not.toBeNull();
+      expect(heading!.x).toBeGreaterThanOrEqual(0);
+      expect(heading!.x + heading!.width).toBeLessThanOrEqual(width);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  }
+  await page.getByRole("button", { name: "Acessar biblioteca" }).click();
+  await expect(page.getByLabel("E-mail")).toBeVisible();
+  await expect(page.getByLabel("Senha")).toBeVisible();
+  await expect(page.locator(".mind-workspace")).toHaveCount(0);
+});

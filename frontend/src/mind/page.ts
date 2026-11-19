@@ -114,6 +114,7 @@ export class MindPage extends LightElement {
       tags: [], description: "", content: "", createdAt: Date.now(), updatedAt: Date.now(), favorite: false,
     };
     this.editing = true;
+    this.revealReaderOnSmallScreens();
   };
 
   private editSelected = () => {
@@ -309,13 +310,22 @@ export class MindPage extends LightElement {
     return error instanceof Error ? error.message : "O navegador não conseguiu concluir a operação.";
   }
 
+  private revealReaderOnSmallScreens() {
+    if (!window.matchMedia("(max-width: 700px)").matches) return;
+    void this.updateComplete.then(() =>
+      this.querySelector<HTMLElement>(".mind-inspector")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+    );
+  }
+
   private itemButton(item: MindItem) {
     return html`<button class="mind-item ${this.selectedId === item.id && !this.editing ? "is-selected" : ""}"
       type="button" aria-pressed=${this.selectedId === item.id && !this.editing}
-      @click=${() => { this.selectedId = item.id; this.editing = false; this.draft = null; this.clearMessages(); }}>
+      @click=${() => {
+        this.selectedId = item.id; this.editing = false; this.draft = null; this.clearMessages();
+        this.revealReaderOnSmallScreens();
+      }}>
       <span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : "✎"}</span>
       <span class="mind-item-main"><strong>${item.title}</strong><span>${item.topic} · ${new Date(item.updatedAt).toLocaleDateString("pt-BR")} ${item.favorite ? " · ★" : ""}</span></span>
-      <span class="mind-item-kind">${item.kind === "pdf" ? "Documento" : "Nota"}</span>
     </button>`;
   }
 
@@ -336,12 +346,12 @@ export class MindPage extends LightElement {
   private detail(item: MindItem) {
     return html`<div class="mind-detail">
       <div class="mind-detail-heading"><div><small>${item.kind === "pdf" ? "DOCUMENTO PDF" : "NOTA"}</small><h2>${item.title}</h2><p>${item.topic} · Atualizado em ${new Date(item.updatedAt).toLocaleDateString("pt-BR")}</p></div></div>
+      <div class="mind-detail-footer" role="group" aria-label="Ações do item"><button type="button" @click=${this.editSelected}>Editar</button><button type="button" @click=${this.toggleFavorite} ?disabled=${this.busy}>${item.favorite ? "★ Remover favorito" : "☆ Favoritar"}</button><button type="button" class="mind-danger" @click=${this.removeSelected} ?disabled=${this.busy}>Excluir</button></div>
       ${item.tags.length ? html`<div class="mind-tags">${item.tags.map(tag => html`<span>#${tag}</span>`)}</div>` : nothing}
       ${item.description ? html`<p class="mind-description">${item.description}</p>` : nothing}
       ${item.kind === "pdf" ? html`<div class="mind-preview-summary"><span class="mind-preview-icon">PDF</span><div><strong>${item.fileName}</strong><span>${displayFileSize(item.fileSize || 0)} · ${mindCloudEnabled() ? "Arquivo privado na nuvem" : "Arquivo guardado neste navegador"}</span></div></div>
         <div class="mind-actions"><button class="mind-primary" type="button" ?disabled=${!mindCloudEnabled() && !item.file} @click=${() => this.fileAction(false)}>Abrir PDF</button><button type="button" ?disabled=${!mindCloudEnabled() && !item.file} @click=${() => this.fileAction(true)}>Baixar arquivo</button></div>`
        : html`<div class="mind-note-view">${item.content || "Esta nota ainda não possui conteúdo."}</div>`}
-      <div class="mind-detail-footer"><button type="button" @click=${this.editSelected}>Editar</button><button type="button" @click=${this.toggleFavorite} ?disabled=${this.busy}>${item.favorite ? "★ Remover favorito" : "☆ Favoritar"}</button><button type="button" class="mind-danger" @click=${this.removeSelected} ?disabled=${this.busy}>Excluir</button></div>
     </div>`;
   }
 
@@ -349,17 +359,16 @@ export class MindPage extends LightElement {
     return html`<section class="mind-page" aria-labelledby="mind-title">
       <header class="mind-header">
         <div class="mind-heading"><span class="mind-mark">${obsidianMark}</span>
-          <div><p class="mind-eyebrow">2T / CONHECIMENTO PESSOAL</p>
+          <div><p class="mind-eyebrow">2T / BIBLIOTECA PESSOAL</p>
             <h1 id="mind-title" class="sr-only">Mente</h1>
-            <p class="mind-tagline">Um lugar para guardar estudos, ideias e aquilo que vale revisitar.</p>
+            <p class="mind-tagline">Notas, arquivos e ideias. Sem distrações.</p>
           </div>
         </div>
       </header>
       <div class="mind-private-preview">
-        <div class="mind-privacy-symbol" aria-hidden="true">${obsidianMark}</div>
         <p class="mind-eyebrow">ACESSO PRIVADO</p>
-        <h2>Sua biblioteca, em qualquer dispositivo.</h2>
-        <p>Notas e PDFs ficam protegidos pela sua conta. A Mente está aberta para conhecer, mas o conteúdo exige autenticação.</p>
+        <h2>Um lugar só para suas ideias.</h2>
+        <p>Entre para consultar suas notas e documentos sincronizados.</p>
         ${this.checkingSession ? html`<p role="status">Verificando sua sessão…</p>` :
           !this.loginVisible ? html`<button class="mind-primary" type="button" @click=${() => this.loginVisible = true}>Acessar biblioteca</button>` :
           html`<form class="mind-login-form" @submit=${this.login}>
@@ -381,7 +390,7 @@ export class MindPage extends LightElement {
     const visible = this.visible;
     return html`<section class="mind-page" aria-labelledby="mind-title">
       <header class="mind-header">
-        <div class="mind-heading"><span class="mind-mark">${obsidianMark}</span><div><p class="mind-eyebrow">2T / CONHECIMENTO PESSOAL</p><h1 id="mind-title" class="sr-only">Mente</h1><p class="mind-tagline">Um lugar para guardar estudos, ideias e aquilo que vale revisitar.</p></div></div>
+        <div class="mind-heading"><span class="mind-mark">${obsidianMark}</span><div><p class="mind-eyebrow">2T / BIBLIOTECA PESSOAL</p><h1 id="mind-title" class="sr-only">Mente</h1><p class="mind-tagline">Notas, arquivos e ideias. Sem distrações.</p></div></div>
         <div class="mind-header-actions">
           <button class="mind-primary" type="button" @click=${this.startNote} ?disabled=${this.busy}>+ Nova nota</button>
           <button type="button" @click=${() => this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click()} ?disabled=${this.busy}>Adicionar PDF</button>
@@ -389,13 +398,13 @@ export class MindPage extends LightElement {
           <input id="mind-pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden @change=${this.uploadPdfs} />
         </div>
       </header>
-      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><strong>Biblioteca privada sincronizada.</strong> As notas e PDFs são guardados no Supabase e protegidos por autenticação e políticas de acesso. Recomendamos backups regulares. Os dados locais antigos não são enviados automaticamente.</div>` :
-        html`<div class="mind-local-warning" role="note"><strong>Armazenamento local.</strong> Notas e PDFs ficam somente neste navegador e perfil. Não são enviados à 2T, não sincronizam entre dispositivos e podem desaparecer se os dados do navegador forem apagados. Não há criptografia nem controle de acesso. Faça backups regularmente e evite dispositivos compartilhados.</div>`}
+      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca sincronizada</strong> · Acesso privado</span><details><summary>Sobre os dados</summary><p>Notas e PDFs são guardados no Supabase e protegidos por autenticação e regras de acesso. Faça backups regulares. Os registros antigos deste navegador não são enviados automaticamente.</p></details></div>` :
+        html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca local</strong> · Arquivos somente neste navegador</span><details><summary>Sobre os dados</summary><p>Notas e PDFs ficam somente neste navegador e perfil, sem sincronização nem criptografia. Podem desaparecer se os dados do navegador forem apagados. Faça backups e evite dispositivos compartilhados.</p></details></div>`}
       ${this.notice ? html`<p class="mind-notice" role="status">${this.notice}</p>` : nothing}
       ${this.error ? html`<p class="mind-error" role="alert">${this.error}</p>` : nothing}
       <div class="mind-workspace">
         <aside class="mind-facets" aria-label="Navegação da Mente">
-          <div class="mind-facet-title">Biblioteca</div>
+          <div class="mind-facet-title">Explorar</div>
           ${([["all", "Tudo"], ["pdf", "Documentos"], ["note", "Notas"], ["favorite", "Favoritos"]] as const).map(([id, label]) => html`<button type="button" class=${this.filter === id ? "is-active" : ""} aria-pressed=${this.filter === id} @click=${() => { this.filter = id; }}><span>${label}</span><small>${id === "all" ? this.items.length : id === "pdf" ? this.items.filter(x => x.kind === "pdf").length : id === "note" ? this.items.filter(x => x.kind === "note").length : this.items.filter(x => x.favorite).length}</small></button>`)}
           <div class="mind-facet-title mind-topic-title">Assuntos</div>
           <button type="button" class=${this.topic === "all" ? "is-active" : ""} aria-pressed=${this.topic === "all"} @click=${() => { this.topic = "all"; }}>Todos os assuntos</button>
@@ -417,8 +426,8 @@ export class MindPage extends LightElement {
             html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Seu acervo começa aqui"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Crie uma nota ou adicione o primeiro PDF para organizar seu conhecimento."}</p></div>`}
           <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} por arquivo. ${mindCloudEnabled() ? "Armazenamento privado sincronizado." : "A capacidade total depende do navegador."}</p>
         </div>
-        <div class="mind-inspector" aria-label="Detalhes e editor">
-          ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Conecte suas ideias</h2><p>Selecione um documento para consultar, classificar ou editar. Suas notas podem reunir conclusões, hipóteses e referências de estudo.</p></div>`}
+        <div class="mind-inspector" aria-label="Detalhes e editor" id="mind-reader">
+          ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Seu espaço de leitura</h2><p>Selecione uma nota ou documento para começar.</p></div>`}
         </div>
       </div>
     </section>`;
