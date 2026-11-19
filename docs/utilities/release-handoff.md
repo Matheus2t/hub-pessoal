@@ -2,6 +2,17 @@
 
 **Situação:** código preparado, ferramenta pública **não autorizada**. Esta página registra o que foi verificado, o que ainda depende de acesso externo e a sequência de uma publicação segura. Não substitui `production-readiness.md`.
 
+## Situação verificada após reconexão da Vercel (18/11/2026)
+
+A conexão atual **consegue administrar/inspecionar o projeto correto**:
+`matheus2t`, equipe `matheus2ts-projects`, projeto `prj_nNppFpQ5k2AUn0qNH7Hmrylw5FQ3`. O último deployment de produção consultado era READY no commit `9cc1817`.
+
+O projeto está no plano **Hobby**. A consulta da configuração ativa do Firewall retornou `configured=false` (sem regra personalizada ativa; o firewall padrão permanece). Não há variáveis de infraestrutura de rate limiting distribuído entre os nomes cadastrados. A plataforma **não teve política de egress por destino comprovada**. Consequentemente, **o resolvedor público não pode ser habilitado** nesta fase. Não contratar recursos pagos nem alterar regras de WAF antes de validar custos e arquitetura.
+
+A comparação de regressões feita com Playwright em `main` e na versão candidata registrou **48 falhas compartilhadas** e **7 adicionais, todas da homepage** por verificar somente dois acessos rápidos. O teste foi atualizado para as três entradas, incluindo a indisponibilidade do Desencurtador público, e a CI de frontend agora o executa. A regressão ampla não deve ser declarada integralmente aprovada enquanto houver falhas preexistentes; o workflow comparativo verifica especificamente novas falhas.
+
+A etapa de publicação segura pode integrar uma **única PR consolidada** contendo as mudanças de #179/#180/#181/#185/#186 para evitar cinco deployments automáticos; os PRs de origem devem ser encerrados como substituídos, preservando a rastreabilidade. A API deve permanecer em 404, sem flags de liberação ativadas.
+
 ## Repositório e integração
 
 - Repositório: `Matheus2t/hub-pessoal`.
@@ -10,7 +21,7 @@
 - As alterações desta sequência são separadas dos PRs #182–#184 do Removedor de Fundo; **não integrar #182–#184** durante a liberação do Desencurtador.
 - O `vercel.json` atual permite deploy automático de pushes para `main`. **Merge mesmo com a ferramenta desativada pode disparar um novo deployment**. Não integrar enquanto não houver condições de monitorar e reverter o site.
 
-## Descoberta de hospedagem — evidência obtida
+## Descoberta de hospedagem — registro histórico antes da reconexão
 
 Consultas de leitura executadas pelo conector Vercel:
 
@@ -68,4 +79,4 @@ As flags `*_CONFIRMED` são declarações manuais, **não** testam se a infraest
 - Não contratar serviços, ativar produtos pagos ou alterar DNS sem autorização.
 - Não reproduzir os artefatos locais privados de Learn em commits.
 
-**Estado:** aguardando acesso verificável e homologação de segurança. Nenhuma liberação pública autorizada pela mera presença deste documento.
+**Estado:** acesso ao projeto confirmado; bloqueadas apenas as condições operacionais de liberação da API pública. Nenhuma liberação pública autorizada pela mera presença deste documento.

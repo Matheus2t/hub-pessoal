@@ -2,6 +2,7 @@
 
 ## Classificação
 
+> **Atualização após reconexão (18/11/2026):** a conta Vercel agora expõe o projeto `matheus2t` (`prj_nNppFpQ5k2AUn0qNH7Hmrylw5FQ3`) e seus deployments. Plano Hobby confirmado; firewall personalizado ativo **não configurado**. Não foram identificadas variáveis de um limitador distribuído e a política externa de egress não foi comprovada. A comparação Playwright entre `main` e versão candidata encontrou 48 falhas compartilhadas e 7 novas expectativas antigas da homepage, corrigidas no teste. A CI de frontend executa o teste de homepage e os gates públicos. O resolvedor permanecerá desativado após integrar o código; o restante deste documento inclui evidências históricas da implementação original.\n\n
 **PRONTO PARA INTEGRAR COM A FERRAMENTA DESATIVADA. NÃO PRONTO PARA PUBLICAÇÃO PÚBLICA.**
 
 O código mantém o padrão atual no Vercel: `404` por padrão. Foram adicionados gates de servidor independentes para preparação futura e uma flag separada de build para mostrar a interface. Esta entrega não configura Vercel, não habilita flags, não integra PRs anteriores e não faz deploy.
