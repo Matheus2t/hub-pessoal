@@ -17,6 +17,7 @@ export interface MindItem {
   favorite: boolean;
   fileName?: string;
   fileSize?: number;
+  storagePath?: string;
   file?: Blob;
 }
 

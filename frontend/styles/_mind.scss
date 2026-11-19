@@ -217,3 +217,17 @@ mind-page { display:block; width:100%; min-width:0; }
   .mind-detail-footer .mind-danger { margin-left:0; }
   .mind-login-form .mind-actions > button { min-width:0; flex:1; }
 }
+
+/* Public reading / admin-only editing */
+.mind-admin-login { display:flex; align-items:flex-start; flex-wrap:wrap; gap:24px; padding:20px 0 24px; border-bottom:1px solid var(--line-soft); }
+.mind-admin-login > div { flex:1 1 220px; display:grid; gap:7px; }
+.mind-admin-login h2 { font-size:18px; font-weight:600; letter-spacing:-.025em; }
+.mind-admin-login > div > p:last-child { color:var(--muted); font-size:12px; line-height:1.6; max-width:42ch; }
+.mind-admin-login .mind-login-form { flex:1 1 250px; margin:0; }
+.mind-pdf-external { display:inline-flex; align-items:center; min-height:34px; padding:7px 11px; border:1px solid var(--line-soft); border-radius:6px; color:var(--secondary); font-size:12px; text-decoration:none; }
+.mind-pdf-external:hover { background:var(--hover); border-color:var(--border-highlight); color:var(--text); }
+.mind-pdf-external:focus-visible { outline:2px solid var(--focus); outline-offset:3px; }
+.mind-pdf-embed { min-width:0; padding-top:4px; }
+.mind-pdf-embed iframe { display:block; width:100%; height:clamp(460px,68vh,860px); border:1px solid var(--line-soft); border-radius:5px; background:var(--panel); }
+.mind-pdf-embed p { padding-top:8px; color:var(--muted); font-size:11px; line-height:1.5; }
+@media(max-width:700px) { .mind-admin-login { gap:17px; } .mind-pdf-embed iframe { height:65vh; min-height:380px; } }
