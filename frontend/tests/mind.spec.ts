@@ -9,6 +9,22 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator(".mind-heading .obsidian-mark")).toBeVisible();
 });
 
+test("the Obsidian symbol alone uses dark purple in both themes", async ({ page }) => {
+  for (const [theme, expected] of [["dark", "rgb(118, 81, 170)"], ["light", "rgb(87, 50, 136)"]] as const) {
+    await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+    for (const selector of [
+      ".mind-nav-entry .obsidian-mark",
+      ".mind-heading .obsidian-mark",
+      ".mind-unselected .obsidian-mark",
+    ]) {
+      const mark = page.locator(selector);
+      await expect(mark).toBeVisible();
+      await expect(mark).toHaveCSS("color", expected);
+    }
+    await expect(page.locator("#mind-title")).toHaveClass("sr-only");
+  }
+});
+
 test("Mente appears in main navigation, explains local-only storage and remains responsive", async ({ page }) => {
   const mindNav = page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Mente" });
   await expect(mindNav).toBeVisible();
