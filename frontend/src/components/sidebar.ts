@@ -2,7 +2,6 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import "./team-shortcuts";
-import { obsidianMark } from "../mind/obsidian-mark";
 import type { Page } from "../catalog";
 import { utilitiesCatalogEnabled } from "../utilities/flags";
 
@@ -40,7 +39,6 @@ export class AppSidebar extends LightElement {
           <a href="#/learn" aria-current=${["learn", "learnEn", "learnRu", "learnInvalid"].includes(this.page) ? "page" : "false"}>Learn / Изучать</a>
         </div>
       </details>
-      <a class="nav-item mind-nav-entry" href="#/mente" aria-label="Mente" title="Mente" aria-current=${this.page === "mind" ? "page" : "false"}>${obsidianMark}</a>
       <a class="nav-item" href="#/games" aria-current=${this.page === "games" ? "page" : "false"}>Games</a>
       <details class="teams-menu" @keydown=${this.closeOnEscape} @toggle=${this.keepOneMenuOpen}>
         <summary class="nav-item" aria-current=${["76ers", "spfc", "barcelona", "sports"].includes(this.page) ? "page" : "false"}>Times</summary>
