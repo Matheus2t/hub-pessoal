@@ -1,32 +1,62 @@
-# 2T Mente — biblioteca pessoal (V1)
+# 2T Mente — arquitetura em produção
 
-## Objetivo e navegação
-A área "Mente" (/#/mente) é um espaço de conhecimento pessoal dentro da 2T, com ícone de conexões neurais no menu superior. Não copia a identidade visual do Obsidian. O design é monocromático, discreto e consistente com as outras áreas.
+## Modelo de acesso
 
-A primeira entrega implementa:
-- Notas em texto simples, editáveis, com título, descrição, assunto e até 12 etiquetas.
-- Importação de PDFs de até **25 MiB por arquivo**; valida o cabeçalho de PDF e rejeita arquivos fora do limite.
-- Leitura ou download do PDF pelo visualizador do próprio navegador.
-- Lista ordenada pela atualização, busca por metadados e conteúdo das notas, filtro por tipo, favoritos e assuntos.
-- Exclusão com confirmação.
-- Backup JSON com **conteúdo integral dos PDFs** e notas; restauração com validação prévia e mesclagem por ID; limite de 160 MiB para o arquivo de backup.
-- Layout responsivo, navegação por teclado e teste Playwright de persistência/backup.
+`/#/mente` é uma biblioteca pública com administração privada. Visitantes, sem login,
+podem consultar todos os metadados, notas e PDFs publicados. A própria interface avisa
+que esse conteúdo é público; links diretos dos PDFs também funcionam sem autenticação.
+Publique somente materiais autorizados para distribuição pública.
 
-## Limitação de privacidade que não deve ser ocultada
-**Não há backend de arquivos, cadastro, login, criptografia ou sincronização.** A V1 usa IndexedDB do navegador e perfil em que o usuário acessou a página. Outros usuários da mesma conta/perfil do navegador podem ler os dados. Modo anônimo, exclusão de dados do site ou mudança de dispositivo podem apagar ou tornar inacessíveis os registros. O uso de storage local não garante retenção permanente, inclusive em dispositivos com armazenamento sob pressão. Portanto, exportar backup é essencial.
+O projeto Supabase existente `2T'Site` mantém `public.mind_items` com RLS ativo. A política
+`mind_public_read` autoriza somente leitura pública. As operações de escrita e o Storage
+dependem da identidade autenticada e da função administrativa privada; a UI não é a
+fronteira de segurança. O cliente web contém apenas a publishable key. Nunca colocar
+`service_role`, senha ou UID administrativo no bundle, nos testes ou neste repositório.
 
-Nenhum PDF, anotação, metadado ou arquivo é enviado automaticamente a um servidor. O backup JSON **não é criptografado**, e o conteúdo dos PDFs pode estar codificado em Base64 dentro do backup. Não colocar dados sigilosos em computador compartilhado; guardar backups em local protegido. Não criar endpoints públicos de upload no backend atual.
+O bucket `mind-pdfs` é público, aceita `application/pdf` e limita arquivos a 25 MiB.
+Consequentemente, todo objeto nele pode ser lido por qualquer pessoa que possua o link.
+Excluir o item do catálogo também tenta remover o arquivo; se a limpeza falhar, a interface
+informa que o PDF ainda pode estar publicado.
 
-## Próxima versão: sincronização privada
-Antes de oferecer acesso ao mesmo acervo no PC e celular:
-1. Definir autenticação real (usuário individual) com sessões verificadas no backend; proteger todas as rotas e arquivos por proprietário. Não usar senha única estática exposta no frontend.
-2. Escolher storage privado de documentos (objetos sem URLs públicas), controlar permissões por usuário, assinaturas de download com expiração curta, quotas e orçamento. Proteger contra IDOR, path traversal, malware e uploads abusivos.
-3. Guardar metadados em banco privado com índices por assunto, texto, etiquetas e timestamps. Preferir uma camada de API que valide sempre a identidade do proprietário.
-4. Planejar migração explícita da IndexedDB, sem upload automático e sem surpreender o usuário com cópia de arquivos pessoais para terceiros.
-5. Adicionar política de backup, recuperação, exclusão completa e retenção. Avaliar criptografia em repouso e opção de criptografia ponta-a-ponta para conteúdos mais sensíveis.
-6. Somente depois: links entre notas, busca por conteúdo de PDFs, grafos de conhecimento, fontes/citações, versões, anexos adicionais e eventual integração opcional com ChatGPT.
+## Aplicação e persistência
 
-## Critério de liberação
-A rota local-first pode ser pública como parte da interface 2T porque **cada visitante vê apenas o próprio armazenamento local**, sem dados iniciais e sem dados compartilhados da conta do proprietário do site. Isso **não** torna os arquivos do proprietário publicamente disponíveis, pois esses arquivos nunca são versionados no repositório. A implantação deve ser comunicada como **Mente V1 local**, nunca como nuvem privada ou "cofre seguro".
+- Com a configuração de nuvem de produção válida, leitura vem do Supabase sem sessão;
+  login administrativo é necessário para criar, editar, favoritar, excluir, migrar ou
+  exportar/restaurar backup do acervo publicado.
+- A autorização é revalidada no Supabase. Uma conta que não consta na lista privada de
+  administradores não recebe controles de escrita, e RLS/Storage continuam bloqueando-a.
+- Em desenvolvimento e builds locais, sem configuração da nuvem, a aplicação usa IndexedDB
+  e identifica explicitamente **Biblioteca local**. Em build público sem configuração válida,
+  falha fechada: não lê rascunhos locais nem oferece controles de edição como se fossem
+  conteúdo compartilhado.
+- A migração local é explícita, copia IDs ainda ausentes e conserva os originais locais.
+- Backups JSON incluem os PDFs, não são criptografados e devem ser guardados com cuidado.
 
-Executar typecheck, build e Playwright para testes da Mente. Validar ausência de regressão em homepage/navegação e que nenhum arquivo pessoal foi enviado ou commitado.
+## PDFs
+
+A prévia usa o visualizador PDF nativo do navegador dentro de um `iframe`; os controles
+compatíveis do próprio navegador oferecem navegação de páginas e zoom. O botão **Expandir
+leitura** amplia o painel e mantém **Voltar à biblioteca** para restaurar a navegação. O build
+de nuvem acrescenta à CSP somente a origem Supabase configurada em `connect-src` e `frame-src`.
+Antes de criar o iframe, uma requisição HEAD pública valida disponibilidade, MIME e tamanho;
+em erro, a interface explica o problema e mantém a abertura externa e o download disponíveis.
+O link externo abre o URL público diretamente. O download anônimo busca o PDF público,
+valida status, tipo, tamanho e assinatura antes de iniciar o download pelo nome original.
+Se a prévia nativa não estiver disponível, o usuário pode abrir o arquivo em uma nova aba.
+
+Uploads de substituição usam um caminho novo no Storage e só depois atualizam o registro;
+assim, uma falha de banco não sobrescreve o PDF publicado anterior. A limpeza de objetos
+antigos ou não vinculados só ocorre após consulta confirmando que nenhum registro aponta
+para eles. Se não for possível confirmar o vínculo, o arquivo é preservado e a interface
+indica a pendência, evitando exclusão de um objeto ainda usado.
+
+## Manutenção e limites
+
+- Projeto, banco, bucket e permissões não devem ser copiados de outro projeto Supabase.
+- `docs/mind/public-read-admin-write.sql` registra a mudança já aplicada; não executar
+  novamente manualmente em produção.
+- `docs/mind/supabase-bootstrap.sql` foi desativado como script porque representava o
+  modelo privado anterior e tornaria o bucket privado se executado.
+- O advisory atual do Supabase também recomenda habilitar a proteção contra senhas vazadas
+  no Auth. Essa configuração não foi alterada nesta revisão; verificar no painel antes de
+  futuras mudanças de credencial administrativa.

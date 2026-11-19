@@ -126,7 +126,7 @@ test("non-PDF uploads are rejected before being saved", async ({ page }) => {
 test("Mente minimal uses aligned panes on desktop and stacked panes on mobile in both themes", async ({ page }) => {
   for (const theme of ["dark", "light"] as const) {
     await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
-    for (const width of [320, 390, 700, 900, 1200, 1440]) {
+    for (const width of [320, 390, 700, 768, 900, 1200, 1366, 1440, 1920]) {
       await page.setViewportSize({ width, height: 860 });
       const facets = page.locator(".mind-facets");
       const list = page.locator(".mind-list");

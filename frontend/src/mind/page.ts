@@ -2,8 +2,8 @@ import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { obsidianMark } from "./obsidian-mark";
-import { mindCloudEnabled, publicMindPdfUrl, restoreMindSession, signInMind, signOutMind } from "./cloud-auth";
-import { deleteCloudMindItem, downloadCloudPdf, listCloudMindItems, saveCloudMindItem } from "./cloud-store";
+import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
+import { checkPublicCloudPdf, deleteCloudMindItem, downloadCloudPdf, downloadPublicCloudPdf, listCloudMindItems, saveCloudMindItem } from "./cloud-store";
 import {
   checkedPdf, createMindBackup, deleteMindItem, displayFileSize,
   listMindItems, MAX_MIND_PDF_BYTES, normalizedTags, parseMindBackup, restoreMindBackup, saveMindItem,
@@ -25,6 +25,7 @@ export class MindPage extends LightElement {
   @state() private draft: MindItem | null = null;
   @state() private editing = false;
   private active = false;
+  private pdfPreviewGeneration = 0;
   @state() private authenticated = false;
   @state() private checkingSession = false;
   @state() private loginVisible = false;
@@ -32,6 +33,9 @@ export class MindPage extends LightElement {
   @state() private loginEmail = "";
   @state() private loginPassword = "";
   @state() private pdfInlineId: string | null = null;
+  @state() private pdfExpanded = false;
+  @state() private pdfFrameStatus: "loading" | "ready" | "loaded" | "error" = "loading";
+  @state() private pdfFrameError = "";
   @state() private pendingAdminAction: "note" | "pdf" | null = null;
 
   connectedCallback() {
@@ -80,10 +84,17 @@ export class MindPage extends LightElement {
 
   disconnectedCallback() {
     this.active = false;
+    this.pdfPreviewGeneration += 1;
     super.disconnectedCallback();
   }
 
   private async reload() {
+    if (!this.libraryAvailable) {
+      if (!this.active) return;
+      this.items = [];
+      this.ready = true;
+      return;
+    }
     try {
       const result = mindCloudEnabled() ? await listCloudMindItems() : await listMindItems();
       if (!this.active) return;
@@ -97,6 +108,7 @@ export class MindPage extends LightElement {
   }
 
   private get selected() { return this.items.find(x => x.id === this.selectedId); }
+  private get libraryAvailable() { return mindCloudEnabled() || mindLocalModeEnabled(); }
   private get topics() {
     const count = new Map<string, number>();
     for (const item of this.items) count.set(item.topic, (count.get(item.topic) ?? 0) + 1);
@@ -114,6 +126,10 @@ export class MindPage extends LightElement {
   }
 
   private requireAdmin(action: "note" | "pdf"): boolean {
+    if (!this.libraryAvailable) {
+      this.error = "A biblioteca compartilhada não está configurada neste deployment.";
+      return false;
+    }
     if (!mindCloudEnabled() || this.authenticated) return true;
     this.pendingAdminAction = action;
     this.loginVisible = true;
@@ -135,7 +151,7 @@ export class MindPage extends LightElement {
   };
 
   private editSelected = () => {
-    if (!this.selected || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !this.selected || (mindCloudEnabled() && !this.authenticated)) return;
     this.clearMessages();
     this.draft = { ...this.selected, tags: [...this.selected.tags] };
     this.editing = true;
@@ -153,7 +169,7 @@ export class MindPage extends LightElement {
 
   private async saveDraft(event: Event) {
     event.preventDefault();
-    if (!this.draft || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !this.draft || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     const title = this.draft.title.trim();
     if (!title) { this.error = "Informe um título."; return; }
     const item: MindItem = {
@@ -167,13 +183,16 @@ export class MindPage extends LightElement {
     this.busy = true;
     this.clearMessages();
     try {
-      if (mindCloudEnabled()) await saveCloudMindItem(item);
+      let cleanupPending = false;
+      if (mindCloudEnabled()) cleanupPending = await saveCloudMindItem(item);
       else await saveMindItem(item);
       await this.reload();
       this.selectedId = item.id;
       this.editing = false;
       this.draft = null;
-      this.notice = mindCloudEnabled() ? "Alterações sincronizadas na biblioteca privada." : item.kind === "note" ? "Nota salva neste navegador." : "Documento atualizado neste navegador.";
+      this.notice = mindCloudEnabled()
+        ? cleanupPending ? "Item publicado; o PDF anterior ainda precisa de limpeza." : "Alterações publicadas na biblioteca 2T."
+        : item.kind === "note" ? "Nota salva neste navegador." : "Documento atualizado neste navegador.";
     } catch (e) { this.error = this.message(e); }
     finally { this.busy = false; }
   }
@@ -182,10 +201,11 @@ export class MindPage extends LightElement {
     const input = event.currentTarget as HTMLInputElement;
     const files = [...(input.files ?? [])];
     input.value = "";
-    if (!files.length || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !files.length || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     this.busy = true;
     this.clearMessages();
     let imported = 0;
+    let cleanupPending = false;
     const rejected: string[] = [];
     try {
       for (const file of files) {
@@ -200,14 +220,14 @@ export class MindPage extends LightElement {
           createdAt: now, updatedAt: now, favorite: false,
           fileName: file.name.slice(0, 180), fileSize: file.size, file,
         };
-        if (mindCloudEnabled()) await saveCloudMindItem(item);
-      else await saveMindItem(item);
+        if (mindCloudEnabled()) cleanupPending = (await saveCloudMindItem(item)) || cleanupPending;
+        else await saveMindItem(item);
         this.selectedId = item.id;
         imported += 1;
       }
       await this.reload();
       if (imported) this.notice = imported + (mindCloudEnabled()
-        ? (imported === 1 ? " PDF sincronizado na nuvem privada." : " PDFs sincronizados na nuvem privada.")
+        ? (cleanupPending ? " PDF publicado; um arquivo anterior ainda precisa de limpeza." : imported === 1 ? " PDF publicado na biblioteca 2T." : " PDFs publicados na biblioteca 2T.")
         : (imported === 1 ? " PDF armazenado localmente." : " PDFs armazenados localmente."));
       if (rejected.length) this.error = "Arquivos ignorados (PDF inválido ou acima de 25 MB): " + rejected.slice(0, 3).join(", ");
     } catch (e) { this.error = this.message(e) + " Verifique o espaço livre e exporte um backup."; }
@@ -215,7 +235,7 @@ export class MindPage extends LightElement {
   }
 
   private async toggleFavorite() {
-    if (!this.selected || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !this.selected || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     this.busy = true;
     try {
       const updated = { ...this.selected, file: mindCloudEnabled() ? undefined : this.selected.file, favorite: !this.selected.favorite, updatedAt: Date.now() };
@@ -227,48 +247,52 @@ export class MindPage extends LightElement {
   }
 
   private async removeSelected() {
-    if (!this.selected || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !this.selected || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     if (!window.confirm(mindCloudEnabled()
-      ? "Excluir da biblioteca sincronizada em todos os dispositivos? Faça backup antes de continuar."
+      ? "Excluir da biblioteca pública em todos os dispositivos? Faça backup antes de continuar."
       : "Excluir este item da Mente neste navegador? Esta ação não poderá ser desfeita sem backup.")) return;
     this.busy = true;
     this.clearMessages();
     try {
-      if (mindCloudEnabled()) await deleteCloudMindItem(this.selected);
-      else await deleteMindItem(this.selected.id);
+      const cleanupPending = mindCloudEnabled() ? await deleteCloudMindItem(this.selected) : false;
+      if (!mindCloudEnabled()) await deleteMindItem(this.selected.id);
       this.selectedId = null;
       await this.reload();
-      this.notice = mindCloudEnabled() ? "Item excluído da biblioteca sincronizada." : "Item excluído deste navegador.";
+      this.notice = mindCloudEnabled()
+        ? cleanupPending ? "Item removido; o arquivo público ficou pendente de limpeza." : "Item removido da biblioteca pública."
+        : "Item excluído deste navegador.";
     } catch (e) { this.error = this.message(e); }
     finally { this.busy = false; }
   }
 
   private async fileAction(download: boolean) {
     const item = this.selected;
-    if (!item) return;
-    let file = item.file;
+    if (!this.libraryAvailable || !item || this.busy) return;
     if (mindCloudEnabled() && item.storagePath && !download) {
       window.open(publicMindPdfUrl(item.storagePath), "_blank", "noopener,noreferrer");
       return;
     }
-    if (mindCloudEnabled()) {
-      try { file = await downloadCloudPdf(item); }
-      catch (e) { this.error = this.message(e); return; }
-    }
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    if (download) {
-      const a = document.createElement("a");
-      a.href = url; a.download = item.fileName || item.title + ".pdf";
-      document.body.append(a); a.click(); a.remove();
-    } else {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    this.busy = true;
+    this.clearMessages();
+    try {
+      const file = mindCloudEnabled() ? await downloadPublicCloudPdf(item) : item.file;
+      if (!file) throw new Error("O PDF não está disponível para esta ação.");
+      const url = URL.createObjectURL(file);
+      if (download) {
+        const a = document.createElement("a");
+        a.href = url; a.download = safeMindPdfFileName(item.fileName || item.title + ".pdf");
+        document.body.append(a); a.click(); a.remove();
+        this.notice = "Download iniciado.";
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (e) { this.error = this.message(e); }
+    finally { this.busy = false; }
   }
 
   private async backup() {
-    if (this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     this.busy = true; this.clearMessages();
     try {
       const allItems = mindCloudEnabled()
@@ -290,37 +314,50 @@ export class MindPage extends LightElement {
     const input = event.currentTarget as HTMLInputElement;
     const file = input.files?.[0];
     input.value = "";
-    if (!file || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    if (!this.libraryAvailable || !file || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     if (!window.confirm("Importar e mesclar os itens do backup com esta biblioteca? IDs repetidos serão atualizados.")) return;
     this.busy = true; this.clearMessages();
+    let restored = 0;
+    let cleanupPending = false;
     try {
       const imported = mindCloudEnabled() ? await parseMindBackup(file) : await restoreMindBackup(file);
       if (mindCloudEnabled()) {
-        for (const item of imported) await saveCloudMindItem(item);
+        for (const item of imported) {
+          cleanupPending = (await saveCloudMindItem(item)) || cleanupPending;
+          restored += 1;
+        }
+      } else {
+        restored = imported.length;
       }
       await this.reload();
       this.topic = "all"; this.filter = "all"; this.query = "";
       this.selectedId = imported[0]?.id ?? null;
-      this.notice = imported.length + (mindCloudEnabled() ? " itens restaurados na biblioteca sincronizada." : " itens restaurados neste navegador.");
-    } catch (e) { this.error = this.message(e); }
+      this.notice = imported.length + (mindCloudEnabled()
+        ? cleanupPending ? " itens restaurados; um PDF anterior ficou pendente de limpeza." : " itens restaurados na biblioteca pública."
+        : " itens restaurados neste navegador.");
+    } catch (e) {
+      if (mindCloudEnabled() && restored) await this.reload();
+      this.error = this.message(e) + (mindCloudEnabled() && restored ? " " + restored + " itens foram restaurados; reimportar o mesmo backup atualiza os IDs sem duplicá-los." : "");
+    }
     finally { this.busy = false; }
   }
 
   private async migrateLocal() {
-    if (this.busy || !this.authenticated || !mindCloudEnabled()) return;
+    if (!this.libraryAvailable || this.busy || !this.authenticated || !mindCloudEnabled()) return;
     if (!window.confirm("Copiar os registros deste navegador para a nuvem? Os originais continuarão salvos localmente.")) return;
     this.busy = true; this.clearMessages();
-    let copied = 0, skipped = 0;
+    let copied = 0, skipped = 0, cleanupPending = false;
     try {
       const localItems = await listMindItems();
       const remoteIds = new Set(this.items.map(item => item.id));
       for (const item of localItems) {
         if (remoteIds.has(item.id)) { skipped++; continue; }
-        await saveCloudMindItem(item);
+        cleanupPending = (await saveCloudMindItem(item)) || cleanupPending;
         copied++;
       }
       await this.reload();
-      this.notice = copied + " itens copiados, " + skipped + " já existentes. Os originais locais foram preservados.";
+      this.notice = copied + " itens publicados, " + skipped + " já existentes. Os originais locais foram preservados." +
+        (cleanupPending ? " Um PDF anterior ficou pendente de limpeza." : "");
     } catch (e) {
       await this.reload();
       this.error = this.message(e) + " " + copied + " registros copiados. Os originais locais permanecem intactos.";
@@ -338,11 +375,43 @@ export class MindPage extends LightElement {
     );
   }
 
+  private togglePdfPreview(item: MindItem) {
+    if (this.pdfInlineId === item.id && this.pdfFrameStatus !== "error") {
+      this.pdfPreviewGeneration += 1;
+      this.pdfInlineId = null;
+      this.pdfExpanded = false;
+      return;
+    }
+    void this.preparePdfPreview(item);
+  }
+
+  private async preparePdfPreview(item: MindItem) {
+    const generation = ++this.pdfPreviewGeneration;
+    this.pdfInlineId = item.id;
+    this.pdfExpanded = false;
+    this.pdfFrameStatus = "loading";
+    this.pdfFrameError = "";
+    try {
+      await checkPublicCloudPdf(item);
+      if (!this.active || generation !== this.pdfPreviewGeneration) return;
+      this.pdfFrameStatus = "ready";
+    } catch (error) {
+      if (!this.active || generation !== this.pdfPreviewGeneration) return;
+      this.pdfFrameError = this.message(error);
+      this.pdfFrameStatus = "error";
+    }
+  }
+
   private itemButton(item: MindItem) {
     return html`<button class="mind-item ${this.selectedId === item.id && !this.editing ? "is-selected" : ""}"
       type="button" aria-pressed=${this.selectedId === item.id && !this.editing}
       @click=${() => {
-        this.selectedId = item.id; this.editing = false; this.draft = null; this.pdfInlineId = mindCloudEnabled() && item.kind === "pdf" ? item.id : null; this.clearMessages();
+        this.selectedId = item.id; this.editing = false; this.draft = null;
+        this.pdfPreviewGeneration += 1;
+        this.pdfInlineId = null;
+        this.pdfExpanded = false;
+        if (mindCloudEnabled() && item.kind === "pdf" && item.storagePath) void this.preparePdfPreview(item);
+        this.clearMessages();
         this.revealReaderOnSmallScreens();
       }}>
       <span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : "✎"}</span>
@@ -367,16 +436,21 @@ export class MindPage extends LightElement {
   private detail(item: MindItem) {
     return html`<div class="mind-detail">
       <div class="mind-detail-heading"><div><small>${item.kind === "pdf" ? "DOCUMENTO PDF" : "NOTA"}</small><h2>${item.title}</h2><p>${item.topic} · Atualizado em ${new Date(item.updatedAt).toLocaleDateString("pt-BR")}</p></div></div>
-      ${(!mindCloudEnabled() || this.authenticated) ? html`<div class="mind-detail-footer" role="group" aria-label="Ações do item"><button type="button" @click=${this.editSelected}>Editar</button><button type="button" @click=${this.toggleFavorite} ?disabled=${this.busy}>${item.favorite ? "★ Remover favorito" : "☆ Favoritar"}</button><button type="button" class="mind-danger" @click=${this.removeSelected} ?disabled=${this.busy}>Excluir</button></div>` : nothing}
+      ${(this.libraryAvailable && (!mindCloudEnabled() || this.authenticated)) ? html`<div class="mind-detail-footer" role="group" aria-label="Ações do item"><button type="button" @click=${this.editSelected}>Editar</button><button type="button" @click=${this.toggleFavorite} ?disabled=${this.busy}>${item.favorite ? "★ Remover favorito" : "☆ Favoritar"}</button><button type="button" class="mind-danger" @click=${this.removeSelected} ?disabled=${this.busy}>Excluir</button></div>` : nothing}
       ${item.tags.length ? html`<div class="mind-tags">${item.tags.map(tag => html`<span>#${tag}</span>`)}</div>` : nothing}
       ${item.description ? html`<p class="mind-description">${item.description}</p>` : nothing}
       ${item.kind === "pdf" ? html`<div class="mind-preview-summary"><span class="mind-preview-icon">PDF</span><div><strong>${item.fileName}</strong><span>${displayFileSize(item.fileSize || 0)} · ${mindCloudEnabled() ? "Documento público" : "Arquivo guardado neste navegador"}</span></div></div>
         <div class="mind-actions">${mindCloudEnabled() && item.storagePath ? html`
-          <button class="mind-primary" type="button" @click=${() => this.pdfInlineId = this.pdfInlineId === item.id ? null : item.id}>${this.pdfInlineId === item.id ? "Fechar visualização" : "Visualizar na 2T"}</button>
+          <button class="mind-primary" type="button" @click=${() => this.togglePdfPreview(item)}>${this.pdfInlineId === item.id ? this.pdfFrameStatus === "error" ? "Tentar novamente" : "Fechar visualização" : "Visualizar na 2T"}</button>
           <a class="mind-pdf-external" href=${publicMindPdfUrl(item.storagePath)} target="_blank" rel="noopener noreferrer">Abrir no navegador ↗</a>
-          <a class="mind-pdf-external" href=${publicMindPdfUrl(item.storagePath)} download=${item.fileName || item.title + ".pdf"} target="_blank" rel="noopener noreferrer">Baixar PDF</a>`
+          <button class="mind-pdf-external" type="button" @click=${() => this.fileAction(true)} ?disabled=${this.busy}>Baixar PDF</button>
+          ${this.pdfInlineId === item.id ? html`<button class="mind-pdf-external" type="button" aria-pressed=${this.pdfExpanded} @click=${() => this.pdfExpanded = !this.pdfExpanded}>${this.pdfExpanded ? "Voltar à biblioteca" : "Expandir leitura"}</button>` : nothing}`
           : html`<button class="mind-primary" type="button" ?disabled=${!item.file} @click=${() => this.fileAction(false)}>Abrir PDF</button><button type="button" ?disabled=${!item.file} @click=${() => this.fileAction(true)}>Baixar arquivo</button>`}</div>
-        ${mindCloudEnabled() && item.storagePath && this.pdfInlineId === item.id ? html`<div class="mind-pdf-embed"><iframe title=${"Visualização do PDF " + item.title} src=${publicMindPdfUrl(item.storagePath)} loading="lazy"></iframe><p>Se o navegador não mostrar o documento, use “Abrir no navegador”.</p></div>` : nothing}`
+        ${mindCloudEnabled() && item.storagePath && this.pdfInlineId === item.id ? html`<div class="mind-pdf-embed">
+          ${this.pdfFrameStatus === "loading" ? html`<p role="status" aria-live="polite">Verificando o arquivo PDF…</p>`
+            : this.pdfFrameStatus === "error" ? html`<p class="mind-error" role="alert">${this.pdfFrameError} Use “Abrir no navegador” para tentar novamente.</p>`
+              : html`<iframe title="Prévia do PDF" src=${publicMindPdfUrl(item.storagePath)} loading="lazy" @load=${() => this.pdfFrameStatus = "loaded"} @error=${() => { this.pdfFrameStatus = "error"; this.pdfFrameError = "Não foi possível carregar a prévia."; }}></iframe>
+                <p role="status" aria-live="polite">${this.pdfFrameStatus === "loaded" ? "Documento aberto. Use os controles do visualizador para navegar e ajustar o zoom; se não aparecer, abra em outra aba." : "Abrindo o visualizador de PDF…"}</p>`}</div>` : nothing}`
        : html`<div class="mind-note-view">${item.content || "Esta nota ainda não possui conteúdo."}</div>`}
     </div>`;
   }
@@ -399,19 +473,21 @@ export class MindPage extends LightElement {
     return html`<section class="mind-page" aria-labelledby="mind-title">
       <header class="mind-header">
         <div class="mind-heading"><span class="mind-mark">${obsidianMark}</span><div><p class="mind-eyebrow">2T / BIBLIOTECA PESSOAL</p><h1 id="mind-title" class="sr-only">Mente</h1><p class="mind-tagline">Notas, arquivos e ideias. Sem distrações.</p></div></div>
-        <div class="mind-header-actions">
+        ${this.libraryAvailable ? html`<div class="mind-header-actions">
           <button class="mind-primary" type="button" @click=${this.startNote} ?disabled=${this.busy}>+ Nova nota</button>
           <button type="button" @click=${() => { if (this.requireAdmin("pdf")) this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click(); }} ?disabled=${this.busy}>Adicionar PDF</button>
           ${mindCloudEnabled() ? (this.authenticated ? html`<button type="button" @click=${this.logout} ?disabled=${this.busy}>Sair da administração</button>` : html`<button type="button" @click=${() => { this.pendingAdminAction = null; this.loginVisible = !this.loginVisible; }}>Login do administrador</button>`) : nothing}
           <input id="mind-pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden @change=${this.uploadPdfs} />
-        </div>
+        </div>` : nothing}
       </header>
-      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca pública</strong> · Leitura livre, edição restrita</span><details><summary>Sobre os dados</summary><p>Notas e PDFs desta biblioteca são públicos e podem ser acessados por qualquer pessoa, inclusive por links diretos. Somente o administrador autenticado pode publicar, editar e excluir. Faça backups regulares. Dados locais antigos não são publicados automaticamente.</p></details></div>` :
-        html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca local</strong> · Arquivos somente neste navegador</span><details><summary>Sobre os dados</summary><p>Notas e PDFs ficam somente neste navegador e perfil, sem sincronização nem criptografia. Podem desaparecer se os dados do navegador forem apagados. Faça backups e evite dispositivos compartilhados.</p></details></div>`}
+      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca pública</strong> · Leitura livre, edição restrita</span><details><summary>Sobre os dados</summary><p>Notas e PDFs desta biblioteca são públicos e podem ser acessados por qualquer pessoa, inclusive por links diretos. Somente o administrador autenticado pode publicar, editar e excluir. Faça backups regulares. Dados locais antigos não são publicados automaticamente.</p></details></div>` : mindLocalModeEnabled() ?
+        html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca local</strong> · Arquivos somente neste navegador</span><details><summary>Sobre os dados</summary><p>Notas e PDFs ficam somente neste navegador e perfil, sem sincronização nem criptografia. Podem desaparecer se os dados do navegador forem apagados. Faça backups e evite dispositivos compartilhados.</p></details></div>` :
+        html`<div class="mind-local-warning" role="status"><span><strong>Biblioteca indisponível</strong> · A configuração pública não está disponível neste deployment.</span></div>`}
       ${this.renderAdminLogin()}
       ${this.notice ? html`<p class="mind-notice" role="status">${this.notice}</p>` : nothing}
       ${this.error ? html`<p class="mind-error" role="alert">${this.error}</p>` : nothing}
-      <div class="mind-workspace">
+      <div class="mind-workspace ${this.pdfExpanded ? "mind-workspace--pdf-expanded" : ""}">
+        ${this.libraryAvailable ? html`
         <aside class="mind-facets" aria-label="Navegação da Mente">
           <div class="mind-facet-title">Explorar</div>
           ${([["all", "Tudo"], ["pdf", "Documentos"], ["note", "Notas"], ["favorite", "Favoritos"]] as const).map(([id, label]) => html`<button type="button" class=${this.filter === id ? "is-active" : ""} aria-pressed=${this.filter === id} @click=${() => { this.filter = id; }}><span>${label}</span><small>${id === "all" ? this.items.length : id === "pdf" ? this.items.filter(x => x.kind === "pdf").length : id === "note" ? this.items.filter(x => x.kind === "note").length : this.items.filter(x => x.favorite).length}</small></button>`)}
@@ -438,6 +514,7 @@ export class MindPage extends LightElement {
         <div class="mind-inspector" aria-label="Detalhes e editor" id="mind-reader">
           ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Seu espaço de leitura</h2><p>Selecione uma nota ou documento para começar.</p></div>`}
         </div>
+        ` : html`<div class="mind-unavailable" role="status"><h2>A biblioteca compartilhada não está configurada</h2><p>Os dados deste navegador não serão tratados como conteúdo publicado.</p></div>`}
       </div>
     </section>`;
   }

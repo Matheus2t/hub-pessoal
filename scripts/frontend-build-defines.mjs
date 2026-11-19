@@ -14,6 +14,7 @@ export function frontendBuildDefines({ publicBuild = false, devServer = false } 
 
   return {
     "globalThis.__2T_MIND_CLOUD_ENABLED__": JSON.stringify(mindCloud),
+    "globalThis.__2T_MIND_LOCAL_MODE_ENABLED__": JSON.stringify(!publicBuild),
     "globalThis.__2T_MIND_SUPABASE_URL__": JSON.stringify(mindCloud ? supabaseUrl.replace(/\/$/, "") : ""),
     "globalThis.__2T_MIND_SUPABASE_KEY__": JSON.stringify(mindCloud ? supabaseKey : ""),
     "globalThis.__2T_API_BASE_URL__": JSON.stringify(apiBase),

@@ -218,6 +218,25 @@ mind-page { display:block; width:100%; min-width:0; }
   .mind-login-form .mind-actions > button { min-width:0; flex:1; }
 }
 
+/* Expand the reader without permanently removing a route back to the library. */
+.mind-workspace--pdf-expanded { grid-template-columns:minmax(0,1fr); }
+.mind-workspace--pdf-expanded .mind-facets,
+.mind-workspace--pdf-expanded .mind-list { display:none; }
+.mind-workspace--pdf-expanded .mind-inspector { grid-column:1; min-height:0; padding:24px clamp(16px,3vw,44px); }
+.mind-workspace--pdf-expanded .mind-detail { max-width:none; }
+.mind-workspace--pdf-expanded .mind-pdf-embed iframe { height:min(82vh,1100px); min-height:560px; }
+.mind-unavailable { grid-column:1/-1; display:grid; align-content:center; justify-items:start; gap:8px; min-height:260px; padding:clamp(22px,4vw,48px); }
+.mind-unavailable h2 { color:var(--text); font-size:17px; font-weight:580; }
+.mind-unavailable p { color:var(--muted); font-size:12px; line-height:1.6; }
+@media(max-width:700px) {
+  .mind-workspace--pdf-expanded .mind-inspector { padding:20px 4px 28px; }
+  .mind-workspace--pdf-expanded .mind-pdf-embed iframe { height:75vh; min-height:420px; }
+}
+@media(max-width:380px) {
+  .mind-workspace--pdf-expanded .mind-inspector { padding-inline:0; }
+  .mind-workspace--pdf-expanded .mind-pdf-embed iframe { min-height:360px; }
+}
+
 /* Public reading / admin-only editing */
 .mind-admin-login { display:flex; align-items:flex-start; flex-wrap:wrap; gap:24px; padding:20px 0 24px; border-bottom:1px solid var(--line-soft); }
 .mind-admin-login > div { flex:1 1 220px; display:grid; gap:7px; }
