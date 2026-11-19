@@ -11,6 +11,7 @@ export type CapabilitiesResult =
 
 export type LinkResolveStatus =
   | "resolved"
+  | "destination_identified"
   | "invalid_url"
   | "blocked_url"
   | "timeout"

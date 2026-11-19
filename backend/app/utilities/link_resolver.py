@@ -21,6 +21,16 @@ from .link_transport import HTTPObservation, _tls_error, fetch_headers
 from .schemas import LinkResolveResponse, RedirectHop
 
 _REDIRECT_STATUSES = {301, 302, 303, 307, 308}
+# Exact hostnames only; never include wildcard subdomains.
+# In public mode, HTTP requests are made exclusively to these known shorteners.
+PUBLIC_SHORTENER_HOSTS = frozenset({
+    "bit.ly", "tinyurl.com", "is.gd", "v.gd", "t.co", "rb.gy",
+})
+
+
+def _approved_shortener(target: LinkTarget) -> bool:
+    return target.scheme == "https" and target.port == 443 and target.hostname in PUBLIC_SHORTENER_HOSTS
+
 
 
 def _build_result(
@@ -77,6 +87,7 @@ async def resolve_link(
     *,
     dns_lookup: Callable = resolve_public_addresses,
     request_headers: Callable = fetch_headers,
+    restricted_public: bool = False,
 ) -> LinkResolveResponse:
     """Resolve a URL while validating and pinning every destination in the chain."""
     try:
@@ -85,8 +96,12 @@ async def resolve_link(
         warning = "O endereço foi bloqueado pela política de rede." if error.status == "blocked_url" else None
         return _result(error.status, original_url, None, None, [], [], warning)
 
-    deadline = time.monotonic() + min(settings.link_resolver_total_timeout_seconds, 12.0)
-    max_redirects = min(settings.link_resolver_max_redirects, 8)
+    if restricted_public and not _approved_shortener(current):
+        return _result("blocked_url", original_url, None, None, [], [],
+                       "O serviço público aceita apenas encurtadores HTTPS conhecidos.")
+
+    deadline = time.monotonic() + min(settings.link_resolver_total_timeout_seconds, 8.0 if restricted_public else 12.0)
+    max_redirects = min(settings.link_resolver_max_redirects, 4 if restricted_public else 8)
     visited = {current.key}
     redirects: list[RedirectHop] = []
     requested: list[LinkTarget] = []
@@ -138,6 +153,10 @@ async def resolve_link(
 
         last_target, last_status_code = current, observation.status_code
         if observation.status_code not in _REDIRECT_STATUSES:
+            if restricted_public:
+                # Never misrepresent the shortener's HTTP response as the destination's status.
+                return _result("unresolved", original_url, None, None, redirects, requested,
+                               "O encurtador não informou um destino HTTP.")
             # 4xx and 5xx are real final responses, not transport failures.
             return _result("resolved", original_url, current, observation.status_code, redirects, requested)
 
@@ -161,6 +180,14 @@ async def resolve_link(
         except (ValueError, UnicodeError):
             return _result("unresolved", original_url, current, observation.status_code, redirects, requested,
                            "O destino do redirecionamento era inválido.")
+
+        if restricted_public and not _approved_shortener(next_target):
+            # Do not resolve DNS or open a connection to the destination.
+            # Only the Location header from the approved shortener is reported.
+            return _result(
+                "destination_identified", original_url, next_target, None, redirects, requested,
+                "O destino foi informado pelo encurtador, mas não foi acessado nem verificado.",
+            )
 
         if next_target.key in visited:
             return _result("redirect_loop", original_url, current, observation.status_code, redirects, requested,

@@ -59,15 +59,24 @@ def _public_resolver_ready() -> bool:
     ))
 
 
+def _restricted_public_ready() -> bool:
+    return all((
+        settings.utilities_enabled,
+        settings.link_resolver_enabled,
+        settings.link_resolver_restricted_public_enabled,
+        settings.link_resolver_public_rate_limit_confirmed,
+    ))
+
+
 def _utilities_available(request: Request) -> bool:
     if _vercel_runtime():
-        return _public_resolver_ready()
+        return _public_resolver_ready() or _restricted_public_ready()
     return settings.utilities_enabled and _is_loopback_request(request)
 
 
 def _resolver_available(request: Request) -> bool:
     if _vercel_runtime():
-        return _public_resolver_ready()
+        return _public_resolver_ready() or _restricted_public_ready()
     return (
         settings.utilities_enabled
         and settings.link_resolver_enabled
@@ -82,7 +91,7 @@ def capabilities(request: Request) -> UtilityCapabilities:
     on_vercel = _vercel_runtime()
     return UtilityCapabilities(
         utilities_enabled=True,
-        link_resolver_enabled=settings.link_resolver_enabled and (not on_vercel or _public_resolver_ready()),
+        link_resolver_enabled=settings.link_resolver_enabled and (not on_vercel or _public_resolver_ready() or _restricted_public_ready()),
         background_remover_enabled=False if on_vercel else settings.background_remover_enabled,
     )
 
@@ -157,6 +166,9 @@ async def resolve_link_endpoint(request: Request) -> LinkResolveResponse:
 
     try:
         try:
+            if _vercel_runtime():
+                # No generic outbound URL resolver is ever exposed on Vercel.
+                return await resolve_link(data.url, restricted_public=True)
             return await resolve_link(data.url)
         except Exception as error:
             # Never log the URL, headers, redirect location, or exception message.

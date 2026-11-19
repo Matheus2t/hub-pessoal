@@ -31,6 +31,7 @@ export async function loadUtilityCapabilities(signal?: AbortSignal): Promise<Cap
 
 const linkResolveStatuses: readonly LinkResolveStatus[] = [
   "resolved",
+  "destination_identified",
   "invalid_url",
   "blocked_url",
   "timeout",
@@ -67,6 +68,9 @@ export function isLinkResolveResponse(value: unknown): value is LinkResolveRespo
 
   if (!redirects.every(item => isRecord(item) && typeof item.url === "string" && item.url.length > 0 && item.url.length <= 2048 && isHTTPCode(item.status_code))) {
     return false;
+  }
+  if (value.status === "destination_identified") {
+    return typeof value.final_url === "string" && value.final_status_code === null && value.redirect_count > 0;
   }
   return value.status !== "resolved" || (typeof value.final_url === "string" && isHTTPCode(value.final_status_code));
 }

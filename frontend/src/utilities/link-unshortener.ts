@@ -68,7 +68,9 @@ export class UtilityLinkUnshortener extends LightElement {
     if (!this.capabilities.capabilities.utilities_enabled || !this.capabilities.capabilities.link_resolver_enabled) {
       return local ? "O Desencurtador está desativado neste backend local." : "O Desencurtador está desativado.";
     }
-    return "A URL é enviada à API 2T. A aplicação não guarda consultas nem verifica reputação.";
+    return local
+      ? "A URL é enviada à API 2T. A aplicação não guarda consultas nem verifica reputação."
+      : "Aceita links HTTPS de bit.ly, tinyurl.com, is.gd, v.gd, t.co e rb.gy. Não visita o destino final nem verifica reputação.";
   }
 
   private onInput(event: Event) {
@@ -229,7 +231,8 @@ export class UtilityLinkUnshortener extends LightElement {
   }
 
   private get confirmedFinalUrl(): string | null {
-    return this.result?.status === "resolved" ? this.result.final_url : null;
+    return this.result?.status === "resolved" || this.result?.status === "destination_identified"
+      ? this.result.final_url : null;
   }
 
   private finalDomain(url: string): string {
@@ -237,6 +240,8 @@ export class UtilityLinkUnshortener extends LightElement {
   }
 
   private resultMessage(result: LinkResolveResponse): string {
+    if (result.status === "destination_identified")
+      return "O encurtador informou este destino. A página final não foi acessada nem verificada.";
     if (result.status !== "resolved") return this.statusMessage(result.status);
     if (result.final_status_code !== null && result.final_status_code >= 400) {
       return `Destino identificado, mas o servidor respondeu com HTTP ${result.final_status_code}.`;
@@ -249,6 +254,7 @@ export class UtilityLinkUnshortener extends LightElement {
   private statusMessage(status: LinkResolveResponse["status"]): string {
     const messages: Record<LinkResolveResponse["status"], string> = {
       resolved: "Destino encontrado.",
+      destination_identified: "Destino informado pelo encurtador; página final não verificada.",
       invalid_url: "O endereço informado é inválido. Confira o formato e tente novamente.",
       blocked_url: "Este endereço foi bloqueado pela política de segurança. O destino não foi confirmado.",
       timeout: "A consulta excedeu o tempo limite. O destino não foi confirmado.",
@@ -274,7 +280,7 @@ export class UtilityLinkUnshortener extends LightElement {
     for (const hop of result.redirects.slice(1)) {
       if (nodes[nodes.length - 1] !== hop.url) nodes.push(hop.url);
     }
-    const isResolved = result.status === "resolved" && result.final_url !== null;
+    const isResolved = (result.status === "resolved" || result.status === "destination_identified") && result.final_url !== null;
     if (isResolved && result.final_url && nodes[nodes.length - 1] !== result.final_url) nodes.push(result.final_url);
 
     return html`<details class="link-path">
@@ -293,14 +299,15 @@ export class UtilityLinkUnshortener extends LightElement {
   private renderResult() {
     const result = this.result;
     if (!result) return nothing;
-    const resolved = result.status === "resolved" && result.final_url !== null;
+    const reported = result.status === "destination_identified";
+    const resolved = (result.status === "resolved" || reported) && result.final_url !== null;
     const finalUrl = resolved ? result.final_url : null;
     const warnings = result.security.warnings;
     const statusTone = resolved ? "confirmed" : "partial";
     return html`<section class="link-result link-result--${statusTone}" aria-labelledby="link-result-heading">
       <div class="link-result-main">
         <div class="link-result-copy">
-          <p class="utilities-eyebrow">${resolved ? "DESTINO IDENTIFICADO" : "RESOLUÇÃO PARCIAL"}</p>
+          <p class="utilities-eyebrow">${reported ? "DESTINO INFORMADO · NÃO VERIFICADO" : resolved ? "DESTINO IDENTIFICADO" : "RESOLUÇÃO PARCIAL"}</p>
           <h2 id="link-result-heading" tabindex="-1">${resolved ? this.finalDomain(finalUrl!) : "Destino final não confirmado"}</h2>
           ${resolved ? html`<p class="link-result-url" dir="ltr">${finalUrl}</p>` : nothing}
           <p class="link-result-message">${this.resultMessage(result)}</p>
@@ -319,9 +326,11 @@ export class UtilityLinkUnshortener extends LightElement {
       ${warnings.length ? html`<ul class="link-warnings" aria-label="Avisos da análise">
         ${warnings.map(warning => html`<li>${this.displayWarning(warning)}</li>`)}
       </ul>` : nothing}
-      <p class="link-reputation-note">${result.security.reputation_checked
-        ? "A análise de redirecionamentos não substitui a avaliação do conteúdo do site."
-        : "A ferramenta identifica redirecionamentos, mas não verifica se o site é confiável."}</p>
+      <p class="link-reputation-note">${reported
+        ? "A 2T não acessou a página de destino. O endereço informado não comprova que o site existe ou é seguro."
+        : result.security.reputation_checked
+          ? "A análise de redirecionamentos não substitui a avaliação do conteúdo do site."
+          : "A ferramenta identifica redirecionamentos, mas não verifica se o site é confiável."}</p>
       ${this.renderPath(result)}
       <p class="link-copy-feedback" role="status" aria-live="polite">${this.copyMessage}</p>
     </section>`;

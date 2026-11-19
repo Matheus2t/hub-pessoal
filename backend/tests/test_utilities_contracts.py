@@ -57,7 +57,7 @@ def test_utility_flags_default_to_disabled(monkeypatch):
     for variable in (
         "UTILITIES_ENABLED", "LINK_RESOLVER_ENABLED", "BACKGROUND_REMOVER_ENABLED",
         "LINK_RESOLVER_PUBLIC_ENABLED", "LINK_RESOLVER_PUBLIC_RATE_LIMIT_CONFIRMED",
-        "LINK_RESOLVER_PUBLIC_EGRESS_CONFIRMED",
+        "LINK_RESOLVER_PUBLIC_EGRESS_CONFIRMED", "LINK_RESOLVER_RESTRICTED_PUBLIC_ENABLED",
     ):
         monkeypatch.delenv(variable, raising=False)
     defaults = Settings(_env_file=None)
@@ -126,7 +126,7 @@ def test_link_contract_limits_raw_url_and_models_all_outcomes():
         LinkResolveRequest(url="https://example.com/" + "x" * 2048)
 
     statuses = [
-        "resolved", "invalid_url", "blocked_url", "timeout", "redirect_loop",
+        "resolved", "destination_identified", "invalid_url", "blocked_url", "timeout", "redirect_loop",
         "redirect_limit", "tls_error", "unresolved", "service_unavailable",
     ]
     for status in statuses:
@@ -213,7 +213,8 @@ def test_vercel_public_gates_allow_only_the_resolver_and_never_the_background_to
 
     from app.utilities import router as router_module
 
-    async def fake_resolve(url):
+    async def fake_resolve(url, **kwargs):
+        assert kwargs.get("restricted_public") is True
         return LinkResolveResponse(
             status="resolved", original_url=url, final_url="https://example.com/",
             final_status_code=200, redirect_count=0, redirects=[],
