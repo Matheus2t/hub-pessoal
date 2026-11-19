@@ -4,6 +4,11 @@
 .mind-nav-entry .obsidian-mark,.mind-page .obsidian-mark { color:var(--mind-obsidian-purple); }
 .mind-nav-entry { display:inline-flex; align-items:center; justify-content:center; width:40px; min-width:40px; padding:0; }
 .mind-nav-entry .obsidian-mark { display:block; width:24px; height:24px; }
+.footer-brand-group { display:inline-flex; align-items:center; gap:11px; flex:0 0 auto; }
+.footer-mind-link { display:inline-grid; place-items:center; width:34px; height:34px; border-radius:var(--radius); color:var(--mind-obsidian-purple); text-decoration:none; }
+.footer-mind-link .obsidian-mark { display:block; width:23px; height:23px; color:inherit; }
+.footer-mind-link:hover { background:var(--hover); }
+.footer-mind-link:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
 .mind-nav-entry:hover .obsidian-mark,.mind-nav-entry[aria-current="page"] .obsidian-mark { opacity:1; }
 
 mind-page { display:block; min-width:0; }
