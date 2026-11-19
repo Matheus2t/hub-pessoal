@@ -1,4 +1,7 @@
-/* 2T Mente — calm, monochrome personal knowledge library. */
+/* 2T Mente — calm, mostly monochrome personal knowledge library. */
+:root { --mind-obsidian-purple: #7651aa; }
+:root[data-theme="light"] { --mind-obsidian-purple: #573288; }
+.mind-nav-entry .obsidian-mark,.mind-page .obsidian-mark { color:var(--mind-obsidian-purple); }
 .mind-nav-entry { display:inline-flex; align-items:center; justify-content:center; width:40px; min-width:40px; padding:0; }
 .mind-nav-entry .obsidian-mark { display:block; width:24px; height:24px; }
 .mind-nav-entry:hover .obsidian-mark,.mind-nav-entry[aria-current="page"] .obsidian-mark { opacity:1; }
