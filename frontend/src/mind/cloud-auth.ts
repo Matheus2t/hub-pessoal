@@ -3,6 +3,7 @@ declare global {
   var __2T_MIND_SUPABASE_URL__: string | undefined;
   var __2T_MIND_SUPABASE_KEY__: string | undefined;
   var __2T_MIND_CLOUD_ENABLED__: boolean | undefined;
+  var __2T_MIND_LOCAL_MODE_ENABLED__: boolean | undefined;
 }
 
 interface CloudSession {
@@ -16,13 +17,17 @@ const SESSION_KEY = "2t-mind-supabase-session-v1";
 export function mindCloudEnabled(): boolean {
   return globalThis.__2T_MIND_CLOUD_ENABLED__ === true;
 }
+/** Public production builds without cloud must not masquerade local drafts as a shared library. */
+export function mindLocalModeEnabled(): boolean {
+  return globalThis.__2T_MIND_LOCAL_MODE_ENABLED__ === true;
+}
 function config() {
   const rawUrl = globalThis.__2T_MIND_SUPABASE_URL__ ?? "";
   const key = globalThis.__2T_MIND_SUPABASE_KEY__ ?? "";
   const url = new URL(rawUrl);
   if (url.protocol !== "https:" || !/^[a-z0-9-]+\.supabase\.co$/.test(url.hostname) ||
       !key.startsWith("sb_publishable_")) {
-    throw new Error("O acesso privado da Mente ainda não foi configurado.");
+    throw new Error("A configuração administrativa da Mente não está disponível.");
   }
   return { url: url.origin, key };
 }
@@ -95,9 +100,14 @@ export async function mindPublicApi(path: string): Promise<Response> {
 }
 
 export function publicMindPdfUrl(storagePath: string): string {
-  if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.pdf$/i.test(storagePath)) throw new Error("Caminho de PDF inválido.");
+  if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.pdf$/i.test(storagePath)) throw new Error("Caminho de PDF inválido.");
   const { url } = config();
   return url + "/storage/v1/object/public/mind-pdfs/" + storagePath;
+}
+
+export function safeMindPdfFileName(value: string): string {
+  const name = value.normalize("NFC").replace(/[\\/\u0000-\u001f\u007f]/g, "_").trim().slice(0, 180);
+  return name || "documento.pdf";
 }
 
 async function validateAdmin(session: CloudSession): Promise<boolean> {
@@ -115,7 +125,7 @@ export async function restoreMindSession(): Promise<boolean> {
   catch { return false; }
 }
 export async function signInMind(email: string, password: string): Promise<void> {
-  if (!mindCloudEnabled()) throw new Error("Login privado desativado.");
+  if (!mindCloudEnabled()) throw new Error("Login administrativo indisponível.");
   const response = await authRequest("/auth/v1/token?grant_type=password", {
     method: "POST", body: JSON.stringify({ email, password }),
   });

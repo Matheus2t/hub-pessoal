@@ -1,57 +1,72 @@
-# 2T Mente — Supabase Cloud, lançamento controlado
+# 2T Mente — estado operacional da nuvem
 
-## Estado atual
+Atualizado em 2026-11-19. Este documento descreve o comportamento implantado; não é um
+plano para criar outro projeto nem para reconfigurar recursos existentes.
 
-Este PR prepara autenticação única do administrador, RLS, bucket privado, sincronização de
-notas e PDFs e migração explícita do IndexedDB. **NÃO HABILITAR A FLAG EM PRODUÇÃO AINDA**.
-Os dois projetos Supabase existentes já têm outros objetivos. Criar um projeto dedicado
-após definir a organização e confirmar eventual custo. Não aplicar SQL em projetos existentes.
+## Recursos atuais
 
-## Provisionamento
+- Supabase existente `2T'Site`, na região `sa-east-1`.
+- `public.mind_items`: RLS ativo; visitantes têm SELECT público, sem grants de INSERT,
+  UPDATE ou DELETE para `anon`. As três mutações têm políticas de administrador e
+  verificação de `owner_id`.
+- `private.mind_admins`: uma identidade administrativa autorizada. A função de verificação
+  é `SECURITY DEFINER`, fica no schema privado e usa `search_path` vazio.
+- Storage `mind-pdfs`: público para leitura; somente a política administrativa pode gravar,
+  substituir ou excluir. Limite de 25 MiB e MIME `application/pdf`.
+- A interface 2T não implementa cadastro público. A opção de signup no provedor Auth não foi
+  inspecionada nesta auditoria; confirme-a no painel antes de futuras mudanças de acesso.
+  Credenciais e sessão do administrador nunca são exibidas ou gravadas em backups.
 
-1. Criar projeto Supabase EXCLUSIVO para a Mente na região sa-east-1, após autorização da
-   organização/custo. Conferir estado ACTIVE_HEALTHY.
-2. Desabilitar Sign Up público e autenticação anônima em Authentication > Providers.
-   Criar um único usuário administrador pelo painel, sem incluir email/senha em commits.
-3. Revisar e executar [supabase-bootstrap.sql](./supabase-bootstrap.sql) no projeto exclusivo;
-   depois inserir manualmente o UID deste usuário em private.mind_admins, como indicado no script.
-   Não cadastrar outros IDs.
-4. Conferir RLS efetivamente habilitado; verificar que requests com anon key e usuários não
-   administradores não conseguem listar, gravar ou baixar arquivos.
-5. Definir variáveis da Vercel (produção) somente depois dos testes:
-   MIND_CLOUD_ENABLED=true
-   MIND_SUPABASE_URL=https://REF.supabase.co
-   MIND_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... (PÚBLICA, não service_role).
-   Rebuild é obrigatório, pois o frontend utiliza valores de compilação.
-6. Verificar no site: Mente visível ao visitante, formulários privados não exibidos sem login,
-   login da conta única, criar/editar/apagar nota, PDF, download, busca, backups e logout.
-7. Migrar dados do IndexedDB SOMENTE mediante clique em "Migrar dados deste navegador" com
-   administrador autenticado. A operação copia IDs ausentes e **não exclui os originais**.
-   Se houver falha parcial, os dados continuam locais; backup prévio é recomendado.
-8. Revisar budget, quotas de Storage e backup da base. Testar em PC e celular usando
-   a mesma conta antes de considerar sincronização concluída.
+Uma auditoria read-only de 2026-11-19 confirmou o bucket público, RLS, grants e políticas,
+uma identidade administrativa configurada, um objeto PDF vinculado ao respectivo registro
+e nenhum objeto órfão naquele momento. A auditoria não leu nem reproduziu conteúdo textual
+dos documentos. As linhas e os arquivos atuais são públicos por decisão do produto.
 
-## Limites e segurança
+## Variáveis da Vercel
 
-- Sem cadastro público e sem API com service_role no navegador. Admin determinado por tabela
-  privada e função SECURITY DEFINER fora do schema exposto, usada por políticas RLS.
-- PostgreSQL protege notas; Storage é privado por owner UID. O frontend mostra apenas a
-  identificação de um endereço, não possui permissões elevadas.
-- Sessão é armazenada por aba em sessionStorage. Tokens são legíveis por JavaScript:
-  atualizar a CSP e mitigações de XSS antes de ativar dados confidenciais. A UI não é a
-  fronteira de segurança: as regras RLS são obrigatórias.
-- Os PDFs são validados por assinatura inicial no navegador, tipo e limite no Storage.
-  Isto não equivale a antivírus ou análise de conteúdo. Não usar arquivos não confiáveis.
-- O limite de PDF permanece 25 MiB; o plano Supabase também impõe quotas totais.
-- A migração de outro projeto Supabase, a sincronização de alterações offline e E2EE não
-  estão incluídos nesta primeira etapa. Backup JSON contém conteúdo legível.
-- O Desencurtador privado para mais provedores será tratado depois: a autenticação não
-  dispensa egress, SSRF e controle de requisições.
+O projeto correto é `matheus2t`, associado a `matheus2t.com.br`. As variáveis de produção
+necessárias são `MIND_CLOUD_ENABLED`, `MIND_SUPABASE_URL` e
+`MIND_SUPABASE_PUBLISHABLE_KEY`. A publishable key é pública e pode estar no bundle; a
+`service_role` e senhas nunca podem estar presentes no frontend. A build habilita a Mente
+Cloud somente com flag, origem Supabase HTTPS exata e prefixo de publishable key válidos.
 
-## Validação
+O HTML gerado permite essa origem exata em `connect-src` e `frame-src`; a build pública também
+omite o modo IndexedDB. Se a configuração cloud faltar, a biblioteca pública falha fechada e
+não apresenta dados locais como publicados. Builds de desenvolvimento continuam usando
+IndexedDB e mostram o aviso de biblioteca local.
 
-No CI, rodar primeiro a build pública atual e testes da Mente local (sem alterar produção),
-depois recompilar com URL e key **fictícias** para testar em Playwright o gate de login,
-autorização negada, sessão da conta única e logout.
+## Fluxos e recuperação
 
-Não publicar se os testes falharem ou se o Supabase exclusivo não estiver configurado.
+- Leitura de notas/PDFs e download público não enviam bearer token de administrador.
+- Antes de mutações, a aplicação consulta o registro com a sessão atual; o resultado ainda é
+  protegido por RLS. O login valida identidade e permissão administrativa.
+- PDF substituto é enviado para um caminho único; após confirmação da linha, o anterior é
+  removido somente se nenhuma linha ainda o referenciar.
+- Upload cuja gravação no banco falhe é removido somente após confirmar que não tem vínculo.
+  Se a consulta de vínculo falhar, o arquivo é preservado e a UI informa que precisa revisão.
+- Exclusões removem primeiro a linha e, depois, o Storage. Se a segunda etapa falhar, a UI
+  informa que o arquivo público ficou pendente de limpeza. Não há varredura destrutiva
+  automática de objetos órfãos.
+- Restauração na nuvem atualiza itens pelos IDs do backup; após falha parcial, mostra quantos
+  foram salvos. Reimportar o mesmo backup não duplica IDs. O IndexedDB de origem é mantido.
+- Backups contêm notas e bytes completos dos PDFs, não são criptografados e exigem guarda
+  segura. O limite do JSON de backup permanece 160 MiB.
+
+## Verificação e pendências
+
+Testes locais Playwright usam uma API simulada e não comprovam credenciais de produção.
+Na validação local desta correção: build/typecheck passaram nos modos local, cloud de teste e
+público sem cloud; Playwright passou 8 testes locais, 14 testes de cloud simulada e 1 teste
+de build público sem cloud; os 4 testes unitários de geração/validação da CSP passaram.
+O teste de produção permanece pendente até o deployment desta correção.
+Antes desta correção, a produção retornava HTML e PDF válidos, mas sua CSP não autorizava
+o host Supabase em `frame-src`, bloqueando o iframe. A resposta real do PDF não incluía
+`X-Frame-Options` nem `frame-ancestors` restritivo e tinha MIME `application/pdf`. O smoke
+test pós-deploy é somente de leitura: verifica biblioteca anônima, resposta PDF real, prévia,
+download e abertura externa. Login real exige interação do administrador e não é automatizado
+sem credenciais.
+
+O advisory do Supabase informou que a proteção contra senhas vazadas está desabilitada.
+Esse endurecimento deve ser avaliado no painel Auth; não foi alterado pelo código.
+Nenhum backup/restore, upload, edição ou exclusão foi executado contra os dados de produção
+durante a auditoria.

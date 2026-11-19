@@ -2,6 +2,7 @@
 -- Applied to Supabase 2T'Site on 2026-11-19.
 -- WARNING: all existing Mente notes and PDFs become publicly readable.
 -- The administrator must upload only content intended for public distribution.
+-- HISTORICAL MIGRATION: already applied. Do not rerun manually on production.
 begin;
 grant select on table public.mind_items to anon;
 create policy mind_public_read on public.mind_items
