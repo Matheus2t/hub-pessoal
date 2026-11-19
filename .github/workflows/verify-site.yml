@@ -47,3 +47,14 @@ jobs:
           PW_CHANNEL=chromium npx playwright test frontend/tests/games.spec.ts
       - name: Validate homepage, Mente and closed public utility gates
         run: PW_CHANNEL=chromium npx playwright test frontend/tests/home-portrait.spec.ts frontend/tests/utilities.spec.ts frontend/tests/mind.spec.ts
+
+      - name: Build protected Mente preview (no real credentials)
+        env:
+          MIND_CLOUD_ENABLED: "true"
+          MIND_SUPABASE_URL: "https://mocktestproj.supabase.co"
+          MIND_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test_fixture_only"
+        run: npm run build
+      - name: Validate Mente sign-in gate and mock private sync
+        env:
+          MIND_CLOUD_ENABLED: "true"
+        run: PW_CHANNEL=chromium npx playwright test frontend/tests/mind-cloud.spec.ts
