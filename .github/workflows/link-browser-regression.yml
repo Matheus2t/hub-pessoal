@@ -1,0 +1,175 @@
+name: Desencurtador - comparação da regressão Playwright
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/link-browser-regression.yml'
+      - 'frontend/**'
+      - 'backend/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: link-browser-regression-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  compare-browser:
+    name: Browser completo (${{ matrix.revision }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        revision: [baseline, candidate]
+    env:
+      PYTHONPATH: backend
+      VERCEL: '1'
+      PUBLIC_HISTORY_ENABLED: 'false'
+      DATABASE_URL: ''
+      PW_CHANNEL: chromium
+      BASE_URL: http://127.0.0.1:8123
+    steps:
+      - name: Checkout a mesma revisão para build e testes
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.revision == 'baseline' && 'main' || github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements-test.txt
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install -r backend/requirements-test.txt
+          npx playwright install --with-deps chromium
+      - name: Typecheck and production-style build
+        run: npm run build
+      - name: Start FastAPI with built frontend (loopback only)
+        run: |
+          python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8123 > /tmp/link-browser-api.log 2>&1 &
+          for i in {1..50}; do
+            if curl --silent --fail http://127.0.0.1:8123/api/health > /dev/null; then exit 0; fi
+            sleep 0.2
+          done
+          cat /tmp/link-browser-api.log
+          exit 1
+      - name: Run complete Playwright suite, preserve failures for comparison
+        id: browser
+        shell: bash
+        run: |
+          set +e
+          npx playwright test --reporter=json > browser-results.json 2>browser-stderr.log
+          status=$?
+          set -e
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const output = fs.existsSync('browser-results.json') ? fs.readFileSync('browser-results.json','utf8') : '';
+          let report;
+          try { report = JSON.parse(output); } catch {
+            fs.writeFileSync('browser-summary.txt','Browser report unavailable; inspect stderr and API logs.\n');
+            process.exit(0);
+          }
+          const failed = [];
+          function walk(suites, titles=[]) {
+            for (const suite of suites || []) {
+              const next = [...titles, suite.title || ''];
+              for (const spec of suite.specs || []) {
+                for (const test of spec.tests || []) {
+                  if (test.status === 'unexpected' || test.results?.some(r => ['failed','timedOut','interrupted'].includes(r.status))) {
+                    failed.push({file:suite.file || '', title:[...next,spec.title].filter(Boolean).join(' > '), errors:(test.results || []).flatMap(r => r.errors || []).map(e => String(e.message || e.value || '').slice(0,300))});
+                  }
+                }
+              }
+              walk(suite.suites,next);
+            }
+          }
+          walk(report.suites);
+          const summary = {revision:process.env.GITHUB_REF_NAME,stats:report.stats,failed};
+          fs.writeFileSync('browser-summary.json',JSON.stringify(summary,null,2));
+          fs.writeFileSync('browser-summary.txt',`Total failures: ${failed.length}\n`+failed.map(f=>`${f.file} :: ${f.title}\n${f.errors.join('\n')}\n`).join('\n'));
+          NODE
+          echo "### ${{ matrix.revision }}: Playwright exit code $status" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f browser-summary.txt ]; then head -n 60 browser-summary.txt >> "$GITHUB_STEP_SUMMARY"; fi
+          exit 0
+      - name: Archive regression evidence (no secrets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-browser-${{ matrix.revision }}
+          path: |
+            browser-summary.json
+            browser-summary.txt
+            browser-stderr.log
+            /tmp/link-browser-api.log
+          if-no-files-found: ignore
+      - name: Report raw test status (compared in separate job)
+        if: always()
+        run: echo "Playwright raw exit code on ${{ matrix.revision }} is ${{ steps.browser.outputs.exit_code }}. The comparison job evaluates new failures."
+  regression-diff:
+    name: Regressions introduced by candidate
+    needs: compare-browser
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download baseline and candidate summaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: link-browser-*
+          path: reports
+      - name: Compare failures by test identity
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          function findReports(directory, found=[]) {
+            if (!fs.existsSync(directory)) return found;
+            for (const name of fs.readdirSync(directory)) {
+              const entry = path.join(directory,name);
+              if (fs.statSync(entry).isDirectory()) findReports(entry,found);
+              else if (name === 'browser-summary.json') found.push(entry);
+            }
+            return found;
+          }
+          const files=findReports('reports');
+          function readReport(kind) {
+            const match=files.find(file=>file.includes(`link-browser-${kind}`));
+            if (!match) throw new Error(`Missing ${kind} regression artifact`);
+            return JSON.parse(fs.readFileSync(match,'utf8'));
+          }
+          let baseline,candidate;
+          try { baseline=readReport('baseline');candidate=readReport('candidate'); }
+          catch(error) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`Unable to compare: ${error.message}\n`);
+            process.exit(1);
+          }
+          const identity=item=>[item.file,item.title].join(' :: ');
+          const baselineFailed=new Set((baseline.failed||[]).map(identity));
+          const candidateFailed=new Set((candidate.failed||[]).map(identity));
+          const introduced=[...candidateFailed].filter(x=>!baselineFailed.has(x));
+          const resolved=[...baselineFailed].filter(x=>!candidateFailed.has(x));
+          const report=[
+            '# Playwright regression comparison',
+            `Baseline failed: ${baselineFailed.size}`,
+            `Candidate failed: ${candidateFailed.size}`,
+            `New failures: ${introduced.length}`,
+            `Resolved failures: ${resolved.length}`,
+            '',
+            ...introduced.map(x=>`- NEW: ${x}`),
+            ...resolved.map(x=>`- RESOLVED: ${x}`),
+            '',
+            'Existing failures are NOT declared passing. This gate only checks changes relative to main.'
+          ].join('\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,report+'\n');
+          console.log(report);
+          if (introduced.length) process.exit(1);
+          NODE

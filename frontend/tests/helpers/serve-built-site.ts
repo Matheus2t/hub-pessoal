@@ -3,8 +3,8 @@ import {extname,resolve,sep} from 'node:path';
 import type {Page} from '@playwright/test';
 
 /** Serves dist through Playwright routes so browser tests need no local listening socket. */
-export async function serveBuiltSite(page:Page,fixtureResponse?:{status:number;contentType:string;body:string|Buffer}){
-  const root=resolve('dist'),origin=process.env.BASE_URL||'http://127.0.0.1:8123',types:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.png':'image/png','.mp3':'audio/mpeg'};
+export async function serveBuiltSite(page:Page,fixtureResponse?:{status:number;contentType:string;body:string|Buffer},origin=process.env.BASE_URL||'http://127.0.0.1:8123'){
+  const root=resolve('dist'),types:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.png':'image/png','.mp3':'audio/mpeg'};
   await page.route(`${origin}/**`,async route=>{
     const pathname=decodeURIComponent(new URL(route.request().url()).pathname);
     if(pathname==='/learn/audio/fixture-tone.wav'&&fixtureResponse)return route.fulfill(fixtureResponse);

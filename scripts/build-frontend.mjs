@@ -1,4 +1,5 @@
 import {build} from 'esbuild';
+import {frontendBuildDefines} from './frontend-build-defines.mjs';
 
 const publicBuild=process.env.VERCEL==='1'||process.env.LEARN_PUBLIC_BUILD==='1';
 const omitLocalPreviewContent=publicBuild?{
@@ -13,7 +14,7 @@ const omitLocalPreviewContent=publicBuild?{
 }:undefined;
 
 await Promise.all([
- build({entryPoints:['frontend/src/main.ts'],bundle:true,minify:true,outfile:'dist/bundle.js'}),
+  build({entryPoints:['frontend/src/main.ts'],bundle:true,minify:true,outfile:'dist/bundle.js',define:frontendBuildDefines({publicBuild})}),
  build({entryPoints:['frontend/src/learn/page.ts'],bundle:true,format:'esm',minify:true,outfile:'dist/learn.js',define:{__2T_PUBLIC_BUILD__:JSON.stringify(publicBuild)},plugins:omitLocalPreviewContent?[omitLocalPreviewContent]:[]}),
  build({entryPoints:['frontend/src/components/distributions-page.ts'],bundle:true,format:'esm',minify:true,outfile:'dist/distributions.js'}),
 ]);
