@@ -38,7 +38,7 @@ test("the Obsidian symbol alone uses dark purple in both themes", async ({ page 
   for (const [theme, expected] of [["dark", "rgb(118, 81, 170)"], ["light", "rgb(87, 50, 136)"]] as const) {
     await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
     for (const selector of [
-      ".mind-nav-entry .obsidian-mark",
+      ".footer-mind-link .obsidian-mark",
       ".mind-heading .obsidian-mark",
       ".mind-unselected .obsidian-mark",
     ]) {
@@ -50,11 +50,10 @@ test("the Obsidian symbol alone uses dark purple in both themes", async ({ page 
   }
 });
 
-test("Mente appears in main navigation, explains local-only storage and remains responsive", async ({ page }) => {
-  const mindNav = page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Mente" });
-  await expect(mindNav).toBeVisible();
-  await expect(mindNav.locator(".obsidian-mark")).toBeVisible();
-  await expect(mindNav).toHaveText("");
+test("Mente is accessible from the footer only, while its local storage remains responsive", async ({ page }) => {
+  await expect(page.locator("app-sidebar a[href='#/mente']")).toHaveCount(0);
+  await expect(page.locator("app-sidebar .obsidian-mark")).toHaveCount(0);
+  await expect(page.locator(".page-footer a[href='#/mente'] .obsidian-mark")).toBeVisible();
   await expect(page.locator(".mind-heading h1")).toHaveClass("sr-only");
   await expect(page.locator(".breadcrumbs")).toHaveCount(0);
   await expect(page.getByRole("note")).toContainText("somente neste navegador");
