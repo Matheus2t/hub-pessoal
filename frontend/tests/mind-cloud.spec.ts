@@ -71,7 +71,7 @@ test("visitante visualiza PDF na 2T e encontra link externo direto", async ({ pa
   const api = mockApi(page); await api.install();
   await page.goto("/#/mente");
   await page.getByRole("button", { name: /Relatório/ }).click();
-  await page.getByRole("button", { name: "Visualizar na 2T" }).click();
+  await expect(page.getByRole("button", { name: "Fechar visualização" })).toBeVisible();
   const iframe = page.locator(".mind-pdf-embed iframe");
   await expect(iframe).toBeVisible();
   await expect(iframe).toHaveAttribute("src", supabase + "/storage/v1/object/public/mind-pdfs/" + pdf.storage_path);

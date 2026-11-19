@@ -342,7 +342,7 @@ export class MindPage extends LightElement {
     return html`<button class="mind-item ${this.selectedId === item.id && !this.editing ? "is-selected" : ""}"
       type="button" aria-pressed=${this.selectedId === item.id && !this.editing}
       @click=${() => {
-        this.selectedId = item.id; this.editing = false; this.draft = null; this.pdfInlineId = null; this.clearMessages();
+        this.selectedId = item.id; this.editing = false; this.draft = null; this.pdfInlineId = mindCloudEnabled() && item.kind === "pdf" ? item.id : null; this.clearMessages();
         this.revealReaderOnSmallScreens();
       }}>
       <span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : "✎"}</span>
