@@ -88,6 +88,18 @@ export async function mindApi(path: string, init: RequestInit = {}): Promise<Res
     headers: { apikey: key, Authorization: "Bearer " + session.access_token, ...(init.headers ?? {}) },
   });
 }
+/** Public catalog requests never carry an administrator session or token. */
+export async function mindPublicApi(path: string): Promise<Response> {
+  const { url, key } = config();
+  return fetch(url + path, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", headers: { apikey: key, Accept: "application/json" } });
+}
+
+export function publicMindPdfUrl(storagePath: string): string {
+  if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.pdf$/i.test(storagePath)) throw new Error("Caminho de PDF inválido.");
+  const { url } = config();
+  return url + "/storage/v1/object/public/mind-pdfs/" + storagePath;
+}
+
 async function validateAdmin(session: CloudSession): Promise<boolean> {
   const [identity, admin] = await Promise.all([
     mindApi("/auth/v1/user"),

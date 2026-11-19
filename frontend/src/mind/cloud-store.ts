@@ -1,5 +1,5 @@
 /** Private Supabase PostgREST + Storage adapter. Server RLS is the security boundary. */
-import { mindApi } from "./cloud-auth";
+import { mindApi, mindPublicApi } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
 
 const BUCKET = "mind-pdfs";
@@ -22,7 +22,7 @@ function itemFromRow(row: DbItem): MindItem {
     id: row.id, kind: row.kind, title: row.title, topic: row.topic, tags: row.tags,
     description: row.description, content: row.content, favorite: row.favorite,
     createdAt: Date.parse(row.created_at), updatedAt: Date.parse(row.updated_at),
-    fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined,
+    fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined, storagePath: row.storage_path ?? undefined,
   };
 }
 function rowFromItem(item: MindItem) {
@@ -35,9 +35,8 @@ function rowFromItem(item: MindItem) {
   };
 }
 export async function listCloudMindItems(): Promise<MindItem[]> {
-  const response = await requireOk(await mindApi(
-    "/rest/v1/mind_items?select=*&order=updated_at.desc&limit=500",
-    { headers: { Accept: "application/json" } },
+  const response = await requireOk(await mindPublicApi(
+    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path&order=updated_at.desc&limit=500",
   ), "Não foi possível carregar as notas");
   return (await response.json() as DbItem[]).map(itemFromRow);
 }
