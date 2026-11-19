@@ -4,6 +4,7 @@ import { customElement, state } from "lit/decorators.js";
 import { LightElement, icon } from "../ui";
 import { currentPage, pages, learnActivities } from "../catalog";
 import "./sidebar";
+import "../mind/page";
 import "./topbar";
 import "./home-page";
 import "./holiday-calendar";
@@ -87,6 +88,7 @@ export class AppShell extends LightElement {
           ${this.page !== "overview" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['utilityLink','utilityBackground'].includes(this.page) ? html`<a href="#/utilitarios">Utilitários</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">Learn / Изучать</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}${this.page==='games'?this.gameBreadcrumb():''}<span aria-current="page">${this.page==='games'?this.gameTitle()||pages[this.page].title:['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
+          ${this.page === 'mind' ? html`<mind-page></mind-page>` : ''}
           <call-page ?hidden=${this.page !== "call"} @call-session-change=${this.onCallSession}></call-page>
           ${this.page === 'games' ? keyed(this.route, this.route === '#/games' ? html`<arcade-hub></arcade-hub>` : this.route === '#/games/snake' ? html`<games-page></games-page>` : this.route === '#/games/sudoku' ? html`<arcade-sudoku></arcade-sudoku>` : this.route === '#/games/2048' ? html`<arcade-2048></arcade-2048>` : this.route === '#/games/breakout' ? html`<arcade-breakout></arcade-breakout>` : this.route === '#/games/pong' ? html`<arcade-pong></arcade-pong>` : this.route === '#/games/palavra-secreta' ? html`<arcade-words></arcade-words>` : this.route === '#/games/digitacao' ? html`<arcade-typing></arcade-typing>` : this.route === '#/games/jogo-da-velha' ? html`<arcade-tic></arcade-tic>` : this.route === '#/games/reflexos' ? html`<arcade-reflex></arcade-reflex>` : html`<arcade-memory></arcade-memory>`) : ''}
           ${this.page === 'sports' ? html`<sports-calendar></sports-calendar>` : ''}
