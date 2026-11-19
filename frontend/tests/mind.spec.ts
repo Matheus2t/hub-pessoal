@@ -82,6 +82,10 @@ test("notes persist after reload and support topics, search, favorite and deleti
   await page.getByRole("button", { name: /Favoritar/ }).click();
   await page.getByRole("button", { name: /Favoritos/ }).click();
   await expect(page.locator(".mind-item")).toHaveCount(1);
+  await expect(page.getByRole("combobox", { name: "Filtrar por assunto" })).toBeVisible();
+  await page.getByRole("combobox", { name: "Filtrar por assunto" }).selectOption("Investimentos");
+  await expect(page.locator(".mind-item")).toHaveCount(1);
+
   await page.getByRole("searchbox", { name: "Pesquisar na Mente" }).fill("não existe");
   await expect(page.locator(".mind-item")).toHaveCount(0);
   await page.getByRole("searchbox", { name: "Pesquisar na Mente" }).fill("2027");
@@ -97,6 +101,7 @@ test("PDFs are stored locally and full backup can restore a deleted PDF", async 
   const first = page.waitForEvent("download");
   await page.getByRole("button", { name: "Baixar arquivo" }).click();
   expect((await first).suggestedFilename()).toBe("Estudo-ações-2027.pdf");
+  await page.locator(".mind-backup summary").click();
   const backupDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exportar backup" }).click();
   const backup = await backupDownload;
@@ -123,7 +128,7 @@ test("non-PDF uploads are rejected before being saved", async ({ page }) => {
 });
 
 
-test("Mente minimal uses aligned panes on desktop and stacked panes on mobile in both themes", async ({ page }) => {
+test("Mente prioriza leitura no desktop e empilha biblioteca e leitor em telas menores", async ({ page }) => {
   for (const theme of ["dark", "light"] as const) {
     await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
     for (const width of [320, 390, 700, 768, 900, 1200, 1366, 1440, 1920]) {
@@ -136,15 +141,13 @@ test("Mente minimal uses aligned panes on desktop and stacked panes on mobile in
       await expect(reader).toBeVisible();
       const a = await facets.boundingBox(), b = await list.boundingBox(), c = await reader.boundingBox();
       expect(a && b && c).toBeTruthy();
-      if (width <= 700) {
+      expect(b!.y).toBeGreaterThanOrEqual(a!.y);
+      if (width <= 1000) {
         expect(b!.y).toBeGreaterThan(a!.y);
         expect(c!.y).toBeGreaterThan(b!.y);
-      } else if (width <= 940) {
-        expect(b!.x).toBeLessThan(c!.x);
-        expect(b!.y).toBeGreaterThanOrEqual(a!.y);
       } else {
-        expect(a!.x).toBeLessThan(b!.x);
         expect(b!.x).toBeLessThan(c!.x);
+        expect(c!.width).toBeGreaterThan(b!.width * 2);
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
