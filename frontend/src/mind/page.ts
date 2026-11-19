@@ -1,6 +1,7 @@
 import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
+import { obsidianMark } from "./obsidian-mark";
 import {
   checkedPdf, createMindBackup, deleteMindItem, displayFileSize,
   listMindItems, MAX_MIND_PDF_BYTES, normalizedTags, restoreMindBackup, saveMindItem,
@@ -8,14 +9,6 @@ import {
 } from "./store";
 
 type Filter = "all" | "pdf" | "note" | "favorite";
-const neuralIcon = html`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <path d="M24 9c-3-5-12-4-13 3-6 0-8 8-4 12-4 6 0 13 7 13 3 6 12 5 14 0"/>
-  <path d="M24 9c3-5 12-4 13 3 6 0 8 8 4 12 4 6 0 13-7 13-3 6-12 5-14 0"/>
-  <path d="M24 9v29M11 12l8 7-5 9 10 5m13-21-8 7 5 9-10 5M8 24l6 4m26-4-6 4"/>
-  <circle cx="19" cy="19" r="2" fill="currentColor" stroke="none"/><circle cx="29" cy="19" r="2" fill="currentColor" stroke="none"/>
-  <circle cx="14" cy="28" r="2" fill="currentColor" stroke="none"/><circle cx="34" cy="28" r="2" fill="currentColor" stroke="none"/>
-</svg>`;
-
 @customElement("mind-page")
 export class MindPage extends LightElement {
   @state() private items: MindItem[] = [];
@@ -272,7 +265,7 @@ export class MindPage extends LightElement {
     const visible = this.visible;
     return html`<section class="mind-page" aria-labelledby="mind-title">
       <header class="mind-header">
-        <div class="mind-heading"><span class="mind-mark">${neuralIcon}</span><div><p class="mind-eyebrow">2T / CONHECIMENTO PESSOAL</p><h1 id="mind-title">Mente</h1><p class="mind-tagline">Um lugar para guardar estudos, ideias e aquilo que vale revisitar.</p></div></div>
+        <div class="mind-heading"><span class="mind-mark">${obsidianMark}</span><div><p class="mind-eyebrow">2T / CONHECIMENTO PESSOAL</p><h1 id="mind-title" class="sr-only">Mente</h1><p class="mind-tagline">Um lugar para guardar estudos, ideias e aquilo que vale revisitar.</p></div></div>
         <div class="mind-header-actions">
           <button class="mind-primary" type="button" @click=${this.startNote} ?disabled=${this.busy}>+ Nova nota</button>
           <button type="button" @click=${() => this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click()} ?disabled=${this.busy}>Adicionar PDF</button>
@@ -302,11 +295,11 @@ export class MindPage extends LightElement {
           </div>
           ${!this.ready ? html`<p class="mind-list-empty">Carregando acervo local…</p>` :
             visible.length ? html`<div class="mind-items">${visible.map(item => this.itemButton(item))}</div>` :
-            html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Sua Mente começa aqui"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Crie uma nota ou adicione o primeiro PDF para organizar seu conhecimento."}</p></div>`}
+            html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Seu acervo começa aqui"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Crie uma nota ou adicione o primeiro PDF para organizar seu conhecimento."}</p></div>`}
           <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} por arquivo. A capacidade total depende do navegador.</p>
         </div>
         <div class="mind-inspector" aria-label="Detalhes e editor">
-          ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${neuralIcon}<h2>Conecte suas ideias</h2><p>Selecione um documento para consultar, classificar ou editar. Suas notas podem reunir conclusões, hipóteses e referências de estudo.</p></div>`}
+          ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Conecte suas ideias</h2><p>Selecione um documento para consultar, classificar ou editar. Suas notas podem reunir conclusões, hipóteses e referências de estudo.</p></div>`}
         </div>
       </div>
     </section>`;
