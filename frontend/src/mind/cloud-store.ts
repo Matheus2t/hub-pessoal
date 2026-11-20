@@ -6,15 +6,7 @@ import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFile
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
 const UUID = "[0-9a-f-]{36}";
-const STORAGE_PATH = new RegExp(`^${UUID}/${UUID}(?:-${UUID})?\\.(?:pdf|mp4)/** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
-import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
-import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
-import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
-
-const BUCKET = "mind-pdfs";
-const VIDEO_BUCKET = "mind-videos";
-const UUID = "[0-9a-f-]{36}";
-, "i");
+const STORAGE_PATH = new RegExp(`^${UUID}/${UUID}(?:-${UUID})?\\.(?:pdf|mp4)$`, "i");
 type DbItem = {
   id: string; owner_id: string; kind: "note" | "pdf" | "video"; title: string; topic: string;
   tags: string[]; description: string; content: string; favorite: boolean;
