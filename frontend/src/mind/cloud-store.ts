@@ -2,6 +2,7 @@
 import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
 import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import { uploadMindVideo, type MindVideoUploadProgress } from "./video-upload";
 
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
@@ -10,7 +11,7 @@ const STORAGE_PATH = new RegExp(`^${UUID}/${UUID}(?:-${UUID})?\\.(?:pdf|mp4)$`, 
 type DbItem = {
   id: string; owner_id: string; kind: "note" | "pdf" | "video"; title: string; topic: string;
   tags: string[]; description: string; content: string; favorite: boolean;
-  created_at: string; updated_at: string; file_name: string | null;
+  created_at: string; updated_at: string; file_name: string | null; poster_data_url?: string | null;
   file_size: number | null; storage_path: string | null; video_url: string | null;
 };
 type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string };
@@ -32,8 +33,11 @@ function itemFromRow(row: DbItem): MindItem {
     description: row.description, content: row.content, favorite: row.favorite,
     createdAt: Date.parse(row.created_at), updatedAt: Date.parse(row.updated_at),
     fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined, storagePath: row.storage_path ?? undefined,
-    videoUrl: row.video_url ?? undefined,
+    videoUrl: row.video_url ?? undefined, posterDataUrl: safePoster(row.poster_data_url),
   };
+}
+function safePoster(value: string | null | undefined): string | undefined {
+  return value && value.length <= 65536 && /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/.test(value) ? value : undefined;
 }
 function rowFromItem(item: MindItem) {
   return {
@@ -44,6 +48,7 @@ function rowFromItem(item: MindItem) {
       : item.kind === "video" && !item.videoUrl ? safeMindVideoFileName(item.fileName ?? item.title + ".mp4") : null,
     file_size: item.kind === "pdf" || (item.kind === "video" && !item.videoUrl) ? item.fileSize ?? item.file?.size ?? null : null,
     video_url: item.kind === "video" && item.videoUrl ? item.videoUrl : null,
+    poster_data_url: item.kind === "video" ? safePoster(item.posterDataUrl) ?? null : null,
   };
 }
 function storageObjectUrl(path: string): string {
@@ -60,7 +65,7 @@ async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
   if (!STORAGE_PATH.test(path)) return "pending";
   try {
     const query = new URLSearchParams({ select: "id", storage_path: "eq." + path, limit: "1" });
-    const refs = await requireOk(await mindApi("/rest/v1/mind_items?" + query.toString()), "Não foi possível verificar o vínculo do PDF");
+    const refs = await requireOk(await mindApi("/rest/v1/mind_items?" + query.toString()), "Não foi possível verificar o vínculo do arquivo");
     if ((await refs.json() as Array<{ id: string }>).length) return "still-linked";
     const response = await mindApi(storageObjectUrl(path), { method: "DELETE" });
     return response.ok || response.status === 404 ? "removed" : "pending";
@@ -72,7 +77,7 @@ async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
 
 export async function listCloudMindItems(): Promise<MindItem[]> {
   const response = await requireOk(await mindPublicApi(
-    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url&order=updated_at.desc&limit=500",
+    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url,poster_data_url&order=updated_at.desc&limit=500",
   ), "Não foi possível carregar a biblioteca");
   return (await response.json() as DbItem[]).map(itemFromRow);
 }
@@ -142,10 +147,25 @@ export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
   const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
   if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") throw new Error("O arquivo recebido não é MP4.");
   const size = Number(response.headers.get("content-length"));
-  if (response.headers.has("content-length") && (size <= 0 || size > MAX_MIND_VIDEO_BYTES)) throw new Error("O vídeo ultrapassa 25 MB.");
+  if (response.headers.has("content-length") && (size <= 0 || size > MAX_MIND_VIDEO_BYTES)) throw new Error("O vídeo ultrapassa 50 MB.");
   const blob = await response.blob();
   if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
   return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
+}
+
+/** Authenticated sequential read for an administrator's separate backup asset. */
+export async function downloadCloudVideo(item: MindItem): Promise<Blob> {
+  const record = await currentItem(item.id);
+  if (!record || record.kind !== "video" || !record.storage_path || item.videoUrl) throw new Error("MP4 não encontrado na biblioteca.");
+  const response = await requireOk(await mindApi(storageObjectUrl(record.storage_path)), "Não foi possível baixar o vídeo");
+  const blob = await response.blob();
+  if (blob.size > MAX_MIND_VIDEO_BYTES || !(await checkedMp4(blob))) throw new Error("O vídeo armazenado não pôde ser validado.");
+  return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
+}
+
+export function publicCloudVideoDownloadUrl(item: MindItem): string {
+  if (item.kind !== "video" || !item.storagePath || item.videoUrl) throw new Error("Este item não contém um MP4 para download.");
+  return publicMindVideoUrl(item.storagePath) + "?download=" + encodeURIComponent(safeMindVideoFileName(item.fileName ?? item.title + ".mp4"));
 }
 
 /** Authenticated read is used for administrator backups and local-to-cloud migration only. */
@@ -159,7 +179,10 @@ export async function downloadCloudPdf(item: MindItem): Promise<Blob> {
 }
 
 /** Returns true when a replaced file could not be safely removed and needs admin attention. */
-export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
+export async function saveCloudMindItem(item: MindItem, options: {
+  onVideoProgress?: (progress: MindVideoUploadProgress) => void;
+  signal?: AbortSignal;
+} = {}): Promise<boolean> {
   if (!/^[0-9a-f-]{36}$/i.test(item.id)) throw new Error("Identificador inválido.");
   if (!item.title.trim() || item.title.length > 180 || item.content.length > 250000 ||
       item.description.length > 3000 || item.topic.length > 80 || item.tags.length > 12) {
@@ -179,25 +202,30 @@ export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
   let newPath: string | null = null;
   if ((item.kind === "pdf" || item.kind === "video") && item.file) {
     if (item.kind === "pdf" && !(await checkedPdf(item.file))) throw new Error("PDF inválido ou maior que 25 MB.");
-    if (item.kind === "video" && !(await checkedMp4(item.file))) throw new Error("MP4 inválido ou maior que 25 MB.");
+    if (item.kind === "video" && !(await checkedMp4(item.file))) throw new Error("MP4 inválido ou maior que 50 MB.");
     const session = await requireOk(await mindApi("/auth/v1/user"), "Sessão inválida");
     const user = await session.json() as { id?: string };
     if (!user.id || !/^[0-9a-f-]{36}$/i.test(user.id)) throw new Error("A sessão administrativa é inválida.");
-    // A unique path keeps the current published file intact until the row points to the replacement.
-    newPath = user.id + "/" + item.id + "-" + crypto.randomUUID() + (item.kind === "video" ? ".mp4" : ".pdf");
-    try {
-      await requireOk(await mindApi(storageObjectUrl(newPath), {
-        method: "POST", headers: { "Content-Type": item.kind === "video" ? "video/mp4" : "application/pdf" }, body: item.file,
-      }), "Não foi possível enviar o PDF");
-    } catch (error) {
-      const cleanup = await cleanupIfUnreferenced(newPath);
-      if (cleanup === "pending") {
-        throw new Error((error instanceof Error ? error.message : "Falha ao enviar o PDF.") + " O upload foi preservado porque não foi possível confirmar com segurança se o arquivo está vinculado.");
+    // A new path preserves the currently published version until the database commits.
+    if (item.kind === "video") {
+      const result = await uploadMindVideo(item.file, item.fileName ?? item.title + ".mp4", user.id, options.onVideoProgress ?? (() => {}), options.signal);
+      newPath = result.storagePath;
+    } else {
+      newPath = user.id + "/" + item.id + "-" + crypto.randomUUID() + ".pdf";
+      try {
+        await requireOk(await mindApi(storageObjectUrl(newPath), {
+          method: "POST", headers: { "Content-Type": "application/pdf" }, body: item.file,
+        }), "Não foi possível enviar o PDF");
+      } catch (error) {
+        const cleanup = await cleanupIfUnreferenced(newPath);
+        if (cleanup === "pending") {
+          throw new Error((error instanceof Error ? error.message : "Falha ao enviar o arquivo.") + " O upload foi preservado porque não foi possível confirmar com segurança se o arquivo está vinculado.");
+        }
+        if (cleanup === "still-linked") {
+          throw new Error("O envio retornou uma resposta inconclusiva, mas o arquivo consta vinculado. Atualize a biblioteca antes de tentar novamente.");
+        }
+        throw error;
       }
-      if (cleanup === "still-linked") {
-        throw new Error("O envio retornou uma resposta inconclusiva, mas o PDF consta vinculado. Atualize a biblioteca antes de tentar novamente.");
-      }
-      throw error;
     }
   }
 
@@ -224,7 +252,7 @@ export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
         throw new Error((error instanceof Error ? error.message : "Falha ao salvar o item.") + " O upload foi preservado porque não foi possível confirmar com segurança se o arquivo está vinculado.");
       }
       if (cleanup === "still-linked") {
-        throw new Error("A resposta do banco foi inconclusiva, mas o PDF consta vinculado. Atualize a biblioteca antes de tentar novamente.");
+        throw new Error("A resposta do banco foi inconclusiva, mas o arquivo consta vinculado. Atualize a biblioteca antes de tentar novamente.");
       }
     }
     throw error;

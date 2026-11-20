@@ -35,9 +35,10 @@ export function parseMindVideoLink(value: string): VideoLink | null {
   return null;
 }
 
-export const MAX_MIND_VIDEO_BYTES = 25 * 1024 * 1024;
+/** Application ceiling follows Supabase Free's documented 50 MB maximum; the project's global setting must also allow it. */
+export const MAX_MIND_VIDEO_BYTES = 50_000_000;
 
-/** Container signature check; never trust filename or claimed MIME alone. */
+/** Checks the MP4 container signature only; browser decoding separately validates playable codecs. */
 export async function checkedMp4(file: File | Blob): Promise<boolean> {
   if (file.size < 12 || file.size > MAX_MIND_VIDEO_BYTES) return false;
   const data = new Uint8Array(await file.slice(0, 12).arrayBuffer());

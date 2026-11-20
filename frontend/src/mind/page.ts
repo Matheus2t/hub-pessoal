@@ -3,11 +3,12 @@ import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { obsidianMark } from "./obsidian-mark";
 import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, publicMindVideoUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
-import { checkPublicCloudPdf, deleteCloudMindItem, downloadCloudPdf, downloadPublicCloudPdf, downloadPublicCloudVideo, listCloudMindItems, saveCloudMindItem } from "./cloud-store";
+import { checkPublicCloudPdf, deleteCloudMindItem, downloadPublicCloudPdf, listCloudMindItems, publicCloudVideoDownloadUrl, saveCloudMindItem } from "./cloud-store";
 import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import { MindVideoUploadCancelledError, type MindVideoUploadProgress } from "./video-upload";
 import {
   checkedPdf, createMindBackup, deleteMindItem, displayFileSize,
-  listMindItems, MAX_MIND_PDF_BYTES, normalizedTags, parseMindBackup, restoreMindBackup, saveMindItem,
+  listMindItems, MAX_MIND_PDF_BYTES, mindBackupAssetName, normalizedTags, parseMindBackup, restoreMindBackup, saveMindItem,
   type MindItem,
 } from "./store";
 
@@ -39,6 +40,16 @@ export class MindPage extends LightElement {
   @state() private pdfFrameError = "";
   @state() private pendingAdminAction: "note" | "pdf" | "video" | null = null;
   @state() private videoMode: "link" | "file" = "link";
+  @state() private videoPreviewUrl: string | null = null;
+  @state() private videoPreviewReady = false;
+  @state() private videoPreviewError = "";
+  @state() private videoPreviewDuration = 0;
+  @state() private videoUploadProgress: MindVideoUploadProgress | null = null;
+  @state() private videoUploadStage: "idle" | "preparing" | "uploading" | "publishing" | "failed" = "idle";
+  @state() private backupAssets: MindItem[] = [];
+  @state() private backupAssetStarted: string[] = [];
+  private videoDraftObjectUrl: string | null = null;
+  private videoUploadController: AbortController | null = null;
   private localVideoObjectUrl: string | null = null;
   private localVideoObjectId: string | null = null;
 
@@ -90,6 +101,8 @@ export class MindPage extends LightElement {
   disconnectedCallback() {
     this.active = false;
     this.pdfPreviewGeneration += 1;
+    this.videoUploadController?.abort();
+    this.clearVideoPreview();
     this.setLocalVideo();
     super.disconnectedCallback();
   }
@@ -171,6 +184,9 @@ export class MindPage extends LightElement {
   private startVideo = () => {
     if (!this.requireAdmin("video")) return;
     this.clearMessages();
+    this.clearVideoPreview();
+    this.videoUploadStage = "idle";
+    this.videoUploadProgress = null;
     this.selectedId = null;
     this.videoMode = "link";
     const now = Date.now();
@@ -190,15 +206,16 @@ export class MindPage extends LightElement {
     this.editing = true;
   };
 
-  private cancelEdit = () => { this.editing = false; this.draft = null; };
+  private cancelEdit = () => { this.videoUploadController?.abort(); this.clearVideoPreview(); this.editing = false; this.draft = null; this.videoUploadStage = "idle"; };
   private clearMessages() { this.notice = ""; this.error = ""; }
   private setDraft(field: keyof Pick<MindItem, "title" | "topic" | "description" | "content">, value: string) {
     if (this.draft) this.draft = { ...this.draft, [field]: value };
   }
   private changeVideoMode(mode: "link" | "file") {
     if (!this.draft || this.draft.kind !== "video") return;
+    this.clearVideoPreview();
     this.videoMode = mode;
-    this.draft = { ...this.draft, file: undefined, videoUrl: mode === "file" ? "" : this.draft.videoUrl ?? "" };
+    this.draft = { ...this.draft, file: undefined, posterDataUrl: undefined, videoUrl: mode === "file" ? "" : this.draft.videoUrl ?? "" };
     this.clearMessages();
   }
 
@@ -206,13 +223,70 @@ export class MindPage extends LightElement {
     const input = event.currentTarget as HTMLInputElement;
     const file = input.files?.[0];
     input.value = "";
-    if (!this.draft || this.draft.kind !== "video" || !file) return;
-    if (!file.name.toLowerCase().endsWith(".mp4") || !(await checkedMp4(file))) {
-      this.error = "Selecione um arquivo MP4 válido com até 25 MB.";
+    if (file) await this.selectVideoFile(file);
+  }
+
+  private async selectVideoFile(file: File) {
+    if (!this.draft || this.draft.kind !== "video") return;
+    if (!file.name.toLowerCase().endsWith(".mp4") || file.size > MAX_MIND_VIDEO_BYTES || !(await checkedMp4(file))) {
+        this.error = `Selecione um MP4 válido de até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}.`;
       return;
     }
-    this.draft = { ...this.draft, file, videoUrl: "", fileName: file.name, fileSize: file.size };
+    this.clearVideoPreview();
+    this.videoDraftObjectUrl = URL.createObjectURL(file);
+    this.videoPreviewUrl = this.videoDraftObjectUrl;
+    this.videoPreviewReady = false;
+    this.videoPreviewError = "";
+    this.videoPreviewDuration = 0;
+    const suggestedTitle = file.name.replace(/\.mp4$/i, "").replace(/[_-]+/g, " ").trim();
+    this.draft = { ...this.draft, title: this.draft.title.trim() ? this.draft.title : suggestedTitle, file, videoUrl: "", fileName: file.name, fileSize: file.size, posterDataUrl: undefined };
+    this.videoUploadProgress = null;
+    this.videoUploadStage = "idle";
     this.clearMessages();
+  }
+
+  private clearVideoPreview() {
+    if (this.videoDraftObjectUrl) URL.revokeObjectURL(this.videoDraftObjectUrl);
+    this.videoDraftObjectUrl = null;
+    this.videoPreviewUrl = null;
+    this.videoPreviewReady = false;
+    this.videoPreviewError = "";
+    this.videoPreviewDuration = 0;
+  }
+
+  private videoPreviewLoaded(event: Event) {
+    const video = event.currentTarget as HTMLVideoElement;
+    this.videoPreviewReady = true;
+    this.videoPreviewDuration = Number.isFinite(video.duration) ? video.duration : 0;
+    const draft = this.draft;
+    if (!draft || draft.kind !== "video" || !video.videoWidth || !video.videoHeight) return;
+    try {
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1, 320 / video.videoWidth, 180 / video.videoHeight);
+      canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+      canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+      canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const poster = canvas.toDataURL("image/webp", 0.62);
+      if (poster.length <= 65536 && poster.startsWith("data:image/webp;base64,")) {
+        this.draft = { ...draft, posterDataUrl: poster };
+      }
+    } catch { /* Thumbnail is optional; the MP4 remains publishable. */ }
+  }
+
+  private videoPreviewFailed() {
+    this.videoPreviewReady = false;
+    this.videoPreviewError = "Este MP4 não pôde ser decodificado neste navegador. Use vídeo H.264 com áudio AAC.";
+  }
+
+  private cancelVideoUpload() { this.videoUploadController?.abort(); }
+  private formatDuration(seconds: number) {
+    const s = Math.max(0, Math.floor(seconds));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  }
+  private displayVideoSize(bytes: number) {
+    if (bytes < 1_000_000) return displayFileSize(bytes);
+    const mb = bytes / 1_000_000;
+    return `${Number.isInteger(mb) ? mb : mb.toFixed(1).replace(".", ",")} MB`;
   }
 
   private tagsInput(event: Event) {
@@ -245,25 +319,38 @@ export class MindPage extends LightElement {
       } else {
         item.videoUrl = undefined;
         if (!item.file && !item.storagePath) { this.error = "Selecione um arquivo MP4."; return; }
-        if (item.file && !(await checkedMp4(item.file))) { this.error = "MP4 inválido ou maior que 25 MB."; return; }
+        if (item.file && !(await checkedMp4(item.file))) { this.error = `MP4 inválido ou maior que ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}.`; return; }
+        if (item.file && !this.videoPreviewReady) { this.error = this.videoPreviewError || "Aguarde a análise do vídeo antes de publicar."; return; }
       }
     }
     this.busy = true;
+    this.videoUploadController = item.kind === "video" && !!item.file ? new AbortController() : null;
+    this.videoUploadProgress = null;
+    this.videoUploadStage = this.videoUploadController ? "preparing" : "idle";
     this.clearMessages();
     try {
       let cleanupPending = false;
-      if (mindCloudEnabled()) cleanupPending = await saveCloudMindItem(item);
+      if (mindCloudEnabled()) cleanupPending = await saveCloudMindItem(item, {
+        signal: this.videoUploadController?.signal,
+        onVideoProgress: progress => { this.videoUploadProgress = progress; this.videoUploadStage = "uploading"; },
+      });
       else await saveMindItem(item);
+      if (this.videoUploadController) this.videoUploadStage = "publishing";
       await this.reload();
       this.selectedId = item.id;
       this.setLocalVideo(this.selected);
       this.editing = false;
       this.draft = null;
+      this.clearVideoPreview();
       this.notice = mindCloudEnabled()
         ? cleanupPending ? "Item publicado; o PDF anterior ainda precisa de limpeza." : "Alterações publicadas na biblioteca 2T."
         : item.kind === "note" ? "Nota salva neste navegador." : "Documento atualizado neste navegador.";
-    } catch (e) { this.error = this.message(e); }
-    finally { this.busy = false; }
+    } catch (e) {
+      this.videoUploadStage = e instanceof MindVideoUploadCancelledError ? "idle" : this.videoUploadController ? "failed" : "idle";
+      if (!(e instanceof MindVideoUploadCancelledError)) this.error = this.message(e);
+      else this.notice = "Envio cancelado. Selecione o mesmo arquivo novamente para retomar.";
+    }
+    finally { this.videoUploadController = null; this.busy = false; }
   }
 
   private async uploadPdfs(event: Event) {
@@ -362,9 +449,17 @@ export class MindPage extends LightElement {
 
   private async downloadVideo(item: MindItem) {
     if (this.busy || item.kind !== "video" || item.videoUrl) return;
+    if (mindCloudEnabled() && item.storagePath) {
+      const a = document.createElement("a");
+      a.href = publicCloudVideoDownloadUrl(item);
+      a.rel = "noopener noreferrer";
+      a.click();
+      this.notice = "Download iniciado.";
+      return;
+    }
     this.busy = true; this.clearMessages();
     try {
-      const file = mindCloudEnabled() ? await downloadPublicCloudVideo(item) : item.file;
+      const file = item.file;
       if (!file) throw new Error("O vídeo não está disponível.");
       const url = URL.createObjectURL(file);
       const a = document.createElement("a");
@@ -382,34 +477,61 @@ export class MindPage extends LightElement {
     if (!this.libraryAvailable || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     this.busy = true; this.clearMessages();
     try {
-      const allItems = mindCloudEnabled()
-        ? await Promise.all(this.items.map(async item => item.kind === "pdf"
-            ? { ...item, file: await downloadCloudPdf(item) }
-            : item.kind === "video" && item.storagePath
-              ? { ...item, file: await downloadPublicCloudVideo(item) } : item))
-        : this.items;
-      const blob = await createMindBackup(allItems);
+      const blob = await createMindBackup(this.items);
+      this.backupAssets = this.items.filter(item => item.kind === "pdf" || (item.kind === "video" && !item.videoUrl))
+        .filter(item => !!item.file || !!item.storagePath);
+      this.backupAssetStarted = [];
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url; a.download = "mente-2t-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.href = url; a.download = "mente-2t-manifesto-" + new Date().toISOString().slice(0, 10) + ".json";
       document.body.append(a); a.click(); a.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 60000);
-      this.notice = "Backup gerado com notas, PDFs e vídeos. Guarde o arquivo em local seguro.";
+      this.notice = this.backupAssets.length
+        ? `Manifesto gerado. Baixe também os ${this.backupAssets.length} arquivos listados para completar o backup.`
+        : "Backup de metadados gerado. Guarde o arquivo em local seguro.";
+    } catch (e) { this.error = this.message(e); }
+    finally { this.busy = false; }
+  }
+
+  private async downloadBackupAsset(item: MindItem) {
+    if (this.busy) return;
+    this.busy = true;
+    try {
+      if (mindCloudEnabled() && item.storagePath) {
+        const backupName = encodeURIComponent(mindBackupAssetName(item));
+        const downloadUrl = item.kind === "pdf"
+          ? publicMindPdfUrl(item.storagePath) + "?download=" + backupName
+          : publicMindVideoUrl(item.storagePath) + "?download=" + backupName;
+        const a = document.createElement("a"); a.href = downloadUrl; a.rel = "noopener noreferrer"; a.click();
+        this.backupAssetStarted = [...new Set([...this.backupAssetStarted, item.id])];
+        return;
+      }
+      const blob = item.file;
+      if (!blob) throw new Error("O arquivo não está disponível para o backup.");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = mindBackupAssetName(item);
+      document.body.append(a); a.click(); a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+      this.backupAssetStarted = [...new Set([...this.backupAssetStarted, item.id])];
     } catch (e) { this.error = this.message(e); }
     finally { this.busy = false; }
   }
 
   private async restore(event: Event) {
     const input = event.currentTarget as HTMLInputElement;
-    const file = input.files?.[0];
+    const files = [...(input.files ?? [])];
     input.value = "";
-    if (!this.libraryAvailable || !file || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
+    const manifests = files.filter(file => file.name.toLowerCase().endsWith(".json"));
+    const file = manifests[0];
+    if (!this.libraryAvailable || !file || manifests.length !== 1 || this.busy || (mindCloudEnabled() && !this.authenticated)) return;
     if (!window.confirm("Importar e mesclar os itens do backup com esta biblioteca? IDs repetidos serão atualizados.")) return;
     this.busy = true; this.clearMessages();
     let restored = 0;
     let cleanupPending = false;
     try {
-      const imported = mindCloudEnabled() ? await parseMindBackup(file) : await restoreMindBackup(file);
+      const sidecars = files.filter(candidate => candidate !== file);
+      const imported = mindCloudEnabled() ? await parseMindBackup(file, sidecars) : await restoreMindBackup(file, sidecars);
       if (mindCloudEnabled()) {
         for (const item of imported) {
           cleanupPending = (await saveCloudMindItem(item)) || cleanupPending;
@@ -492,6 +614,8 @@ export class MindPage extends LightElement {
   }
 
   private itemButton(item: MindItem) {
+    const videoThumbnail = item.kind === "video" && item.videoUrl ? parseMindVideoLink(item.videoUrl)?.thumbnail : undefined;
+    const videoPoster = item.kind === "video" ? item.posterDataUrl : undefined;
     return html`<button class="mind-item ${this.selectedId === item.id && !this.editing ? "is-selected" : ""}"
       type="button" aria-pressed=${this.selectedId === item.id && !this.editing}
       @click=${() => {
@@ -504,8 +628,8 @@ export class MindPage extends LightElement {
         this.clearMessages();
         this.revealReaderOnSmallScreens();
       }}>
-      ${item.kind === "video" && item.videoUrl && parseMindVideoLink(item.videoUrl)?.thumbnail
-        ? html`<img class="mind-item-thumbnail" loading="lazy" alt="" src=${parseMindVideoLink(item.videoUrl)!.thumbnail!} />`
+      ${videoThumbnail || videoPoster
+        ? html`<img class="mind-item-thumbnail" loading="lazy" alt="" src=${videoThumbnail ?? videoPoster!} />`
         : html`<span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : item.kind === "video" ? "▶" : "✎"}</span>`}
       <span class="mind-item-main"><strong>${item.title}</strong><span>${item.topic === "Sem assunto" ? (item.kind === "pdf" ? "PDF" : item.kind === "video" ? "Vídeo" : "Nota") : item.topic}${item.favorite ? " · ★" : ""}</span></span>
     </button>`;
@@ -515,7 +639,7 @@ export class MindPage extends LightElement {
     if (!this.draft) return nothing;
     const d = this.draft;
     return html`<form class="mind-editor" @submit=${this.saveDraft}>
-      <div class="mind-detail-heading"><div><small>${d.kind === "pdf" ? "DOCUMENTO PDF" : d.kind === "video" ? "VÍDEO" : "NOTA"}</small><h2>${this.items.some(x => x.id === d.id) ? "Editar item" : "Nova nota"}</h2></div></div>
+      <div class="mind-detail-heading"><div><small>${d.kind === "pdf" ? "DOCUMENTO PDF" : d.kind === "video" ? "VÍDEO" : "NOTA"}</small><h2>${this.items.some(x => x.id === d.id) ? "Editar item" : d.kind === "video" ? "Novo vídeo" : "Nova nota"}</h2></div></div>
       <label>Título<input name="title" maxlength="180" required .value=${d.title} @input=${(e: Event) => this.setDraft("title", (e.target as HTMLInputElement).value)} /></label>
       <label>Assunto<input name="topic" maxlength="80" placeholder="Ex.: Investimentos" .value=${d.topic} @input=${(e: Event) => this.setDraft("topic", (e.target as HTMLInputElement).value)} /></label>
       <label>Etiquetas <span>(separe por vírgula)</span><input name="tags" maxlength="600" placeholder="2027, ações, estudo" .value=${d.tags.join(", ")} @change=${this.tagsInput} /></label>
@@ -527,10 +651,26 @@ export class MindPage extends LightElement {
           <label><input type="radio" name="video-source" value="file" .checked=${this.videoMode === "file"} @change=${() => this.changeVideoMode("file")} /> Arquivo MP4</label>
         </fieldset>
         ${this.videoMode === "link" ? html`<label>Endereço do vídeo<input name="video-url" type="url" required placeholder="https://www.youtube.com/watch?v=..." .value=${d.videoUrl ?? ""} @input=${(e: Event) => { if (this.draft) this.draft = { ...this.draft, videoUrl: (e.target as HTMLInputElement).value }; }} /></label>`
-          : html`<label>Arquivo MP4 (até 25 MB)<input name="video-file" type="file" accept=".mp4,video/mp4" @change=${this.chooseVideoFile} /></label>
-            ${d.fileName && !d.videoUrl ? html`<p class="mind-video-file-label">${d.fileName} · ${displayFileSize(d.fileSize ?? 0)}</p>` : nothing}`}
+          : html`<div class="mind-video-upload">
+              <label class="mind-video-dropzone" @dragover=${(e: DragEvent) => e.preventDefault()} @drop=${(e: DragEvent) => { e.preventDefault(); const file = e.dataTransfer?.files[0]; if (file) void this.selectVideoFile(file); }}>
+                <input class="mind-video-file-input" name="video-file" type="file" accept=".mp4,video/mp4" @change=${this.chooseVideoFile} />
+                <span><strong>${d.fileName ? "Selecionar outro vídeo" : "Arraste um vídeo ou selecione um arquivo"}</strong><small>MP4 · até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}</small></span>
+              </label>
+              ${d.fileName ? html`<div class="mind-video-file-label"><strong>${d.fileName}</strong><span>${this.displayVideoSize(d.fileSize ?? 0)}${this.videoPreviewDuration ? " · " + this.formatDuration(this.videoPreviewDuration) : ""}</span></div>` : nothing}
+              ${this.videoPreviewUrl ? html`<div class="mind-video-draft-preview"><video controls muted playsinline preload="metadata" src=${this.videoPreviewUrl} poster=${d.posterDataUrl ?? nothing} @loadeddata=${this.videoPreviewLoaded} @error=${this.videoPreviewFailed}>Prévia local</video></div>` : nothing}
+              ${this.videoPreviewError ? html`<p class="mind-error" role="alert">${this.videoPreviewError}</p>` : this.videoPreviewUrl && !this.videoPreviewReady ? html`<p class="mind-video-status" role="status">Analisando a reprodução neste navegador…</p>` : nothing}
+              ${this.videoUploadProgress ? html`<div class="mind-upload-progress" role="status" aria-live="polite">
+                <div><span>${this.displayVideoSize(this.videoUploadProgress.sent)} de ${this.displayVideoSize(this.videoUploadProgress.total)} enviados</span><strong>${Math.floor(this.videoUploadProgress.sent / Math.max(1, this.videoUploadProgress.total) * 100)}%</strong></div>
+                <progress max=${this.videoUploadProgress.total} .value=${this.videoUploadProgress.sent} aria-label="Progresso do envio do vídeo"></progress>
+                <small>${this.videoUploadProgress.bytesPerSecond ? `${this.displayVideoSize(this.videoUploadProgress.bytesPerSecond)}/s${this.videoUploadProgress.secondsRemaining ? " · cerca de " + this.videoUploadProgress.secondsRemaining + " s restantes" : ""}` : "Transferência medida pelo navegador"}</small>
+              </div>` : nothing}
+              ${this.videoUploadStage === "preparing" ? html`<p class="mind-video-status" role="status">Preparando o envio…</p>` : nothing}
+              ${this.videoUploadStage === "publishing" ? html`<p class="mind-video-status" role="status">Publicando na biblioteca…</p>` : nothing}
+              ${this.videoUploadStage === "failed" ? html`<p class="mind-video-status" role="status">Envio interrompido. Tentar novamente retoma os blocos enviados.</p>` : nothing}
+              ${this.videoUploadController ? html`<button type="button" @click=${this.cancelVideoUpload}>Cancelar envio</button>` : nothing}
+            </div>`}
       ` : nothing}
-      <div class="mind-actions"><button class="mind-primary" type="submit" ?disabled=${this.busy}>Salvar</button><button type="button" @click=${this.cancelEdit}>Cancelar</button></div>
+      <div class="mind-actions"><button class="mind-primary" type="submit" ?disabled=${this.busy}>${d.kind === "video" && this.videoMode === "file" ? this.busy ? "Enviando vídeo…" : "Publicar vídeo" : "Salvar"}</button><button type="button" @click=${this.cancelEdit}>Cancelar</button></div>
     </form>`;
   }
 
@@ -577,8 +717,8 @@ export class MindPage extends LightElement {
                   referrerpolicy="strict-origin-when-cross-origin"></iframe>`
               : html`<p role="alert">O endereço deste vídeo é inválido.</p>`)
               : (mindCloudEnabled() && item.storagePath ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl)
-                ? html`<video controls playsinline preload="metadata" src=${mindCloudEnabled() && item.storagePath
-                    ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl ?? ""}>Seu navegador não suporta vídeo MP4.</video>`
+                ? html`<video controls playsinline preload="metadata" poster=${item.posterDataUrl ?? nothing} src=${mindCloudEnabled() && item.storagePath
+                    ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl ?? ""} @error=${() => { this.error = "Este navegador não conseguiu reproduzir o codec deste MP4. Tente H.264 com áudio AAC ou outro navegador."; }}>Seu navegador não suporta vídeo MP4.</video>`
                 : html`<p role="alert">Vídeo indisponível.</p>`}
           </div>
           <p class="mind-video-caveat">${item.videoUrl ? "A reprodução depende das permissões do vídeo na plataforma de origem." : "Reprodução no navegador com controles de volume, velocidade e tela cheia."}</p>
@@ -618,6 +758,10 @@ export class MindPage extends LightElement {
       ${this.renderAdminLogin()}
       ${this.notice ? html`<p class="mind-notice" role="status">${this.notice}</p>` : nothing}
       ${this.error ? html`<p class="mind-error" role="alert">${this.error}</p>` : nothing}
+      ${this.backupAssets.length ? html`<section class="mind-backup-assets" aria-label="Arquivos do backup">
+        <div><strong>Arquivos do backup</strong><p>O manifesto JSON não contém os arquivos binários. Baixe cada item abaixo e selecione todos junto ao JSON ao restaurar.</p></div>
+        <ul>${this.backupAssets.map(item => html`<li><span>${item.fileName ?? item.title}${this.backupAssetStarted.includes(item.id) ? " · iniciado" : ""}</span><button type="button" @click=${() => void this.downloadBackupAsset(item)} ?disabled=${this.busy}>Baixar ${item.kind === "pdf" ? "PDF" : "MP4"}</button></li>`)}</ul>
+      </section>` : nothing}
       <div class="mind-workspace ${this.pdfExpanded ? "mind-workspace--pdf-expanded" : ""}">
         ${this.libraryAvailable ? html`
         <aside class="mind-facets" aria-label="Navegação da Mente">
@@ -637,8 +781,8 @@ export class MindPage extends LightElement {
               ${mindCloudEnabled() ? html`<button type="button" @click=${() => { this.closeManageMenu(); void this.migrateLocal(); }} ?disabled=${this.busy}>Migrar dados deste navegador</button>` : nothing}
               <button type="button" @click=${() => { this.closeManageMenu(); void this.backup(); }} ?disabled=${this.busy}>Exportar backup</button>
               <button type="button" @click=${() => { this.closeManageMenu(); this.querySelector<HTMLInputElement>("#mind-backup-input")?.click(); }} ?disabled=${this.busy}>Restaurar backup</button>
-              <input id="mind-backup-input" type="file" accept=".json,application/json" hidden @change=${this.restore} />
-              <p>O backup inclui PDFs e MP4, além de links. Não é criptografado.</p>
+              <input id="mind-backup-input" type="file" accept=".json,.pdf,.mp4,application/json,application/pdf,video/mp4" multiple hidden @change=${this.restore} />
+              <p>O manifesto e os arquivos são exportados separadamente. O backup não é criptografado.</p>
             </div>
           </details>` : nothing}
         </aside>
@@ -649,7 +793,7 @@ export class MindPage extends LightElement {
           ${!this.ready ? html`<p class="mind-list-empty">Carregando acervo…</p>` :
             visible.length ? html`<div class="mind-items">${visible.map(item => this.itemButton(item))}</div>` :
             html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Acervo vazio"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Os documentos publicados aparecerão aqui."}</p></div>`}
-          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} e MP4 de até ${displayFileSize(MAX_MIND_VIDEO_BYTES)}. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
+          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} e MP4 de até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
         </div>
         <div class="mind-inspector" aria-label="Detalhes e editor" id="mind-reader">
           ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Seu espaço de leitura</h2><p>Selecione uma nota ou documento para começar.</p></div>`}
