@@ -1,24 +1,34 @@
 /** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
-import { mindApi, mindPublicApi, publicMindPdfUrl, safeMindPdfFileName } from "./cloud-auth";
+import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
+import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 
 const BUCKET = "mind-pdfs";
+const VIDEO_BUCKET = "mind-videos";
 const UUID = "[0-9a-f-]{36}";
-const STORAGE_PATH = new RegExp(`^${UUID}/${UUID}(?:-${UUID})?\\.pdf$`, "i");
+const STORAGE_PATH = new RegExp(`^${UUID}/${UUID}(?:-${UUID})?\\.(?:pdf|mp4)/** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
+import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
+import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
+import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+
+const BUCKET = "mind-pdfs";
+const VIDEO_BUCKET = "mind-videos";
+const UUID = "[0-9a-f-]{36}";
+, "i");
 type DbItem = {
-  id: string; owner_id: string; kind: "note" | "pdf"; title: string; topic: string;
+  id: string; owner_id: string; kind: "note" | "pdf" | "video"; title: string; topic: string;
   tags: string[]; description: string; content: string; favorite: boolean;
   created_at: string; updated_at: string; file_name: string | null;
-  file_size: number | null; storage_path: string | null;
+  file_size: number | null; storage_path: string | null; video_url: string | null;
 };
-type StoredItem = { id: string; kind: "note" | "pdf"; storage_path: string | null; updated_at: string };
+type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string };
 type CleanupResult = "removed" | "still-linked" | "pending";
 
 async function requireOk(response: Response, label: string): Promise<Response> {
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) throw new Error("Acesso negado. Entre novamente.");
-    if (response.status === 413) throw new Error("O PDF ultrapassa o tamanho permitido.");
-    if (response.status === 404) throw new Error("O PDF não está mais disponível na biblioteca.");
+    if (response.status === 413) throw new Error("O arquivo ultrapassa o tamanho permitido.");
+    if (response.status === 404) throw new Error("O arquivo não está mais disponível na biblioteca.");
     throw new Error(label + " (HTTP " + response.status + ").");
   }
   return response;
@@ -30,6 +40,7 @@ function itemFromRow(row: DbItem): MindItem {
     description: row.description, content: row.content, favorite: row.favorite,
     createdAt: Date.parse(row.created_at), updatedAt: Date.parse(row.updated_at),
     fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined, storagePath: row.storage_path ?? undefined,
+    videoUrl: row.video_url ?? undefined,
   };
 }
 function rowFromItem(item: MindItem) {
@@ -37,13 +48,15 @@ function rowFromItem(item: MindItem) {
     id: item.id, kind: item.kind, title: item.title, topic: item.topic, tags: item.tags,
     description: item.description, content: item.content, favorite: item.favorite,
     created_at: new Date(item.createdAt).toISOString(), updated_at: new Date(item.updatedAt).toISOString(),
-    file_name: item.kind === "pdf" ? safeMindPdfFileName(item.fileName ?? item.title + ".pdf") : null,
-    file_size: item.kind === "pdf" ? item.fileSize ?? item.file?.size ?? null : null,
+    file_name: item.kind === "pdf" ? safeMindPdfFileName(item.fileName ?? item.title + ".pdf")
+      : item.kind === "video" && !item.videoUrl ? safeMindVideoFileName(item.fileName ?? item.title + ".mp4") : null,
+    file_size: item.kind === "pdf" || (item.kind === "video" && !item.videoUrl) ? item.fileSize ?? item.file?.size ?? null : null,
+    video_url: item.kind === "video" && item.videoUrl ? item.videoUrl : null,
   };
 }
 function storageObjectUrl(path: string): string {
   if (!STORAGE_PATH.test(path)) throw new Error("Caminho de PDF inválido.");
-  return "/storage/v1/object/" + BUCKET + "/" + path.split("/").map(encodeURIComponent).join("/");
+  return "/storage/v1/object/" + (path.toLowerCase().endsWith(".mp4") ? VIDEO_BUCKET : BUCKET) + "/" + path.split("/").map(encodeURIComponent).join("/");
 }
 async function currentItem(id: string): Promise<StoredItem | null> {
   const response = await requireOk(await mindApi(
@@ -67,7 +80,7 @@ async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
 
 export async function listCloudMindItems(): Promise<MindItem[]> {
   const response = await requireOk(await mindPublicApi(
-    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path&order=updated_at.desc&limit=500",
+    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url&order=updated_at.desc&limit=500",
   ), "Não foi possível carregar a biblioteca");
   return (await response.json() as DbItem[]).map(itemFromRow);
 }
@@ -129,6 +142,20 @@ export async function downloadPublicCloudPdf(item: MindItem): Promise<Blob> {
   return blob.type === "application/pdf" ? blob : new Blob([blob], { type: "application/pdf" });
 }
 
+/** Public MP4 links stream through native video without an administrator token. */
+export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
+  if (item.kind !== "video" || !item.storagePath || item.videoUrl) throw new Error("Este item não contém um MP4 para download.");
+  const response = await fetch(publicMindVideoUrl(item.storagePath), { credentials: "omit", referrerPolicy: "no-referrer" });
+  await requireOk(response, "Não foi possível baixar o vídeo");
+  const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
+  if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") throw new Error("O arquivo recebido não é MP4.");
+  const size = Number(response.headers.get("content-length"));
+  if (response.headers.has("content-length") && (size <= 0 || size > MAX_MIND_VIDEO_BYTES)) throw new Error("O vídeo ultrapassa 25 MB.");
+  const blob = await response.blob();
+  if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
+  return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
+}
+
 /** Authenticated read is used for administrator backups and local-to-cloud migration only. */
 export async function downloadCloudPdf(item: MindItem): Promise<Blob> {
   const record = await currentItem(item.id);
@@ -148,17 +175,27 @@ export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
   }
 
   const previous = await currentItem(item.id);
+  if (item.kind === "video") {
+    if (item.videoUrl) {
+      const link = parseMindVideoLink(item.videoUrl);
+      if (!link || item.file) throw new Error("Informe um link válido do YouTube ou Vimeo.");
+      item.videoUrl = link.url;
+    } else if (!item.file && !previous?.storage_path) {
+      throw new Error("Selecione um MP4 ou informe um link do YouTube/Vimeo.");
+    }
+  }
   let newPath: string | null = null;
-  if (item.kind === "pdf" && item.file) {
-    if (!(await checkedPdf(item.file))) throw new Error("PDF inválido ou maior que 25 MB.");
+  if ((item.kind === "pdf" || item.kind === "video") && item.file) {
+    if (item.kind === "pdf" && !(await checkedPdf(item.file))) throw new Error("PDF inválido ou maior que 25 MB.");
+    if (item.kind === "video" && !(await checkedMp4(item.file))) throw new Error("MP4 inválido ou maior que 25 MB.");
     const session = await requireOk(await mindApi("/auth/v1/user"), "Sessão inválida");
     const user = await session.json() as { id?: string };
     if (!user.id || !/^[0-9a-f-]{36}$/i.test(user.id)) throw new Error("A sessão administrativa é inválida.");
     // A unique path keeps the current published file intact until the row points to the replacement.
-    newPath = user.id + "/" + item.id + "-" + crypto.randomUUID() + ".pdf";
+    newPath = user.id + "/" + item.id + "-" + crypto.randomUUID() + (item.kind === "video" ? ".mp4" : ".pdf");
     try {
       await requireOk(await mindApi(storageObjectUrl(newPath), {
-        method: "POST", headers: { "Content-Type": "application/pdf" }, body: item.file,
+        method: "POST", headers: { "Content-Type": item.kind === "video" ? "video/mp4" : "application/pdf" }, body: item.file,
       }), "Não foi possível enviar o PDF");
     } catch (error) {
       const cleanup = await cleanupIfUnreferenced(newPath);
@@ -174,6 +211,7 @@ export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
 
   const row: Record<string, unknown> = rowFromItem(item);
   if (newPath) row.storage_path = newPath;
+  else if (item.kind === "video" && item.videoUrl) row.storage_path = null;
   try {
     const response = await requireOk(await mindApi(
       previous
@@ -200,7 +238,8 @@ export async function saveCloudMindItem(item: MindItem): Promise<boolean> {
     throw error;
   }
 
-  if (newPath && previous?.storage_path && previous.storage_path !== newPath) {
+  if ((newPath || (item.kind === "video" && item.videoUrl)) &&
+      previous?.storage_path && previous.storage_path !== newPath) {
     return (await cleanupIfUnreferenced(previous.storage_path)) === "pending";
   }
   return false;
