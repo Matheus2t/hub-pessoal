@@ -50,6 +50,16 @@ antigos ou não vinculados só ocorre após consulta confirmando que nenhum regi
 para eles. Se não for possível confirmar o vínculo, o arquivo é preservado e a interface
 indica a pendência, evitando exclusão de um objeto ainda usado.
 
+## Vídeos (YouTube, Vimeo e MP4)
+
+- O novo tipo `video` aparece em uma categoria dedicada, com título, assunto, descrição, tags e favorito.
+- Links HTTPS de YouTube e Vimeo são normalizados e validados por provedor/ID; não são carregados iframes de URLs arbitrárias. A incorporação depende da autorização de cada vídeo na plataforma.
+- MP4 de até **25 MiB** são publicados no bucket público `mind-videos`, separados de `mind-pdfs`. O player HTML5 permite reprodução e tela cheia; download anônimo está disponível para arquivos publicados na própria 2T.
+- Somente o administrador autenticado pode enviar/substituir/excluir MP4 ou publicar links. As novas políticas de Storage exigem `private.is_mind_admin()`, prefixo UID e extensão .mp4. A tabela pública mantém RLS e leitura pública; as escritas continuam restritas ao administrador.
+- A CSP autoriza somente `www.youtube-nocookie.com`, `player.vimeo.com` para incorporação, `i.ytimg.com` para miniaturas e a origem Supabase configurada em `media-src`.
+- Backups JSON versão 2 incluem os dados de vídeos e bytes dos MP4; backups versão 1 continuam importáveis. Backups de MP4 podem ser grandes; mantenha em local seguro. Upload padrão direto é pensado para vídeos curtos; para vídeos maiores, publique via link.
+- A migração aditiva está registrada em `docs/mind/videos-public-admin.sql` e deve ser aplicada uma única vez no projeto Supabase existente antes do deploy da UI.
+
 ## Manutenção e limites
 
 - Projeto, banco, bucket e permissões não devem ser copiados de outro projeto Supabase.
