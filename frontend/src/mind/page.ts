@@ -195,6 +195,26 @@ export class MindPage extends LightElement {
   private setDraft(field: keyof Pick<MindItem, "title" | "topic" | "description" | "content">, value: string) {
     if (this.draft) this.draft = { ...this.draft, [field]: value };
   }
+  private changeVideoMode(mode: "link" | "file") {
+    if (!this.draft || this.draft.kind !== "video") return;
+    this.videoMode = mode;
+    this.draft = { ...this.draft, file: undefined, videoUrl: mode === "file" ? "" : this.draft.videoUrl ?? "" };
+    this.clearMessages();
+  }
+
+  private async chooseVideoFile(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = "";
+    if (!this.draft || this.draft.kind !== "video" || !file) return;
+    if (!file.name.toLowerCase().endsWith(".mp4") || !(await checkedMp4(file))) {
+      this.error = "Selecione um arquivo MP4 válido com até 25 MB.";
+      return;
+    }
+    this.draft = { ...this.draft, file, videoUrl: "", fileName: file.name, fileSize: file.size };
+    this.clearMessages();
+  }
+
   private tagsInput(event: Event) {
     if (!this.draft) return;
     this.draft = { ...this.draft, tags: normalizedTags((event.target as HTMLInputElement).value) };
@@ -213,6 +233,21 @@ export class MindPage extends LightElement {
       content: this.draft.content.slice(0, 250000),
       updatedAt: Date.now(),
     };
+    if (item.kind === "video") {
+      if (this.videoMode === "link") {
+        const parsed = parseMindVideoLink(item.videoUrl ?? "");
+        if (!parsed) { this.error = "Informe um link HTTPS válido do YouTube ou Vimeo."; return; }
+        item.videoUrl = parsed.url;
+        item.file = undefined;
+        item.storagePath = undefined;
+        item.fileName = undefined;
+        item.fileSize = undefined;
+      } else {
+        item.videoUrl = undefined;
+        if (!item.file && !item.storagePath) { this.error = "Selecione um arquivo MP4."; return; }
+        if (item.file && !(await checkedMp4(item.file))) { this.error = "MP4 inválido ou maior que 25 MB."; return; }
+      }
+    }
     this.busy = true;
     this.clearMessages();
     try {
@@ -300,7 +335,7 @@ export class MindPage extends LightElement {
 
   private async fileAction(download: boolean) {
     const item = this.selected;
-    if (!this.libraryAvailable || !item || this.busy) return;
+    if (!this.libraryAvailable || !item || this.busy || item.kind !== "pdf") return;
     if (mindCloudEnabled() && item.storagePath && !download) {
       window.open(publicMindPdfUrl(item.storagePath), "_blank", "noopener,noreferrer");
       return;
@@ -324,6 +359,22 @@ export class MindPage extends LightElement {
     finally { this.busy = false; }
   }
 
+  private async downloadVideo(item: MindItem) {
+    if (this.busy || item.kind !== "video" || item.videoUrl) return;
+    this.busy = true; this.clearMessages();
+    try {
+      const file = mindCloudEnabled() ? await downloadPublicCloudVideo(item) : item.file;
+      if (!file) throw new Error("O vídeo não está disponível.");
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url; a.download = safeMindVideoFileName(item.fileName ?? item.title + ".mp4");
+      document.body.append(a); a.click(); a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+      this.notice = "Download iniciado.";
+    } catch (e) { this.error = this.message(e); }
+    finally { this.busy = false; }
+  }
+
   private closeManageMenu() { this.querySelector<HTMLDetailsElement>(".mind-backup")?.removeAttribute("open"); }
 
   private async backup() {
@@ -332,7 +383,9 @@ export class MindPage extends LightElement {
     try {
       const allItems = mindCloudEnabled()
         ? await Promise.all(this.items.map(async item => item.kind === "pdf"
-            ? { ...item, file: await downloadCloudPdf(item) } : item))
+            ? { ...item, file: await downloadCloudPdf(item) }
+            : item.kind === "video" && item.storagePath
+              ? { ...item, file: await downloadPublicCloudVideo(item) } : item))
         : this.items;
       const blob = await createMindBackup(allItems);
       const url = URL.createObjectURL(blob);
@@ -340,7 +393,7 @@ export class MindPage extends LightElement {
       a.href = url; a.download = "mente-2t-backup-" + new Date().toISOString().slice(0, 10) + ".json";
       document.body.append(a); a.click(); a.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 60000);
-      this.notice = "Backup gerado com notas e PDFs. Guarde o arquivo em local seguro.";
+      this.notice = "Backup gerado com notas, PDFs e vídeos. Guarde o arquivo em local seguro.";
     } catch (e) { this.error = this.message(e); }
     finally { this.busy = false; }
   }
@@ -446,11 +499,14 @@ export class MindPage extends LightElement {
         this.pdfInlineId = null;
         this.pdfExpanded = false;
         if (mindCloudEnabled() && item.kind === "pdf" && item.storagePath) void this.preparePdfPreview(item);
+        this.setLocalVideo(item);
         this.clearMessages();
         this.revealReaderOnSmallScreens();
       }}>
-      <span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : "✎"}</span>
-      <span class="mind-item-main"><strong>${item.title}</strong><span>${item.topic === "Sem assunto" ? (item.kind === "pdf" ? "PDF" : "Nota") : item.topic}${item.favorite ? " · ★" : ""}</span></span>
+      ${item.kind === "video" && item.videoUrl && parseMindVideoLink(item.videoUrl)?.thumbnail
+        ? html`<img class="mind-item-thumbnail" loading="lazy" alt="" src=${parseMindVideoLink(item.videoUrl)!.thumbnail!} />`
+        : html`<span class="mind-item-symbol" aria-hidden="true">${item.kind === "pdf" ? "PDF" : item.kind === "video" ? "▶" : "✎"}</span>`}
+      <span class="mind-item-main"><strong>${item.title}</strong><span>${item.topic === "Sem assunto" ? (item.kind === "pdf" ? "PDF" : item.kind === "video" ? "Vídeo" : "Nota") : item.topic}${item.favorite ? " · ★" : ""}</span></span>
     </button>`;
   }
 
@@ -458,12 +514,21 @@ export class MindPage extends LightElement {
     if (!this.draft) return nothing;
     const d = this.draft;
     return html`<form class="mind-editor" @submit=${this.saveDraft}>
-      <div class="mind-detail-heading"><div><small>${d.kind === "pdf" ? "DOCUMENTO PDF" : "NOTA"}</small><h2>${this.items.some(x => x.id === d.id) ? "Editar item" : "Nova nota"}</h2></div></div>
+      <div class="mind-detail-heading"><div><small>${d.kind === "pdf" ? "DOCUMENTO PDF" : d.kind === "video" ? "VÍDEO" : "NOTA"}</small><h2>${this.items.some(x => x.id === d.id) ? "Editar item" : "Nova nota"}</h2></div></div>
       <label>Título<input name="title" maxlength="180" required .value=${d.title} @input=${(e: Event) => this.setDraft("title", (e.target as HTMLInputElement).value)} /></label>
       <label>Assunto<input name="topic" maxlength="80" placeholder="Ex.: Investimentos" .value=${d.topic} @input=${(e: Event) => this.setDraft("topic", (e.target as HTMLInputElement).value)} /></label>
       <label>Etiquetas <span>(separe por vírgula)</span><input name="tags" maxlength="600" placeholder="2027, ações, estudo" .value=${d.tags.join(", ")} @change=${this.tagsInput} /></label>
       <label>Descrição <span>(opcional)</span><textarea name="description" rows="3" maxlength="3000" .value=${d.description} @input=${(e: Event) => this.setDraft("description", (e.target as HTMLTextAreaElement).value)}></textarea></label>
       ${d.kind === "note" ? html`<label>Conteúdo<textarea class="mind-note-content" name="content" rows="11" maxlength="250000" placeholder="Registre suas análises, referências e ideias…" .value=${d.content} @input=${(e: Event) => this.setDraft("content", (e.target as HTMLTextAreaElement).value)}></textarea></label>` : nothing}
+      ${d.kind === "video" ? html`
+        <fieldset class="mind-video-mode"><legend>Fonte do vídeo</legend>
+          <label><input type="radio" name="video-source" value="link" .checked=${this.videoMode === "link"} @change=${() => this.changeVideoMode("link")} /> Link YouTube/Vimeo</label>
+          <label><input type="radio" name="video-source" value="file" .checked=${this.videoMode === "file"} @change=${() => this.changeVideoMode("file")} /> Arquivo MP4</label>
+        </fieldset>
+        ${this.videoMode === "link" ? html`<label>Endereço do vídeo<input name="video-url" type="url" required placeholder="https://www.youtube.com/watch?v=..." .value=${d.videoUrl ?? ""} @input=${(e: Event) => { if (this.draft) this.draft = { ...this.draft, videoUrl: (e.target as HTMLInputElement).value }; }} /></label>`
+          : html`<label>Arquivo MP4 (até 25 MB)<input name="video-file" type="file" accept=".mp4,video/mp4" @change=${this.chooseVideoFile} /></label>
+            ${d.fileName && !d.videoUrl ? html`<p class="mind-video-file-label">${d.fileName} · ${displayFileSize(d.fileSize ?? 0)}</p>` : nothing}`}
+      ` : nothing}
       <div class="mind-actions"><button class="mind-primary" type="submit" ?disabled=${this.busy}>Salvar</button><button type="button" @click=${this.cancelEdit}>Cancelar</button></div>
     </form>`;
   }
