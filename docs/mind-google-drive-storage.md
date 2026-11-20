@@ -2,7 +2,7 @@
 
 ## Estado desta branch
 
-Esta implementação substitui R2 no código derivado da integração de Mente do PR #201. Não altera o PR #202 e não ativa nada em produção. A migração SQL está criada, mas **não foi aplicada**. A prévia real do Google Drive depende de configurar o cliente OAuth e executar um teste com uma conta autorizada.
+Esta implementação substitui R2 no código derivado da integração de Mente do PR #201. O PR #203 está aberto como draft sobre a branch do #201; o PR #202 foi marcado como substituído e fechado sem merge depois que o código novo ficou preservado no PR próprio. Não há configuração em produção. A migração SQL está criada, mas **não foi aplicada**. A prévia real do Google Drive depende de configurar o cliente OAuth e executar um teste com uma conta autorizada.
 
 ## Arquitetura
 
@@ -34,7 +34,7 @@ Criar um cliente OAuth Web no Google Cloud e registrar exatamente o callback con
 
 Backups JSON v1/v2 e MP4/PDF legados continuam sendo lidos. Backup v3 pode conter o identificador e metadados do Drive, mas **não os bytes do vídeo**; `assetsComplete=false` avisa que a cópia não é autossuficiente. Faça cópia independente dos MP4 no Drive.
 
-Para rollback antes da migração, desabilitar a flag e reverter o deployment mantém o caminho legado. Depois de aplicar a migração/publicar vídeos no Drive, não remover colunas, permissões ou a conexão: os registros dependem dos arquivos externos. O PR #202 permanece intocado; este PR deve substituí-lo somente após revisão.
+Para rollback antes da migração, desabilitar a flag e reverter o deployment mantém o caminho legado. Depois de aplicar a migração/publicar vídeos no Drive, não remover colunas, permissões ou a conexão: os registros dependem dos arquivos externos. O PR #202 foi fechado como substituído pelo #203; seu conteúdo R2 não foi incorporado.
 
 ## Validações pendentes por falta de OAuth
 
