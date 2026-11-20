@@ -3,7 +3,9 @@
  * Intentionally no network calls. This is NOT an authenticated or encrypted vault.
  * All items and PDF blobs live in the current browser profile's IndexedDB.
  */
-export type MindKind = "note" | "pdf";
+import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink } from "./video";
+
+export type MindKind = "note" | "pdf" | "video";
 export interface MindItem {
   id: string;
   kind: MindKind;
@@ -18,6 +20,7 @@ export interface MindItem {
   fileName?: string;
   fileSize?: number;
   storagePath?: string;
+  videoUrl?: string;
   file?: Blob;
 }
 
@@ -100,15 +103,28 @@ function fromBase64(data: string): Blob {
   return new Blob([bytes], { type: "application/pdf" });
 }
 
-/** Portable JSON backup includes PDF bytes. Keep backup outside shared/public computers. */
+function videoFromBase64(data: string): Blob {
+  if (data.length > Math.ceil(MAX_MIND_VIDEO_BYTES / 3) * 4 + 16 || !/^[A-Za-z0-9+/]*={0,2}$/.test(data)) {
+    throw new Error("Vídeo inválido no backup.");
+  }
+  const decoded = atob(data);
+  const bytes = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i++) bytes[i] = decoded.charCodeAt(i);
+  if (bytes.length < 12 || bytes[4] !== 0x66 || bytes[5] !== 0x74 ||
+      bytes[6] !== 0x79 || bytes[7] !== 0x70) throw new Error("O backup contém um vídeo inválido.");
+  return new Blob([bytes], { type: "video/mp4" });
+}
+
+/** Portable JSON backup includes PDF and MP4 bytes; video links remain URLs. */
 export async function createMindBackup(items: MindItem[]): Promise<Blob> {
   const records = [];
   for (const item of items) {
     const { file: _file, ...metadata } = item;
     const pdfBase64 = item.kind === "pdf" && item.file ? toBase64(await item.file.arrayBuffer()) : null;
-    records.push({ ...metadata, pdfBase64 });
+    const videoBase64 = item.kind === "video" && item.file ? toBase64(await item.file.arrayBuffer()) : null;
+    records.push({ ...metadata, pdfBase64, videoBase64 });
   }
-  return new Blob([JSON.stringify({ format: "2t-mind", version: 1, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
+  return new Blob([JSON.stringify({ format: "2t-mind", version: 2, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
 }
 
 export async function parseMindBackup(file: File): Promise<MindItem[]> {
@@ -118,14 +134,14 @@ export async function parseMindBackup(file: File): Promise<MindItem[]> {
   catch { throw new Error("Não foi possível ler o arquivo de backup."); }
   if (!archive || typeof archive !== "object") throw new Error("Arquivo de backup inválido.");
   const data = archive as { format?: unknown; version?: unknown; records?: unknown };
-  if (data.format !== "2t-mind" || data.version !== 1 || !Array.isArray(data.records) || data.records.length > 300) {
+  if (data.format !== "2t-mind" || (data.version !== 1 && data.version !== 2) || !Array.isArray(data.records) || data.records.length > 300) {
     throw new Error("O arquivo não é um backup compatível da Mente 2T.");
   }
   const imported: MindItem[] = [];
   for (const entry of data.records) {
     if (!entry || typeof entry !== "object") throw new Error("Registro inválido no backup.");
     const r = entry as Record<string, unknown>;
-    if (r.kind !== "note" && r.kind !== "pdf") throw new Error("Tipo de registro inválido.");
+    if (r.kind !== "note" && r.kind !== "pdf" && r.kind !== "video") throw new Error("Tipo de registro inválido.");
     if (typeof r.id !== "string" || !/^[0-9a-f-]{36}$/i.test(r.id)) throw new Error("Identificador inválido.");
     if (typeof r.title !== "string" || !r.title.trim() || r.title.length > 180) throw new Error("Título inválido.");
     if (typeof r.topic !== "string" || r.topic.length > 80 || typeof r.description !== "string" || r.description.length > 3000) throw new Error("Metadados inválidos.");
@@ -144,6 +160,20 @@ export async function parseMindBackup(file: File): Promise<MindItem[]> {
       if (item.file.size > MAX_MIND_PDF_BYTES) throw new Error("PDF do backup excede 25 MB.");
       item.fileSize = item.file.size;
       item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".pdf";
+    }
+    if (r.kind === "video") {
+      if (typeof r.videoUrl === "string" && r.videoUrl) {
+        const link = parseMindVideoLink(r.videoUrl);
+        if (!link || r.videoBase64) throw new Error("Link de vídeo inválido no backup.");
+        item.videoUrl = link.url;
+      } else if (typeof r.videoBase64 === "string") {
+        item.file = videoFromBase64(r.videoBase64);
+        if (!(await checkedMp4(item.file))) throw new Error("MP4 inválido no backup.");
+        item.fileSize = item.file.size;
+        item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".mp4";
+      } else {
+        throw new Error("O vídeo do backup não possui arquivo ou link.");
+      }
     }
     imported.push(item);
   }

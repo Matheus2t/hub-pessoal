@@ -38,6 +38,7 @@ function makeTwoPagePdfWithLink() {
   return Buffer.from(pdf, "ascii");
 }
 const pdfBytes = makeTwoPagePdfWithLink();
+const mp4Bytes = Buffer.from([0, 0, 0, 24, 102, 116, 121, 112, 105, 115, 111, 109, 0, 0, 0, 0, 105, 115, 111, 109, 109, 112, 52, 50]);
 expect(pdfBytes.toString("ascii")).toContain("/Count 2");
 expect(pdfBytes.toString("ascii")).toContain("/Subtype /Link");
 const owner = "075026fa-4e9f-4e1a-8ef4-a3c443e11442";
@@ -119,6 +120,20 @@ function mockApi(page: import("@playwright/test").Page, admin = true, options: {
           }
           if (request.method() === "GET") return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/pdf" }, body: pdfBytes });
         }
+        if (url.pathname.startsWith("/storage/v1/object/mind-videos/")) {
+          const path = decodeURIComponent(url.pathname.split("/storage/v1/object/mind-videos/")[1]);
+          if (request.method() === "POST") {
+            objects.add(path);
+            return route.fulfill({ status: 200, headers: cors, json: {} });
+          }
+          if (request.method() === "DELETE") {
+            objects.delete(path);
+            return route.fulfill({ status: 200, headers: cors, json: {} });
+          }
+        }
+        if (url.pathname.startsWith("/storage/v1/object/public/mind-videos/")) {
+          return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "video/mp4" }, body: mp4Bytes });
+        }
         if (url.pathname.startsWith("/storage/v1/object/public/")) {
           return route.fulfill({ status: options.pdfStatus ?? 200, headers: { ...cors, "Content-Type": options.pdfContentType ?? "application/pdf" }, body: pdfBytes });
         }
@@ -127,6 +142,71 @@ function mockApi(page: import("@playwright/test").Page, admin = true, options: {
     },
   };
 }
+
+
+test("visitante assiste a vídeo YouTube e filtra Vídeos sem precisar de login", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page);
+  api.items.push({
+    ...note, id: "afef1b3b-7cd1-4c4a-8965-b98225fb0e32", kind: "video", title: "Aula pública",
+    video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", storage_path: null,
+  } as typeof note);
+  await api.install();
+  await page.goto("/#/mente");
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  await page.getByRole("button", { name: "Vídeos", exact: true }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(1);
+  await page.getByRole("button", { name: /Aula pública/ }).click();
+  await expect(page.locator(".mind-video-player iframe"))
+    .toHaveAttribute("src", "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ");
+  await expect(page.getByRole("link", { name: /Abrir no navegador/ }))
+    .toHaveAttribute("href", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  await expect(page.locator(".mind-detail-footer")).toHaveCount(0);
+});
+
+test("admin publica vídeo por link, recusa domínio falso e mantém RLS no mock", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("textbox", { name: "Título" }).fill("Estudo Vimeo");
+  await page.locator('input[name="video-url"]').fill("https://vimeo.com.evil.test/123456");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.getByRole("alert")).toContainText("link HTTPS válido");
+  expect(api.items).toHaveLength(2);
+  await page.locator('input[name="video-url"]').fill("https://vimeo.com/123456");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  await expect(page.locator(".mind-video-player iframe"))
+    .toHaveAttribute("src", "https://player.vimeo.com/video/123456");
+  expect(api.items.find(x => x.title === "Estudo Vimeo")?.kind).toBe("video");
+  expect(api.requests.some(x => x.path === "/rest/v1/mind_items" && x.method === "POST" && !!x.auth)).toBe(true);
+});
+
+test("admin envia MP4, visitante reproduz e baixa sem login", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("textbox", { name: "Título" }).fill("Vídeo de estudo");
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  await page.locator('input[name="video-file"]').setInputFiles({
+    name: "aula.mp4", mimeType: "video/mp4", buffer: mp4Bytes,
+  });
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  const item = api.items.find(x => x.title === "Vídeo de estudo")!;
+  expect(item.kind).toBe("video");
+  expect(item.storage_path).toMatch(/\.mp4$/);
+  await expect(page.locator(".mind-video-player video")).toHaveAttribute("src", new RegExp("/mind-videos/"));
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Baixar vídeo" }).click();
+  expect((await download).suggestedFilename()).toBe("aula.mp4");
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/object/mind-videos/") && x.method === "POST")).toBe(true);
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/object/public/mind-videos/") && x.method === "GET" && !x.auth)).toBe(true);
+});
 
 test("visitante acessa notas e PDFs públicos sem login, sem controles de edição", async ({ page }) => {
   await serveBuiltSite(page);
