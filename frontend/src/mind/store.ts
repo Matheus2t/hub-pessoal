@@ -20,6 +20,8 @@ export interface MindItem {
   fileName?: string;
   fileSize?: number;
   storagePath?: string;
+  storageProvider?: "google-drive";
+  driveFileId?: string;
   videoUrl?: string;
   posterDataUrl?: string;
   file?: Blob;
@@ -125,16 +127,19 @@ function videoFromBase64(data: string): Blob {
 /** V3 keeps metadata in JSON and stores each PDF/MP4 as a separate sidecar file. */
 export async function createMindBackup(items: MindItem[]): Promise<Blob> {
   const records = [];
+  let hasExternalBinary = false;
   for (const item of items) {
     const { file: _file, ...metadata } = item;
     delete metadata.storagePath;
-    const hasFile = (item.kind === "pdf" || item.kind === "video") && !item.videoUrl && (!!item.file || !!item.storagePath);
+    const isDriveVideo = item.kind === "video" && item.storageProvider === "google-drive" && !!item.driveFileId;
+    const hasFile = (item.kind === "pdf" || item.kind === "video") && !item.videoUrl && !isDriveVideo && (!!item.file || !!item.storagePath);
+    if (isDriveVideo || ((item.kind === "pdf" || item.kind === "video") && !item.videoUrl && !item.file)) hasExternalBinary = true;
     records.push({
       ...metadata,
       ...(hasFile ? { assetName: mindBackupAssetName(item), assetSize: item.fileSize ?? item.file?.size ?? null } : {}),
     });
   }
-  return new Blob([JSON.stringify({ format: "2t-mind", version: 3, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
+  return new Blob([JSON.stringify({ format: "2t-mind", version: 3, assetsComplete: !hasExternalBinary, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
 }
 
 export async function parseMindBackup(file: File, sidecars: File[] = []): Promise<MindItem[]> {
@@ -187,6 +192,16 @@ export async function parseMindBackup(file: File, sidecars: File[] = []): Promis
         const link = parseMindVideoLink(r.videoUrl);
         if (!link || r.videoBase64) throw new Error("Link de vídeo inválido no backup.");
         item.videoUrl = link.url;
+      } else if (data.version === 3 && r.storageProvider === "google-drive") {
+        if (typeof r.driveFileId !== "string" || !/^[A-Za-z0-9_-]{10,200}$/.test(r.driveFileId) ||
+            typeof r.fileSize !== "number" || !Number.isSafeInteger(r.fileSize) || r.fileSize < 1 || r.fileSize > 5_000_000_000 ||
+            typeof r.fileName !== "string" || r.fileName.length > 180 || r.assetName || r.videoBase64) {
+          throw new Error("A referência externa do vídeo no backup é inválida.");
+        }
+        item.storageProvider = "google-drive";
+        item.driveFileId = r.driveFileId;
+        item.fileSize = r.fileSize;
+        item.fileName = r.fileName;
       } else if (data.version === 3 && typeof r.assetName === "string") {
         const asset = assets.get(r.assetName);
         if (!asset || asset.size > MAX_MIND_VIDEO_BYTES || (typeof r.assetSize === "number" && asset.size !== r.assetSize)) throw new Error(`Arquivo ausente, alterado ou acima de 50 MB: ${String(r.assetName)}`);

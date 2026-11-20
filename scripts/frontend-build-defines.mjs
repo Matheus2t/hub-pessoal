@@ -8,12 +8,14 @@ export function frontendBuildDefines({ publicBuild = false, devServer = false } 
   const mindCloud = isEnabled("MIND_CLOUD_ENABLED") &&
     /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(supabaseUrl) &&
     supabaseKey.startsWith("sb_publishable_");
+  const mindGoogleDrive = mindCloud && isEnabled("MIND_GOOGLE_DRIVE_ENABLED");
   const apiBase = publicBuild
     ? ""
     : process.env.TWO_T_API_BASE_URL || (devServer ? "http://localhost:8000" : "");
 
   return {
     "globalThis.__2T_MIND_CLOUD_ENABLED__": JSON.stringify(mindCloud),
+    "globalThis.__2T_MIND_GOOGLE_DRIVE_ENABLED__": JSON.stringify(mindGoogleDrive),
     "globalThis.__2T_MIND_LOCAL_MODE_ENABLED__": JSON.stringify(!publicBuild),
     "globalThis.__2T_MIND_SUPABASE_URL__": JSON.stringify(mindCloud ? supabaseUrl.replace(/\/$/, "") : ""),
     "globalThis.__2T_MIND_SUPABASE_KEY__": JSON.stringify(mindCloud ? supabaseKey : ""),

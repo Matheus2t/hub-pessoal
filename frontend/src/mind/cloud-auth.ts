@@ -4,6 +4,8 @@ declare global {
   var __2T_MIND_SUPABASE_KEY__: string | undefined;
   var __2T_MIND_CLOUD_ENABLED__: boolean | undefined;
   var __2T_MIND_LOCAL_MODE_ENABLED__: boolean | undefined;
+  var __2T_MIND_GOOGLE_DRIVE_ENABLED__: boolean | undefined;
+  var __2T_API_BASE_URL__: string | undefined;
 }
 
 interface CloudSession {
@@ -20,6 +22,9 @@ export function mindCloudEnabled(): boolean {
 /** Public production builds without cloud must not masquerade local drafts as a shared library. */
 export function mindLocalModeEnabled(): boolean {
   return globalThis.__2T_MIND_LOCAL_MODE_ENABLED__ === true;
+}
+export function mindGoogleDriveEnabled(): boolean {
+  return mindCloudEnabled() && globalThis.__2T_MIND_GOOGLE_DRIVE_ENABLED__ === true;
 }
 function config() {
   const rawUrl = globalThis.__2T_MIND_SUPABASE_URL__ ?? "";
@@ -117,6 +122,20 @@ export async function mindPublicApi(path: string): Promise<Response> {
   return fetch(url + path, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", headers: { apikey: key, Accept: "application/json" } });
 }
 
+/** Admin-only FastAPI request; Google and Supabase secrets are never sent by this client. */
+export async function mindBackendApi(path: string, init: RequestInit = {}): Promise<Response> {
+  if (!path.startsWith("/api/mind-drive/") || path.includes("..")) throw new Error("Rota administrativa inválida.");
+  const session = await tokenSession();
+  const rawBase = globalThis.__2T_API_BASE_URL__ ?? "";
+  const base = new URL(rawBase || location.origin, location.origin);
+  const localDevApi = location.hostname === "localhost" && base.hostname === "localhost" && base.protocol === "http:";
+  if (base.origin !== location.origin && !localDevApi) throw new Error("A API administrativa não está na origem esperada.");
+  return fetch(base.origin + path, {
+    cache: "no-store", credentials: "include", referrerPolicy: "no-referrer", ...init,
+    headers: { Authorization: "Bearer " + session.access_token, ...(init.headers ?? {}) },
+  });
+}
+
 export function publicMindPdfUrl(storagePath: string): string {
   if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.pdf$/i.test(storagePath)) throw new Error("Caminho de PDF inválido.");
   const { url } = config();
@@ -127,6 +146,14 @@ export function publicMindVideoUrl(storagePath: string): string {
   if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.mp4$/i.test(storagePath)) throw new Error("Caminho de vídeo inválido.");
   const { url } = config();
   return url + "/storage/v1/object/public/mind-videos/" + storagePath;
+}
+export function publicMindDrivePreviewUrl(fileId: string): string {
+  if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) throw new Error("Identificador de vídeo inválido.");
+  return "https://drive.google.com/file/d/" + fileId + "/preview";
+}
+export function publicMindDriveViewUrl(fileId: string): string {
+  if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) throw new Error("Identificador de vídeo inválido.");
+  return "https://drive.google.com/file/d/" + fileId + "/view";
 }
 
 export function safeMindPdfFileName(value: string): string {

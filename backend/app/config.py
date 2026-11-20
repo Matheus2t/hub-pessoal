@@ -15,6 +15,15 @@ class Settings(BaseSettings):
     link_resolver_public_rate_limit_confirmed: bool=False
     link_resolver_public_egress_confirmed: bool=False
     background_remover_enabled: bool=False
+    mind_google_drive_enabled: bool=False
+    mind_supabase_url: str|None=None
+    mind_supabase_publishable_key: str|None=None
+    mind_supabase_service_role_key: SecretStr|None=None
+    google_drive_client_id: str|None=None
+    google_drive_client_secret: SecretStr|None=None
+    google_drive_redirect_uri: str|None=None
+    mind_google_token_encryption_key: SecretStr|None=None
+    mind_google_drive_allowed_origins: str='http://localhost:3000'
     link_resolver_max_redirects: int=Field(default=8,ge=0,le=8)
     link_resolver_total_timeout_seconds: float=Field(default=12.0,gt=0,le=12.0)
     link_resolver_connect_timeout_seconds: float=Field(default=3.0,gt=0,le=3.0)
