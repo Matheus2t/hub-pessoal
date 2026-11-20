@@ -34,6 +34,20 @@ test("adding the configured source is idempotent", () => {
   assert.equal(twice, once);
 });
 
+test("R2 CSP adds only the exact HTTPS Worker origin when explicitly enabled", () => {
+  const output = buildIndexContent(base, { ...env, MIND_R2_ENABLED: "true", MIND_R2_WORKER_URL: "https://mind-r2.example.workers.dev" });
+  assert.match(output, /connect-src[^;]*https:\/\/mind-r2\.example\.workers\.dev/);
+  assert.match(output, /media-src[^;]*https:\/\/mind-r2\.example\.workers\.dev/);
+  assert.doesNotMatch(output, /https:\/\/\*\.workers\.dev/);
+  assert.equal(buildIndexContent(output, { ...env, MIND_R2_ENABLED: "true", MIND_R2_WORKER_URL: "https://mind-r2.example.workers.dev" }), output);
+});
+
+test("invalid or disabled R2 configuration does not widen CSP", () => {
+  assert.equal(buildIndexContent(base, { ...env, MIND_R2_ENABLED: "true", MIND_R2_WORKER_URL: "http://mind-r2.example.workers.dev" }), buildIndexContent(base, env));
+  assert.equal(buildIndexContent(base, { ...env, MIND_R2_ENABLED: "true", MIND_R2_WORKER_URL: "https://mind-r2.example.workers.dev/path" }), buildIndexContent(base, env));
+  assert.equal(buildIndexContent(base, { ...env, MIND_R2_ENABLED: "false", MIND_R2_WORKER_URL: "https://mind-r2.example.workers.dev" }), buildIndexContent(base, env));
+});
+
 test("enabled cloud build fails closed if a required CSP directive is missing", () => {
   assert.throws(() => buildIndexContent("connect-src 'self'; object-src 'none';", env), /frame-src is missing/);
 });

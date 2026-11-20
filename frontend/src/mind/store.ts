@@ -3,7 +3,7 @@
  * Intentionally no network calls. This is NOT an authenticated or encrypted vault.
  * All items and PDF blobs live in the current browser profile's IndexedDB.
  */
-import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink } from "./video";
+import { checkedMp4, MAX_MIND_VIDEO_BYTES, MAX_MIND_R2_VIDEO_BYTES, parseMindVideoLink } from "./video";
 
 export type MindKind = "note" | "pdf" | "video";
 export interface MindItem {
@@ -20,6 +20,7 @@ export interface MindItem {
   fileName?: string;
   fileSize?: number;
   storagePath?: string;
+  videoStorageProvider?: "supabase" | "r2";
   videoUrl?: string;
   posterDataUrl?: string;
   file?: Blob;
@@ -65,6 +66,10 @@ export async function listMindItems(): Promise<MindItem[]> {
   return transaction("readonly", store => store.getAll() as IDBRequest<MindItem[]>);
 }
 export async function saveMindItem(item: MindItem): Promise<void> {
+  if (item.kind === "video" && item.file &&
+      (item.file.size > MAX_MIND_VIDEO_BYTES || !(await checkedMp4(item.file, MAX_MIND_VIDEO_BYTES)))) {
+    throw new Error("Vídeos locais são limitados a 50 MB.");
+  }
   await transaction("readwrite", store => store.put(item));
 }
 export async function deleteMindItem(id: string): Promise<void> {
@@ -189,14 +194,14 @@ export async function parseMindBackup(file: File, sidecars: File[] = []): Promis
         item.videoUrl = link.url;
       } else if (data.version === 3 && typeof r.assetName === "string") {
         const asset = assets.get(r.assetName);
-        if (!asset || asset.size > MAX_MIND_VIDEO_BYTES || (typeof r.assetSize === "number" && asset.size !== r.assetSize)) throw new Error(`Arquivo ausente, alterado ou acima de 50 MB: ${String(r.assetName)}`);
+        if (!asset || asset.size > MAX_MIND_R2_VIDEO_BYTES || (typeof r.assetSize === "number" && asset.size !== r.assetSize)) throw new Error(`Arquivo ausente, alterado ou acima de 5 GB: ${String(r.assetName)}`);
         item.file = asset;
         if (!(await checkedMp4(item.file))) throw new Error("MP4 inválido no backup.");
         item.fileSize = item.file.size;
         item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".mp4";
       } else if (typeof r.videoBase64 === "string") {
         item.file = videoFromBase64(r.videoBase64);
-        if (!(await checkedMp4(item.file))) throw new Error("MP4 inválido no backup.");
+        if (!(await checkedMp4(item.file, MAX_MIND_VIDEO_BYTES))) throw new Error("MP4 inválido no backup.");
         item.fileSize = item.file.size;
         item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".mp4";
       } else {

@@ -1,4 +1,5 @@
 /** 2T Mente: Supabase GoTrue session. No service-role key or password is stored. */
+import { isMindR2Key, mindR2Enabled, publicMindR2VideoUrl } from "./r2-config";
 declare global {
   var __2T_MIND_SUPABASE_URL__: string | undefined;
   var __2T_MIND_SUPABASE_KEY__: string | undefined;
@@ -111,6 +112,8 @@ export async function mindApi(path: string, init: RequestInit = {}): Promise<Res
     headers: { apikey: key, Authorization: "Bearer " + session.access_token, ...(init.headers ?? {}) },
   });
 }
+/** Short-lived Supabase JWT for the R2 Worker; it is never persisted or logged by the Worker. */
+export async function mindAccessToken(): Promise<string> { return (await tokenSession()).access_token; }
 /** Public catalog requests never carry an administrator session or token. */
 export async function mindPublicApi(path: string): Promise<Response> {
   const { url, key } = config();
@@ -123,7 +126,11 @@ export function publicMindPdfUrl(storagePath: string): string {
   return url + "/storage/v1/object/public/mind-pdfs/" + storagePath;
 }
 
-export function publicMindVideoUrl(storagePath: string): string {
+export function publicMindVideoUrl(storagePath: string, provider?: "supabase" | "r2"): string {
+  if ((provider === "r2" || (!provider && isMindR2Key(storagePath))) && mindR2Enabled()) {
+    return publicMindR2VideoUrl(storagePath);
+  }
+  if (provider === "r2" || isMindR2Key(storagePath)) return publicMindR2VideoUrl(storagePath);
   if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.mp4$/i.test(storagePath)) throw new Error("Caminho de vídeo inválido.");
   const { url } = config();
   return url + "/storage/v1/object/public/mind-videos/" + storagePath;

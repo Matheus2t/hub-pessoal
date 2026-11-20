@@ -244,6 +244,23 @@ mind-page { display:block; width:100%; min-width:0; }
 .mind-admin-login h2 { font-size:18px; font-weight:600; letter-spacing:-.025em; }
 .mind-admin-login > div > p:last-child { color:var(--muted); font-size:12px; line-height:1.6; max-width:42ch; }
 .mind-admin-login .mind-login-form { flex:1 1 250px; margin:0; }
+.mind-r2-storage { display:grid; gap:10px; padding:13px 0 16px; border-bottom:1px solid var(--line-soft); }
+.mind-r2-storage-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px 18px; }
+.mind-r2-storage-heading > div:first-child { display:grid; gap:4px; }
+.mind-r2-storage-heading strong { color:var(--text); font-size:12px; font-weight:580; }
+.mind-r2-storage-actions { display:flex; flex-wrap:wrap; gap:7px; }
+.mind-r2-storage-actions button { min-height:30px; padding:5px 9px; border:1px solid var(--line-soft); border-radius:5px; background:transparent; color:var(--text); font:inherit; font-size:11px; cursor:pointer; }
+.mind-r2-storage-actions button:disabled { opacity:.55; cursor:wait; }
+.mind-r2-storage-actions button:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+.mind-r2-usage { display:grid; gap:7px; }
+.mind-r2-usage-label { display:flex; justify-content:space-between; gap:10px; color:var(--secondary); font-size:11px; }
+.mind-r2-usage-label strong { color:var(--text); font-weight:560; }
+.mind-r2-usage progress { display:block; width:100%; height:4px; border:0; border-radius:3px; background:var(--line-soft); accent-color:var(--text); }
+.mind-r2-usage progress::-webkit-progress-bar { border-radius:3px; background:var(--line-soft); }
+.mind-r2-usage progress::-webkit-progress-value { border-radius:3px; background:var(--text); }
+.mind-r2-usage progress::-moz-progress-bar { border-radius:3px; background:var(--text); }
+.mind-r2-usage small,.mind-r2-storage-help { color:var(--muted); font-size:10px; line-height:1.5; }
+.mind-r2-storage .mind-error { margin:0; }
 .mind-pdf-actions { align-items:center; gap:3px; border-bottom:1px solid var(--line-soft); padding:0 0 9px; }
 .mind-pdf-external { display:inline-flex; align-items:center; justify-content:center; min-height:31px; padding:6px 10px;
   border:1px solid transparent; border-radius:5px; color:var(--secondary); font-size:12px; text-decoration:none; }

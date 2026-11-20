@@ -1,8 +1,10 @@
 /** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
 import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
-import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import { checkedMp4, MAX_MIND_R2_VIDEO_BYTES, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 import { uploadMindVideo, type MindVideoUploadProgress } from "./video-upload";
+import { deleteMindR2Video, uploadMindR2Video, commitMindR2Video, reconcileMindR2Item } from "./r2-upload";
+import { isMindR2Key, mindR2Enabled } from "./r2-config";
 
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
@@ -12,9 +14,9 @@ type DbItem = {
   id: string; owner_id: string; kind: "note" | "pdf" | "video"; title: string; topic: string;
   tags: string[]; description: string; content: string; favorite: boolean;
   created_at: string; updated_at: string; file_name: string | null; poster_data_url?: string | null;
-  file_size: number | null; storage_path: string | null; video_url: string | null;
+  file_size: number | null; storage_path: string | null; video_url: string | null; video_storage_provider?: "supabase" | "r2" | null;
 };
-type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string };
+type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string; video_storage_provider?: "supabase" | "r2" | null };
 type CleanupResult = "removed" | "still-linked" | "pending";
 
 async function requireOk(response: Response, label: string): Promise<Response> {
@@ -33,7 +35,9 @@ function itemFromRow(row: DbItem): MindItem {
     description: row.description, content: row.content, favorite: row.favorite,
     createdAt: Date.parse(row.created_at), updatedAt: Date.parse(row.updated_at),
     fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined, storagePath: row.storage_path ?? undefined,
-    videoUrl: row.video_url ?? undefined, posterDataUrl: safePoster(row.poster_data_url),
+    videoUrl: row.video_url ?? undefined,
+    videoStorageProvider: row.video_storage_provider ?? (row.storage_path && isMindR2Key(row.storage_path) ? "r2" : undefined),
+    posterDataUrl: safePoster(row.poster_data_url),
   };
 }
 function safePoster(value: string | null | undefined): string | undefined {
@@ -48,6 +52,7 @@ function rowFromItem(item: MindItem) {
       : item.kind === "video" && !item.videoUrl ? safeMindVideoFileName(item.fileName ?? item.title + ".mp4") : null,
     file_size: item.kind === "pdf" || (item.kind === "video" && !item.videoUrl) ? item.fileSize ?? item.file?.size ?? null : null,
     video_url: item.kind === "video" && item.videoUrl ? item.videoUrl : null,
+    video_storage_provider: item.kind === "video" && !item.videoUrl && item.storagePath ? item.videoStorageProvider ?? "supabase" : null,
     poster_data_url: item.kind === "video" ? safePoster(item.posterDataUrl) ?? null : null,
   };
 }
@@ -56,12 +61,22 @@ function storageObjectUrl(path: string): string {
   return "/storage/v1/object/" + (path.toLowerCase().endsWith(".mp4") ? VIDEO_BUCKET : BUCKET) + "/" + path.split("/").map(encodeURIComponent).join("/");
 }
 async function currentItem(id: string): Promise<StoredItem | null> {
+  const columns = mindR2Enabled() ? "id,kind,storage_path,updated_at,video_storage_provider" : "id,kind,storage_path,updated_at";
   const response = await requireOk(await mindApi(
-    "/rest/v1/mind_items?select=id,kind,storage_path,updated_at&id=eq." + encodeURIComponent(id) + "&limit=1",
+    "/rest/v1/mind_items?select=" + columns + "&id=eq." + encodeURIComponent(id) + "&limit=1",
   ), "Não foi possível conferir o registro");
   return (await response.json() as StoredItem[])[0] ?? null;
 }
 async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
+  if (isMindR2Key(path)) {
+    try {
+      const query = new URLSearchParams({ select: "id", storage_path: "eq." + path, limit: "1" });
+      const refs = await requireOk(await mindApi("/rest/v1/mind_items?" + query.toString()), "Não foi possível verificar o vínculo do vídeo");
+      if ((await refs.json() as Array<{ id: string }>).length) return "still-linked";
+      await deleteMindR2Video(path);
+      return "removed";
+    } catch { return "pending"; }
+  }
   if (!STORAGE_PATH.test(path)) return "pending";
   try {
     const query = new URLSearchParams({ select: "id", storage_path: "eq." + path, limit: "1" });
@@ -76,8 +91,9 @@ async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
 }
 
 export async function listCloudMindItems(): Promise<MindItem[]> {
+  const providerColumn = mindR2Enabled() ? ",video_storage_provider" : "";
   const response = await requireOk(await mindPublicApi(
-    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url,poster_data_url&order=updated_at.desc&limit=500",
+    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url,poster_data_url" + providerColumn + "&order=updated_at.desc&limit=500",
   ), "Não foi possível carregar a biblioteca");
   return (await response.json() as DbItem[]).map(itemFromRow);
 }
@@ -142,14 +158,18 @@ export async function downloadPublicCloudPdf(item: MindItem): Promise<Blob> {
 /** Public MP4 links stream through native video without an administrator token. */
 export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
   if (item.kind !== "video" || !item.storagePath || item.videoUrl) throw new Error("Este item não contém um MP4 para download.");
-  const response = await fetch(publicMindVideoUrl(item.storagePath), { credentials: "omit", referrerPolicy: "no-referrer" });
+  if (item.videoStorageProvider === "r2" || isMindR2Key(item.storagePath)) {
+    throw new Error("Use o link direto do vídeo R2 para evitar carregar o arquivo inteiro na memória.");
+  }
+  const maxBytes = MAX_MIND_VIDEO_BYTES;
+  const response = await fetch(publicMindVideoUrl(item.storagePath, item.videoStorageProvider), { credentials: "omit", referrerPolicy: "no-referrer" });
   await requireOk(response, "Não foi possível baixar o vídeo");
   const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
   if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") throw new Error("O arquivo recebido não é MP4.");
   const size = Number(response.headers.get("content-length"));
-  if (response.headers.has("content-length") && (size <= 0 || size > MAX_MIND_VIDEO_BYTES)) throw new Error("O vídeo ultrapassa 50 MB.");
+  if (response.headers.has("content-length") && (size <= 0 || size > maxBytes)) throw new Error("O vídeo ultrapassa o limite de armazenamento.");
   const blob = await response.blob();
-  if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
+  if (!(await checkedMp4(blob, maxBytes))) throw new Error("O vídeo não é um MP4 válido.");
   return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
 }
 
@@ -157,6 +177,9 @@ export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
 export async function downloadCloudVideo(item: MindItem): Promise<Blob> {
   const record = await currentItem(item.id);
   if (!record || record.kind !== "video" || !record.storage_path || item.videoUrl) throw new Error("MP4 não encontrado na biblioteca.");
+  if (record.video_storage_provider === "r2" || isMindR2Key(record.storage_path)) {
+    throw new Error("Use o link de download do vídeo R2 para evitar carregar vários gigabytes na memória.");
+  }
   const response = await requireOk(await mindApi(storageObjectUrl(record.storage_path)), "Não foi possível baixar o vídeo");
   const blob = await response.blob();
   if (blob.size > MAX_MIND_VIDEO_BYTES || !(await checkedMp4(blob))) throw new Error("O vídeo armazenado não pôde ser validado.");
@@ -165,7 +188,7 @@ export async function downloadCloudVideo(item: MindItem): Promise<Blob> {
 
 export function publicCloudVideoDownloadUrl(item: MindItem): string {
   if (item.kind !== "video" || !item.storagePath || item.videoUrl) throw new Error("Este item não contém um MP4 para download.");
-  return publicMindVideoUrl(item.storagePath) + "?download=" + encodeURIComponent(safeMindVideoFileName(item.fileName ?? item.title + ".mp4"));
+  return publicMindVideoUrl(item.storagePath, item.videoStorageProvider) + "?download=" + encodeURIComponent(safeMindVideoFileName(item.fileName ?? item.title + ".mp4"));
 }
 
 /** Authenticated read is used for administrator backups and local-to-cloud migration only. */
@@ -195,21 +218,33 @@ export async function saveCloudMindItem(item: MindItem, options: {
       const link = parseMindVideoLink(item.videoUrl);
       if (!link || item.file) throw new Error("Informe um link válido do YouTube ou Vimeo.");
       item.videoUrl = link.url;
+      item.videoStorageProvider = undefined;
     } else if (!item.file && !previous?.storage_path) {
       throw new Error("Selecione um MP4 ou informe um link do YouTube/Vimeo.");
     }
   }
   let newPath: string | null = null;
+  let pendingR2Upload: { uploadId: string; capability: string } | null = null;
   if ((item.kind === "pdf" || item.kind === "video") && item.file) {
     if (item.kind === "pdf" && !(await checkedPdf(item.file))) throw new Error("PDF inválido ou maior que 25 MB.");
-    if (item.kind === "video" && !(await checkedMp4(item.file))) throw new Error("MP4 inválido ou maior que 50 MB.");
+    if (item.kind === "video" && !(await checkedMp4(item.file, mindR2Enabled() ? MAX_MIND_R2_VIDEO_BYTES : MAX_MIND_VIDEO_BYTES))) {
+      throw new Error(mindR2Enabled() ? "MP4 inválido ou maior que 5 GB." : "MP4 inválido ou maior que 50 MB.");
+    }
     const session = await requireOk(await mindApi("/auth/v1/user"), "Sessão inválida");
     const user = await session.json() as { id?: string };
     if (!user.id || !/^[0-9a-f-]{36}$/i.test(user.id)) throw new Error("A sessão administrativa é inválida.");
     // A new path preserves the currently published version until the database commits.
     if (item.kind === "video") {
-      const result = await uploadMindVideo(item.file, item.fileName ?? item.title + ".mp4", user.id, options.onVideoProgress ?? (() => {}), options.signal);
-      newPath = result.storagePath;
+      if (mindR2Enabled()) {
+        const result = await uploadMindR2Video(item.file, item.id, user.id, item.fileName ?? item.title + ".mp4", options.onVideoProgress ?? (() => {}), options.signal);
+        newPath = result.storagePath;
+        pendingR2Upload = { uploadId: result.uploadId, capability: result.capability };
+        item.videoStorageProvider = "r2";
+      } else {
+        const result = await uploadMindVideo(item.file, item.fileName ?? item.title + ".mp4", user.id, options.onVideoProgress ?? (() => {}), options.signal);
+        newPath = result.storagePath;
+        item.videoStorageProvider = "supabase";
+      }
     } else {
       newPath = user.id + "/" + item.id + "-" + crypto.randomUUID() + ".pdf";
       try {
@@ -230,6 +265,7 @@ export async function saveCloudMindItem(item: MindItem, options: {
   }
 
   const row: Record<string, unknown> = rowFromItem(item);
+  if (!mindR2Enabled()) delete row.video_storage_provider;
   if (newPath) row.storage_path = newPath;
   else if (item.kind === "video" && item.videoUrl) row.storage_path = null;
   try {
@@ -256,6 +292,16 @@ export async function saveCloudMindItem(item: MindItem, options: {
       }
     }
     throw error;
+  }
+
+  if (pendingR2Upload) {
+    try { await commitMindR2Video(pendingR2Upload.uploadId, pendingR2Upload.capability); }
+    catch {
+      throw new Error("O registro foi salvo, mas a publicação do vídeo aguarda confirmação do Worker. Reabra o item e salve novamente para reconciliar o envio.");
+    }
+  } else if (item.kind === "video" && item.videoStorageProvider === "r2" && !item.videoUrl) {
+    try { await reconcileMindR2Item(item.id); }
+    catch { throw new Error("Os metadados foram salvos, mas a mídia ainda não está publicada no ledger R2. Tente salvar novamente após a conexão voltar."); }
   }
 
   if ((newPath || (item.kind === "video" && item.videoUrl)) &&

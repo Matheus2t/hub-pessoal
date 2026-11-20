@@ -22,7 +22,19 @@ function buildIndexContent(html, env = process.env) {
   if (!enabled) return html;
   const projectHost = new URL(url).hostname;
   const storageOrigin = "https://" + projectHost.replace(/\.supabase\.co$/, ".storage.supabase.co");
-  return addCspSource(addCspSource(addCspSource(addCspSource(html, "connect-src", url), "connect-src", storageOrigin), "frame-src", url), "media-src", url);
+  let output = addCspSource(addCspSource(addCspSource(addCspSource(html, "connect-src", url), "connect-src", storageOrigin), "frame-src", url), "media-src", url);
+  const r2Worker = (env.MIND_R2_WORKER_URL ?? "").trim().replace(/\/$/, "");
+  if (/^(true|1|yes)$/i.test(env.MIND_R2_ENABLED ?? "")) {
+    let r2Origin = "";
+    try {
+      const parsed = new URL(r2Worker);
+      if (parsed.protocol === "https:" && parsed.origin === r2Worker && parsed.pathname === "/") r2Origin = parsed.origin;
+    } catch { /* Invalid R2 configuration fails closed and does not widen CSP. */ }
+    if (r2Origin) {
+      output = addCspSource(addCspSource(output, "connect-src", r2Origin), "media-src", r2Origin);
+    }
+  }
+  return output;
 }
 
 function writeIndex() {

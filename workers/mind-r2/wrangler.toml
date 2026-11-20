@@ -1,0 +1,27 @@
+name = "2t-mind-r2"
+main = "src/index.ts"
+compatibility_date = "2026-11-20"
+workers_dev = true
+preview_urls = false
+minify = true
+send_metrics = false
+
+# Replace only with the dedicated R2 bucket created for the 2T Mente integration.
+[[r2_buckets]]
+binding = "MIND_VIDEOS"
+bucket_name = "replace-with-dedicated-2t-mente-videos"
+
+[[durable_objects.bindings]]
+name = "MIND_STORAGE"
+class_name = "StorageControl"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["StorageControl"]
+
+[vars]
+# Configure the real project URL and publishable key in this Worker environment.
+# Never put a Supabase service_role key here.
+SUPABASE_URL = "https://project-ref.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "sb_publishable_CONFIGURE_FOR_2T"
+ALLOWED_ORIGINS = "https://matheus2t.com.br"
