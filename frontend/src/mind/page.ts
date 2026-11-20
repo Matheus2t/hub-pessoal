@@ -256,6 +256,7 @@ export class MindPage extends LightElement {
       else await saveMindItem(item);
       await this.reload();
       this.selectedId = item.id;
+      this.setLocalVideo(this.selected);
       this.editing = false;
       this.draft = null;
       this.notice = mindCloudEnabled()
@@ -537,7 +538,7 @@ export class MindPage extends LightElement {
     return html`<div class="mind-detail">
       <div class="mind-detail-heading">
         <div class="mind-detail-title">
-          <small>${item.kind === "pdf" ? "PDF · " + displayFileSize(item.fileSize || 0) : "NOTA"}</small>
+          <small>${item.kind === "pdf" ? "PDF · " + displayFileSize(item.fileSize || 0) : item.kind === "video" ? (item.videoUrl ? "VÍDEO EXTERNO" : "MP4 · " + displayFileSize(item.fileSize || 0)) : "NOTA"}</small>
           <h2>${item.title}</h2>
           <p>${item.topic === "Sem assunto" ? "" : item.topic + " · "}Atualizado em ${new Date(item.updatedAt).toLocaleDateString("pt-BR")}</p>
         </div>
@@ -560,7 +561,28 @@ export class MindPage extends LightElement {
             : this.pdfFrameStatus === "error" ? html`<p class="mind-error" role="alert">${this.pdfFrameError} Use “Abrir no navegador” para tentar novamente.</p>`
               : html`<iframe title="Prévia do PDF" src=${publicMindPdfUrl(item.storagePath)} loading="lazy" @load=${() => this.pdfFrameStatus = "loaded"} @error=${() => { this.pdfFrameStatus = "error"; this.pdfFrameError = "Não foi possível carregar a prévia."; }}></iframe>
                 <p role="status" aria-live="polite">${this.pdfFrameStatus === "loaded" ? "Documento aberto. Use os controles do visualizador para navegar e ajustar o zoom; se não aparecer, abra em outra aba." : "Abrindo o visualizador de PDF…"}</p>`}</div>` : nothing}`
-       : html`<div class="mind-note-view">${item.content || "Esta nota ainda não possui conteúdo."}</div>`}
+       : item.kind === "video" ? html`
+          <div class="mind-actions mind-video-actions">
+            ${item.videoUrl && parseMindVideoLink(item.videoUrl)
+              ? html`<a class="mind-pdf-external" href=${parseMindVideoLink(item.videoUrl)!.url} target="_blank" rel="noopener noreferrer">Abrir no navegador ↗</a>`
+              : item.storagePath && mindCloudEnabled()
+                ? html`<a class="mind-pdf-external" href=${publicMindVideoUrl(item.storagePath)} target="_blank" rel="noopener noreferrer">Abrir no navegador ↗</a>
+                  <button class="mind-pdf-external" type="button" ?disabled=${this.busy} @click=${() => this.downloadVideo(item)}>Baixar vídeo</button>`
+                : item.file ? html`<button type="button" @click=${() => this.downloadVideo(item)}>Baixar vídeo</button>` : nothing}
+          </div>
+          <div class="mind-video-player">
+            ${item.videoUrl ? (parseMindVideoLink(item.videoUrl)
+              ? html`<iframe title=${"Vídeo: " + item.title} src=${parseMindVideoLink(item.videoUrl)!.embedUrl}
+                  loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"></iframe>`
+              : html`<p role="alert">O endereço deste vídeo é inválido.</p>`)
+              : (mindCloudEnabled() && item.storagePath ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl)
+                ? html`<video controls playsinline preload="metadata" src=${mindCloudEnabled() && item.storagePath
+                    ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl ?? ""}>Seu navegador não suporta vídeo MP4.</video>`
+                : html`<p role="alert">Vídeo indisponível.</p>`}
+          </div>
+          <p class="mind-video-caveat">${item.videoUrl ? "A reprodução depende das permissões do vídeo na plataforma de origem." : "Reprodução no navegador com controles de volume, velocidade e tela cheia."}</p>
+        ` : html`<div class="mind-note-view">${item.content || "Esta nota ainda não possui conteúdo."}</div>`}
     </div>`;
   }
 
@@ -585,11 +607,12 @@ export class MindPage extends LightElement {
         ${this.libraryAvailable ? html`<div class="mind-header-actions">
           <button class="mind-primary" type="button" @click=${this.startNote} ?disabled=${this.busy}>+ Nova nota</button>
           <button type="button" @click=${() => { if (this.requireAdmin("pdf")) this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click(); }} ?disabled=${this.busy}>Adicionar PDF</button>
+          <button type="button" @click=${this.startVideo} ?disabled=${this.busy}>Adicionar vídeo</button>
           ${mindCloudEnabled() ? (this.authenticated ? html`<button class="mind-logout-button" type="button" @click=${this.logout} ?disabled=${this.busy || this.authBusy} title="Encerrar sessão da Mente">Sair da conta</button>` : html`<button type="button" @click=${() => { this.pendingAdminAction = null; this.loginVisible = !this.loginVisible; }}>Login do administrador</button>`) : nothing}
           <input id="mind-pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden @change=${this.uploadPdfs} />
         </div>` : nothing}
       </header>
-      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca pública</strong> · Leitura livre, edição restrita</span><details><summary>Sobre os dados</summary><p>Notas e PDFs desta biblioteca são públicos e podem ser acessados por qualquer pessoa, inclusive por links diretos. Somente o administrador autenticado pode publicar, editar e excluir. Faça backups regulares. Dados locais antigos não são publicados automaticamente.</p></details></div>` : mindLocalModeEnabled() ?
+      ${mindCloudEnabled() ? html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca pública</strong> · Leitura livre, edição restrita</span><details><summary>Sobre os dados</summary><p>Notas, PDFs e vídeos desta biblioteca são públicos e podem ser acessados por qualquer pessoa, inclusive por links diretos. Somente o administrador autenticado pode publicar, editar e excluir. Faça backups regulares. Dados locais antigos não são publicados automaticamente.</p></details></div>` : mindLocalModeEnabled() ?
         html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca local</strong> · Arquivos somente neste navegador</span><details><summary>Sobre os dados</summary><p>Notas e PDFs ficam somente neste navegador e perfil, sem sincronização nem criptografia. Podem desaparecer se os dados do navegador forem apagados. Faça backups e evite dispositivos compartilhados.</p></details></div>` :
         html`<div class="mind-local-warning" role="status"><span><strong>Biblioteca indisponível</strong> · A configuração pública não está disponível neste deployment.</span></div>`}
       ${this.renderAdminLogin()}
@@ -600,7 +623,7 @@ export class MindPage extends LightElement {
         <aside class="mind-facets" aria-label="Navegação da Mente">
           <div class="mind-facet-title sr-only">Explorar</div>
           <div class="mind-filter-tabs" role="group" aria-label="Filtrar por tipo">
-            ${([["all", "Tudo"], ["pdf", "Documentos"], ["note", "Notas"], ["favorite", "Favoritos"]] as const).map(([id, label]) => html`<button type="button" class=${this.filter === id ? "is-active" : ""} aria-pressed=${this.filter === id} @click=${() => { this.filter = id; }}>${label}</button>`)}
+            ${([["all", "Tudo"], ["pdf", "Documentos"], ["note", "Notas"], ["video", "Vídeos"], ["favorite", "Favoritos"]] as const).map(([id, label]) => html`<button type="button" class=${this.filter === id ? "is-active" : ""} aria-pressed=${this.filter === id} @click=${() => { this.filter = id; }}>${label}</button>`)}
           </div>
           <label class="mind-topic-filter"><span class="sr-only">Filtrar por assunto</span>
             <select aria-label="Filtrar por assunto" .value=${this.topic} @change=${(e: Event) => { this.topic = (e.target as HTMLSelectElement).value; }}>
@@ -615,7 +638,7 @@ export class MindPage extends LightElement {
               <button type="button" @click=${() => { this.closeManageMenu(); void this.backup(); }} ?disabled=${this.busy}>Exportar backup</button>
               <button type="button" @click=${() => { this.closeManageMenu(); this.querySelector<HTMLInputElement>("#mind-backup-input")?.click(); }} ?disabled=${this.busy}>Restaurar backup</button>
               <input id="mind-backup-input" type="file" accept=".json,application/json" hidden @change=${this.restore} />
-              <p>O backup inclui PDFs e não é criptografado.</p>
+              <p>O backup inclui PDFs e MP4, além de links. Não é criptografado.</p>
             </div>
           </details>` : nothing}
         </aside>
@@ -626,7 +649,7 @@ export class MindPage extends LightElement {
           ${!this.ready ? html`<p class="mind-list-empty">Carregando acervo…</p>` :
             visible.length ? html`<div class="mind-items">${visible.map(item => this.itemButton(item))}</div>` :
             html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Acervo vazio"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Os documentos publicados aparecerão aqui."}</p></div>`}
-          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} por arquivo. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
+          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} e MP4 de até ${displayFileSize(MAX_MIND_VIDEO_BYTES)}. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
         </div>
         <div class="mind-inspector" aria-label="Detalhes e editor" id="mind-reader">
           ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Seu espaço de leitura</h2><p>Selecione uma nota ou documento para começar.</p></div>`}
