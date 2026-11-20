@@ -2,15 +2,16 @@ import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { obsidianMark } from "./obsidian-mark";
-import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
-import { checkPublicCloudPdf, deleteCloudMindItem, downloadCloudPdf, downloadPublicCloudPdf, listCloudMindItems, saveCloudMindItem } from "./cloud-store";
+import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, publicMindVideoUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
+import { checkPublicCloudPdf, deleteCloudMindItem, downloadCloudPdf, downloadPublicCloudPdf, downloadPublicCloudVideo, listCloudMindItems, saveCloudMindItem } from "./cloud-store";
+import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 import {
   checkedPdf, createMindBackup, deleteMindItem, displayFileSize,
   listMindItems, MAX_MIND_PDF_BYTES, normalizedTags, parseMindBackup, restoreMindBackup, saveMindItem,
   type MindItem,
 } from "./store";
 
-type Filter = "all" | "pdf" | "note" | "favorite";
+type Filter = "all" | "pdf" | "note" | "video" | "favorite";
 @customElement("mind-page")
 export class MindPage extends LightElement {
   @state() private items: MindItem[] = [];
@@ -36,7 +37,10 @@ export class MindPage extends LightElement {
   @state() private pdfExpanded = false;
   @state() private pdfFrameStatus: "loading" | "ready" | "loaded" | "error" = "loading";
   @state() private pdfFrameError = "";
-  @state() private pendingAdminAction: "note" | "pdf" | null = null;
+  @state() private pendingAdminAction: "note" | "pdf" | "video" | null = null;
+  @state() private videoMode: "link" | "file" = "link";
+  private localVideoObjectUrl: string | null = null;
+  private localVideoObjectId: string | null = null;
 
   connectedCallback() {
     super.connectedCallback();
@@ -68,6 +72,7 @@ export class MindPage extends LightElement {
       const pending = this.pendingAdminAction;
       this.pendingAdminAction = null;
       if (pending === "note") this.startNote();
+      if (pending === "video") this.startVideo();
       if (pending === "pdf") void this.updateComplete.then(() => this.querySelector<HTMLInputElement>("#mind-pdf-input")?.click());
     } catch (e) { this.error = this.message(e); }
     finally { this.authBusy = false; }
@@ -85,6 +90,7 @@ export class MindPage extends LightElement {
   disconnectedCallback() {
     this.active = false;
     this.pdfPreviewGeneration += 1;
+    this.setLocalVideo();
     super.disconnectedCallback();
   }
 
@@ -99,6 +105,7 @@ export class MindPage extends LightElement {
       const result = mindCloudEnabled() ? await listCloudMindItems() : await listMindItems();
       if (!this.active) return;
       this.items = result.sort((a, b) => b.updatedAt - a.updatedAt);
+      this.setLocalVideo(this.selected);
       this.ready = true;
     } catch (e) {
       if (!this.active) return;
@@ -108,6 +115,16 @@ export class MindPage extends LightElement {
   }
 
   private get selected() { return this.items.find(x => x.id === this.selectedId); }
+  private setLocalVideo(item?: MindItem) {
+    if (this.localVideoObjectId === item?.id && this.localVideoObjectUrl) return;
+    if (this.localVideoObjectUrl) URL.revokeObjectURL(this.localVideoObjectUrl);
+    this.localVideoObjectUrl = null;
+    this.localVideoObjectId = null;
+    if (!mindCloudEnabled() && item?.kind === "video" && item.file) {
+      this.localVideoObjectUrl = URL.createObjectURL(item.file);
+      this.localVideoObjectId = item.id;
+    }
+  }
   private get libraryAvailable() { return mindCloudEnabled() || mindLocalModeEnabled(); }
   private get topics() {
     const count = new Map<string, number>();
@@ -119,13 +136,14 @@ export class MindPage extends LightElement {
     return this.items.filter(item => {
       if (this.filter === "pdf" && item.kind !== "pdf") return false;
       if (this.filter === "note" && item.kind !== "note") return false;
+      if (this.filter === "video" && item.kind !== "video") return false;
       if (this.filter === "favorite" && !item.favorite) return false;
       if (this.topic !== "all" && item.topic !== this.topic) return false;
       return !q || [item.title, item.topic, item.description, item.content, ...item.tags].join(" ").toLocaleLowerCase("pt-BR").includes(q);
     });
   }
 
-  private requireAdmin(action: "note" | "pdf"): boolean {
+  private requireAdmin(action: "note" | "pdf" | "video"): boolean {
     if (!this.libraryAvailable) {
       this.error = "A biblioteca compartilhada não está configurada neste deployment.";
       return false;
@@ -150,10 +168,25 @@ export class MindPage extends LightElement {
     this.revealReaderOnSmallScreens();
   };
 
+  private startVideo = () => {
+    if (!this.requireAdmin("video")) return;
+    this.clearMessages();
+    this.selectedId = null;
+    this.videoMode = "link";
+    const now = Date.now();
+    this.draft = {
+      id: crypto.randomUUID(), kind: "video", title: "", topic: this.topic === "all" ? "Sem assunto" : this.topic,
+      tags: [], description: "", content: "", videoUrl: "", createdAt: now, updatedAt: now, favorite: false,
+    };
+    this.editing = true;
+    this.revealReaderOnSmallScreens();
+  };
+
   private editSelected = () => {
     if (!this.libraryAvailable || !this.selected || (mindCloudEnabled() && !this.authenticated)) return;
     this.clearMessages();
     this.draft = { ...this.selected, tags: [...this.selected.tags] };
+    this.videoMode = this.selected.kind === "video" && !this.selected.videoUrl ? "file" : "link";
     this.editing = true;
   };
 
