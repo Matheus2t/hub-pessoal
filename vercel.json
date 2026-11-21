@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "main": true,
+      "codex/mind-google-drive-5gb": true,
       "**": false
     }
   },
