@@ -82,4 +82,17 @@ test("envio direto usa blocos alinhados e publica somente após confirmação do
   expect(calls.some(call=>call.path.endsWith("/publish"))).toBe(true);
   expect(items[0].drive_file_id).toBe(fileId);
   await expect(page.locator(".mind-video-player iframe")).toHaveAttribute("src","https://drive.google.com/file/d/"+fileId+"/preview");
+  await page.locator(".mind-backup summary").click();
+  const backupPromise=page.waitForEvent("download");
+  await page.getByRole("button",{name:"Exportar backup"}).click();
+  const backup=await backupPromise, stream=await backup.createReadStream(), chunks:Buffer[]=[];
+  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+  const manifest=JSON.parse(Buffer.concat(chunks).toString("utf8")) as {version:number;assetsComplete:boolean;records:Array<{driveFileId?:string;storageProvider?:string;fileSize?:number;assetName?:string;videoBase64?:unknown;pdfBase64?:unknown}>};
+  const videoRecord=manifest.records.find(record=>record.driveFileId===fileId);
+  expect(manifest.version).toBe(3);
+  expect(manifest.assetsComplete).toBe(false);
+  expect(videoRecord).toMatchObject({storageProvider:"google-drive",fileSize:8_912_896});
+  expect(videoRecord).not.toHaveProperty("assetName");
+  expect(videoRecord).not.toHaveProperty("videoBase64");
+  expect(videoRecord).not.toHaveProperty("pdfBase64");
 });
