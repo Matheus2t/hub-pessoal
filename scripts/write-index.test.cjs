@@ -68,3 +68,61 @@ test("Drive compile flag requires valid cloud config and explicit opt-in", async
     for (const name of names) { if (prior[name] === undefined) delete process.env[name]; else process.env[name] = prior[name]; }
   }
 });
+
+test("local Supabase is limited to loopback development and anonymous JWTs", async () => {
+  const { frontendBuildDefines } = await import("./frontend-build-defines.mjs");
+  const names = ["MIND_CLOUD_ENABLED", "MIND_LOCAL_SUPABASE_ENABLED", "MIND_SUPABASE_URL", "MIND_SUPABASE_PUBLISHABLE_KEY", "MIND_GOOGLE_DRIVE_ENABLED", "VERCEL"];
+  const prior = Object.fromEntries(names.map(name => [name, process.env[name]]));
+  const jwt = role => `test.${Buffer.from(JSON.stringify({ role })).toString("base64url")}.signature`;
+  try {
+    for (const name of names) delete process.env[name];
+    process.env.MIND_CLOUD_ENABLED = "true";
+    process.env.MIND_LOCAL_SUPABASE_ENABLED = "true";
+    process.env.MIND_SUPABASE_URL = "http://127.0.0.1:54321";
+    process.env.MIND_SUPABASE_PUBLISHABLE_KEY = jwt("anon");
+    process.env.MIND_GOOGLE_DRIVE_ENABLED = "true";
+
+    let defines = frontendBuildDefines();
+    assert.equal(defines["globalThis.__2T_MIND_CLOUD_ENABLED__"], "true");
+    assert.equal(defines["globalThis.__2T_MIND_GOOGLE_DRIVE_ENABLED__"], "true");
+    assert.equal(defines["globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__"], "true");
+    assert.equal(defines["globalThis.__2T_MIND_SUPABASE_URL__"], JSON.stringify("http://127.0.0.1:54321"));
+
+    defines = frontendBuildDefines({ publicBuild: true });
+    assert.equal(defines["globalThis.__2T_MIND_CLOUD_ENABLED__"], "false");
+    assert.equal(defines["globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__"], "false");
+    assert.equal(defines["globalThis.__2T_MIND_SUPABASE_KEY__"], JSON.stringify(""));
+
+    process.env.VERCEL = "1";
+    assert.equal(frontendBuildDefines()["globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__"], "false");
+    delete process.env.VERCEL;
+    process.env.MIND_SUPABASE_URL = "http://192.168.0.10:54321";
+    assert.equal(frontendBuildDefines()["globalThis.__2T_MIND_CLOUD_ENABLED__"], "false");
+    process.env.MIND_SUPABASE_URL = "http://0.0.0.0:54321";
+    assert.equal(frontendBuildDefines()["globalThis.__2T_MIND_CLOUD_ENABLED__"], "false");
+    process.env.MIND_SUPABASE_URL = "http://127.0.0.1:54321";
+    process.env.MIND_SUPABASE_PUBLISHABLE_KEY = jwt("service_role");
+    assert.equal(frontendBuildDefines()["globalThis.__2T_MIND_CLOUD_ENABLED__"], "false");
+  } finally {
+    for (const name of names) { if (prior[name] === undefined) delete process.env[name]; else process.env[name] = prior[name]; }
+  }
+});
+
+test("local Supabase CSP is exact, loopback-only, and excluded from Vercel builds", () => {
+  const jwt = `test.${Buffer.from(JSON.stringify({ role: "anon" })).toString("base64url")}.signature`;
+  const local = {
+    MIND_CLOUD_ENABLED: "true", MIND_LOCAL_SUPABASE_ENABLED: "true",
+    MIND_SUPABASE_URL: "http://127.0.0.1:54321/", MIND_SUPABASE_PUBLISHABLE_KEY: jwt,
+    MIND_GOOGLE_DRIVE_ENABLED: "true",
+  };
+  const output = buildIndexContent(base, local);
+  assert.match(output, /connect-src[^;]*http:\/\/127\.0\.0\.1:54321(?:\s|;)/);
+  assert.match(output, /frame-src[^;]*http:\/\/127\.0\.0\.1:54321(?:\s|;)/);
+  assert.match(output, /connect-src[^;]*https:\/\/www\.googleapis\.com;/);
+  assert.match(output, /frame-src[^;]*https:\/\/drive\.google\.com;/);
+  assert.doesNotMatch(output, /storage\.supabase\.co/);
+  assert.equal(buildIndexContent(base, { ...local, VERCEL: "1" }), base);
+  assert.equal(buildIndexContent(base, { ...local, MIND_SUPABASE_URL: "http://192.168.0.10:54321" }), base);
+  const serviceRole = `test.${Buffer.from(JSON.stringify({ role: "service_role" })).toString("base64url")}.signature`;
+  assert.equal(buildIndexContent(base, { ...local, MIND_SUPABASE_PUBLISHABLE_KEY: serviceRole }), base);
+});

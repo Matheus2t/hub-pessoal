@@ -1,8 +1,12 @@
 import os
+from pathlib import Path
 from pydantic_settings import BaseSettings,SettingsConfigDict
 from pydantic import Field,SecretStr
+
+_ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
+
 class Settings(BaseSettings):
-    model_config=SettingsConfigDict(env_file='.env')
+    model_config=SettingsConfigDict(env_file=_ENV_FILE)
     database_url: str|None=None
     api_cors_origins: str='http://localhost:3000'
     public_history_enabled: bool=True

@@ -3,6 +3,7 @@ declare global {
   var __2T_MIND_SUPABASE_URL__: string | undefined;
   var __2T_MIND_SUPABASE_KEY__: string | undefined;
   var __2T_MIND_CLOUD_ENABLED__: boolean | undefined;
+  var __2T_MIND_LOCAL_SUPABASE_ENABLED__: boolean | undefined;
   var __2T_MIND_LOCAL_MODE_ENABLED__: boolean | undefined;
   var __2T_MIND_GOOGLE_DRIVE_ENABLED__: boolean | undefined;
   var __2T_API_BASE_URL__: string | undefined;
@@ -30,8 +31,19 @@ function config() {
   const rawUrl = globalThis.__2T_MIND_SUPABASE_URL__ ?? "";
   const key = globalThis.__2T_MIND_SUPABASE_KEY__ ?? "";
   const url = new URL(rawUrl);
-  if (url.protocol !== "https:" || !/^[a-z0-9-]+\.supabase\.co$/.test(url.hostname) ||
-      !key.startsWith("sb_publishable_")) {
+  const hosted = url.protocol === "https:" && /^[a-z0-9-]+\.supabase\.co$/.test(url.hostname) &&
+    !url.port && url.pathname === "/" && !url.search && !url.hash && key.startsWith("sb_publishable_");
+  let localAnonKey = false;
+  try {
+    const payload = key.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(payload.length / 4) * 4, "=");
+    localAnonKey = JSON.parse(atob(base64)).role === "anon";
+  } catch { /* The local exception accepts only an anonymous Supabase JWT. */ }
+  const local = globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__ === true &&
+    url.protocol === "http:" && url.hostname === "127.0.0.1" && url.port === "54321" &&
+    url.pathname === "/" && !url.search && !url.hash && localAnonKey &&
+    ["localhost", "127.0.0.1", "::1", "[::1]"].includes(location.hostname);
+  if (!hosted && !local) {
     throw new Error("A configuração administrativa da Mente não está disponível.");
   }
   return { url: url.origin, key };
@@ -91,6 +103,9 @@ async function tokenSession(): Promise<CloudSession> {
 /** TUS must use the project's direct Storage hostname, not the API gateway. */
 export function mindTusEndpoint(): string {
   const { url } = config();
+  if (globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__ === true) {
+    return url + "/storage/v1/upload/resumable";
+  }
   const host = new URL(url).hostname;
   const projectRef = host.slice(0, -".supabase.co".length);
   return `https://${projectRef}.storage.supabase.co/storage/v1/upload/resumable`;
