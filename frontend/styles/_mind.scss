@@ -47,6 +47,22 @@ mind-page { display:block; width:100%; min-width:0; }
 .mind-local-warning summary::-webkit-details-marker { display:none; }
 .mind-local-warning details[open] { width:100%; flex-basis:100%; margin:5px 0 0 14px; }
 .mind-local-warning details[open] p { max-width:80ch; padding:8px 0; color:var(--secondary); }
+.mind-drive-panel { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:14px 16px;
+  border:1px solid var(--line-soft); border-radius:var(--radius, 8px); background:var(--panel); min-width:0; }
+.mind-drive-panel > div:first-child { min-width:0; }
+.mind-drive-panel strong { display:block; margin-top:3px; font-size:13px; }
+.mind-drive-panel p:not(.mind-eyebrow) { margin:5px 0 0; color:var(--secondary); font-size:11px; line-height:1.5; }
+.mind-drive-panel .mind-actions { flex:0 0 auto; }
+.mind-drive-orphans { min-width:0; margin-top:12px; padding-top:10px; border-top:1px solid var(--line-soft); }
+.mind-drive-orphans > strong { font-size:11px; font-weight:580; }
+.mind-drive-orphans ul { display:grid; gap:4px; margin:6px 0 0; padding:0; list-style:none; }
+.mind-drive-orphans li { display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; padding:4px 0; }
+.mind-drive-orphans li span { min-width:0; color:var(--secondary); font-size:11px; overflow-wrap:anywhere; }
+.mind-drive-orphans li button { flex:none; min-height:30px; border:1px solid var(--line-soft); border-radius:5px; padding:5px 9px; background:transparent; color:var(--text); font:inherit; font-size:11px; cursor:pointer; }
+.mind-drive-orphans li button:hover { background:var(--hover); }
+.mind-drive-orphans li button:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+.mind-drive-orphans li button:disabled { opacity:.55; cursor:wait; }
+
 .mind-notice,.mind-error { padding:10px 12px; border-left:2px solid var(--border-highlight); background:var(--panel);
   color:var(--secondary); font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
 .mind-error { color:var(--text); }
@@ -191,6 +207,8 @@ mind-page { display:block; width:100%; min-width:0; }
   .mind-heading { gap:10px; }
   .mind-tagline { font-size:12px; }
   .mind-local-warning { font-size:10px; }
+  .mind-drive-panel { align-items:stretch; flex-direction:column; gap:12px; }
+  .mind-drive-panel .mind-actions { flex-wrap:wrap; }
   .mind-local-warning details { margin-left:10px; }
   .mind-facets { padding:9px 0 11px; gap:8px; }
   .mind-filter-tabs > button { padding:6px 9px; font-size:11px; }

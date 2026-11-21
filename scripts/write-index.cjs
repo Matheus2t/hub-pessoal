@@ -22,7 +22,11 @@ function buildIndexContent(html, env = process.env) {
   if (!enabled) return html;
   const projectHost = new URL(url).hostname;
   const storageOrigin = "https://" + projectHost.replace(/\.supabase\.co$/, ".storage.supabase.co");
-  return addCspSource(addCspSource(addCspSource(addCspSource(html, "connect-src", url), "connect-src", storageOrigin), "frame-src", url), "media-src", url);
+  let output = addCspSource(addCspSource(addCspSource(addCspSource(html, "connect-src", url), "connect-src", storageOrigin), "frame-src", url), "media-src", url);
+  if (/^(true|1|yes)$/i.test(env.MIND_GOOGLE_DRIVE_ENABLED ?? "")) {
+    output = addCspSource(addCspSource(output, "connect-src", "https://www.googleapis.com"), "frame-src", "https://drive.google.com");
+  }
+  return output;
 }
 
 function writeIndex() {

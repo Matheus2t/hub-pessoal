@@ -3,6 +3,7 @@ import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindP
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
 import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 import { uploadMindVideo, type MindVideoUploadProgress } from "./video-upload";
+import { deleteManagedDriveVideo } from "./google-drive-upload";
 
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
@@ -13,8 +14,9 @@ type DbItem = {
   tags: string[]; description: string; content: string; favorite: boolean;
   created_at: string; updated_at: string; file_name: string | null; poster_data_url?: string | null;
   file_size: number | null; storage_path: string | null; video_url: string | null;
+  storage_provider?: string | null; drive_file_id?: string | null;
 };
-type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string };
+type StoredItem = { id: string; kind: "note" | "pdf" | "video"; storage_path: string | null; updated_at: string; storage_provider?: string | null; drive_file_id?: string | null };
 type CleanupResult = "removed" | "still-linked" | "pending";
 
 async function requireOk(response: Response, label: string): Promise<Response> {
@@ -33,6 +35,8 @@ function itemFromRow(row: DbItem): MindItem {
     description: row.description, content: row.content, favorite: row.favorite,
     createdAt: Date.parse(row.created_at), updatedAt: Date.parse(row.updated_at),
     fileName: row.file_name ?? undefined, fileSize: row.file_size ?? undefined, storagePath: row.storage_path ?? undefined,
+    storageProvider: row.storage_provider === "google-drive" ? "google-drive" : undefined,
+    driveFileId: row.drive_file_id ?? undefined,
     videoUrl: row.video_url ?? undefined, posterDataUrl: safePoster(row.poster_data_url),
   };
 }
@@ -48,6 +52,8 @@ function rowFromItem(item: MindItem) {
       : item.kind === "video" && !item.videoUrl ? safeMindVideoFileName(item.fileName ?? item.title + ".mp4") : null,
     file_size: item.kind === "pdf" || (item.kind === "video" && !item.videoUrl) ? item.fileSize ?? item.file?.size ?? null : null,
     video_url: item.kind === "video" && item.videoUrl ? item.videoUrl : null,
+    storage_provider: item.kind === "video" && item.driveFileId ? "google-drive" : null,
+    drive_file_id: item.kind === "video" ? item.driveFileId ?? null : null,
     poster_data_url: item.kind === "video" ? safePoster(item.posterDataUrl) ?? null : null,
   };
 }
@@ -57,7 +63,7 @@ function storageObjectUrl(path: string): string {
 }
 async function currentItem(id: string): Promise<StoredItem | null> {
   const response = await requireOk(await mindApi(
-    "/rest/v1/mind_items?select=id,kind,storage_path,updated_at&id=eq." + encodeURIComponent(id) + "&limit=1",
+    "/rest/v1/mind_items?select=id,kind,storage_path,updated_at,storage_provider,drive_file_id&id=eq." + encodeURIComponent(id) + "&limit=1",
   ), "Não foi possível conferir o registro");
   return (await response.json() as StoredItem[])[0] ?? null;
 }
@@ -74,10 +80,13 @@ async function cleanupIfUnreferenced(path: string): Promise<CleanupResult> {
     return "pending";
   }
 }
+export async function cleanupCloudMindStoragePath(path: string): Promise<boolean> {
+  return (await cleanupIfUnreferenced(path)) === "pending";
+}
 
 export async function listCloudMindItems(): Promise<MindItem[]> {
   const response = await requireOk(await mindPublicApi(
-    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url,poster_data_url&order=updated_at.desc&limit=500",
+    "/rest/v1/mind_items?select=id,kind,title,topic,tags,description,content,favorite,created_at,updated_at,file_name,file_size,storage_path,video_url,poster_data_url,storage_provider,drive_file_id&order=updated_at.desc&limit=500",
   ), "Não foi possível carregar a biblioteca");
   return (await response.json() as DbItem[]).map(itemFromRow);
 }
@@ -190,12 +199,18 @@ export async function saveCloudMindItem(item: MindItem, options: {
   }
 
   const previous = await currentItem(item.id);
+  if ((item.storageProvider === "google-drive") !== !!item.driveFileId || (item.driveFileId && item.kind !== "video")) {
+    throw new Error("A referência do vídeo no Google Drive é inválida.");
+  }
+  if (item.driveFileId && (!previous || previous.storage_provider !== "google-drive" || previous.drive_file_id !== item.driveFileId)) {
+    throw new Error("O backup referencia um arquivo Drive que não está vinculado a este item nesta biblioteca.");
+  }
   if (item.kind === "video") {
     if (item.videoUrl) {
       const link = parseMindVideoLink(item.videoUrl);
       if (!link || item.file) throw new Error("Informe um link válido do YouTube ou Vimeo.");
       item.videoUrl = link.url;
-    } else if (!item.file && !previous?.storage_path) {
+    } else if (!item.file && !previous?.storage_path && !previous?.drive_file_id) {
       throw new Error("Selecione um MP4 ou informe um link do YouTube/Vimeo.");
     }
   }
@@ -258,9 +273,12 @@ export async function saveCloudMindItem(item: MindItem, options: {
     throw error;
   }
 
-  if ((newPath || (item.kind === "video" && item.videoUrl)) &&
+  if ((newPath || (item.kind === "video" && (item.videoUrl || item.driveFileId !== previous?.drive_file_id))) &&
       previous?.storage_path && previous.storage_path !== newPath) {
-    return (await cleanupIfUnreferenced(previous.storage_path)) === "pending";
+    if ((await cleanupIfUnreferenced(previous.storage_path)) === "pending") return true;
+  }
+  if (previous?.drive_file_id && previous.drive_file_id !== item.driveFileId) {
+    try { await deleteManagedDriveVideo(previous.drive_file_id); } catch { return true; }
   }
   return false;
 }
@@ -276,5 +294,8 @@ export async function deleteCloudMindItem(item: MindItem): Promise<boolean> {
   const deleted = await response.json() as Array<{ id: string }>;
   if (!deleted.some(record => record.id === item.id)) throw new Error("O banco não confirmou a exclusão do item.");
   if (previous.storage_path) return (await cleanupIfUnreferenced(previous.storage_path)) === "pending";
+  if (previous.drive_file_id) {
+    try { await deleteManagedDriveVideo(previous.drive_file_id); } catch { return true; }
+  }
   return false;
 }

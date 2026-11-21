@@ -1,0 +1,45 @@
+name: mind Google Drive migration
+on:
+  pull_request:
+    branches: [codex/mind-video-upload]
+    paths:
+      - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
+      - 'tests/migrations/**'
+      - '.github/workflows/mind-google-drive-migration.yml'
+  push:
+    branches: [codex/mind-google-drive-5gb]
+    paths:
+      - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
+      - 'tests/migrations/**'
+      - '.github/workflows/mind-google-drive-migration.yml'
+permissions:
+  contents: read
+jobs:
+  postgres-migration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: mind_migration_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mind-migration-test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mind_migration_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DATABASE_URL: postgres://postgres:mind-migration-test-only@localhost:5432/mind_migration_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Apply migration to disposable PostgreSQL 17
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/migrations/mind-drive-setup.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261120191900_mind_google_drive_storage.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/migrations/mind-drive-verify.sql
+          bash tests/migrations/mind-drive-concurrency.sh

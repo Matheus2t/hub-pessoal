@@ -36,11 +36,14 @@ export function parseMindVideoLink(value: string): VideoLink | null {
 }
 
 /** Application ceiling follows Supabase Free's documented 50 MB maximum; the project's global setting must also allow it. */
+/** Existing Supabase and local MP4 limit; old records/backups stay capped here. */
 export const MAX_MIND_VIDEO_BYTES = 50_000_000;
+/** Google Drive upload limit imposed by the 2T managed-storage ledger. */
+export const MAX_MIND_DRIVE_VIDEO_BYTES = 5_000_000_000;
 
 /** Checks the MP4 container signature only; browser decoding separately validates playable codecs. */
-export async function checkedMp4(file: File | Blob): Promise<boolean> {
-  if (file.size < 12 || file.size > MAX_MIND_VIDEO_BYTES) return false;
+export async function checkedMp4(file: File | Blob, maxBytes = MAX_MIND_VIDEO_BYTES): Promise<boolean> {
+  if (file.size < 12 || file.size > maxBytes) return false;
   const data = new Uint8Array(await file.slice(0, 12).arrayBuffer());
   return data[4] === 0x66 && data[5] === 0x74 && data[6] === 0x79 && data[7] === 0x70;
 }
