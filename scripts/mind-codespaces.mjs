@@ -136,6 +136,16 @@ async function ensureLocalAdmin(status) {
     method: "POST", headers: { apikey: anon, "Content-Type": "application/json" },
     body: JSON.stringify({ email: account.email, password: account.password }),
   }, "A conta local de teste não entrou no Supabase isolado.");
+  const signupResponse = await fetch(`${api}/auth/v1/signup`, {
+    method: "POST", headers: { apikey: anon, "Content-Type": "application/json" },
+    body: JSON.stringify({ email: `mind-codespaces-public-${randomBytes(8).toString("hex")}@example.test`, password: randomBytes(36).toString("base64url") }),
+  });
+  let signupBody = {};
+  try { signupBody = await signupResponse.json(); } catch {}
+  const signupCode = signupBody && typeof signupBody === "object" ? (signupBody.error_code ?? signupBody.code) : null;
+  if (signupResponse.ok || signupCode !== "signup_disabled") {
+    throw new Error(sanitizedHttpFailure(signupResponse.status, signupBody, "O Supabase descartável não confirmou o bloqueio de cadastro público"));
+  }
   const accessToken = login.access_token;
   const user = await fetchJson(`${api}/auth/v1/user`, {
     headers: { apikey: anon, Authorization: `Bearer ${accessToken}` },

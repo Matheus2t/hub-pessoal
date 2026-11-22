@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { buildLocalBackendEnv, parseSupabaseStatusEnv, renderDotEnv, sanitizedHttpFailure } from "./mind-codespaces.mjs";
 
 function jwt(role) {
@@ -46,4 +47,10 @@ test("HTTP diagnostics include only status and machine error code", () => {
   assert.doesNotMatch(message, /private|sensitive|example\.test/);
   assert.equal(sanitizedHttpFailure(503, { error_code: "temporarily_unavailable" }, "API local falhou"),
     "API local falhou (HTTP 503, código temporarily_unavailable).");
+});
+
+test("disposable Supabase enables email login but disables public signup", () => {
+  const config = readFileSync(new URL("../tests/mind-codespaces/config.toml", import.meta.url), "utf8");
+  assert.match(config, /\[auth\][\s\S]*?enable_signup\s*=\s*false/);
+  assert.match(config, /\[auth\.email\][\s\S]*?enable_signup\s*=\s*true/);
 });
