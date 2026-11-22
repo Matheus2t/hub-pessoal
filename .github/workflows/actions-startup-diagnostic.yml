@@ -1,0 +1,25 @@
+name: Actions startup diagnostic (no secrets)
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: actions-startup-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  runner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Confirm hosted runner startup
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'runner-started\n'
+          printf 'event=%s\n' "$GITHUB_EVENT_NAME"
+          printf 'ref=%s\n' "$GITHUB_REF"
+          printf 'run_id=%s\n' "$GITHUB_RUN_ID"
+          printf 'runner_os=%s\n' "$RUNNER_OS"
