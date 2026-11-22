@@ -14,15 +14,22 @@ const MAX_ARTIFACT_BYTES = 100 * 1024 * 1024;
 export function validateProductionDbUrl(raw) {
   let url;
   try { url = new URL(raw); } catch { throw new Error("SUPABASE_DB_URL não é uma URI PostgreSQL válida."); }
-  const username = decodeURIComponent(url.username);
   const sslmode = url.searchParams.get("sslmode");
   if (!/^postgres(?:ql)?:$/.test(url.protocol)) throw new Error("SUPABASE_DB_URL deve usar o protocolo PostgreSQL.");
+  let username;
+  let password;
+  try {
+    username = decodeURIComponent(url.username);
+    password = decodeURIComponent(url.password);
+  } catch {
+    throw new Error("SUPABASE_DB_URL contém percent-encoding inválido no usuário ou na senha; codifique caracteres reservados uma única vez.");
+  }
   if (username !== `postgres.${PROJECT_REF}`) throw new Error("A conexão não identifica o projeto Supabase esperado.");
   if (!/^[a-z0-9-]+\.pooler\.supabase\.com$/.test(url.hostname) || url.port !== "5432") {
     throw new Error("Use o Session pooler IPv4 copiado do painel Supabase, na porta 5432.");
   }
   if (url.pathname !== "/postgres") throw new Error("A URI deve apontar para o banco postgres.");
-  if (!url.password) throw new Error("A URI PostgreSQL não contém senha.");
+  if (!url.password || !password) throw new Error("A URI PostgreSQL não contém senha.");
   if (sslmode !== "require") throw new Error("A URI deve usar sslmode=require; modos TLS não validados são recusados.");
   return Object.freeze({ host: url.hostname, port: 5432, database: "postgres", sslmode });
 }
@@ -65,35 +72,74 @@ export function buildRestoreCommand() {
   return `psql "$LOCAL_DB_URL" -X --single-transaction --variable ON_ERROR_STOP=1 --file /backup/roles.sql --file /backup/schema.sql --command 'SET session_replication_role = replica' --file /backup/data.sql`;
 }
 
-export function classifyFailure(stderr = "") {
-  if (/password authentication failed|authentication failed/i.test(stderr)) return "authentication rejected";
+export function classifyFailure(stderr = "", { stage = "command", exitCode = null } = {}) {
+  const registryAuthFailure = /unauthorized|authentication required|pull access denied|requested access to the resource is denied|failed to authorize|toomanyrequests|too many requests/i.test(stderr);
+  const dockerDaemonUnavailable = /cannot connect to the docker daemon|docker daemon is not running|error during connect/i.test(stderr);
+  if (stage === "docker-image-pull") {
+    if (registryAuthFailure) return "Docker registry refused the public PostgreSQL client image (authentication or anonymous pull limit)";
+    if (dockerDaemonUnavailable) return "Docker daemon unavailable while pulling the PostgreSQL client image";
+    return "Public PostgreSQL client image pull failed; raw output suppressed";
+  }
+  if (stage === "disposable-supabase-start") {
+    if (registryAuthFailure) return "Disposable Supabase could not retrieve a container image (registry authentication or pull limit)";
+    if (dockerDaemonUnavailable) return "Docker daemon unavailable while starting disposable Supabase";
+    return "Disposable Supabase startup failed; raw output suppressed";
+  }
+
+  if (/invalid percent-encoded token|invalid percent encoding|malformed percent/i.test(stderr)) {
+    return stage === "production-postgres-connect" || stage === "production-db-dump"
+      ? "SUPABASE_DB_URL credential percent-encoding is invalid; encode reserved password characters once"
+      : "PostgreSQL connection URI contains invalid percent-encoding; raw output suppressed";
+  }
+  if (stage === "production-postgres-connect" || stage === "production-db-dump") {
+    if (/password authentication failed|SASL authentication failed|no password supplied/i.test(stderr)) {
+      return "PostgreSQL rejected password authentication; verify the Session Pooler role and SUPABASE_DB_URL password";
+    }
+    if (/role .{0,120} does not exist|user .{0,120} does not exist/i.test(stderr)) {
+      return "PostgreSQL rejected the login role; use the Session Pooler username copied from Supabase";
+    }
+  }
+  if (stage === "disposable-postgres" && /password authentication failed|SASL authentication failed|no password supplied/i.test(stderr)) {
+    return "Disposable PostgreSQL rejected local restore credentials; production URL was not used for this connection";
+  }
+
   if (/could not translate host|name or service not known|temporary failure in name resolution/i.test(stderr)) return "DNS resolution failed";
   if (/certificate|SSL error|TLS error|sslmode/i.test(stderr)) return "TLS verification failed";
-  if (/timeout|timed out|connection refused|no route to host/i.test(stderr)) return "database network connection failed";
+  if (/timeout|timed out|connection refused|no route to host|network is unreachable/i.test(stderr)) return "database network connection failed";
   if (/permission denied|not authorized|insufficient privilege/i.test(stderr)) return "database permissions rejected";
+  if (stage === "production-postgres-connect" && exitCode === 2) {
+    return "PostgreSQL connection check failed (psql exit 2); verify the Session Pooler URI, role, password and percent-encoding";
+  }
+  if (stage === "disposable-postgres" && exitCode === 2) return "Disposable PostgreSQL restore connection failed (psql exit 2)";
+  if (stage === "production-db-dump") return "Supabase production database dump failed; raw output suppressed";
+  if (stage === "disposable-supabase-status") return "Disposable Supabase status command failed; raw output suppressed";
   return "command failed; raw output suppressed to protect credentials and data";
 }
 
-function run(file, args, { env = process.env, cwd = ROOT, input, maxBuffer = 16 * 1024 * 1024 } = {}) {
+function run(file, args, { env = process.env, cwd = ROOT, input, maxBuffer = 16 * 1024 * 1024, stage = file } = {}) {
   const result = spawnSync(file, args, { cwd, env, input, encoding: "utf8", maxBuffer, windowsHide: true });
   if (result.error || result.status !== 0) {
-    const category = classifyFailure(`${result.stderr ?? ""}\n${result.error?.message ?? ""}`);
-    throw new Error(`${file} ${category} (exit ${result.status ?? "unavailable"}).`);
+    const category = classifyFailure(`${result.stderr ?? ""}\n${result.error?.message ?? ""}`, { stage, exitCode: result.status });
+    throw new Error(`${stage}: ${category} (exit ${result.status ?? "unavailable"}).`);
   }
   return result.stdout ?? "";
 }
 
 const dockerImage = "postgres:17-alpine";
-function dockerPsql(dbUrl, sql, mountDir) {
+function pullDockerClientImage() {
+  run("docker", ["pull", dockerImage], { stage: "docker-image-pull" });
+}
+
+function dockerPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
   const args = ["run", "--rm", "--network", "host", "-e", "BACKUP_DB_URL", "-e", "BACKUP_QUERY"];
   if (mountDir) args.push("-v", `${mountDir}:/backup:ro`);
   args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -A -t -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
-  return run("docker", args, { env: { ...process.env, BACKUP_DB_URL: dbUrl, BACKUP_QUERY: sql } }).trim();
+  return run("docker", args, { env: { ...process.env, BACKUP_DB_URL: dbUrl, BACKUP_QUERY: sql }, stage }).trim();
 }
 
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
 
-function snapshot(dbUrl) {
+function snapshot(dbUrl, stage = "production-postgres-connect") {
   const metaSql = `SELECT json_build_object(
     'schemas',(SELECT coalesce(json_agg(nspname ORDER BY nspname),'[]'::json) FROM pg_namespace WHERE nspname IN ('public','private')),
     'tables',(SELECT count(*) FROM pg_tables WHERE schemaname IN ('public','private')),
@@ -101,7 +147,7 @@ function snapshot(dbUrl) {
     'policies',(SELECT count(*) FROM pg_policies WHERE schemaname IN ('public','private')),
     'foreignKeys',(SELECT count(*) FROM pg_constraint c JOIN pg_class t ON t.oid=c.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace WHERE n.nspname IN ('public','private') AND c.contype='f')
   )::text`;
-  const meta = JSON.parse(dockerPsql(dbUrl, metaSql));
+  const meta = JSON.parse(dockerPsql(dbUrl, metaSql, undefined, stage));
   const structureSql = `SELECT json_build_object(
     'schemas',(SELECT coalesce(json_agg(json_build_array(n.nspname,r.rolname) ORDER BY n.nspname),'[]'::json)
       FROM pg_namespace n JOIN pg_roles r ON r.oid=n.nspowner WHERE n.nspname IN ('public','private')),
@@ -122,14 +168,14 @@ function snapshot(dbUrl) {
     'sequences',(SELECT coalesce(json_agg(json_build_array(s.schemaname,s.sequencename,s.data_type,s.start_value,s.min_value,s.max_value,s.increment_by,s.cycle,s.cache_size,s.last_value) ORDER BY s.schemaname,s.sequencename),'[]'::json)
       FROM pg_sequences s WHERE s.schemaname IN ('public','private'))
   )::text`;
-  const structure = JSON.parse(dockerPsql(dbUrl, structureSql));
+  const structure = JSON.parse(dockerPsql(dbUrl, structureSql, undefined, stage));
   const tables = JSON.parse(dockerPsql(dbUrl,
-    "SELECT coalesce(json_agg(json_build_array(schemaname,tablename) ORDER BY schemaname,tablename),'[]'::json)::text FROM pg_tables WHERE schemaname IN ('public','private')"));
+    "SELECT coalesce(json_agg(json_build_array(schemaname,tablename) ORDER BY schemaname,tablename),'[]'::json)::text FROM pg_tables WHERE schemaname IN ('public','private')", undefined, stage));
   const rows = {};
   for (const [schema, table] of tables) {
     const ident = `${quoteIdent(schema)}.${quoteIdent(table)}`;
     const sql = `SELECT count(*)::text || E'\\t' || md5(coalesce(string_agg(md5(to_jsonb(t)::text), '' ORDER BY md5(to_jsonb(t)::text)), '')) FROM ${ident} AS t`;
-    const [count, digest] = dockerPsql(dbUrl, sql).split("\t");
+    const [count, digest] = dockerPsql(dbUrl, sql, undefined, stage).split("\t");
     if (!/^\d+$/.test(count ?? "") || !/^[a-f0-9]{32}$/.test(digest ?? "")) throw new Error("A verificação agregada das tabelas retornou formato inválido.");
     rows[`${schema}.${table}`] = { count: Number(count), digest };
   }
@@ -139,7 +185,10 @@ function snapshot(dbUrl) {
 
 function supabaseCli(args) {
   const npx = process.platform === "win32" ? "npx.cmd" : "npx";
-  return run(npx, ["--yes", `supabase@${CLI_VERSION}`, ...args], { cwd: ROOT, maxBuffer: 8 * 1024 * 1024 });
+  const stage = args[0] === "start" ? "disposable-supabase-start"
+    : args[0] === "status" ? "disposable-supabase-status"
+      : args[0] === "db" ? "production-db-dump" : "supabase-cli";
+  return run(npx, ["--yes", `supabase@${CLI_VERSION}`, ...args], { cwd: ROOT, maxBuffer: 8 * 1024 * 1024, stage });
 }
 
 function parseEnvValue(output, key) {
@@ -227,11 +276,20 @@ export async function runProductionBackup(env = process.env) {
 
   try {
     console.log(`Target validated: ${target.database} on the configured Supabase session pooler; URL/password suppressed.`);
+    console.log("Checking access to the public PostgreSQL client image; no registry credentials are configured.");
+    pullDockerClientImage();
+    console.log("Checking SUPABASE_DB_URL with read-only SELECT 1; connection details are suppressed.");
+    if (dockerPsql(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-connect") !== "1") {
+      throw new Error("PostgreSQL read-only connection check returned an unexpected result.");
+    }
+    console.log("Production PostgreSQL authentication and read-only connectivity verified.");
+    console.log("Starting isolated disposable Supabase (Auth, PostgREST and local Postgres).");
     supabaseCli(["start", "--workdir", runtime, "--exclude", "studio,inbucket,imgproxy,realtime,functions,analytics,vector,supavisor"]);
     const localStatus = supabaseCli(["status", "--workdir", runtime, "-o", "env"]);
     await verifyDisposableServices(localStatus);
     const localDbUrl = parseLocalDbUrl(localStatus);
-    const before = snapshot(env.SUPABASE_DB_URL);
+    console.log("Disposable Supabase Auth/PostgREST checks passed.");
+    const before = snapshot(env.SUPABASE_DB_URL, "production-postgres-connect");
 
     const rolesPath = join(plainDir, "roles.sql");
     const schemaPath = join(plainDir, "schema.sql");
@@ -245,7 +303,7 @@ export async function runProductionBackup(env = process.env) {
       chmodSync(file, 0o600);
     }
 
-    const after = snapshot(env.SUPABASE_DB_URL);
+    const after = snapshot(env.SUPABASE_DB_URL, "production-postgres-connect");
     const stable = compareSnapshots(before, after, before);
     if (!stable.sourceStableDuringDump) throw new Error("A estrutura ou os dados de public/private mudaram durante o dump; repita em uma janela sem gravações.");
 
@@ -271,12 +329,12 @@ export async function runProductionBackup(env = process.env) {
     const decryptedTar = join(restoreDir, "backup.tar.gz");
     run("gpg", ["--batch", "--yes", "--pinentry-mode", "loopback", "--passphrase-fd", "0", "--decrypt", "--output", decryptedTar, encryptedPath], { input: `${env.BACKUP_ENCRYPTION_PASSPHRASE}\n` });
     run("tar", ["-xzf", decryptedTar, "-C", restoreDir]);
-    dockerPsql(localDbUrl, "SELECT 1");
+    dockerPsql(localDbUrl, "SELECT 1", undefined, "disposable-postgres");
     const restoreScript = buildRestoreCommand();
     const containerArgs = ["run", "--rm", "--network", "host", "-e", "LOCAL_DB_URL", "-v", `${restoreDir}:/backup:ro`, dockerImage, "sh", "-lc", restoreScript];
     run("docker", containerArgs, { env: { ...process.env, LOCAL_DB_URL: localDbUrl }, maxBuffer: 16 * 1024 * 1024 });
 
-    const restored = snapshot(localDbUrl);
+    const restored = snapshot(localDbUrl, "disposable-postgres");
     const comparison = compareSnapshots(before, after, restored);
     if (!comparison.sourceStableDuringDump || !comparison.restoredMatchesSource) {
       throw new Error("Restore terminou, mas inventário de schemas, objetos ou fingerprints dos dados não corresponde à origem.");
@@ -314,3 +372,4 @@ async function main() {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => { console.error(error instanceof Error ? error.message : "Backup workflow failed."); process.exitCode = 1; });
 }
+
