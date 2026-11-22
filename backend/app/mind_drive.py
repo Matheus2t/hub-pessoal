@@ -11,6 +11,7 @@ import hashlib
 import ipaddress
 import hmac
 import json
+import logging
 import os
 import re
 import secrets
@@ -28,6 +29,7 @@ from pydantic import BaseModel, Field
 from .config import settings
 
 router = APIRouter(prefix="/api/mind-drive", tags=["mind-drive"])
+_logger = logging.getLogger("2t.mind_drive.google")
 MAX_MANAGED_STORAGE_BYTES = 5_000_000_000
 MAX_CHUNK_BYTES = 8 * 1024 * 1024  # a multiple of Drive's 256 KiB alignment
 MIN_CHUNK_BYTES = 256 * 1024
@@ -39,6 +41,27 @@ _USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 _STATE_COOKIE = "2t_mind_drive_oauth_state"
 _MANAGED_QUERY = "appProperties has { key='2tMindManaged' and value='v1' }"
 _UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+
+
+def _google_error_reason(response: httpx.Response) -> str:
+    """Return Google's machine reason only; never expose its message or request data."""
+    try:
+        error = response.json().get("error", {})
+        reasons = error.get("errors", []) if isinstance(error, dict) else []
+        reason = reasons[0].get("reason") if reasons and isinstance(reasons[0], dict) else None
+        reason = reason or (error.get("status") if isinstance(error, dict) else None)
+    except (ValueError, AttributeError, TypeError):
+        reason = None
+    if not isinstance(reason, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]{0,79}", reason):
+        return "unknown"
+    return reason
+
+
+def _log_drive_list_failure(response: httpx.Response, operation: str) -> None:
+    # Do not log Google's message, q, account identity, URL, or authorization headers.
+    safe_operation = operation if operation in {"folder_lookup", "inventory"} else "unknown"
+    _logger.warning("Google Drive files.list failed operation=%s http_status=%d reason=%s",
+                   safe_operation, response.status_code, _google_error_reason(response))
 
 
 class UploadStart(BaseModel):
@@ -254,6 +277,7 @@ async def _managed_files(access_token: str) -> list[dict]:
             **({"pageToken": token} if token else {}),
         })
         if response.status_code != 200:
+            _log_drive_list_failure(response, "inventory")
             raise HTTPException(502, "Não foi possível reconciliar os arquivos gerenciados no Google Drive.")
         page = response.json()
         files.extend(item for item in page.get("files", []) if isinstance(item, dict) and item.get("id") and str(item.get("size", "0")).isdigit())
@@ -321,6 +345,7 @@ async def _get_or_create_folder(access_token: str, role: str, name: str, parent:
         q += " and '" + parent.replace("'", "") + "' in parents"
     found = await _drive_request("GET", "/files", access_token, params={"q": q, "pageSize": 10, "fields": "files(id,appProperties,parents)"})
     if found.status_code != 200:
+        _log_drive_list_failure(found, "folder_lookup")
         raise HTTPException(502, "Não foi possível consultar a pasta gerenciada no Drive.")
     rows = found.json().get("files", [])
     if rows:

@@ -130,3 +130,40 @@ def test_require_admin_calls_zero_argument_rpc_without_json_body(monkeypatch, is
     assert len(rpc_requests) == 1
     assert rpc_requests[0].content == b""
     assert "content-type" not in rpc_requests[0].headers
+
+
+def test_folder_lookup_uses_drive_v3_app_properties_query(monkeypatch):
+    calls = []
+
+    async def fake_drive_request(method, path, access_token, *, params=None, body=None, headers=None):
+        calls.append((method, path, params))
+        return httpx.Response(200, json={"files": [{"id": "existing-folder"}]})
+
+    monkeypatch.setattr(drive, "_drive_request", fake_drive_request)
+    folder_id = asyncio.run(drive._get_or_create_folder("token-not-logged", "videos", "Vídeos", "parent-123"))
+
+    assert folder_id == "existing-folder"
+    assert calls == [("GET", "/files", {
+        "q": "trashed=false and mimeType='application/vnd.google-apps.folder' and appProperties has { key='2tMindFolder' and value='videos' } and 'parent-123' in parents",
+        "pageSize": 10,
+        "fields": "files(id,appProperties,parents)",
+    })]
+
+
+def test_folder_lookup_logs_only_sanitized_google_status_and_reason(monkeypatch, caplog):
+    secret_message = "private@example.invalid access-token-never-log"
+
+    async def fail_drive_request(method, path, access_token, *, params=None, body=None, headers=None):
+        return httpx.Response(403, json={"error": {"code": 403, "message": secret_message,
+            "errors": [{"reason": "accessNotConfigured", "message": secret_message}]}})
+
+    monkeypatch.setattr(drive, "_drive_request", fail_drive_request)
+    with caplog.at_level("WARNING", logger="2t.mind_drive.google"):
+        with pytest.raises(HTTPException) as error:
+            asyncio.run(drive._get_or_create_folder("token-never-log", "root", "2T", None))
+
+    assert error.value.status_code == 502
+    assert error.value.detail == "Não foi possível consultar a pasta gerenciada no Drive."
+    assert "http_status=403 reason=accessNotConfigured" in caplog.text
+    assert secret_message not in caplog.text
+    assert "token-never-log" not in caplog.text
