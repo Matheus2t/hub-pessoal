@@ -167,7 +167,9 @@ async def _require_admin(authorization: str | None) -> str:
             admin_id = str(user.get("id", ""))
             if not _UUID.fullmatch(admin_id):
                 raise HTTPException(401, "Identidade administrativa inválida.")
-            admin_response = await client.post(url + "/rest/v1/rpc/mind_is_admin", headers={**headers, "Content-Type": "application/json"}, json={})
+            # mind_is_admin() takes no arguments; an empty JSON object asks
+            # PostgREST to find a one-argument overload instead.
+            admin_response = await client.post(url + "/rest/v1/rpc/mind_is_admin", headers=headers)
             if admin_response.status_code != 200 or admin_response.json() is not True:
                 raise HTTPException(403, "Esta conta não tem permissão para gerenciar a Mente.")
             return admin_id

@@ -1,7 +1,9 @@
+import asyncio
 import base64
 import time
 from uuid import UUID
 
+import httpx
 import pytest
 from fastapi import HTTPException
 from pydantic import SecretStr
@@ -96,3 +98,35 @@ def test_asset_snapshot_includes_identity_and_excludes_folders_and_out_of_range_
     ])
     assert rows == [{"file_id": "abcdefghij", "file_name": "clip.mp4", "size_bytes": 42, "trashed": False,
                      "mime_type": "video/mp4", "upload_id": "a" * 32, "parents": ["folder-id-123"]}]
+
+
+@pytest.mark.parametrize("is_admin", [True, False])
+def test_require_admin_calls_zero_argument_rpc_without_json_body(monkeypatch, is_admin):
+    rpc_requests = []
+
+    def respond(request):
+        if request.url.path == "/auth/v1/user":
+            return httpx.Response(200, json={"id": ADMIN})
+        if request.url.path == "/rest/v1/rpc/mind_is_admin":
+            rpc_requests.append(request)
+            if request.content:
+                return httpx.Response(404, json={"code": "PGRST202"})
+            return httpx.Response(200, json=is_admin)
+        return httpx.Response(404)
+
+    transport = httpx.MockTransport(respond)
+    original_client = drive.httpx.AsyncClient
+    monkeypatch.setattr(drive.httpx, "AsyncClient", lambda *, timeout: original_client(transport=transport, timeout=timeout))
+    monkeypatch.setattr(drive, "_require_feature", lambda: None)
+    monkeypatch.setattr(drive.settings, "mind_supabase_url", "http://supabase.local")
+    monkeypatch.setattr(drive.settings, "mind_supabase_publishable_key", "test-publishable-key")
+
+    if is_admin:
+        assert asyncio.run(drive._require_admin("Bearer synthetic-user-token")) == ADMIN
+    else:
+        with pytest.raises(HTTPException) as error:
+            asyncio.run(drive._require_admin("Bearer synthetic-user-token"))
+        assert error.value.status_code == 403
+    assert len(rpc_requests) == 1
+    assert rpc_requests[0].content == b""
+    assert "content-type" not in rpc_requests[0].headers
