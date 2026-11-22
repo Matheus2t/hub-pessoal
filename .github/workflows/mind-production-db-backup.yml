@@ -35,7 +35,6 @@ jobs:
     environment: production-db-backup
     env:
       MIND_BACKUP_ENVIRONMENT: production-db-backup
-      MIND_BACKUP_OUTPUT_DIR: ${{ runner.temp }}/mind-production-backup
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -49,6 +48,7 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          MIND_BACKUP_OUTPUT_DIR: ${{ runner.temp }}/mind-production-backup
         run: node scripts/mind-production-backup.mjs run
       - name: Upload encrypted backup after a successful restore check
         if: success()
