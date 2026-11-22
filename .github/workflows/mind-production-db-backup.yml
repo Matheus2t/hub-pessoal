@@ -1,0 +1,62 @@
+name: Protected Supabase production backup and restore check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mind-production-db-backup
+  cancel-in-progress: false
+
+jobs:
+  verify-environment:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify the protected environment allows only main
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://api.github.com/repos/${GITHUB_REPOSITORY}/environments/production-db-backup"
+          environment="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' "$base")"
+          policies="$(curl --fail --silent --show-error -H 'Accept: application/vnd.github+json' "$base/deployment-branch-policies?per_page=100")"
+          jq -e '.deployment_branch_policy.custom_branch_policies == true and .deployment_branch_policy.protected_branches == false' <<<"$environment" >/dev/null
+          jq -e '(.branch_policies | length) == 1 and .branch_policies[0].name == "main" and .branch_policies[0].type == "branch"' <<<"$policies" >/dev/null
+          printf 'Verified: production-db-backup allows only branch main.\n'
+
+  backup-restore:
+    if: github.ref == 'refs/heads/main'
+    needs: verify-environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production-db-backup
+    env:
+      MIND_BACKUP_ENVIRONMENT: production-db-backup
+      MIND_BACKUP_OUTPUT_DIR: ${{ runner.temp }}/mind-production-backup
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Validate backup procedure
+        run: node --test scripts/mind-production-backup.test.mjs
+      - name: Create encrypted backup and verify restore in disposable Supabase
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: node scripts/mind-production-backup.mjs run
+      - name: Upload encrypted backup after a successful restore check
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mind-production-backup-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/mind-production-backup/mind-production-public-private-backup.tar.gz.gpg
+            ${{ runner.temp }}/mind-production-backup/mind-production-public-private-backup.tar.gz.gpg.sha256
+          if-no-files-found: error
+          retention-days: 1
