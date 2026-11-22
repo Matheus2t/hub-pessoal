@@ -2,7 +2,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
-    "test:mind": "node --test scripts/write-index.test.cjs",
+    "test:mind": "node --test scripts/write-index.test.cjs scripts/dev-mind-env.test.mjs",
     "dev": "node scripts/dev-frontend.mjs",
     "build": "node scripts/learn/build-progression-v12.mjs && npm run typecheck && npm run build:js && npm run build:css && node -e \"require('./scripts/write-index.cjs').writeIndex(); require('fs').copyFileSync('frontend/public/2t-mark.svg','dist/2t-mark.svg'); require('fs').copyFileSync('frontend/public/2t-logo.webp','dist/2t-logo.webp'); require('fs').copyFileSync('frontend/public/manifest.webmanifest','dist/manifest.webmanifest'); require('fs').copyFileSync('frontend/public/service-worker.js','dist/service-worker.js'); require('fs').copyFileSync('frontend/public/call-denoise-worklet.js','dist/call-denoise-worklet.js'); require('fs').copyFileSync('frontend/public/ticker-isolated.html','dist/ticker-isolated.html'); require('fs').copyFileSync('frontend/public/ticker-isolated.js','dist/ticker-isolated.js')\" && node scripts/build-call-config.cjs",
     "build:js": "node scripts/build-frontend.mjs",

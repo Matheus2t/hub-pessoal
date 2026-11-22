@@ -1,6 +1,11 @@
 import { spawnSync } from "node:child_process";
 import { context } from "esbuild";
 import { frontendBuildDefines } from "./frontend-build-defines.mjs";
+import { loadLocalMindFrontendEnv } from "./dev-mind-env.mjs";
+
+if (loadLocalMindFrontendEnv()) {
+  console.log("Mente local habilitada para loopback; somente a chave Supabase anon vai para o frontend.");
+}
 
 const npmCli = process.env.npm_execpath;
 const build = npmCli
