@@ -5,12 +5,16 @@ on:
     paths:
       - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
       - 'tests/migrations/**'
+      - 'tests/mind-codespaces/**'
+      - 'scripts/mind-codespaces.mjs'
       - '.github/workflows/mind-google-drive-migration.yml'
   push:
     branches: [codex/mind-google-drive-5gb]
     paths:
       - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
       - 'tests/migrations/**'
+      - 'tests/mind-codespaces/**'
+      - 'scripts/mind-codespaces.mjs'
       - '.github/workflows/mind-google-drive-migration.yml'
 permissions:
   contents: read
@@ -43,3 +47,17 @@ jobs:
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261120191900_mind_google_drive_storage.sql
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/migrations/mind-drive-verify.sql
           bash tests/migrations/mind-drive-concurrency.sh
+  supabase-auth-postgrest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Start disposable Supabase, apply Drive migration, and verify Auth/PostgREST
+        run: |
+          set -euo pipefail
+          trap 'node scripts/mind-codespaces.mjs stop || true' EXIT
+          node scripts/mind-codespaces.mjs up
+          node scripts/mind-codespaces.mjs status

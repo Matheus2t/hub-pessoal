@@ -1,0 +1,20 @@
+{
+  "name": "2T Mente — homologação isolada",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": true,
+      "installDockerBuildx": true
+    }
+  },
+  "forwardPorts": [3000, 8000, 54321],
+  "portsAttributes": {
+    "3000": { "label": "2T local", "onAutoForward": "notify", "visibility": "private" },
+    "8000": { "label": "2T API local", "onAutoForward": "notify", "visibility": "private" },
+    "54321": { "label": "Supabase local API", "onAutoForward": "notify", "visibility": "private" }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteUser": "vscode"
+}
