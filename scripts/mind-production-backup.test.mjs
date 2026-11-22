@@ -77,6 +77,12 @@ test("workflow is manual, main-only, protected, and injects only two environment
   assert.match(workflow, /Verify the protected environment allows only main/);
   assert.match(workflow, /\.branch_policies\[0\]\.name == "main"/);
   assert.match(workflow, /needs: verify-environment/);
+  const backupJobSettings = workflow.match(/  backup-restore:\n([\s\S]*?)    steps:\n/);
+  assert.ok(backupJobSettings);
+  assert.doesNotMatch(backupJobSettings[1], /runner\.temp/);
+  const backupStepEnvironment = workflow.match(/- name: Create encrypted backup and verify restore in disposable Supabase\n        env:\n([\s\S]*?)\n        run:/);
+  assert.ok(backupStepEnvironment);
+  assert.match(backupStepEnvironment[1], /MIND_BACKUP_OUTPUT_DIR: .*runner\.temp/);
   const vercel = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
   assert.equal(vercel.git.deploymentEnabled.main, false);
   assert.doesNotMatch(workflow, /secrets\.(?!SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)/);
