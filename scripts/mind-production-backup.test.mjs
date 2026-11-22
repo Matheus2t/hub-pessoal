@@ -15,6 +15,8 @@ test("accepts only the production project session pooler over TLS", () => {
   assert.throws(() => validateProductionDbUrl(goodUrl.replace(":5432/", ":6543/")), /Session pooler/);
   assert.throws(() => validateProductionDbUrl(goodUrl.replace("?sslmode=require", "")), /TLS/);
   assert.throws(() => validateProductionDbUrl(goodUrl.replace("sslmode=require", "sslmode=verify-full")), /sslmode=require/);
+  assert.equal(validateProductionDbUrl(goodUrl.replace("strong%40password", "p%40ss%25%2F%3A%3F")).sslmode, "require");
+  assert.throws(() => validateProductionDbUrl(goodUrl.replace("strong%40password", "bad%E0%A4%A")), /percent-encoding inválido/);
 });
 
 test("rejects execution outside manual main workflow or protected environment", () => {
@@ -47,10 +49,36 @@ test("snapshot comparison detects data, schema, and during-dump changes", () => 
 });
 
 test("connection diagnostics classify failures without echoing raw details", () => {
-  assert.equal(classifyFailure("password authentication failed for user postgres.secret"), "authentication rejected");
+  assert.equal(classifyFailure("password authentication failed for user postgres.secret", { stage: "production-postgres-connect", exitCode: 2 }),
+    "PostgreSQL rejected password authentication; verify the Session Pooler role and SUPABASE_DB_URL password");
   assert.equal(classifyFailure("could not translate host name"), "DNS resolution failed");
   assert.equal(classifyFailure("certificate verify failed"), "TLS verification failed");
   assert.equal(classifyFailure("private@example.com token=secret"), "command failed; raw output suppressed to protect credentials and data");
+});
+
+test("distinguishes PostgreSQL credentials, URI encoding, Docker registry and disposable Supabase startup", () => {
+  assert.equal(classifyFailure("psql: FATAL: password authentication failed for user private-role", {
+    stage: "production-postgres-connect", exitCode: 2,
+  }), "PostgreSQL rejected password authentication; verify the Session Pooler role and SUPABASE_DB_URL password");
+  assert.equal(classifyFailure("psql: invalid percent-encoded token: hidden-value", {
+    stage: "production-postgres-connect", exitCode: 2,
+  }), "SUPABASE_DB_URL credential percent-encoding is invalid; encode reserved password characters once");
+  assert.equal(classifyFailure("Error response from daemon: unauthorized: authentication required", {
+    stage: "docker-image-pull", exitCode: 1,
+  }), "Docker registry refused the public PostgreSQL client image (authentication or anonymous pull limit)");
+  assert.equal(classifyFailure("Error response from daemon: unauthorized", {
+    stage: "disposable-supabase-start", exitCode: 1,
+  }), "Disposable Supabase could not retrieve a container image (registry authentication or pull limit)");
+  assert.equal(classifyFailure("psql connection failed", { stage: "production-postgres-connect", exitCode: 2 }),
+    "PostgreSQL connection check failed (psql exit 2); verify the Session Pooler URI, role, password and percent-encoding");
+});
+
+test("production connection preflight runs before starting disposable Supabase", () => {
+  const script = readFileSync(new URL("./mind-production-backup.mjs", import.meta.url), "utf8");
+  const pull = script.indexOf("pullDockerClientImage();");
+  const readOnlyCheck = script.indexOf('dockerPsql(env.SUPABASE_DB_URL, "SELECT 1"');
+  const stackStart = script.indexOf('supabaseCli(["start"');
+  assert.ok(pull >= 0 && readOnlyCheck > pull && stackStart > readOnlyCheck);
 });
 
 test("restore uses a single transaction in the documented Supabase order", () => {
@@ -88,3 +116,4 @@ test("workflow is manual, main-only, protected, and injects only two environment
   assert.doesNotMatch(workflow, /secrets\.(?!SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)/);
   assert.doesNotMatch(workflow, /pull_request:|push:/);
 });
+
