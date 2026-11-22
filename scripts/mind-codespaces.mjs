@@ -98,12 +98,18 @@ function writeBackendEnv(values) {
   writeFileSync(ENV_FILE, contents, { mode: 0o600 });
 }
 
+export function sanitizedHttpFailure(status, data, failureMessage) {
+  const rawCode = data && typeof data === "object" ? (data.error_code ?? data.code) : null;
+  const code = typeof rawCode === "string" && /^[a-z0-9_-]{1,64}$/i.test(rawCode) ? rawCode : null;
+  return `${failureMessage} (HTTP ${status}${code ? `, código ${code}` : ""}).`;
+}
+
 async function fetchJson(url, options, failureMessage) {
   let response;
   try { response = await fetch(url, options); } catch { throw new Error(failureMessage); }
   let data;
   try { data = await response.json(); } catch { data = {}; }
-  if (!response.ok) throw new Error(failureMessage);
+  if (!response.ok) throw new Error(sanitizedHttpFailure(response.status, data, failureMessage));
   return data;
 }
 
@@ -141,7 +147,8 @@ async function ensureLocalAdmin(status) {
     body: JSON.stringify({ p_admin_id: account.id }),
   }, "Não foi possível habilitar o usuário de teste como administrador local.");
   const allowed = await fetchJson(`${api}/rest/v1/rpc/mind_is_admin`, {
-    method: "POST", headers: { apikey: anon, Authorization: `Bearer ${accessToken}` },
+    method: "POST", headers: { apikey: anon, Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: "{}",
   }, "PostgREST não confirmou o usuário administrativo local.");
   if (allowed !== true) throw new Error("A verificação administrativa local falhou.");
   const publicItems = await fetchJson(`${api}/rest/v1/mind_items?select=id&limit=4`, {

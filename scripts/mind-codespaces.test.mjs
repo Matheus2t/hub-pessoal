@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildLocalBackendEnv, parseSupabaseStatusEnv, renderDotEnv } from "./mind-codespaces.mjs";
+import { buildLocalBackendEnv, parseSupabaseStatusEnv, renderDotEnv, sanitizedHttpFailure } from "./mind-codespaces.mjs";
 
 function jwt(role) {
   return `header.${Buffer.from(JSON.stringify({ role })).toString("base64url")}.signature`;
@@ -33,4 +33,17 @@ test("dotenv values are quoted and only server-side keys are written", () => {
   const text = renderDotEnv({ MIND_SUPABASE_SERVICE_ROLE_KEY: "secret#\"value", GOOGLE_DRIVE_CLIENT_SECRET: "oauth-secret" });
   assert.match(text, /MIND_SUPABASE_SERVICE_ROLE_KEY="secret#\\\"value"/);
   assert.match(text, /GOOGLE_DRIVE_CLIENT_SECRET="oauth-secret"/);
+});
+
+test("HTTP diagnostics include only status and machine error code", () => {
+  const message = sanitizedHttpFailure(400, {
+    code: "invalid_credentials",
+    message: "private account details",
+    email: "private@example.test",
+    access_token: "sensitive-token-value",
+  }, "Auth local falhou");
+  assert.equal(message, "Auth local falhou (HTTP 400, código invalid_credentials).");
+  assert.doesNotMatch(message, /private|sensitive|example\.test/);
+  assert.equal(sanitizedHttpFailure(503, { error_code: "temporarily_unavailable" }, "API local falhou"),
+    "API local falhou (HTTP 503, código temporarily_unavailable).");
 });
