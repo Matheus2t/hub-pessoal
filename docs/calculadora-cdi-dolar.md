@@ -14,3 +14,7 @@ Referências:
 - B3 — metodologia da Taxa DI: https://www.b3.com.br/pt_br/market-data-e-indices/indices/indices-de-segmentos-e-setoriais/di/metodologia-de-calcudo-acumulado-de-di/
 - Receita Federal — tributação 2026: https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda/tabelas/2026
 - CAIXA — CDB pós-fixado e incidência de IR/IOF: https://www.caixa.gov.br/voce/poupanca-e-investimentos/cdb/cdb-flex/paginas/default.aspx
+
+## Interface simplificada (2026-11)
+
+O prazo padrão pode ser escolhido diretamente: **6 meses, 1, 2, 3, 5 ou 10 anos** (anos tratados como 365 dias corridos neste modelo) ou **personalizado em dias**. A escolha usa o mesmo campo `days` do motor, sem mudar a fórmula financeira. Os quatro campos principais ficam visíveis; percentual do CDI e tributação foram movidos para **Opções avançadas**. Resultados destacam o câmbio de equilíbrio, diferença entre CDI e dólar, enquanto a memória de cálculo e a tabela mensal ficam acessíveis por expansão. O detalhamento mensal continua permitindo salto por ano.
