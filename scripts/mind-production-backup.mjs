@@ -108,6 +108,12 @@ export function classifyFailure(output = "", options = {}) {
   if ((executable === "docker" && errorCode === "ENOENT") || /spawn docker[^\n]*enoent|docker is not recognized|docker: command not found/i.test(text)) {
     return "Docker CLI is unavailable on the GitHub runner";
   }
+  if (executable === "docker" && dockerDaemonUnavailable) {
+    return "Docker daemon unavailable while invoking the containerized PostgreSQL client";
+  }
+  if (executable === "docker" && exitCode === 125 && registryAuthFailure) {
+    return "Docker registry refused the PostgreSQL client image during container invocation";
+  }
   if (stage === "docker-image-pull") {
     if (registryAuthFailure) return "Docker registry refused the public PostgreSQL client image (authentication or anonymous pull limit)";
     if (dockerDaemonUnavailable) return "Docker daemon unavailable while pulling the PostgreSQL client image";
@@ -581,4 +587,3 @@ async function main() {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => { console.error(error instanceof Error ? error.message : "Backup workflow failed."); process.exitCode = 1; });
 }
-
