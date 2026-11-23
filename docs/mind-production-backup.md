@@ -72,6 +72,8 @@ O preflight agora separa as verificações sem registrar endpoint, IP, usuário,
 4. execução read-only de `SELECT 1` por `psql` usando `verify-full` e a mesma CA usada no dump;
 5. classificação do tenant/role Supavisor quando a autenticação retorna uma mensagem compatível.
 
+O run 15 confirmou TLS 1.3 e o certificado no runner. O `psql` no contêiner encerrou depois com exit 2 antes do dump. O preflight e as consultas de verificação da origem usam agora o `psql` nativo do runner, com host, porta, usuário, banco e CA passados separadamente. O libpq recebe a senha decodificada uma vez pela variável `PGPASSWORD`. Isso permite testar a sessão sem a interpretação da URI pelo shell do contêiner e sem baixar imagens para o preflight. O contêiner ainda é usado para a restauração descartável.
+
 Falhas de processo analisam stdout e stderr apenas em memória. Assinaturas conhecidas são convertidas em categorias fixas e SQLSTATE quando disponível. Para falhas desconhecidas, o log contém UUID de diagnóstico, estágio, código de saída, tamanhos dos dois fluxos e código de spawn permitido; nunca imprime o texto original.
 
 `VERBOSITY=verbose` é uma variável válida do `psql`, mas não torna o diagnóstico inicial garantidamente verboso: na inicialização, o hook só chama `PQsetErrorVerbosity` quando já existe uma conexão, enquanto a tentativa inicial ainda está criando essa conexão. Por isso o preflight não depende dessa variável para obter SQLSTATE. As camadas independentes distinguem DNS/TCP/TLS; o `psql` permite classificar autenticação e mensagens Supavisor quando as apresenta. Uma resposta sem assinatura reconhecida continua explicitamente inconclusiva, com UUID e metadados sanitizados.
