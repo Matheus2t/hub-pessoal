@@ -38,7 +38,7 @@ postgresql://postgres.kadkcuumcahnqrvalloz:<senha-percent-encoded>@<host-exato-d
 
 Copie o host exatamente do Dashboard; não o deduza da região. O código recusa host que não seja pooler, outro project ref, banco diferente, porta diferente ou ausência de TLS. O valor inteiro, inclusive a senha, vai somente no campo **Secret value** de `SUPABASE_DB_URL`.
 
-`sslmode=require` cifra o tráfego PostgreSQL, mas não valida o nome do host contra uma CA local. O domínio é limitado ao pooler Supabase e deve ser copiado do painel; esta etapa não configura pinning de certificado.
+O secret existente pode continuar com `sslmode=require`. O script fixa `verify-full` para todas as conexões de origem e valida o hostname com a CA oficial do Supabase. Parâmetros adicionais da URI são descartados antes de chamar os clientes. A senha mantém o percent-encoding original.
 
 ### `BACKUP_ENCRYPTION_PASSPHRASE`
 
@@ -60,14 +60,16 @@ Antes da execução, confira `Settings → Billing → Usage`: o plano GitHub Fr
 
 ### Preflight independente da conexão
 
-O run 13 confirmou que a URI passou pela validação estrutural e que a imagem pública `postgres:17-alpine` foi obtida, mas terminou com `psql` exit 2. Esse código significa apenas que a conexão caiu em modo não interativo; não identifica DNS, TCP, TLS, autenticação ou Supavisor. Os logs históricos consultáveis não preservaram o diagnóstico bruto e, portanto, a causa remota exata daquele run não pode ser reconstruída.
+O run 11 registrou rejeição da senha. Os runs 12 e 13 terminaram com exit 2 do `psql`, sem detalhe suficiente para determinar a camada. O rótulo Docker do run 10 veio de um classificador que também recebia erros do PostgreSQL.
+
+O run 14 falhou na verificação TLS antes de iniciar o `psql`. A mesma falha foi reproduzida no Session Pooler de São Paulo sem autenticação. O pooler respondeu ao PostgreSQL `SSLRequest` e negociou TLS 1.3, mas o OpenSSL rejeitou a cadeia com a lista padrão de CAs. O OpenSSL e o preflight Node passaram ao usar a [CA oficial do Supabase](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt). A CA versionada tem fingerprint SHA-256 `807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa`, conferido nos testes. Ao trocar a CA, obtenha o certificado no painel e confira o fingerprint antes de atualizar o arquivo e o teste.
 
 O preflight agora separa as verificações sem registrar endpoint, IP, usuário, URI ou saída bruta:
 
 1. configuração da URI e modo Session Pooler;
 2. resolução DNS e abertura TCP;
-3. PostgreSQL `SSLRequest`, negociação TLS 1.2+ e validação do certificado do peer;
-4. execução read-only de `SELECT 1` por `psql`;
+3. PostgreSQL `SSLRequest`, negociação TLS 1.2+ e validação do certificado com a CA do Supabase;
+4. execução read-only de `SELECT 1` por `psql` usando `verify-full` e a mesma CA usada no dump;
 5. classificação do tenant/role Supavisor quando a autenticação retorna uma mensagem compatível.
 
 Falhas de processo analisam stdout e stderr apenas em memória. Assinaturas conhecidas são convertidas em categorias fixas e SQLSTATE quando disponível. Para falhas desconhecidas, o log contém UUID de diagnóstico, estágio, código de saída, tamanhos dos dois fluxos e código de spawn permitido; nunca imprime o texto original.
@@ -96,6 +98,8 @@ Na execução `backup`:
 O repositório é público: pessoas com acesso de leitura podem baixar artifacts do Actions. Por isso o arquivo é criptografado com AES-256 e a chave aleatória é mantida fora do artifact e do repositório. Trate o artifact como público e preserve a chave privadamente.
 
 O job cria uma stack Supabase efêmera, com Auth e PostgREST locais e sem migrations ou dados semeados, restaura nela em uma única transação e a destrói ao terminar. A restauração nunca se conecta à produção. Um erro de conexão/restore falha o workflow e não autoriza migration ou deploy.
+
+A verificação cobre a estrutura e os registros de `public` e `private`. A checagem dos serviços descartáveis confirma que Auth e PostgREST respondem. Para recuperar o projeto inteiro, preserve separadamente os dados e a configuração de Auth, os metadados e bytes do Storage e os arquivos do Google Drive. Referências dos registros restaurados a esses dados só poderão funcionar após a recuperação das fontes correspondentes. Guarde a chave de cifragem do Drive separadamente caso o ledger de tokens já esteja presente no banco.
 
 ## Recuperar o artefato depois
 
@@ -131,4 +135,3 @@ O status local deste runbook não certifica execução remota. Registre aqui o S
 - [Conexão PostgreSQL e modos IPv4/IPv6](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [GitHub Environments e secrets](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
 - [GitHub Actions usage e armazenamento](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
-
