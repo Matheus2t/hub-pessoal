@@ -39,7 +39,8 @@ test("admin vê cota e exclui arquivo órfão somente após confirmação", asyn
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test("envio direto usa blocos alinhados e publica somente após confirmação do servidor", async ({ page }) => {
+for (const scenario of ["novo", "retomado", "sem avanço"] as const) {
+test(`envio Drive ${scenario} consulta o offset e só publica após confirmação`, async ({ page }) => {
   await serveBuiltSite(page);
   await prepareAdmin(page);
   const items: Record<string, unknown>[] = [], calls: { method: string; path: string; body?: any }[] = [];
@@ -59,10 +60,23 @@ test("envio direto usa blocos alinhados e publica somente após confirmação do
   });
   await page.route(supabase+"/rest/v1/mind_items**",route=>route.request().method()==="OPTIONS"?route.fulfill({status:204,headers:supabaseCors}):route.fulfill({status:200,headers:supabaseCors,json:items}));
   const ranges:string[]=[];
+  const probe = "bytes */8912896";
+  const firstChunk = "bytes 0-8388607/8912896";
+  const lastChunk = "bytes 8388608-8912895/8912896";
+  let confirmed = scenario === "retomado";
   await page.route("https://www.googleapis.com/**",async route=>{
     if(route.request().method()==="OPTIONS") return route.fulfill({status:204,headers:cors});
-    ranges.push(route.request().headers()["content-range"]??"");
-    if(ranges.length===1) return route.fulfill({status:308,headers:{...cors,Range:"bytes=0-8388607"}});
+    const range = route.request().headers()["content-range"] ?? "";
+    ranges.push(range);
+    if (range === probe) {
+      return route.fulfill({status:308,headers:confirmed ? {...cors,Range:"bytes=0-8388607"} : cors});
+    }
+    if (scenario === "sem avanço") return route.abort("connectionreset");
+    if (range === firstChunk && !confirmed) {
+      confirmed = true;
+      return route.abort("connectionreset"); // Drive persisted the chunk before the response was lost.
+    }
+    expect(range).toBe(lastChunk);
     return route.fulfill({status:201,headers:cors,json:{id:fileId}});
   });
   await page.goto("/#/mente");
@@ -76,8 +90,14 @@ test("envio direto usa blocos alinhados e publica somente após confirmação do
   await page.locator(".mind-video-draft-preview video").dispatchEvent("loadeddata");
   await page.getByRole("textbox",{name:"Título"}).fill("Aula no Drive");
   await page.getByRole("button",{name:"Publicar vídeo"}).click();
+  if (scenario === "sem avanço") {
+    await expect(page.getByRole("alert")).toContainText("O progresso foi preservado para retomada");
+    expect(ranges).toEqual([probe, firstChunk, probe, firstChunk, probe, firstChunk, probe, firstChunk, probe]);
+    expect(calls.some(call=>call.path.endsWith("/complete") || call.path.endsWith("/publish"))).toBe(false);
+    return;
+  }
   await expect(page.getByText("Alterações publicadas na biblioteca 2T.")).toBeVisible();
-  expect(ranges).toEqual(["bytes 0-8388607/8912896","bytes 8388608-8912895/8912896"]);
+  expect(ranges).toEqual(scenario === "retomado" ? [probe, lastChunk] : [probe, firstChunk, probe, lastChunk]);
   expect(calls.some(call=>call.path.endsWith("/complete"))).toBe(true);
   expect(calls.some(call=>call.path.endsWith("/publish"))).toBe(true);
   expect(items[0].drive_file_id).toBe(fileId);
@@ -96,3 +116,4 @@ test("envio direto usa blocos alinhados e publica somente após confirmação do
   expect(videoRecord).not.toHaveProperty("videoBase64");
   expect(videoRecord).not.toHaveProperty("pdfBase64");
 });
+}

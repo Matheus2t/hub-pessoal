@@ -149,28 +149,28 @@ export async function uploadMindVideoToDrive(
   let complete = false;
   let stalledChunks = 0;
   try {
+    // Drive is authoritative after a reload or a lost response. An existing
+    // resumable session can already contain bytes, even if this tab sent none.
+    ({ offset, complete } = await queryOffset(sessionUri, file.size, signal));
     while (offset < file.size && !complete) {
       if (signal?.aborted) throw new DriveUploadCancelledError();
       const priorOffset = offset;
       const endExclusive = Math.min(offset + CHUNK_BYTES, file.size);
       const chunk = file.slice(offset, endExclusive, "video/mp4");
-      let response: Response;
+      let response: Response | null;
       try {
         response = await fetch(sessionUri, { method: "PUT", body: chunk, credentials: "omit", referrerPolicy: "no-referrer", signal,
           headers: { "Content-Type": "video/mp4", "Content-Range": `bytes ${offset}-${endExclusive - 1}/${file.size}` } });
-      } catch (error) {
+      } catch {
         if (signal?.aborted) throw new DriveUploadCancelledError();
-        const recovery = await queryOffset(sessionUri, file.size, signal);
-        offset = recovery.offset; complete = recovery.complete;
-        continue;
+        response = null;
       }
-      if (response.status === 308) offset = checkOffset(parseRange(response.headers.get("Range")), file.size);
+      if (!response || response.status === 429 || response.status >= 500) {
+        ({ offset, complete } = await queryOffset(sessionUri, file.size, signal));
+      } else if (response.status === 308) offset = checkOffset(parseRange(response.headers.get("Range")), file.size);
       else if (response.status === 200 || response.status === 201) { offset = file.size; complete = true; }
       else if (response.status === 404 || response.status === 410) throw new Error("A sessão do Google expirou. O envio pode ser reiniciado com o mesmo arquivo.");
-      else if (response.status === 429 || response.status >= 500) {
-        const recovery = await queryOffset(sessionUri, file.size, signal);
-        offset = recovery.offset; complete = recovery.complete;
-      } else throw await responseError(response);
+      else throw await responseError(response);
       if (offset > priorOffset) stalledChunks = 0;
       else stalledChunks += 1;
       if (stalledChunks > 3) throw new Error("O Google não confirmou avanço após várias tentativas. O progresso foi preservado para retomada.");
