@@ -12,7 +12,6 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PROJECT_REF = "kadkcuumcahnqrvalloz";
 const CLI_VERSION = "3.2.0";
 const SUPABASE_CA = join(ROOT, "scripts", "supabase-prod-ca-2021.crt");
-const CLIENT_CA = "/run/2t/supabase-ca.crt";
 const BACKUP_SCOPE = "Supabase CLI logical dump of public/private schemas and custom roles; managed Auth/Storage schemas, extension schemas, and Storage object bytes are excluded.";
 const MAX_ARTIFACT_BYTES = 100 * 1024 * 1024;
 
@@ -53,6 +52,19 @@ export function productionConnectionUrl(raw, caPath = SUPABASE_CA) {
   // libpq decodes URI escapes but does not translate '+' into a space.
   url.search = url.searchParams.toString().replaceAll("+", "%20");
   return url.href;
+}
+
+export function productionClientEnvironment(raw, base = process.env) {
+  const target = validateProductionDbUrl(raw);
+  const password = decodeURIComponent(new URL(raw).password);
+  if (password.includes("\0")) throw new Error("A senha PostgreSQL contém um caractere nulo inválido.");
+  const clean = Object.fromEntries(Object.entries(base).filter(([key]) =>
+    !/^PG/i.test(key) && !/^(SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)$/i.test(key)));
+  return {
+    ...clean, PGHOST: target.host, PGPORT: String(target.port), PGDATABASE: target.database,
+    PGUSER: `postgres.${PROJECT_REF}`, PGPASSWORD: password, PGCONNECT_TIMEOUT: "15",
+    PGSSLMODE: "verify-full", PGSSLROOTCERT: SUPABASE_CA, PGGSSENCMODE: "disable",
+  };
 }
 
 export function validateManualEnvironment(env) {
@@ -126,6 +138,7 @@ export function classifyFailure(output = "", options = {}) {
   if ((executable === "docker" && errorCode === "ENOENT") || /spawn docker[^\n]*enoent|docker is not recognized|docker: command not found/i.test(text)) {
     return "Docker CLI is unavailable on the GitHub runner";
   }
+  if (executable === "psql" && errorCode === "ENOENT") return "Native psql is unavailable on the GitHub runner";
   if (executable === "docker" && dockerDaemonUnavailable) {
     return "Docker daemon unavailable while invoking the containerized PostgreSQL client";
   }
@@ -339,25 +352,28 @@ function pullDockerClientImage() {
   run("docker", ["pull", dockerImage], { stage: "docker-image-pull" });
 }
 
-export function buildDockerPsqlArgs(mountDir, verifyProduction = false) {
+export function buildDockerPsqlArgs(mountDir) {
   const args = ["run", "--rm", "--network", "host", "-e", "BACKUP_DB_URL", "-e", "BACKUP_QUERY"];
   if (mountDir) args.push("-v", `${mountDir}:/backup:ro`);
-  if (verifyProduction) args.push("-v", `${SUPABASE_CA}:${CLIENT_CA}:ro`, "-e", "PGCONNECT_TIMEOUT=15", "-e", "PGGSSENCMODE=disable");
   args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -w -A -t -v VERBOSITY=verbose -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
   return args;
 }
 
 function dockerPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
-  const verifyProduction = postgresStages.has(stage);
-  return run("docker", buildDockerPsqlArgs(mountDir, verifyProduction), {
-    env: { ...process.env, BACKUP_DB_URL: verifyProduction ? productionConnectionUrl(dbUrl, CLIENT_CA) : dbUrl, BACKUP_QUERY: sql }, stage,
+  return run("docker", buildDockerPsqlArgs(mountDir), {
+    env: { ...process.env, BACKUP_DB_URL: dbUrl, BACKUP_QUERY: sql }, stage,
+  }).trim();
+}
+
+function productionPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
+  return run("psql", ["-X", "-w", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", sql], {
+    env: productionClientEnvironment(dbUrl), stage,
   }).trim();
 }
 
 export async function runPostgresPreflight(env = process.env, dependencies = {}) {
   const target = validatePostgresPreflightEnvironment(env);
-  const pullImage = dependencies.pullImage ?? pullDockerClientImage;
-  const query = dependencies.query ?? dockerPsql;
+  const query = dependencies.query ?? productionPsql;
   const probe = dependencies.probe ?? probePostgresEndpoint;
   const log = dependencies.log ?? console.log;
   log(`Layer 1/5 configuration: passed (PostgreSQL ${target.database}, Session mode, TLS required; credentials suppressed).`);
@@ -365,9 +381,7 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
   const transport = await probe(target);
   log(`Layer 2/5 network: DNS passed; TCP passed (${transport.addressCount} address record(s); addresses suppressed).`);
   log(`Layer 3/5 PostgreSQL TLS: passed (${transport.tlsVersion}; peer certificate verified).`);
-  log("Retrieving the public PostgreSQL client image; registry credentials are not used.");
-  pullImage();
-  log("Layer 4/5 authentication and read-only query: running SELECT 1 over sslmode=verify-full with the Supabase CA.");
+  log("Layer 4/5 authentication and read-only query: running SELECT 1 with native libpq, verified TLS and separate connection fields.");
   let result;
   try { result = query(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-authentication"); }
   catch (error) {
@@ -384,6 +398,7 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
 
 function snapshot(dbUrl, stage = "production-postgres-connect") {
+  const query = stage === "disposable-postgres" ? dockerPsql : productionPsql;
   const metaSql = `SELECT json_build_object(
     'schemas',(SELECT coalesce(json_agg(nspname ORDER BY nspname),'[]'::json) FROM pg_namespace WHERE nspname IN ('public','private')),
     'tables',(SELECT count(*) FROM pg_tables WHERE schemaname IN ('public','private')),
@@ -391,7 +406,7 @@ function snapshot(dbUrl, stage = "production-postgres-connect") {
     'policies',(SELECT count(*) FROM pg_policies WHERE schemaname IN ('public','private')),
     'foreignKeys',(SELECT count(*) FROM pg_constraint c JOIN pg_class t ON t.oid=c.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace WHERE n.nspname IN ('public','private') AND c.contype='f')
   )::text`;
-  const meta = JSON.parse(dockerPsql(dbUrl, metaSql, undefined, stage));
+  const meta = JSON.parse(query(dbUrl, metaSql, undefined, stage));
   const structureSql = `SELECT json_build_object(
     'schemas',(SELECT coalesce(json_agg(json_build_array(n.nspname,r.rolname) ORDER BY n.nspname),'[]'::json)
       FROM pg_namespace n JOIN pg_roles r ON r.oid=n.nspowner WHERE n.nspname IN ('public','private')),
@@ -412,14 +427,14 @@ function snapshot(dbUrl, stage = "production-postgres-connect") {
     'sequences',(SELECT coalesce(json_agg(json_build_array(s.schemaname,s.sequencename,s.data_type,s.start_value,s.min_value,s.max_value,s.increment_by,s.cycle,s.cache_size,s.last_value) ORDER BY s.schemaname,s.sequencename),'[]'::json)
       FROM pg_sequences s WHERE s.schemaname IN ('public','private'))
   )::text`;
-  const structure = JSON.parse(dockerPsql(dbUrl, structureSql, undefined, stage));
-  const tables = JSON.parse(dockerPsql(dbUrl,
+  const structure = JSON.parse(query(dbUrl, structureSql, undefined, stage));
+  const tables = JSON.parse(query(dbUrl,
     "SELECT coalesce(json_agg(json_build_array(schemaname,tablename) ORDER BY schemaname,tablename),'[]'::json)::text FROM pg_tables WHERE schemaname IN ('public','private')", undefined, stage));
   const rows = {};
   for (const [schema, table] of tables) {
     const ident = `${quoteIdent(schema)}.${quoteIdent(table)}`;
     const sql = `SELECT count(*)::text || E'\\t' || md5(coalesce(string_agg(md5(to_jsonb(t)::text), '' ORDER BY md5(to_jsonb(t)::text)), '')) FROM ${ident} AS t`;
-    const [count, digest] = dockerPsql(dbUrl, sql, undefined, stage).split("\t");
+    const [count, digest] = query(dbUrl, sql, undefined, stage).split("\t");
     if (!/^\d+$/.test(count ?? "") || !/^[a-f0-9]{32}$/.test(digest ?? "")) throw new Error("A verificação agregada das tabelas retornou formato inválido.");
     rows[`${schema}.${table}`] = { count: Number(count), digest };
   }
@@ -521,6 +536,7 @@ export async function runProductionBackup(env = process.env) {
   try {
     console.log(`Backup target validated: PostgreSQL ${target.database}; connection string suppressed.`);
     await runPostgresPreflight(env);
+    pullDockerClientImage();
     console.log("Starting isolated disposable Supabase (Auth, PostgREST and local Postgres).");
     supabaseCli(["start", "--workdir", runtime, "--exclude", "studio,inbucket,imgproxy,realtime,functions,analytics,vector,supavisor"]);
     const localStatus = supabaseCli(["status", "--workdir", runtime, "-o", "env"]);

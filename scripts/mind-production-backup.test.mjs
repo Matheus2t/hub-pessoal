@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { once } from "node:events";
 import { X509Certificate } from "node:crypto";
-import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
+import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionClientEnvironment, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
 
 const goodUrl = "postgresql://postgres.kadkcuumcahnqrvalloz:strong%40password@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require";
 
@@ -31,10 +31,26 @@ test("all source connections pin Supabase CA and hostname verification without c
   assert.deepEqual([...url.searchParams], [["sslmode", "verify-full"], ["sslrootcert", caPath]]);
   assert.match(fixed, /with%20spaces/);
   assert.doesNotMatch(fixed, /hostaddr/);
-  assert.ok(buildDockerPsqlArgs(undefined, true).some(arg => arg.endsWith(":/run/2t/supabase-ca.crt:ro")));
   const ca = new X509Certificate(readFileSync(new URL("./supabase-prod-ca-2021.crt", import.meta.url)));
   assert.equal(ca.ca, true);
   assert.equal(ca.fingerprint256.replaceAll(":", "").toLowerCase(), "807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa");
+});
+
+test("native libpq gets the decoded password once and ignores inherited connection overrides", () => {
+  const raw = goodUrl.replace("strong%40password", "p%40ss+%252F");
+  const env = productionClientEnvironment(raw, {
+    PATH: "/usr/bin", PGHOSTADDR: "203.0.113.5", PGOPTIONS: "-c unexpected=setting",
+    PGSERVICE: "wrong", SUPABASE_DB_URL: "unused", BACKUP_ENCRYPTION_PASSPHRASE: "unrelated",
+  });
+  assert.equal(env.PGPASSWORD, "p@ss+%2F");
+  assert.equal(env.PGHOST, "aws-0-sa-east-1.pooler.supabase.com");
+  assert.equal(env.PGSSLMODE, "verify-full");
+  assert.match(env.PGSSLROOTCERT, /supabase-prod-ca-2021\.crt$/);
+  assert.equal(env.PATH, "/usr/bin");
+  for (const key of ["PGHOSTADDR", "PGOPTIONS", "PGSERVICE", "SUPABASE_DB_URL", "BACKUP_ENCRYPTION_PASSPHRASE"]) {
+    assert.equal(key in env, false);
+  }
+  assert.throws(() => productionClientEnvironment(raw.replace("%40", "%00"), {}), /caractere nulo/);
 });
 
 test("rejects execution outside manual main workflow or protected environment", () => {
@@ -220,7 +236,6 @@ test("standalone preflight runs layers and only a read-only SELECT, never dispos
     MIND_BACKUP_ENVIRONMENT: "production-db-backup", SUPABASE_DB_URL: goodUrl,
   };
   const result = await runPostgresPreflight(env, {
-    pullImage: () => events.push("pull"),
     probe: async () => {
       events.push("probe");
       return { dns: "passed", tcp: "passed", tls: "passed", tlsVersion: "TLSv1.3", addressCount: 1 };
@@ -235,7 +250,7 @@ test("standalone preflight runs layers and only a read-only SELECT, never dispos
     },
     log: () => {},
   });
-  assert.deepEqual(events, ["probe", "pull", "query"]);
+  assert.deepEqual(events, ["probe", "query"]);
   assert.deepEqual(result, {
     database: "postgres", sslmode: "verify-full", result: "passed",
     layers: { configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" },
