@@ -13,6 +13,7 @@ import "./calculator-catalog";
 import "./compound-calculator";
 import "./finance-calculator";
 import "./extended-finance-calculator";
+import "./cdi-dollar-calculator";
 import "./market-page";
 import "./team-shortcuts";
 import "./team-page";
@@ -79,14 +80,14 @@ export class AppShell extends LightElement {
   }
   render() {
     return html`<a class="skip-link" href="#content" @click=${(event: Event) => { event.preventDefault(); this.querySelector<HTMLElement>("#content")?.focus(); }}>Pular para o conteúdo</a>
-      <div class=${`app-layout ${['market','calculator','simple','price','sac','retirement','housing','amortization','clt','fixedIncome','catalog'].includes(this.page)?'finance-workspace':''}`}>
+      <div class=${`app-layout ${['market','calculator','simple','price','sac','retirement','housing','amortization','clt','cdiDollar','fixedIncome','catalog'].includes(this.page)?'finance-workspace':''}`}>
         <header class="masthead">
           <a class="brand" href="#/" aria-label="2T — início"><span class="brand-logo"><img src="/2t-logo.webp" width="80" height="32" alt="" /></span></a>
           <app-sidebar .page=${this.page}></app-sidebar>
           <app-topbar></app-topbar>
         </header>
         <main id="content" tabindex="-1" class="main-content">
-          ${this.page !== "overview" && this.page !== "mind" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['utilityLink','utilityBackground'].includes(this.page) ? html`<a href="#/utilitarios">Utilitários</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">Learn / Изучать</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}${this.page==='games'?this.gameBreadcrumb():''}<span aria-current="page">${this.page==='games'?this.gameTitle()||pages[this.page].title:['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
+          ${this.page !== "overview" && this.page !== "mind" ? html`<nav class="breadcrumbs" aria-label="Caminho da página"><a href="#/">Início</a><span aria-hidden="true">/</span>${['calculator','simple','price','sac','retirement','housing','amortization','clt','cdiDollar'].includes(this.page) ? html`<a href="#/calculadoras">Calculadoras</a><span aria-hidden="true">/</span>` : ''}${['utilityLink','utilityBackground'].includes(this.page) ? html`<a href="#/utilitarios">Utilitários</a><span aria-hidden="true">/</span>` : ''}${['76ers','spfc','barcelona'].includes(this.page)?html`<a href="#/times">Times</a><span aria-hidden="true">/</span>`:''}${this.page.startsWith('learn')&&this.page!=='learn'?html`<a href="#/learn">Learn / Изучать</a><span aria-hidden="true">/</span>`:''}${['learnEn','learnRu'].includes(this.page)&&learnActivities[this.route.split('/')[3]]?html`<a href=${`#/learn/${this.page==='learnEn'?'en':'ru'}`}>${pages[this.page].title}</a><span aria-hidden="true">/</span>`:''}${this.page==='games'?this.gameBreadcrumb():''}<span aria-current="page">${this.page==='games'?this.gameTitle()||pages[this.page].title:['learnEn','learnRu'].includes(this.page)?learnActivities[this.route.split('/')[3]]||pages[this.page].title:pages[this.page].title}</span></nav>` : ""}
           ${this.page.startsWith('learn') ? html`<learn-host .activity=${this.route.split('/')[3]||''} .language=${this.page==='learnEn'?'en':this.page==='learnRu'?'ru':''} .invalid=${this.page==='learnInvalid'}></learn-host>` : ''}
           ${this.page === 'overview' ? html`<home-page></home-page>` : ''}
           ${this.page === 'mind' ? html`<mind-page></mind-page>` : ''}
@@ -103,6 +104,7 @@ export class AppShell extends LightElement {
           <compound-calculator ?hidden=${this.page !== "calculator"}></compound-calculator>
           ${["simple", "price", "sac"].includes(this.page) ? keyed(this.page, html`<finance-calculator .kind=${this.page}></finance-calculator>`) : ""}
           ${["retirement", "housing", "amortization", "clt"].includes(this.page) ? keyed(this.page, html`<extended-finance-calculator .kind=${this.page}></extended-finance-calculator>`) : ""}
+          ${this.page === "cdiDollar" ? html`<cdi-dollar-calculator></cdi-dollar-calculator>` : ""}
           <footer class="page-footer">
             <div class="footer-brand-group">
               <span class="footer-logo"><img src="/2t-logo.webp" width="64" height="26" alt="2T" /></span>

@@ -1,0 +1,68 @@
+/* CDI x Dólar — calculator extends the existing monochrome 2T financial workspace. */
+cdi-dollar-calculator { display:block;min-width:0;max-width:100%; }
+.cdi-dollar-calculator .simulation-panel { padding:24px; }
+.cdi-dollar-calculator .cdi-dollar-fields { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px; }
+.cdi-dollar-calculator .cdi-dollar-fields form-field { min-width:0; }
+.cdi-dollar-calculator .cdi-dollar-intro { margin:5px 0 0;color:var(--secondary);font-size:13px;line-height:1.5; }
+.cdi-dollar-calculator .cdi-dollar-tax-label { display:block;margin:20px 0 0;color:var(--secondary);font-size:13px;font-weight:650; }
+.cdi-dollar-calculator .cdi-dollar-tax-label select { display:block;width:100%;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:6px;min-height:44px;padding:10px 12px;font:500 13px var(--font-body);margin-top:8px; }
+.cdi-dollar-calculator .cdi-dollar-tax-label select:focus-visible { outline:2px solid var(--text);outline-offset:2px; }
+.cdi-dollar-calculator .cdi-dollar-note { margin:14px 0 0;line-height:1.7;color:var(--secondary);font-size:12px; }
+.cdi-dollar-calculator .form-bottom { justify-content:stretch;margin-top:20px; }
+.cdi-dollar-calculator .form-bottom .button { width:100%;min-height:46px;justify-content:center; }
+.cdi-dollar-calculator .cdi-dollar-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.cdi-dollar-calculator .cdi-dollar-metrics .metric-card { min-width:0; }
+.cdi-dollar-calculator .cdi-dollar-metrics .metric-card strong {font-size:clamp(20px,2.3vw,32px);font-weight:690;letter-spacing:-.035em;line-height:1.18;overflow-wrap:anywhere;}
+.cdi-dollar-calculator .cdi-dollar-metrics .metric-card .metric-label {font-size:12px;line-height:1.5;}
+.cdi-dollar-calculator .cdi-dollar-stale {font-size:12px;line-height:1.5;color:var(--secondary);background:var(--raised);border:1px solid var(--line);border-radius:7px;padding:12px 14px;margin:12px 0 18px;}
+.cdi-dollar-calculator .cdi-dollar-stale strong {color:var(--text);}
+.cdi-dollar-calculator .cdi-dollar-verdict {border:1px solid var(--line);border-radius:8px;padding:17px 20px;background:var(--raised);margin:12px 0;}
+.cdi-dollar-calculator .cdi-dollar-verdict > strong {font-size:15px;line-height:1.45;color:var(--text);font-weight:660;}
+.cdi-dollar-calculator .cdi-dollar-verdict p {font-size:12px;line-height:1.7;color:var(--secondary);margin:10px 0 0;}
+.cdi-dollar-calculator .cdi-dollar-verdict p strong {color:var(--text);}
+.cdi-dollar-calculator .cdi-dollar-compare {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.cdi-dollar-calculator .cdi-dollar-compare section {min-width:0;border:1px solid var(--line-soft);border-radius:8px;padding:16px;background:var(--panel);}
+.cdi-dollar-calculator .cdi-dollar-compare section > span {display:block;font-size:10px;font-weight:720;letter-spacing:.075em;color:var(--secondary);}
+.cdi-dollar-calculator .cdi-dollar-compare section > strong {display:block;font-size:clamp(20px,2.4vw,29px);color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.035em;margin:9px 0;}
+.cdi-dollar-calculator .cdi-dollar-compare section p {color:var(--secondary);font-size:12px;line-height:1.7;margin:0;}
+.cdi-dollar-calculator .cdi-dollar-method {font-size:12px;line-height:1.65;color:var(--secondary);margin:16px 0 0;}
+.cdi-dollar-calculator .cdi-dollar-method strong {color:var(--text);}
+.cdi-dollar-calculator .cdi-dollar-chart {display:flex;flex-direction:column;padding:22px 19px 16px;min-width:0;height:100%;background:#090c10;color:#e9eef5;border:1px solid #303843;border-radius:10px;}
+.cdi-dollar-calculator .cdi-dollar-chart-top {display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
+.cdi-dollar-calculator .cdi-dollar-chart-top>div {display:grid;gap:5px;min-width:0;}
+.cdi-dollar-calculator .cdi-dollar-chart-top>div:last-child {text-align:right;justify-items:end;}
+.cdi-dollar-calculator .cdi-dollar-chart-top span {color:#96a3b4;font-size:10px;letter-spacing:.06em;}
+.cdi-dollar-calculator .cdi-dollar-chart-top strong {font-size:clamp(20px,2.2vw,29px);font-variant-numeric:tabular-nums;color:#edf1f5;overflow-wrap:anywhere;}
+.cdi-dollar-calculator .cdi-dollar-chart-top small {font-size:11px;color:#9ba9b7;}
+.cdi-dollar-calculator .cdi-dollar-chart svg {display:block;width:100%;height:auto;max-height:330px;overflow:visible;}
+.cdi-dollar-calculator .cdi-dollar-gridline {stroke:#34414e;stroke-width:1;stroke-dasharray:3 5;}
+.cdi-dollar-calculator .cdi-dollar-axis {fill:#8c9aaa;font-family:var(--font-body);font-size:11px;}
+.cdi-dollar-calculator .cdi-dollar-line-dollar,.cdi-dollar-calculator .cdi-dollar-line-cdi {fill:none;stroke-width:2.7;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;}
+.cdi-dollar-calculator .cdi-dollar-line-cdi {stroke:#e4ebf3;}
+.cdi-dollar-calculator .cdi-dollar-line-dollar {stroke:#8da6b9;stroke-dasharray:7 5;}
+.cdi-dollar-calculator .cdi-dollar-chart-cursor {stroke:#667689;stroke-dasharray:3 4;}
+.cdi-dollar-calculator .cdi-dollar-chart-dot {fill:#090c10;stroke:#e4ebf3;stroke-width:2.5;}
+.cdi-dollar-calculator .cdi-dollar-chart-dot.secondary {stroke:#8da6b9;}
+.cdi-dollar-calculator .cdi-dollar-chart-legend {display:flex;flex-wrap:wrap;gap:12px 20px;color:#a9b6c5;font-size:11px;margin:10px 0 12px;}
+.cdi-dollar-calculator .cdi-dollar-chart-legend span {display:inline-flex;align-items:center;gap:7px;}
+.cdi-dollar-calculator .cdi-dollar-chart-legend span:before {content:'';display:block;width:17px;border-top:2px solid #e4ebf3;}
+.cdi-dollar-calculator .cdi-dollar-chart-legend span:last-child:before {border-top:2px dashed #8da6b9;}
+.cdi-dollar-calculator .cdi-dollar-chart-range {display:grid;gap:10px;border-top:1px solid #293341;padding-top:13px;font-size:11px;color:#9aaabd;}
+.cdi-dollar-calculator .cdi-dollar-chart-range input {width:100%;accent-color:#e4ebf3;min-height:26px;cursor:pointer;}
+.cdi-dollar-calculator .cdi-dollar-table {min-width:0;}
+.cdi-dollar-calculator .cdi-dollar-table .table-scroll table {min-width:890px;}
+.cdi-dollar-calculator .cdi-dollar-disclosure {margin-top:13px;color:var(--muted);font-size:12px;line-height:1.65;}
+@media(max-width:1120px) and (min-width:701px) {
+ .cdi-dollar-calculator .cdi-dollar-fields {grid-template-columns:minmax(0,1fr);}
+ .cdi-dollar-calculator .cdi-dollar-metrics {grid-template-columns:minmax(0,1fr);}
+ .cdi-dollar-calculator .cdi-dollar-compare {grid-template-columns:minmax(0,1fr);}
+}
+@media(max-width:700px) {
+ .cdi-dollar-calculator .simulation-panel {padding:17px;}
+ .cdi-dollar-calculator .cdi-dollar-fields,.cdi-dollar-calculator .cdi-dollar-metrics,.cdi-dollar-calculator .cdi-dollar-compare {grid-template-columns:minmax(0,1fr);}
+ .cdi-dollar-calculator .cdi-dollar-metrics .metric-card {padding:0 0 15px;border:0;border-bottom:1px solid var(--line-soft);}
+ .cdi-dollar-calculator .cdi-dollar-metrics .metric-card:last-child {border:0;}
+ .cdi-dollar-calculator .cdi-dollar-chart {padding:16px 10px;}
+ .cdi-dollar-calculator .cdi-dollar-chart-top>div:last-child {text-align:left;justify-items:start;}
+ .cdi-dollar-calculator .cdi-dollar-table {padding:14px;}
+}
