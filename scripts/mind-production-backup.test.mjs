@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { once } from "node:events";
-import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
+import { X509Certificate } from "node:crypto";
+import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
 
 const goodUrl = "postgresql://postgres.kadkcuumcahnqrvalloz:strong%40password@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require";
 
@@ -16,9 +17,24 @@ test("accepts only the production project session pooler over TLS", () => {
   assert.throws(() => validateProductionDbUrl(goodUrl.replace("aws-0-sa-east-1", "nested.aws-0-sa-east-1")), /Session pooler/);
   assert.throws(() => validateProductionDbUrl(goodUrl.replace(":5432/", ":6543/")), /Session pooler/);
   assert.throws(() => validateProductionDbUrl(goodUrl.replace("?sslmode=require", "")), /TLS/);
-  assert.throws(() => validateProductionDbUrl(goodUrl.replace("sslmode=require", "sslmode=verify-full")), /sslmode=require/);
+  assert.throws(() => validateProductionDbUrl(goodUrl.replace("sslmode=require", "sslmode=disable")), /deve exigir TLS/);
   assert.equal(validateProductionDbUrl(goodUrl.replace("strong%40password", "p%40ss%25%2F%3A%3F")).sslmode, "require");
   assert.throws(() => validateProductionDbUrl(goodUrl.replace("strong%40password", "bad%E0%A4%A")), /percent-encoding inválido/);
+});
+
+test("all source connections pin Supabase CA and hostname verification without changing the encoded password", () => {
+  const raw = goodUrl.replace("strong%40password", "p%40ss+%252F") + "&hostaddr=203.0.113.5&sslmode=disable&sslrootcert=system";
+  const caPath = "/tmp/with spaces/supabase+ca.crt";
+  const fixed = productionConnectionUrl(raw, caPath);
+  const url = new URL(fixed);
+  assert.equal(url.password, "p%40ss+%252F");
+  assert.deepEqual([...url.searchParams], [["sslmode", "verify-full"], ["sslrootcert", caPath]]);
+  assert.match(fixed, /with%20spaces/);
+  assert.doesNotMatch(fixed, /hostaddr/);
+  assert.ok(buildDockerPsqlArgs(undefined, true).some(arg => arg.endsWith(":/run/2t/supabase-ca.crt:ro")));
+  const ca = new X509Certificate(readFileSync(new URL("./supabase-prod-ca-2021.crt", import.meta.url)));
+  assert.equal(ca.ca, true);
+  assert.equal(ca.fingerprint256.replaceAll(":", "").toLowerCase(), "807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa");
 });
 
 test("rejects execution outside manual main workflow or protected environment", () => {
@@ -221,7 +237,7 @@ test("standalone preflight runs layers and only a read-only SELECT, never dispos
   });
   assert.deepEqual(events, ["probe", "pull", "query"]);
   assert.deepEqual(result, {
-    database: "postgres", sslmode: "require", result: "passed",
+    database: "postgres", sslmode: "verify-full", result: "passed",
     layers: { configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" },
   });
 });

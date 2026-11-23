@@ -11,6 +11,8 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PROJECT_REF = "kadkcuumcahnqrvalloz";
 const CLI_VERSION = "3.2.0";
+const SUPABASE_CA = join(ROOT, "scripts", "supabase-prod-ca-2021.crt");
+const CLIENT_CA = "/run/2t/supabase-ca.crt";
 const BACKUP_SCOPE = "Supabase CLI logical dump of public/private schemas and custom roles; managed Auth/Storage schemas, extension schemas, and Storage object bytes are excluded.";
 const MAX_ARTIFACT_BYTES = 100 * 1024 * 1024;
 
@@ -33,8 +35,24 @@ export function validateProductionDbUrl(raw) {
   }
   if (url.pathname !== "/postgres") throw new Error("A URI deve apontar para o banco postgres.");
   if (!url.password || !password) throw new Error("A URI PostgreSQL não contém senha.");
-  if (sslmode !== "require") throw new Error("A URI deve usar sslmode=require; modos TLS não validados são recusados.");
+  if (sslmode !== "require" && sslmode !== "verify-full") {
+    throw new Error("A URI deve exigir TLS com sslmode=require ou sslmode=verify-full.");
+  }
   return Object.freeze({ host: url.hostname, port: 5432, database: "postgres", sslmode });
+}
+
+// Rebuild the connection parameters so libpq and pg_dump cannot inherit URI
+// overrides for the vetted host, trust anchor or SSL negotiation.
+export function productionConnectionUrl(raw, caPath = SUPABASE_CA) {
+  validateProductionDbUrl(raw);
+  const url = new URL(raw);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("sslmode", "verify-full");
+  url.searchParams.set("sslrootcert", caPath);
+  // libpq decodes URI escapes but does not translate '+' into a space.
+  url.search = url.searchParams.toString().replaceAll("+", "%20");
+  return url.href;
 }
 
 export function validateManualEnvironment(env) {
@@ -170,6 +188,7 @@ const SAFE_ERROR_CODES = new Set([
   "EAI_AGAIN", "ENOTFOUND", "ECONNREFUSED", "ETIMEDOUT", "ENETUNREACH", "EHOSTUNREACH",
   "ECONNRESET", "EPIPE", "EACCES", "ENOENT", "ENOBUFS", "CERT_HAS_EXPIRED",
   "DEPTH_ZERO_SELF_SIGNED_CERT", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "ERR_TLS_CERT_ALTNAME_INVALID",
+  "SELF_SIGNED_CERT_IN_CHAIN", "UNABLE_TO_GET_ISSUER_CERT", "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
   "ERR_SSL_WRONG_VERSION_NUMBER", "ERR_SSL_TLSV1_ALERT_PROTOCOL_VERSION", "ERR_SSL_TLSV1_ALERT_UNKNOWN_CA",
   "PG_SSL_REFUSED", "PG_SSL_RESPONSE_INVALID",
 ]);
@@ -228,7 +247,10 @@ async function negotiatePostgresTls(socket, hostname, timeoutMs = 10000) {
   }
 
   socket.setTimeout(0);
-  const secureSocket = tlsConnect({ socket, servername: hostname, rejectUnauthorized: true, minVersion: "TLSv1.2" });
+  const secureSocket = tlsConnect({
+    socket, servername: hostname, ca: readFileSync(SUPABASE_CA),
+    rejectUnauthorized: true, minVersion: "TLSv1.2",
+  });
   try {
     await new Promise((resolve, reject) => {
       const timer = setTimeout(() => reject(Object.assign(new Error("timeout"), { code: "ETIMEDOUT" })), timeoutMs);
@@ -256,7 +278,10 @@ function classifyTransportError(layer, error) {
     return "TCP connection to the configured database endpoint failed";
   }
   if (code === "PG_SSL_REFUSED") return "PostgreSQL endpoint refused the SSLRequest; TLS is required by this workflow";
-  if (code === "ERR_TLS_CERT_ALTNAME_INVALID" || code === "CERT_HAS_EXPIRED") return "PostgreSQL TLS peer certificate validation failed";
+  if (["ERR_TLS_CERT_ALTNAME_INVALID", "CERT_HAS_EXPIRED", "SELF_SIGNED_CERT_IN_CHAIN", "DEPTH_ZERO_SELF_SIGNED_CERT",
+    "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "UNABLE_TO_GET_ISSUER_CERT", "UNABLE_TO_GET_ISSUER_CERT_LOCALLY"].includes(code)) {
+    return "PostgreSQL TLS peer certificate validation failed";
+  }
   if (code === "ETIMEDOUT") return "PostgreSQL TLS negotiation timed out";
   if (code === "ECONNRESET") return "PostgreSQL TLS connection was reset during negotiation";
   return "PostgreSQL TLS negotiation or certificate validation failed";
@@ -314,16 +339,18 @@ function pullDockerClientImage() {
   run("docker", ["pull", dockerImage], { stage: "docker-image-pull" });
 }
 
-export function buildDockerPsqlArgs(mountDir) {
+export function buildDockerPsqlArgs(mountDir, verifyProduction = false) {
   const args = ["run", "--rm", "--network", "host", "-e", "BACKUP_DB_URL", "-e", "BACKUP_QUERY"];
   if (mountDir) args.push("-v", `${mountDir}:/backup:ro`);
-  args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -A -t -v VERBOSITY=verbose -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
+  if (verifyProduction) args.push("-v", `${SUPABASE_CA}:${CLIENT_CA}:ro`, "-e", "PGCONNECT_TIMEOUT=15", "-e", "PGGSSENCMODE=disable");
+  args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -w -A -t -v VERBOSITY=verbose -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
   return args;
 }
 
 function dockerPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
-  return run("docker", buildDockerPsqlArgs(mountDir), {
-    env: { ...process.env, BACKUP_DB_URL: dbUrl, BACKUP_QUERY: sql }, stage,
+  const verifyProduction = postgresStages.has(stage);
+  return run("docker", buildDockerPsqlArgs(mountDir, verifyProduction), {
+    env: { ...process.env, BACKUP_DB_URL: verifyProduction ? productionConnectionUrl(dbUrl, CLIENT_CA) : dbUrl, BACKUP_QUERY: sql }, stage,
   }).trim();
 }
 
@@ -340,7 +367,7 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
   log(`Layer 3/5 PostgreSQL TLS: passed (${transport.tlsVersion}; peer certificate verified).`);
   log("Retrieving the public PostgreSQL client image; registry credentials are not used.");
   pullImage();
-  log("Layer 4/5 authentication and read-only query: running SELECT 1 over sslmode=require.");
+  log("Layer 4/5 authentication and read-only query: running SELECT 1 over sslmode=verify-full with the Supabase CA.");
   let result;
   try { result = query(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-authentication"); }
   catch (error) {
@@ -351,7 +378,7 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
   if (result !== "1") throw new Error("PostgreSQL preflight returned an unexpected result; raw output suppressed.");
   log("Layer 4/5 authentication and SELECT 1: passed; Session Pooler accepted the configured tenant/role.");
   log("Layer 5/5 Supavisor tenant/role routing: passed as evidenced by the authenticated SELECT 1.");
-  return Object.freeze({ database: target.database, sslmode: target.sslmode, result: "passed", layers: Object.freeze({ configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" }) });
+  return Object.freeze({ database: target.database, sslmode: "verify-full", result: "passed", layers: Object.freeze({ configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" }) });
 }
 
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
@@ -505,7 +532,7 @@ export async function runProductionBackup(env = process.env) {
     const rolesPath = join(plainDir, "roles.sql");
     const schemaPath = join(plainDir, "schema.sql");
     const dataPath = join(plainDir, "data.sql");
-    const remote = `--remote=${env.SUPABASE_DB_URL}`;
+    const remote = `--remote=${productionConnectionUrl(env.SUPABASE_DB_URL)}`;
     supabaseCli(["db", "dump", remote, "-f", rolesPath, "--role-only"]);
     supabaseCli(["db", "dump", remote, "-f", schemaPath, "--schema", "public,private"]);
     supabaseCli(["db", "dump", remote, "-f", dataPath, "--data-only", "--use-copy", "--schema", "public,private"]);
