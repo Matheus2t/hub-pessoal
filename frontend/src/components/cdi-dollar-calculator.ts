@@ -213,8 +213,8 @@ export class CdiDollarCalculator extends LightElement {
           <div class="form-grid cdi-dollar-fields">${mainFields.map(f => this.formField(f))}</div>
           <label class="cdi-dollar-duration-label">Prazo do investimento
             <select aria-label="Prazo do investimento" .value=${this.duration} @change=${this.changeDuration}>
-              ${durations.map(d => html`<option value=${d.value}>${d.label}</option>`)}
-              <option value="custom">Personalizar em dias</option>
+              ${durations.map(d => html`<option value=${d.value} ?selected=${this.duration === d.value}>${d.label}</option>`)}
+              <option value="custom" ?selected=${this.duration === "custom"}>Personalizar em dias</option>
             </select>
           </label>
           ${this.duration === 'custom' ? html`<div class="cdi-dollar-custom-days">
