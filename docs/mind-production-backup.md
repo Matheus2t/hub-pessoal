@@ -58,10 +58,22 @@ Cadastre a saída completa (uma linha, 64 caracteres Base64) como **Secret value
 
 Antes da execução, confira `Settings → Billing → Usage`: o plano GitHub Free inclui 500 MB de armazenamento Actions/Packages compartilhado. O job limita o artifact a 100 MiB e o retém por 1 dia; se não houver espaço incluído suficiente, não execute até liberar quota. Standard runners são gratuitos neste repositório público; não há projeto Supabase adicional nem serviço pago.
 
-Depois de configurar o environment e secrets:
+### Preflight independente da conexão
+
+Os runs 10–12 não preservaram o `stderr` necessário para identificar retrospectivamente a causa exata; o exit code 2 do `psql`, sozinho, é genérico. O workflow oferece agora um preflight separado para classificar uma nova tentativa sem gerar dump.
+
+1. Abra `Actions → Protected Supabase production backup and restore check`, selecione a branch `main`, escolha `preflight` e inicie a execução.
+2. Aprove o job no environment protegido `production-db-backup`, conforme as regras configuradas nele.
+3. O job valida a URI sem mostrá-la, obtém o cliente PostgreSQL público e executa somente `SELECT 1` pelo Session Pooler com `sslmode=require`. Não usa a chave de criptografia, não inicia Supabase descartável, não faz dump, não grava no banco e não cria artifact.
+4. Se falhar, use somente a categoria sanitizada exibida pelo workflow para corrigir o componente indicado. Não redefina a senha por tentativa, nem copie a URI ou o `stderr` bruto para logs ou chat.
+5. Somente depois de `preflight` aprovado, inicie outra execução manual escolhendo `backup`; isso fará dump lógico e restauração no Supabase descartável.
+
+### Backup e restauração
+
+Na execução `backup`:
 
 1. Abra `Actions → Protected Supabase production backup and restore check`.
-2. Clique `Run workflow` e selecione `main`.
+2. Clique `Run workflow`, selecione `main` e escolha `backup`.
 3. Aprove o job no environment `production-db-backup`.
 4. Aguarde `backup-restore` concluir. Sucesso significa que o CLI conectou ao projeto correto, gerou os dumps, criptografou o pacote e restaurou no Supabase descartável sem diferenças nos fingerprints/metadados comparados.
 5. Baixe imediatamente o artifact `mind-production-backup-<run_id>` e armazene-o em um local privado e durável. O artifact expira após 1 dia. Ele contém somente o arquivo `.tar.gz.gpg` e seu checksum; relatórios não são publicados e nenhum SQL plaintext é enviado como artifact. O workflow falha se qualquer arquivo esperado estiver ausente.
@@ -105,3 +117,4 @@ O status local deste runbook não certifica execução remota. Registre aqui o S
 - [Conexão PostgreSQL e modos IPv4/IPv6](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [GitHub Environments e secrets](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
 - [GitHub Actions usage e armazenamento](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
+
