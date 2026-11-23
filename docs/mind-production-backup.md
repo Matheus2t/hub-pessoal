@@ -60,13 +60,27 @@ Antes da execução, confira `Settings → Billing → Usage`: o plano GitHub Fr
 
 ### Preflight independente da conexão
 
-Os runs 10–12 não preservaram o `stderr` necessário para identificar retrospectivamente a causa exata; o exit code 2 do `psql`, sozinho, é genérico. O workflow oferece agora um preflight separado para classificar uma nova tentativa sem gerar dump.
+O run 13 confirmou que a URI passou pela validação estrutural e que a imagem pública `postgres:17-alpine` foi obtida, mas terminou com `psql` exit 2. Esse código significa apenas que a conexão caiu em modo não interativo; não identifica DNS, TCP, TLS, autenticação ou Supavisor. Os logs históricos consultáveis não preservaram o diagnóstico bruto e, portanto, a causa remota exata daquele run não pode ser reconstruída.
 
-1. Abra `Actions → Protected Supabase production backup and restore check`, selecione a branch `main`, escolha `preflight` e inicie a execução.
+O preflight agora separa as verificações sem registrar endpoint, IP, usuário, URI ou saída bruta:
+
+1. configuração da URI e modo Session Pooler;
+2. resolução DNS e abertura TCP;
+3. PostgreSQL `SSLRequest`, negociação TLS 1.2+ e validação do certificado do peer;
+4. execução read-only de `SELECT 1` por `psql`;
+5. classificação do tenant/role Supavisor quando a autenticação retorna uma mensagem compatível.
+
+Falhas de processo analisam stdout e stderr apenas em memória. Assinaturas conhecidas são convertidas em categorias fixas e SQLSTATE quando disponível. Para falhas desconhecidas, o log contém UUID de diagnóstico, estágio, código de saída, tamanhos dos dois fluxos e código de spawn permitido; nunca imprime o texto original.
+
+`VERBOSITY=verbose` é uma variável válida do `psql`, mas não torna o diagnóstico inicial garantidamente verboso: na inicialização, o hook só chama `PQsetErrorVerbosity` quando já existe uma conexão, enquanto a tentativa inicial ainda está criando essa conexão. Por isso o preflight não depende dessa variável para obter SQLSTATE. As camadas independentes distinguem DNS/TCP/TLS; o `psql` permite classificar autenticação e mensagens Supavisor quando as apresenta. Uma resposta sem assinatura reconhecida continua explicitamente inconclusiva, com UUID e metadados sanitizados.
+
+Referências: a documentação do [exit status do `psql` 17](https://www.postgresql.org/docs/17/app-psql.html#APP-PSQL-EXIT-STATUS) define 2 como conexão interrompida não interativa; a documentação de [variáveis especiais](https://www.postgresql.org/docs/17/app-psql.html#APP-PSQL-VARIABLES) descreve `VERBOSITY`; e o [código oficial de inicialização do psql](https://doxygen.postgresql.org/bin_2psql_2startup_8c_source.html) mostra que o hook chama `PQsetErrorVerbosity` apenas se `pset.db` já existe. O `psql` cria a conexão inicial antes de ter esse `PGconn` disponível ao hook.
+
+1. Para uma verificação isolada, abra `Actions → Protected Supabase production backup and restore check`, selecione a branch `main` e escolha `preflight`.
 2. Aprove o job no environment protegido `production-db-backup`, conforme as regras configuradas nele.
-3. O job valida a URI sem mostrá-la, obtém o cliente PostgreSQL público e executa somente `SELECT 1` pelo Session Pooler com `sslmode=require`. Não usa a chave de criptografia, não inicia Supabase descartável, não faz dump, não grava no banco e não cria artifact.
-4. Se falhar, use somente a categoria sanitizada exibida pelo workflow para corrigir o componente indicado. Não redefina a senha por tentativa, nem copie a URI ou o `stderr` bruto para logs ou chat.
-5. Somente depois de `preflight` aprovado, inicie outra execução manual escolhendo `backup`; isso fará dump lógico e restauração no Supabase descartável.
+3. O `preflight` executa somente as camadas acima e `SELECT 1`; não usa a chave de criptografia, não inicia Supabase descartável, não faz dump, não grava no banco e não cria artifact.
+4. Se falhar, use somente a etapa/categoria/SQLSTATE sanitizados para identificar a correção. Não redefina senha por tentativa e não copie URI ou saída bruta para logs ou chat.
+5. A operação `backup` repete o mesmo preflight e só então inicia dump e restauração descartável. Escolha `backup` quando estiver pronto para concluir o fluxo em uma única execução manual; se o preflight falhar, nenhum dump será iniciado.
 
 ### Backup e restauração
 

@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { buildRestoreCommand, classifyFailure, compareSnapshots, parseLocalDbUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
+import { createServer } from "node:net";
+import { once } from "node:events";
+import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
 
 const goodUrl = "postgresql://postgres.kadkcuumcahnqrvalloz:strong%40password@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require";
 
@@ -73,7 +75,7 @@ test("distinguishes authentication, role/tenant, network, TLS, Supavisor, URI, D
     stage: "production-postgres-connect", exitCode: 2,
   }), "PostgreSQL rejected password authentication (SQLSTATE 28P01)");
   assert.equal(classifyFailure("psql: error: FATAL: Tenant or user not found", { stage: "production-postgres-connect", exitCode: 2 }),
-    "Supavisor did not resolve the project tenant or pooler role; copy the exact Session Pooler URI from Supabase Connect");
+    "Supavisor did not resolve the configured project tenant or pooler role; verify the exact Session Pooler URI in Supabase Connect");
   assert.equal(classifyFailure("FATAL: Circuit breaker open", { stage: "production-postgres-connect", exitCode: 2 }),
     "Supavisor circuit breaker is open; stop reconnect attempts and review pooler authentication before retrying");
   assert.equal(classifyFailure("could not translate host name 'hidden'", { stage: "production-postgres-connect", exitCode: 2 }), "DNS resolution failed");
@@ -91,36 +93,142 @@ test("distinguishes authentication, role/tenant, network, TLS, Supavisor, URI, D
     stage: "disposable-supabase-start", exitCode: 1,
   }), "Disposable Supabase could not retrieve a container image (registry authentication or pull limit)");
   assert.equal(classifyFailure("psql connection failed", { stage: "production-postgres-connect", exitCode: 2 }),
-    "PostgreSQL client failed (psql exit 2); no safe diagnostic class was found and raw output was suppressed");
+    "PostgreSQL session failed without a recognized safe signature (psql exit 2); raw output suppressed");
   assert.equal(classifyFailure("spawn docker ENOENT", { stage: "production-postgres-connect", exitCode: null }),
     "Docker CLI is unavailable on the GitHub runner");
+  assert.equal(classifyFailure({ stdout: "", stderr: "" }, {
+    stage: "production-postgres-connect", errorCode: "ENOENT", executable: "docker", exitCode: null,
+  }), "Docker CLI is unavailable on the GitHub runner");
+  assert.equal(classifyFailure({ stdout: "FATAL: 28P01: password authentication failed for user private-user", stderr: "" }, {
+    stage: "production-postgres-authentication", exitCode: 2,
+  }), "PostgreSQL rejected password authentication (SQLSTATE 28P01)");
+  assert.equal(classifyFailure({ stdout: "FATAL: (ENOTFOUND) tenant/user postgres.private not found", stderr: "" }, {
+    stage: "production-postgres-authentication", exitCode: 2,
+  }), "Supavisor did not resolve the configured project tenant or pooler role; verify the exact Session Pooler URI in Supabase Connect");
+  assert.equal(classifyFailure({ stdout: "", stderr: "ERROR:  53300: remaining connection slots are reserved" }, {
+    stage: "production-postgres-authentication", exitCode: 2,
+  }), "PostgreSQL refused the connection because its connection limit was reached (SQLSTATE 53300)");
+  assert.equal(classifyFailure({ stdout: "", stderr: "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 125,
+  }), "Docker daemon unavailable while invoking the containerized PostgreSQL client");
+  assert.equal(classifyFailure({ stdout: "", stderr: "Error response from daemon: unauthorized: authentication required" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 125,
+  }), "Docker registry refused the PostgreSQL client image during container invocation");
+  assert.equal(classifyFailure({ stdout: "", stderr: "psql: error: FATAL: password authentication failed for user hidden" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 2,
+  }), "PostgreSQL rejected password authentication; verify the Session Pooler URI and percent-encoding");
 });
 
-test("standalone preflight runs only a read-only SELECT and never starts disposable Supabase", () => {
+test("unclassified process failures expose only a diagnostic ID and stream sizes", () => {
+  const unsafe = "postgresql://sensitive-user:my-unique-secret@db.private.example:5432/postgres?token=private-token; client 203.0.113.77";
+  const message = formatCommandFailure({
+    stage: "production-postgres-authentication",
+    stdout: `unexpected stdout ${unsafe}`,
+    stderr: `unexpected stderr ${unsafe}`,
+    errorCode: "SENSITIVE_VALUE",
+    exitCode: 2,
+  });
+  assert.match(message, /diagnostic_id=[0-9a-f-]{36}/);
+  assert.match(message, /stdout_bytes=\d+; stderr_bytes=\d+/);
+  assert.match(message, /spawn_code=none/);
+  assert.doesNotMatch(message, /sensitive-user|my-unique-secret|private\.example|private-token|203\.0\.113\.77/);
+});
+
+test("Docker argv carries only environment variable names, never the URI, password, or SQL", () => {
+  const args = buildDockerPsqlArgs(undefined);
+  const joined = args.join(" ");
+  assert.deepEqual(args.slice(0, 8), ["run", "--rm", "--network", "host", "-e", "BACKUP_DB_URL", "-e", "BACKUP_QUERY"]);
+  assert.match(joined, /psql "\$BACKUP_DB_URL"/);
+  assert.match(joined, /-c "\$BACKUP_QUERY"/);
+  assert.doesNotMatch(joined, /kadkcuumcahnqrvalloz|strong|SELECT 1|@aws-/);
+});
+
+test("transport probe independently records DNS, TCP, and TLS without exposing addresses", async () => {
+  const layers = await probePostgresEndpoint({ host: "pooler.example.test", port: 5432 }, {
+    lookup: async () => [{ address: "203.0.113.10", family: 4 }],
+    connectTcp: async (address, port) => ({ address, port, destroy() {} }),
+    negotiateTls: async (socket, hostname) => {
+      assert.equal(socket.port, 5432);
+      assert.equal(hostname, "pooler.example.test");
+      return "TLSv1.3";
+    },
+  });
+  assert.deepEqual(layers, { dns: "passed", tcp: "passed", tls: "passed", tlsVersion: "TLSv1.3", addressCount: 1 });
+  assert.doesNotMatch(JSON.stringify(layers), /203\.0\.113\.10|pooler\.example\.test/);
+});
+
+test("DNS and TCP failures are separately classified and omit the host and resolved address", async () => {
+  await assert.rejects(probePostgresEndpoint({ host: "private-pooler.example.test", port: 5432 }, {
+    lookup: async () => { throw Object.assign(new Error("private host text"), { code: "ENOTFOUND" }); },
+  }), (error) => {
+    assert.match(error.message, /production-postgres-dns: DNS could not resolve/);
+    assert.match(error.message, /code=ENOTFOUND/);
+    assert.doesNotMatch(error.message, /private-pooler|private host text/);
+    return true;
+  });
+  await assert.rejects(probePostgresEndpoint({ host: "private-pooler.example.test", port: 5432 }, {
+    lookup: async () => [{ address: "203.0.113.20", family: 4 }],
+    connectTcp: async () => { throw Object.assign(new Error("private address text"), { code: "ECONNREFUSED" }); },
+  }), (error) => {
+    assert.match(error.message, /production-postgres-tcp: TCP connection .* refused/);
+    assert.match(error.message, /code=ECONNREFUSED/);
+    assert.doesNotMatch(error.message, /private-pooler|203\.0\.113\.20|private address text/);
+    return true;
+  });
+});
+
+test("real loopback TCP PostgreSQL SSLRequest refusal is distinguished as TLS, not Docker or authentication", async (t) => {
+  const server = createServer((socket) => {
+    socket.once("data", (data) => {
+      assert.deepEqual([...data.subarray(0, 8)], [0, 0, 0, 8, 4, 210, 22, 47]);
+      socket.write("N");
+      socket.end();
+    });
+  });
+  server.listen(0, "127.0.0.1");
+  await once(server, "listening");
+  t.after(() => server.close());
+  const port = server.address().port;
+  await assert.rejects(probePostgresEndpoint({ host: "127.0.0.1", port }), (error) => {
+    assert.match(error.message, /production-postgres-tls: PostgreSQL endpoint refused the SSLRequest/);
+    assert.match(error.message, /code=PG_SSL_REFUSED/);
+    assert.doesNotMatch(error.message, /127\.0\.0\.1|\b\d{1,3}(?:\.\d{1,3}){3}\b/);
+    return true;
+  });
+});
+
+test("standalone preflight runs layers and only a read-only SELECT, never disposable Supabase", async () => {
   const events = [];
   const env = {
     GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
     MIND_BACKUP_ENVIRONMENT: "production-db-backup", SUPABASE_DB_URL: goodUrl,
   };
-  const result = runPostgresPreflight(env, {
+  const result = await runPostgresPreflight(env, {
     pullImage: () => events.push("pull"),
+    probe: async () => {
+      events.push("probe");
+      return { dns: "passed", tcp: "passed", tls: "passed", tlsVersion: "TLSv1.3", addressCount: 1 };
+    },
     query: (url, sql, mountDir, stage) => {
       events.push("query");
       assert.equal(url, goodUrl);
       assert.equal(sql, "SELECT 1");
       assert.equal(mountDir, undefined);
-      assert.equal(stage, "production-postgres-connect");
+      assert.equal(stage, "production-postgres-authentication");
       return "1";
     },
     log: () => {},
   });
-  assert.deepEqual(events, ["pull", "query"]);
-  assert.deepEqual(result, { database: "postgres", sslmode: "require", result: "passed" });
+  assert.deepEqual(events, ["probe", "pull", "query"]);
+  assert.deepEqual(result, {
+    database: "postgres", sslmode: "require", result: "passed",
+    layers: { configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" },
+  });
 });
 
 test("backup invokes the independent preflight before starting disposable Supabase", () => {
   const script = readFileSync(new URL("./mind-production-backup.mjs", import.meta.url), "utf8");
-  const preflight = script.indexOf("runPostgresPreflight(env);");
+  const preflight = script.indexOf("await runPostgresPreflight(env);");
   const stackStart = script.indexOf('supabaseCli(["start"');
   assert.ok(preflight >= 0 && stackStart > preflight);
 });
@@ -169,4 +277,3 @@ test("workflow is manual, main-only, protected, and injects only two environment
   assert.doesNotMatch(workflow, /secrets\.(?!SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)/);
   assert.doesNotMatch(workflow, /pull_request:|push:/);
 });
-
