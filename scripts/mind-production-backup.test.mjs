@@ -108,6 +108,15 @@ test("distinguishes authentication, role/tenant, network, TLS, Supavisor, URI, D
   assert.equal(classifyFailure({ stdout: "", stderr: "ERROR:  53300: remaining connection slots are reserved" }, {
     stage: "production-postgres-authentication", exitCode: 2,
   }), "PostgreSQL refused the connection because its connection limit was reached (SQLSTATE 53300)");
+  assert.equal(classifyFailure({ stdout: "", stderr: "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 125,
+  }), "Docker daemon unavailable while invoking the containerized PostgreSQL client");
+  assert.equal(classifyFailure({ stdout: "", stderr: "Error response from daemon: unauthorized: authentication required" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 125,
+  }), "Docker registry refused the PostgreSQL client image during container invocation");
+  assert.equal(classifyFailure({ stdout: "", stderr: "psql: error: FATAL: password authentication failed for user hidden" }, {
+    stage: "production-postgres-authentication", executable: "docker", exitCode: 2,
+  }), "PostgreSQL rejected password authentication; verify the Session Pooler URI and percent-encoding");
 });
 
 test("unclassified process failures expose only a diagnostic ID and stream sizes", () => {
@@ -268,4 +277,3 @@ test("workflow is manual, main-only, protected, and injects only two environment
   assert.doesNotMatch(workflow, /secrets\.(?!SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)/);
   assert.doesNotMatch(workflow, /pull_request:|push:/);
 });
-
