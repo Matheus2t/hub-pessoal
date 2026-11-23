@@ -35,16 +35,21 @@ export function validateProductionDbUrl(raw) {
 }
 
 export function validateManualEnvironment(env) {
-  if (env.GITHUB_ACTIONS !== "true" || env.GITHUB_EVENT_NAME !== "workflow_dispatch" || env.GITHUB_REF !== "refs/heads/main") {
-    throw new Error("Backup bloqueado: execute manualmente a partir da branch main no GitHub Actions.");
-  }
-  if (env.MIND_BACKUP_ENVIRONMENT !== "production-db-backup") {
-    throw new Error("Backup bloqueado: environment protegido production-db-backup não foi selecionado.");
-  }
-  if (!env.SUPABASE_DB_URL) throw new Error("Secret de conexão ausente no environment protegido.");
+  const target = validatePostgresPreflightEnvironment(env);
   if (!/^[A-Za-z0-9+/]{64}$/.test(env.BACKUP_ENCRYPTION_PASSPHRASE || "")) {
     throw new Error("A chave deve ser a saída Base64 de 48 bytes aleatórios (64 caracteres, sem quebra de linha).");
   }
+  return target;
+}
+
+export function validatePostgresPreflightEnvironment(env) {
+  if (env.GITHUB_ACTIONS !== "true" || env.GITHUB_EVENT_NAME !== "workflow_dispatch" || env.GITHUB_REF !== "refs/heads/main") {
+    throw new Error("Preflight bloqueado: execute manualmente a partir da branch main no GitHub Actions.");
+  }
+  if (env.MIND_BACKUP_ENVIRONMENT !== "production-db-backup") {
+    throw new Error("Preflight bloqueado: environment protegido production-db-backup não foi selecionado.");
+  }
+  if (!env.SUPABASE_DB_URL) throw new Error("Secret de conexão ausente no environment protegido.");
   return validateProductionDbUrl(env.SUPABASE_DB_URL);
 }
 
@@ -75,6 +80,9 @@ export function buildRestoreCommand() {
 export function classifyFailure(stderr = "", { stage = "command", exitCode = null } = {}) {
   const registryAuthFailure = /unauthorized|authentication required|pull access denied|requested access to the resource is denied|failed to authorize|toomanyrequests|too many requests/i.test(stderr);
   const dockerDaemonUnavailable = /cannot connect to the docker daemon|docker daemon is not running|error during connect/i.test(stderr);
+  if (/spawn docker[^\n]*enoent|docker is not recognized|docker: command not found/i.test(stderr)) {
+    return "Docker CLI is unavailable on the GitHub runner";
+  }
   if (stage === "docker-image-pull") {
     if (registryAuthFailure) return "Docker registry refused the public PostgreSQL client image (authentication or anonymous pull limit)";
     if (dockerDaemonUnavailable) return "Docker daemon unavailable while pulling the PostgreSQL client image";
@@ -92,23 +100,35 @@ export function classifyFailure(stderr = "", { stage = "command", exitCode = nul
       : "PostgreSQL connection URI contains invalid percent-encoding; raw output suppressed";
   }
   if (stage === "production-postgres-connect" || stage === "production-db-dump") {
+    if (/circuit breaker open/i.test(stderr)) return "Supavisor circuit breaker is open; stop reconnect attempts and review pooler authentication before retrying";
+    if (/tenant or user not found|tenant not found/i.test(stderr)) return "Supavisor did not resolve the project tenant or pooler role; copy the exact Session Pooler URI from Supabase Connect";
+    const sqlState = (stderr.match(/\bFATAL:\s*([0-9A-Z]{5}):/i)?.[1]
+      ?? stderr.match(/^(?:ERROR):\s*([0-9A-Z]{5}):/im)?.[1])?.toUpperCase();
+    if (sqlState === "28P01") return "PostgreSQL rejected password authentication (SQLSTATE 28P01)";
+    if (sqlState === "28000") return "PostgreSQL rejected the authentication role (SQLSTATE 28000)";
+    if (sqlState === "3D000") return "PostgreSQL rejected the requested database (SQLSTATE 3D000)";
+    if (sqlState === "53300") return "PostgreSQL refused the connection because its connection limit was reached (SQLSTATE 53300)";
+    if (sqlState === "57P03") return "PostgreSQL is not accepting connections yet (SQLSTATE 57P03)";
     if (/password authentication failed|SASL authentication failed|no password supplied/i.test(stderr)) {
-      return "PostgreSQL rejected password authentication; verify the Session Pooler role and SUPABASE_DB_URL password";
+      return "PostgreSQL rejected password authentication; verify the Session Pooler URI and percent-encoding";
     }
     if (/role .{0,120} does not exist|user .{0,120} does not exist/i.test(stderr)) {
       return "PostgreSQL rejected the login role; use the Session Pooler username copied from Supabase";
     }
+    if (/no pg_hba\.conf entry|connection is insecure|SSL off/i.test(stderr)) return "PostgreSQL rejected the client connection or TLS policy";
   }
   if (stage === "disposable-postgres" && /password authentication failed|SASL authentication failed|no password supplied/i.test(stderr)) {
     return "Disposable PostgreSQL rejected local restore credentials; production URL was not used for this connection";
   }
 
-  if (/could not translate host|name or service not known|temporary failure in name resolution/i.test(stderr)) return "DNS resolution failed";
-  if (/certificate|SSL error|TLS error|sslmode/i.test(stderr)) return "TLS verification failed";
-  if (/timeout|timed out|connection refused|no route to host|network is unreachable/i.test(stderr)) return "database network connection failed";
+  if (/could not translate host|name or service not known|temporary failure in name resolution|getaddrinfo.*(fail|error)|enotfound/i.test(stderr)) return "DNS resolution failed";
+  if (/certificate|SSL error|SSL SYSCALL|TLS error|sslmode|wrong version number/i.test(stderr)) return "TLS negotiation or certificate verification failed";
+  if (/timeout|timed out|timeout expired|ETIMEDOUT/i.test(stderr)) return "database connection timed out";
+  if (/connection refused|ECONNREFUSED/i.test(stderr)) return "database connection was refused";
+  if (/no route to host|network is unreachable|network is down/i.test(stderr)) return "database network route is unavailable";
   if (/permission denied|not authorized|insufficient privilege/i.test(stderr)) return "database permissions rejected";
   if (stage === "production-postgres-connect" && exitCode === 2) {
-    return "PostgreSQL connection check failed (psql exit 2); verify the Session Pooler URI, role, password and percent-encoding";
+    return "PostgreSQL client failed (psql exit 2); no safe diagnostic class was found and raw output was suppressed";
   }
   if (stage === "disposable-postgres" && exitCode === 2) return "Disposable PostgreSQL restore connection failed (psql exit 2)";
   if (stage === "production-db-dump") return "Supabase production database dump failed; raw output suppressed";
@@ -133,8 +153,23 @@ function pullDockerClientImage() {
 function dockerPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
   const args = ["run", "--rm", "--network", "host", "-e", "BACKUP_DB_URL", "-e", "BACKUP_QUERY"];
   if (mountDir) args.push("-v", `${mountDir}:/backup:ro`);
-  args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -A -t -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
+  args.push(dockerImage, "sh", "-lc", "psql \"$BACKUP_DB_URL\" -X -A -t -v VERBOSITY=verbose -v ON_ERROR_STOP=1 -c \"$BACKUP_QUERY\"");
   return run("docker", args, { env: { ...process.env, BACKUP_DB_URL: dbUrl, BACKUP_QUERY: sql }, stage }).trim();
+}
+
+export function runPostgresPreflight(env = process.env, dependencies = {}) {
+  const target = validatePostgresPreflightEnvironment(env);
+  const pullImage = dependencies.pullImage ?? pullDockerClientImage;
+  const query = dependencies.query ?? dockerPsql;
+  const log = dependencies.log ?? console.log;
+  log(`Validated configured target: PostgreSQL ${target.database}; connection string suppressed.`);
+  log("Pulling the public PostgreSQL client image; no registry credentials are configured.");
+  pullImage();
+  log("Running the read-only PostgreSQL preflight (SELECT 1; sslmode=require).");
+  const result = query(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-connect");
+  if (result !== "1") throw new Error("PostgreSQL preflight returned an unexpected result; raw output suppressed.");
+  log("PostgreSQL authentication, target URI and required TLS preflight passed.");
+  return Object.freeze({ database: target.database, sslmode: target.sslmode, result: "passed" });
 }
 
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
@@ -275,14 +310,8 @@ export async function runProductionBackup(env = process.env) {
   let backupMeta;
 
   try {
-    console.log(`Target validated: ${target.database} on the configured Supabase session pooler; URL/password suppressed.`);
-    console.log("Checking access to the public PostgreSQL client image; no registry credentials are configured.");
-    pullDockerClientImage();
-    console.log("Checking SUPABASE_DB_URL with read-only SELECT 1; connection details are suppressed.");
-    if (dockerPsql(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-connect") !== "1") {
-      throw new Error("PostgreSQL read-only connection check returned an unexpected result.");
-    }
-    console.log("Production PostgreSQL authentication and read-only connectivity verified.");
+    console.log(`Backup target validated: PostgreSQL ${target.database}; connection string suppressed.`);
+    runPostgresPreflight(env);
     console.log("Starting isolated disposable Supabase (Auth, PostgREST and local Postgres).");
     supabaseCli(["start", "--workdir", runtime, "--exclude", "studio,inbucket,imgproxy,realtime,functions,analytics,vector,supavisor"]);
     const localStatus = supabaseCli(["status", "--workdir", runtime, "-o", "env"]);
@@ -365,6 +394,10 @@ export async function runProductionBackup(env = process.env) {
 
 async function main() {
   const command = process.argv[2];
+  if (command === "preflight") {
+    runPostgresPreflight();
+    return;
+  }
   if (command !== "run") throw new Error("Use this script only through the protected manual GitHub Actions workflow.");
   await runProductionBackup();
 }
