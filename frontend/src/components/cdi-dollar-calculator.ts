@@ -19,8 +19,8 @@ const moneyUsd = (v:number) => new Intl.NumberFormat('pt-BR',{style:'currency',c
 const percent = (v:number) => new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v)+'%';
 const exchange = (v:number) => money(v)+'/US$';
 const parseField = (value:string,key:FieldKey) => {
-  const raw = value.trim().replace(/R\\$|\\s/g,'');
-  if (key === 'principal' && /^\\d{1,3}(\\.\\d{3})+$/.test(raw)) return Number(raw.replace(/\\./g,''));
+  const raw = value.trim().replace(/R\$|\s/g,'');
+  if (key === 'principal' && /^\d{1,3}(\.\d{3})+$/.test(raw)) return Number(raw.replace(/\./g,''));
   return parseBrazilian(value);
 };
 
@@ -121,7 +121,7 @@ export class CdiDollarCalculator extends LightElement {
         <section><span>DEIXANDO O DINHEIRO NO CDI</span><strong>${money(out.netBRL)}</strong>
           <p>Investimento inicial: ${money(out.principal)} · Rendimento bruto: ${money(out.gainBRL)} · IR estimado: ${money(out.irAmount)} (${percent(out.irRate*100)})</p></section>
         <section><span>COMPRANDO DÓLARES E MANTENDO</span><strong>${money(out.dollarHoldBRL)}</strong>
-          <p>${moneyUsd(out.initialDollars)} comprados a ${exchange(parseField(this.values.initialFx,'initialFx'))}; avaliados no câmbio final, sem remuneração em USD</p></section>
+          <p>${moneyUsd(out.initialDollars)} comprados a ${exchange(out.initialFx)}; avaliados no câmbio final, sem remuneração em USD</p></section>
       </div>
       <p class="cdi-dollar-method">O câmbio de equilíbrio é o preço futuro do dólar que faria as duas opções terminarem com o mesmo valor em reais. Isso <strong>não</strong> é uma proteção cambial contratada.</p>`;
   }

@@ -31,7 +31,7 @@ export type CdiDollarRow = {
   balanceDifferenceBRL: number;
 };
 export type CdiDollarOutput = {
-  principal: number;
+  principal: number; initialFx: number; finalFx: number;
   grossBRL: number;
   gainBRL: number;
   irAmount: number;
@@ -97,7 +97,7 @@ export function simulateCdiDollar(input: CdiDollarInput): CdiDollarOutput {
   }
   const fxBreakeven = initialFx * final.net / principal;
   return {
-    principal,grossBRL:final.gross,gainBRL:final.gains,irAmount:final.tax,
+    principal,initialFx,finalFx,grossBRL:final.gross,gainBRL:final.gains,irAmount:final.tax,
     irRate:final.irRate,netBRL:final.net,
     nominalNetReturn:(final.net/principal-1)*100,
     initialDollars,

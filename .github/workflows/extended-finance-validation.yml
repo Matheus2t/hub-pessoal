@@ -3,6 +3,10 @@ on:
   pull_request:
     paths:
       - 'frontend/src/extended-finance.ts'
+      - 'frontend/src/cdi-dollar.ts'
+      - 'frontend/src/components/cdi-dollar-calculator.ts'
+      - 'frontend/styles/_cdi-dollar.scss'
+      - 'frontend/tests/cdi-dollar.spec.ts'
       - 'frontend/src/components/year-navigation.ts'
       - 'frontend/src/components/results-table.ts'
       - 'frontend/src/components/finance-calculator.ts'
@@ -36,4 +40,4 @@ jobs:
         env:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
-        run: npx playwright test frontend/tests/extended-finance.spec.ts frontend/tests/calculator-improvements.spec.ts
+        run: npx playwright test frontend/tests/extended-finance.spec.ts frontend/tests/calculator-improvements.spec.ts frontend/tests/cdi-dollar.spec.ts

@@ -1,7 +1,7 @@
 import type { IconName } from "./ui";
 import { backgroundRemoverPreviewEnabled, linkResolverPreviewEnabled, utilitiesCatalogEnabled } from "./utilities/flags";
 import { isLearnDelayedReviewPreviewEnabled,isLearnDiagnosticPreviewEnabled,isLearnIntegrationPreviewEnabled,isLearnListeningV13PreviewEnabled,isLearnPilotPreviewEnabled } from "./learn/pilot-preview";
-export type Page = "mind" | "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "catalog" | "market" | "fixedIncome" | "utilities" | "utilityLink" | "utilityBackground" | "76ers" | "spfc" | "barcelona";
+export type Page = "mind" | "games" | "call" | "sports" | "learn" | "learnEn" | "learnRu" | "learnInvalid" | "overview" | "calculator" | "simple" | "price" | "sac" | "retirement" | "housing" | "amortization" | "clt" | "cdiDollar" | "catalog" | "market" | "fixedIncome" | "utilities" | "utilityLink" | "utilityBackground" | "76ers" | "spfc" | "barcelona";
 export interface Tool {
   id: string;
   name: string;
@@ -27,6 +27,7 @@ export const tools: Tool[] = [
   { id: 'housing', name: 'Aluguel x Financiamento', category: 'Calculadoras', description: 'Compare o patrimônio de alugar ou comprar.', icon: 'calculator', href: '#/aluguel-vs-financiamento' },
   { id: 'amortization', name: 'Calculadora de amortização', category: 'Calculadoras', description: 'Antecipe parcelas e reduza juros ou prazo.', icon: 'calculator', href: '#/amortizacao' },
   { id: 'clt', name: 'Custo de funcionário CLT', category: 'Calculadoras', description: 'Salário, encargos e benefícios do empregador.', icon: 'calculator', href: '#/custo-clt' },
+  { id: 'cdiDollar', name: 'CDI x Dólar', category: 'Calculadoras', description: 'Veja até que alta do dólar o CDI líquido consegue compensar.', icon: 'calculator', href: '#/cdi-vs-dolar' },
 ];
 export const pages: Record<Page, { title: string; section: string }> = {
   mind: {title:'Mente',section:'Conhecimento'},
@@ -48,6 +49,7 @@ export const pages: Record<Page, { title: string; section: string }> = {
   housing: { title: 'Aluguel x Financiamento', section: 'Calculadoras' },
   amortization: { title: 'Calculadora de amortização', section: 'Calculadoras' },
   clt: { title: 'Custo de funcionário CLT', section: 'Calculadoras' },
+  cdiDollar: { title: 'CDI x Dólar', section: 'Calculadoras' },
   catalog: { title: 'Calculadoras', section: 'Calculadoras' },
   market: { title: 'Mercado de Ações', section: 'Ações' },
   simple: { title: 'Juros simples', section: 'Calculadoras' },
@@ -71,7 +73,8 @@ export const currentPage = (): Page =>
   location.hash === '#/aposentadoria' ? 'retirement' :
   location.hash === '#/aluguel-vs-financiamento' ? 'housing' :
   location.hash === '#/amortizacao' ? 'amortization' :
-  location.hash === '#/custo-clt' ? 'clt' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
+  location.hash === '#/custo-clt' ? 'clt' :
+  location.hash === '#/cdi-vs-dolar' ? 'cdiDollar' : /^#\/acoes(?:\/.*)?$/.test(location.hash) ? 'market' :
   location.hash === '#/juros-simples' ? 'simple' : location.hash === '#/price' ? 'price' : location.hash === '#/sac' ? 'sac' : location.hash === "#/calculadora"
     ? "calculator"
     : "overview";

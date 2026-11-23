@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('catalog lists all eight calculators and routes stay reachable', async ({ page }) => {
+test('catalog lists all nine calculators and routes stay reachable', async ({ page }) => {
   await page.goto('/#/calculadoras');
-  await expect(page.locator('tool-card')).toHaveCount(8);
+  await expect(page.locator('tool-card')).toHaveCount(9);
   for (const [route, title] of [
     ['aposentadoria','Aposentadoria'],['aluguel-vs-financiamento','Aluguel x Financiamento'],
     ['amortizacao','Calculadora de amortização'],['custo-clt','Custo de funcionário CLT']
