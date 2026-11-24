@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { once } from "node:events";
 import { X509Certificate } from "node:crypto";
-import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, directComparisonUrl, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionClientEnvironment, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
+import { ForbiddenPostgresCredentialError, buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, directComparisonUrl, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionClientEnvironment, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
 
 const goodUrl = "postgresql://postgres.kadkcuumcahnqrvalloz:strong%40password@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require";
 
@@ -50,7 +50,7 @@ test("native libpq gets the decoded password once and ignores inherited connecti
   for (const key of ["PGHOSTADDR", "PGOPTIONS", "PGSERVICE", "SUPABASE_DB_URL", "BACKUP_ENCRYPTION_PASSPHRASE"]) {
     assert.equal(key in env, false);
   }
-  assert.throws(() => productionClientEnvironment(raw.replace("%40", "%00"), {}), /caractere nulo/);
+  assert.throws(() => productionClientEnvironment(raw.replace("%40", "%00"), {}), ForbiddenPostgresCredentialError);
 });
 
 test("rejects execution outside manual main workflow or protected environment", () => {
@@ -272,6 +272,21 @@ test("preflight reports unexpected SELECT output without revealing it", async ()
   assert.equal(calls, 2);
   assert.match(logs.join("\n"), /production-postgres-result: SELECT 1 returned unexpected output shape/);
   assert.doesNotMatch(logs.join("\n"), /private-unexpected-output|strong%40password|pooler\.supabase\.com/);
+});
+
+test("preflight identifies a decoded NUL credential without echoing URI or value", async () => {
+  const env = {
+    GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
+    MIND_BACKUP_ENVIRONMENT: "production-db-backup", SUPABASE_DB_URL: goodUrl,
+  };
+  const logs = [];
+  await assert.rejects(runPostgresPreflight(env, {
+    probe: async () => ({ tlsVersion: "TLSv1.3" }),
+    query: () => { throw new ForbiddenPostgresCredentialError(); },
+    log: (line) => logs.push(line),
+  }), (error) => /production-postgres-credential: decoded password contains prohibited NUL byte/.test(error.message));
+  assert.match(logs.join("\\n"), /production-postgres-credential: decoded password contains prohibited NUL byte/);
+  assert.doesNotMatch(logs.join("\\n"), /strong%40password|pooler\\.supabase\\.com|kadkcuumcahnqrvalloz/);
 });
 
 test("preflight separates a client exception from database authentication", async () => {
