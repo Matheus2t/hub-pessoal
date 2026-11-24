@@ -285,8 +285,8 @@ test("preflight identifies a decoded NUL credential without echoing URI or value
     query: () => { throw new ForbiddenPostgresCredentialError(); },
     log: (line) => logs.push(line),
   }), (error) => /production-postgres-credential: decoded password contains prohibited NUL byte/.test(error.message));
-  assert.match(logs.join("\\n"), /production-postgres-credential: decoded password contains prohibited NUL byte/);
-  assert.doesNotMatch(logs.join("\\n"), /strong%40password|pooler\\.supabase\\.com|kadkcuumcahnqrvalloz/);
+  assert.match(logs.join("\n"), /production-postgres-credential: decoded password contains prohibited NUL byte/);
+  assert.doesNotMatch(logs.join("\n"), /strong%40password|pooler\.supabase\.com|kadkcuumcahnqrvalloz/);
 });
 
 test("preflight separates a client exception from database authentication", async () => {
