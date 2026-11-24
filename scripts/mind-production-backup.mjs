@@ -15,7 +15,7 @@ const SUPABASE_CA = join(ROOT, "scripts", "supabase-prod-ca-2021.crt");
 const BACKUP_SCOPE = "Supabase CLI logical dump of public/private schemas and custom roles; managed Auth/Storage schemas, extension schemas, and Storage object bytes are excluded.";
 const MAX_ARTIFACT_BYTES = 100 * 1024 * 1024;
 
-export function validateProductionDbUrl(raw) {
+function validateSourceDbUrl(raw, route) {
   let url;
   try { url = new URL(raw); } catch { throw new Error("SUPABASE_DB_URL não é uma URI PostgreSQL válida."); }
   const sslmode = url.searchParams.get("sslmode");
@@ -28,9 +28,15 @@ export function validateProductionDbUrl(raw) {
   } catch {
     throw new Error("SUPABASE_DB_URL contém percent-encoding inválido no usuário ou na senha; codifique caracteres reservados uma única vez.");
   }
-  if (username !== `postgres.${PROJECT_REF}`) throw new Error("A conexão não identifica o projeto Supabase esperado.");
-  if (!/^[a-z0-9-]+\.pooler\.supabase\.com$/.test(url.hostname) || url.port !== "5432") {
-    throw new Error("Use o Session pooler IPv4 copiado do painel Supabase, na porta 5432.");
+  const direct = route === "direct";
+  if (username !== (direct ? "postgres" : `postgres.${PROJECT_REF}`)) {
+    throw new Error("A conexão não identifica o projeto Supabase esperado.");
+  }
+  const expectedHost = direct
+    ? url.hostname === `db.${PROJECT_REF}.supabase.co`
+    : /^[a-z0-9-]+\.pooler\.supabase\.com$/.test(url.hostname);
+  if (!expectedHost || url.port !== "5432") {
+    throw new Error(direct ? "A rota direta deve usar o endpoint oficial do projeto." : "Use o Session pooler IPv4 copiado do painel Supabase, na porta 5432.");
   }
   if (url.pathname !== "/postgres") throw new Error("A URI deve apontar para o banco postgres.");
   if (!url.password || !password) throw new Error("A URI PostgreSQL não contém senha.");
@@ -40,10 +46,29 @@ export function validateProductionDbUrl(raw) {
   return Object.freeze({ host: url.hostname, port: 5432, database: "postgres", sslmode });
 }
 
+export function validateProductionDbUrl(raw) {
+  return validateSourceDbUrl(raw, "pooler");
+}
+
+export function directComparisonUrl(raw) {
+  validateProductionDbUrl(raw);
+  const url = new URL(raw);
+  url.hostname = `db.${PROJECT_REF}.supabase.co`;
+  url.username = "postgres";
+  url.search = "?sslmode=verify-full";
+  url.hash = "";
+  return url.href;
+}
+
+function validateRuntimeSource(raw) {
+  const hostname = new URL(raw).hostname;
+  return validateSourceDbUrl(raw, hostname === `db.${PROJECT_REF}.supabase.co` ? "direct" : "pooler");
+}
+
 // Rebuild the connection parameters so libpq and pg_dump cannot inherit URI
 // overrides for the vetted host, trust anchor or SSL negotiation.
 export function productionConnectionUrl(raw, caPath = SUPABASE_CA) {
-  validateProductionDbUrl(raw);
+  validateRuntimeSource(raw);
   const url = new URL(raw);
   url.search = "";
   url.hash = "";
@@ -55,14 +80,15 @@ export function productionConnectionUrl(raw, caPath = SUPABASE_CA) {
 }
 
 export function productionClientEnvironment(raw, base = process.env) {
-  const target = validateProductionDbUrl(raw);
-  const password = decodeURIComponent(new URL(raw).password);
+  const target = validateRuntimeSource(raw);
+  const source = new URL(raw);
+  const password = decodeURIComponent(source.password);
   if (password.includes("\0")) throw new Error("A senha PostgreSQL contém um caractere nulo inválido.");
   const clean = Object.fromEntries(Object.entries(base).filter(([key]) =>
     !/^PG/i.test(key) && !/^(SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)$/i.test(key)));
   return {
     ...clean, PGHOST: target.host, PGPORT: String(target.port), PGDATABASE: target.database,
-    PGUSER: `postgres.${PROJECT_REF}`, PGPASSWORD: password, PGCONNECT_TIMEOUT: "15",
+    PGUSER: decodeURIComponent(source.username), PGPASSWORD: password, PGCONNECT_TIMEOUT: "15",
     PGSSLMODE: "verify-full", PGSSLROOTCERT: SUPABASE_CA, PGGSSENCMODE: "disable",
   };
 }
@@ -217,10 +243,12 @@ export function formatCommandFailure({ stage, stdout = "", stderr = "", errorCod
   return `${stage}: ${category} (exit ${exitCode ?? "unavailable"}; diagnostic_id=${diagnosticId}; stdout_bytes=${Buffer.byteLength(stdout)}; stderr_bytes=${Buffer.byteLength(stderr)}; spawn_code=${safeCode}).`;
 }
 
+class SanitizedBackupError extends Error {}
+
 function diagnosticError(stage, category, code = null) {
   const diagnosticId = randomUUID();
   const safeCode = SAFE_ERROR_CODES.has(code) ? code : "none";
-  return new Error(`${stage}: ${category} (diagnostic_id=${diagnosticId}; code=${safeCode}).`);
+  return new SanitizedBackupError(`${stage}: ${category} (diagnostic_id=${diagnosticId}; code=${safeCode}).`);
 }
 
 function createTcpConnection(address, port, timeoutMs = 10000) {
@@ -335,7 +363,7 @@ export async function probePostgresEndpoint(target, dependencies = {}) {
 function run(file, args, { env = process.env, cwd = ROOT, input, maxBuffer = 16 * 1024 * 1024, stage = file } = {}) {
   const result = spawnSync(file, args, { cwd, env, input, encoding: "utf8", maxBuffer, windowsHide: true });
   if (result.error || result.status !== 0) {
-    throw new Error(formatCommandFailure({
+    throw new SanitizedBackupError(formatCommandFailure({
       stage,
       stdout: result.stdout ?? "",
       stderr: result.stderr ?? "",
@@ -376,23 +404,42 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
   const query = dependencies.query ?? productionPsql;
   const probe = dependencies.probe ?? probePostgresEndpoint;
   const log = dependencies.log ?? console.log;
-  log(`Layer 1/5 configuration: passed (PostgreSQL ${target.database}, Session mode, TLS required; credentials suppressed).`);
-  log("Layer 2/5 network: resolving DNS and opening TCP; endpoint addresses suppressed.");
-  const transport = await probe(target);
-  log(`Layer 2/5 network: DNS passed; TCP passed (${transport.addressCount} address record(s); addresses suppressed).`);
-  log(`Layer 3/5 PostgreSQL TLS: passed (${transport.tlsVersion}; peer certificate verified).`);
-  log("Layer 4/5 authentication and read-only query: running SELECT 1 with native libpq, verified TLS and separate connection fields.");
-  let result;
-  try { result = query(env.SUPABASE_DB_URL, "SELECT 1", undefined, "production-postgres-authentication"); }
-  catch (error) {
-    const message = error instanceof Error ? error.message : "PostgreSQL authentication/query failed.";
-    if (message.startsWith("production-postgres-authentication:")) throw error;
-    throw diagnosticError("production-postgres-authentication", classifyFailure(message, { stage: "production-postgres-authentication" }));
+  const poolerUrl = env.SUPABASE_DB_URL;
+  log("PostgreSQL configuration accepted. Using only verified TLS and SELECT 1.");
+
+  async function check(url, route) {
+    const transport = await probe(validateRuntimeSource(url));
+    log(`PostgreSQL ${route}: DNS, TCP and peer certificate passed (${transport.tlsVersion}). Running SELECT 1.`);
+    const result = await query(url, "SELECT 1", undefined, "production-postgres-authentication");
+    if (result !== "1") throw new Error("PostgreSQL preflight returned an unexpected result.");
+    log(`PostgreSQL ${route}: authenticated SELECT 1 passed.`);
   }
-  if (result !== "1") throw new Error("PostgreSQL preflight returned an unexpected result; raw output suppressed.");
-  log("Layer 4/5 authentication and SELECT 1: passed; Session Pooler accepted the configured tenant/role.");
-  log("Layer 5/5 Supavisor tenant/role routing: passed as evidenced by the authenticated SELECT 1.");
-  return Object.freeze({ database: target.database, sslmode: "verify-full", result: "passed", layers: Object.freeze({ configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" }) });
+
+  try {
+    await check(poolerUrl, "pooler");
+    return Object.freeze({ database: target.database, sslmode: "verify-full", result: "passed", route: "pooler" });
+  } catch (error) {
+    log(`PostgreSQL pooler: ${safePreflightError(error)}`);
+  }
+
+  log("Comparing the same database credential against the official direct endpoint.");
+  try {
+    await check(directComparisonUrl(poolerUrl), "direct");
+    log("The credential works on the direct route despite the pooler failure. The backup will use the verified direct route.");
+    return Object.freeze({ database: target.database, sslmode: "verify-full", result: "passed", route: "direct" });
+  } catch (error) {
+    throw new Error(`PostgreSQL direct: ${safePreflightError(error)} Both routes failed. Dump was not started.`);
+  }
+}
+
+function safePreflightError(error) {
+  const message = error instanceof Error ? error.message : "";
+  // Only internally formatted errors carry a verified stage prefix. The generic
+  // process/validation case is classified without emitting its raw exception.
+  if (error instanceof SanitizedBackupError) return message;
+  return diagnosticError("production-postgres-authentication", classifyFailure(message, {
+    stage: "production-postgres-authentication",
+  }), safeErrorCode(error)).message;
 }
 
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
@@ -520,6 +567,24 @@ async function verifyDisposableServices(statusOutput) {
   }
 }
 
+export function encryptDumpArchive(plainDir, encryptedPath, passphrase) {
+  const archivePath = join(plainDir, "backup.tar.gz");
+  run("tar", ["-czf", archivePath, "-C", plainDir, "roles.sql", "schema.sql", "data.sql"]);
+  run("gpg", ["--batch", "--yes", "--pinentry-mode", "loopback", "--passphrase-fd", "0",
+    "--symmetric", "--cipher-algo", "AES256", "--output", encryptedPath, archivePath], { input: `${passphrase}\n` });
+  chmodSync(encryptedPath, 0o600);
+  const bytes = statSync(encryptedPath).size;
+  if (bytes > MAX_ARTIFACT_BYTES) throw new Error("Backup criptografado excede o limite de 100 MiB; artifact não será enviado.");
+  return bytes;
+}
+
+export function extractDumpArchive(encryptedPath, restoreDir, passphrase) {
+  const decryptedTar = join(restoreDir, "backup.tar.gz");
+  run("gpg", ["--batch", "--yes", "--pinentry-mode", "loopback", "--passphrase-fd", "0",
+    "--decrypt", "--output", decryptedTar, encryptedPath], { input: `${passphrase}\n` });
+  run("tar", ["-xzf", decryptedTar, "-C", restoreDir]);
+}
+
 export async function runProductionBackup(env = process.env) {
   process.umask(0o077);
   const target = validateManualEnvironment(env);
@@ -535,7 +600,8 @@ export async function runProductionBackup(env = process.env) {
 
   try {
     console.log(`Backup target validated: PostgreSQL ${target.database}; connection string suppressed.`);
-    await runPostgresPreflight(env);
+    const connection = await runPostgresPreflight(env);
+    const sourceUrl = connection.route === "direct" ? directComparisonUrl(env.SUPABASE_DB_URL) : env.SUPABASE_DB_URL;
     pullDockerClientImage();
     console.log("Starting isolated disposable Supabase (Auth, PostgREST and local Postgres).");
     supabaseCli(["start", "--workdir", runtime, "--exclude", "studio,inbucket,imgproxy,realtime,functions,analytics,vector,supavisor"]);
@@ -543,12 +609,12 @@ export async function runProductionBackup(env = process.env) {
     await verifyDisposableServices(localStatus);
     const localDbUrl = parseLocalDbUrl(localStatus);
     console.log("Disposable Supabase Auth/PostgREST checks passed.");
-    const before = snapshot(env.SUPABASE_DB_URL, "production-postgres-connect");
+    const before = snapshot(sourceUrl, "production-postgres-connect");
 
     const rolesPath = join(plainDir, "roles.sql");
     const schemaPath = join(plainDir, "schema.sql");
     const dataPath = join(plainDir, "data.sql");
-    const remote = `--remote=${productionConnectionUrl(env.SUPABASE_DB_URL)}`;
+    const remote = `--remote=${productionConnectionUrl(sourceUrl)}`;
     supabaseCli(["db", "dump", remote, "-f", rolesPath, "--role-only"]);
     supabaseCli(["db", "dump", remote, "-f", schemaPath, "--schema", "public,private"]);
     supabaseCli(["db", "dump", remote, "-f", dataPath, "--data-only", "--use-copy", "--schema", "public,private"]);
@@ -557,17 +623,11 @@ export async function runProductionBackup(env = process.env) {
       chmodSync(file, 0o600);
     }
 
-    const after = snapshot(env.SUPABASE_DB_URL, "production-postgres-connect");
+    const after = snapshot(sourceUrl, "production-postgres-connect");
     const stable = compareSnapshots(before, after, before);
     if (!stable.sourceStableDuringDump) throw new Error("A estrutura ou os dados de public/private mudaram durante o dump; repita em uma janela sem gravações.");
 
-    const archivePath = join(plainDir, "backup.tar.gz");
-    run("tar", ["-czf", archivePath, "-C", plainDir, "roles.sql", "schema.sql", "data.sql"]);
-    const encrypted = run("gpg", ["--batch", "--yes", "--pinentry-mode", "loopback", "--passphrase-fd", "0", "--symmetric", "--cipher-algo", "AES256", "--output", encryptedPath, archivePath], { input: `${env.BACKUP_ENCRYPTION_PASSPHRASE}\n` });
-    void encrypted;
-    chmodSync(encryptedPath, 0o600);
-    const encryptedSize = statSync(encryptedPath).size;
-    if (encryptedSize > MAX_ARTIFACT_BYTES) throw new Error("Backup criptografado excede o limite de 100 MiB; artifact não será enviado.");
+    const encryptedSize = encryptDumpArchive(plainDir, encryptedPath, env.BACKUP_ENCRYPTION_PASSPHRASE);
     const checksumPath = join(outputDir, "mind-production-public-private-backup.tar.gz.gpg.sha256");
     const encryptedSha256 = sha256(encryptedPath);
     writeFileSync(checksumPath, `${encryptedSha256}  ${encryptedPath.split(/[\\/]/).at(-1)}\n`, { mode: 0o600 });
@@ -580,9 +640,7 @@ export async function runProductionBackup(env = process.env) {
     writeFileSync(backupReportPath, `${JSON.stringify(backupMeta, null, 2)}\n`, { mode: 0o600 });
     console.log("Encrypted logical backup created; the artifact remains encrypted at rest.");
 
-    const decryptedTar = join(restoreDir, "backup.tar.gz");
-    run("gpg", ["--batch", "--yes", "--pinentry-mode", "loopback", "--passphrase-fd", "0", "--decrypt", "--output", decryptedTar, encryptedPath], { input: `${env.BACKUP_ENCRYPTION_PASSPHRASE}\n` });
-    run("tar", ["-xzf", decryptedTar, "-C", restoreDir]);
+    extractDumpArchive(encryptedPath, restoreDir, env.BACKUP_ENCRYPTION_PASSPHRASE);
     dockerPsql(localDbUrl, "SELECT 1", undefined, "disposable-postgres");
     const restoreScript = buildRestoreCommand();
     const containerArgs = ["run", "--rm", "--network", "host", "-e", "LOCAL_DB_URL", "-v", `${restoreDir}:/backup:ro`, dockerImage, "sh", "-lc", restoreScript];

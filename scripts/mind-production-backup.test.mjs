@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { once } from "node:events";
 import { X509Certificate } from "node:crypto";
-import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionClientEnvironment, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
+import { buildDockerPsqlArgs, buildRestoreCommand, classifyFailure, compareSnapshots, directComparisonUrl, formatCommandFailure, parseLocalDbUrl, probePostgresEndpoint, productionClientEnvironment, productionConnectionUrl, runPostgresPreflight, validateManualEnvironment, validatePostgresPreflightEnvironment, validateProductionDbUrl } from "./mind-production-backup.mjs";
 
 const goodUrl = "postgresql://postgres.kadkcuumcahnqrvalloz:strong%40password@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require";
 
@@ -252,9 +252,42 @@ test("standalone preflight runs layers and only a read-only SELECT, never dispos
   });
   assert.deepEqual(events, ["probe", "query"]);
   assert.deepEqual(result, {
-    database: "postgres", sslmode: "verify-full", result: "passed",
-    layers: { configuration: "passed", dns: "passed", tcp: "passed", tls: "passed", authentication: "passed", supavisor: "passed" },
+    database: "postgres", sslmode: "verify-full", result: "passed", route: "pooler",
   });
+});
+
+test("preflight compares the official direct endpoint with the same password after a pooler failure", async () => {
+  const env = {
+    GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
+    MIND_BACKUP_ENVIRONMENT: "production-db-backup",
+    SUPABASE_DB_URL: goodUrl.replace("strong%40password", "p%40ss+%252F"),
+  };
+  const logs = [], routes = [];
+  const deps = {
+    probe: async () => ({ tlsVersion: "TLSv1.3" }),
+    query: (url, sql) => {
+      assert.equal(sql, "SELECT 1");
+      const native = productionClientEnvironment(url, {});
+      assert.equal(native.PGPASSWORD, "p@ss+%2F");
+      assert.equal(native.PGSSLMODE, "verify-full");
+      routes.push([native.PGUSER, native.PGHOST]);
+      if (routes.length === 1) throw new Error("password authentication failed for hidden user and sensitive-value");
+      return "1";
+    },
+    log: (line) => logs.push(line),
+  };
+  assert.equal((await runPostgresPreflight(env, deps)).route, "direct");
+  assert.deepEqual(routes, [
+    ["postgres.kadkcuumcahnqrvalloz", "aws-0-sa-east-1.pooler.supabase.com"],
+    ["postgres", "db.kadkcuumcahnqrvalloz.supabase.co"],
+  ]);
+  assert.doesNotMatch(logs.join("\n"), /sensitive-value|supabase\.co|kadkcuumcahnqrvalloz|p@ss/);
+  const direct = directComparisonUrl(env.SUPABASE_DB_URL);
+  assert.throws(() => validateProductionDbUrl(direct), /projeto Supabase esperado/);
+  assert.throws(() => productionClientEnvironment(direct.replace(".supabase.co", ".example.test"), {}));
+  await assert.rejects(runPostgresPreflight(env, {
+    ...deps, query: () => { throw new Error("production-postgres-authentication: secret-that-must-stay-hidden"); },
+  }), error => /Both routes failed/.test(error.message) && !error.message.includes("secret-that-must-stay-hidden"));
 });
 
 test("backup invokes the independent preflight before starting disposable Supabase", () => {
