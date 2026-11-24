@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildRestoreCommand, encryptDumpArchive, extractDumpArchive } from "../../scripts/mind-production-backup.mjs";
 
 if (process.env.GITHUB_ACTIONS !== "true") throw new Error("Use only in the disposable GitHub Actions job.");
 const admin = "postgresql://postgres:backup-fixture-only@127.0.0.1:54322/postgres";
-const source = admin.replace(/postgres$/, "mind_backup_source");
+const source = admin.replace(/postgres$/, "mind_backup_source") + "?sslmode=disable";
 const dest = admin.replace(/postgres$/, "mind_backup_restore");
 const temp = mkdtempSync(join(tmpdir(), "mind-backup-fixture-"));
 const plain = join(temp, "plain");
@@ -25,8 +25,11 @@ function docker(args, options) {
 function sql(url, statement) {
   return docker([image, "psql", url, "-XAt", "-v", "ON_ERROR_STOP=1", "-c", statement]).trim();
 }
-function dump(flags) {
-  return docker([image, "pg_dump", source, "--no-owner", "--no-privileges", "--schema=public", "--schema=private", ...flags]);
+function dump(filename, flags) {
+  execFileSync("npx", ["--yes", "supabase@3.2.0", "db", "dump", "--remote=" + source,
+    "-f", join(plain, filename), ...flags], {
+    encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+  });
 }
 
 try {
@@ -41,9 +44,9 @@ try {
     insert into private.fixture_admins values (2);
     alter table public.fixture_notes enable row level security;
     create policy fixture_public_read on public.fixture_notes for select using (true);`);
-  writeFileSync(join(plain, "roles.sql"), "-- Fixture needs only the PostgreSQL built-in roles.\n");
-  writeFileSync(join(plain, "schema.sql"), dump(["--schema-only"]));
-  writeFileSync(join(plain, "data.sql"), dump(["--data-only"]));
+  dump("roles.sql", ["--role-only"]);
+  dump("schema.sql", ["--schema", "public,private"]);
+  dump("data.sql", ["--schema", "public,private", "--data-only", "--use-copy"]);
   assert.ok(encryptDumpArchive(plain, bundle, passphrase) > 0);
   assert.equal(readFileSync(bundle).includes(Buffer.from("synthetic backup sentinel")), false);
   extractDumpArchive(bundle, restored, passphrase);
