@@ -13,6 +13,10 @@ const PROJECT_REF = "kadkcuumcahnqrvalloz";
 const CLI_VERSION = "3.2.0";
 const SUPABASE_CA = join(ROOT, "scripts", "supabase-prod-ca-2021.crt");
 const BACKUP_SCOPE = "Supabase CLI logical dump of public/private schemas and custom roles; managed Auth/Storage schemas, extension schemas, and Storage object bytes are excluded.";
+
+export class ForbiddenPostgresCredentialError extends Error {
+  constructor() { super("decoded PostgreSQL password contains a prohibited NUL byte"); this.name = "ForbiddenPostgresCredentialError"; }
+}
 const MAX_ARTIFACT_BYTES = 100 * 1024 * 1024;
 
 function validateSourceDbUrl(raw, route) {
@@ -83,7 +87,7 @@ export function productionClientEnvironment(raw, base = process.env) {
   const target = validateRuntimeSource(raw);
   const source = new URL(raw);
   const password = decodeURIComponent(source.password);
-  if (password.includes("\0")) throw new Error("A senha PostgreSQL contém um caractere nulo inválido.");
+  if (password.includes("\0")) throw new ForbiddenPostgresCredentialError();
   const clean = Object.fromEntries(Object.entries(base).filter(([key]) =>
     !/^PG/i.test(key) && !/^(SUPABASE_DB_URL|BACKUP_ENCRYPTION_PASSPHRASE)$/i.test(key)));
   return {
@@ -436,6 +440,9 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
 }
 
 function safePreflightError(error) {
+  if (error instanceof ForbiddenPostgresCredentialError) {
+    return diagnosticError("production-postgres-credential", "decoded password contains prohibited NUL byte; credential value suppressed", safeErrorCode(error)).message;
+  }
   const message = error instanceof Error ? error.message : "";
   // Only internally formatted errors carry a verified stage prefix. The generic
   // process/validation case is classified without emitting its raw exception.
