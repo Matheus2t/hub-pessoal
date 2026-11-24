@@ -394,7 +394,7 @@ function dockerPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect")
 }
 
 function productionPsql(dbUrl, sql, mountDir, stage = "production-postgres-connect") {
-  return run("psql", ["-X", "-w", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", sql], {
+  return run("psql", ["-X", "-w", "-A", "-t", "-v", "VERBOSITY=verbose", "-v", "ON_ERROR_STOP=1", "-c", sql], {
     env: productionClientEnvironment(dbUrl), stage,
   }).trim();
 }
@@ -411,7 +411,10 @@ export async function runPostgresPreflight(env = process.env, dependencies = {})
     const transport = await probe(validateRuntimeSource(url));
     log(`PostgreSQL ${route}: DNS, TCP and peer certificate passed (${transport.tlsVersion}). Running SELECT 1.`);
     const result = await query(url, "SELECT 1", undefined, "production-postgres-authentication");
-    if (result !== "1") throw new Error("PostgreSQL preflight returned an unexpected result.");
+    if (result !== "1") {
+      const bytes = typeof result === "string" ? Buffer.byteLength(result) : -1;
+      throw new SanitizedBackupError(`production-postgres-result: SELECT 1 returned unexpected output shape (stdout_bytes=${bytes}; value suppressed).`);
+    }
     log(`PostgreSQL ${route}: authenticated SELECT 1 passed.`);
   }
 
@@ -437,9 +440,12 @@ function safePreflightError(error) {
   // Only internally formatted errors carry a verified stage prefix. The generic
   // process/validation case is classified without emitting its raw exception.
   if (error instanceof SanitizedBackupError) return message;
-  return diagnosticError("production-postgres-authentication", classifyFailure(message, {
-    stage: "production-postgres-authentication",
-  }), safeErrorCode(error)).message;
+  const category = classifyFailure(message, { stage: "production-postgres-authentication" });
+  if (category === "command failed; raw output suppressed to protect credentials and data") {
+    const kind = error instanceof TypeError ? "TypeError" : error instanceof URIError ? "URIError" : "Error";
+    return diagnosticError("production-postgres-client-setup", `client-side ${kind} before a recognized PostgreSQL response; details suppressed`, safeErrorCode(error)).message;
+  }
+  return diagnosticError("production-postgres-authentication", category, safeErrorCode(error)).message;
 }
 
 function quoteIdent(value) { return `"${value.replaceAll('"', '""')}"`; }
