@@ -256,6 +256,40 @@ test("standalone preflight runs layers and only a read-only SELECT, never dispos
   });
 });
 
+test("preflight reports unexpected SELECT output without revealing it", async () => {
+  const env = {
+    GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
+    MIND_BACKUP_ENVIRONMENT: "production-db-backup", SUPABASE_DB_URL: goodUrl,
+  };
+  const logs = [];
+  let calls = 0;
+  const result = await runPostgresPreflight(env, {
+    probe: async () => ({ tlsVersion: "TLSv1.3" }),
+    query: () => ++calls === 1 ? "private-unexpected-output" : "1",
+    log: (line) => logs.push(line),
+  });
+  assert.equal(result.route, "direct");
+  assert.equal(calls, 2);
+  assert.match(logs.join("\n"), /production-postgres-result: SELECT 1 returned unexpected output shape/);
+  assert.doesNotMatch(logs.join("\n"), /private-unexpected-output|strong%40password|pooler\.supabase\.com/);
+});
+
+test("preflight separates a client exception from database authentication", async () => {
+  const env = {
+    GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
+    MIND_BACKUP_ENVIRONMENT: "production-db-backup", SUPABASE_DB_URL: goodUrl,
+  };
+  const logs = [];
+  await assert.rejects(runPostgresPreflight(env, {
+    probe: async () => ({ tlsVersion: "TLSv1.3" }),
+    query: () => { throw new TypeError("private-client-value"); },
+    log: (line) => logs.push(line),
+  }), (error) => /production-postgres-client-setup: client-side TypeError/.test(error.message)
+      && !error.message.includes("private-client-value"));
+  assert.match(logs.join("\n"), /production-postgres-client-setup: client-side TypeError/);
+  assert.doesNotMatch(logs.join("\n"), /private-client-value/);
+});
+
 test("preflight compares the official direct endpoint with the same password after a pooler failure", async () => {
   const env = {
     GITHUB_ACTIONS: "true", GITHUB_EVENT_NAME: "workflow_dispatch", GITHUB_REF: "refs/heads/main",
