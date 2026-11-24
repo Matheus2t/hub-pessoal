@@ -86,6 +86,8 @@ Referências: a documentação do [exit status do `psql` 17](https://www.postgre
 4. Se falhar, use somente a etapa/categoria/SQLSTATE sanitizados para identificar a correção. Não redefina senha por tentativa e não copie URI ou saída bruta para logs ou chat.
 5. A operação `backup` repete o mesmo preflight e só então inicia dump e restauração descartável. Escolha `backup` quando estiver pronto para concluir o fluxo em uma única execução manual; se o preflight falhar, nenhum dump será iniciado.
 
+Se o pooler falhar, há uma única comparação com o endpoint direto oficial do mesmo projeto. Ela reaproveita a mesma senha com o usuário `postgres` e exige a mesma validação TLS e `SELECT 1`. A rota direta pode exigir IPv6. Um erro de rede nessa rota é inconclusivo sobre a senha. Se apenas a conexão direta passar, o backup usa essa rota também para os snapshots e o dump. Com as duas rotas indisponíveis, a execução termina antes do dump. Não é necessário redefinir a senha para comparar as rotas.
+
 ### Backup e restauração
 
 Na execução `backup`:
