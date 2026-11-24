@@ -1,5 +1,5 @@
 do $$
-declare v_count integer; v_enabled integer; v_result jsonb;
+declare v_count integer; v_enabled integer; v_result jsonb; v_bad record;
 begin
   select count(*) into v_count from public.mind_items;
   if v_count <> 4 then raise exception 'legacy rows changed: %', v_count; end if;
@@ -18,6 +18,19 @@ begin
   if not has_function_privilege('service_role','public.mind_drive_get_connection(uuid)','execute') then raise exception 'service_role cannot execute Drive RPC'; end if;
   insert into public.mind_items(id,owner_id,kind,title,file_name,file_size,storage_provider,drive_file_id)
   values('00000000-0000-4000-8000-000000000005','11111111-2222-4333-8444-555555555555','video','Drive video','sample.mp4',8,'google-drive','abcdefghij123456');
+  for v_bad in select * from (values
+    (null::text, 'abcdefghij123457', null::text, 8::bigint),
+    ('google-drive', 'abcdefghij123457', null, null),
+    (null, null, null, 8)
+  ) as x(provider, drive_file, storage_file, size_bytes) loop
+    begin
+      insert into public.mind_items(id,owner_id,kind,title,file_name,file_size,storage_provider,drive_file_id,storage_path)
+      values('00000000-0000-4000-8000-000000000006','11111111-2222-4333-8444-555555555555',
+        'video','Invalid video','sample.mp4',v_bad.size_bytes,v_bad.provider,v_bad.drive_file,v_bad.storage_file);
+      raise exception 'invalid video source was accepted';
+    exception when check_violation then null;
+    end;
+  end loop;
   v_result := public.mind_drive_reserve_upload('11111111-2222-4333-8444-555555555555','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','10000000-0000-4000-8000-000000000001','a.mp4',3000000000,now(),'[]'::jsonb,5000000000);
   v_result := public.mind_drive_reserve_upload('11111111-2222-4333-8444-555555555555','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','10000000-0000-4000-8000-000000000002','b.mp4',2000000000,now(),'[]'::jsonb,5000000000);
   if (v_result->>'reserved_bytes')::bigint <> 5000000000 then raise exception 'exact cap reservation mismatch'; end if;

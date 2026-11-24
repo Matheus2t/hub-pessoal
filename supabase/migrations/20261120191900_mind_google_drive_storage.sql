@@ -15,14 +15,14 @@ alter table public.mind_items add constraint mind_items_file_size_check check (
   )
 );
 alter table public.mind_items drop constraint if exists mind_video_source_check;
-alter table public.mind_items add constraint mind_video_source_check check (
+alter table public.mind_items add constraint mind_video_source_check check ((
   (kind<>'video' and video_url is null and drive_file_id is null and storage_provider is null) or
   (kind='video' and (
     (video_url is not null and (video_url ~ '^https://www[.]youtube[.]com/watch[?]v=[A-Za-z0-9_-]{11}$' or video_url ~ '^https://vimeo[.]com/[0-9]{1,18}$') and storage_path is null and drive_file_id is null and storage_provider is null and file_name is null and file_size is null) or
     (video_url is null and drive_file_id is not null and drive_file_id ~ '^[A-Za-z0-9_-]{10,200}$' and storage_path is null and storage_provider='google-drive' and file_name is not null and file_size between 1 and 5000000000) or
     (video_url is null and drive_file_id is null and storage_path ~ '^[0-9a-f-]{36}/[0-9a-f-]{36}(-[0-9a-f-]{36})?[.]mp4$' and storage_provider is distinct from 'google-drive' and file_name is not null and file_size between 1 and 50000000)
   ))
-);
+) is true);
 
 create schema if not exists private;
 create table if not exists private.mind_drive_connections (

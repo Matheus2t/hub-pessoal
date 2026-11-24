@@ -1,13 +1,15 @@
 name: mind Google Drive migration
 on:
   pull_request:
-    branches: [codex/mind-video-upload]
+    branches: [codex/mind-video-upload, main]
     paths:
       - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
       - 'tests/migrations/**'
       - 'tests/mind-codespaces/**'
       - 'scripts/mind-codespaces.mjs'
       - '.github/workflows/mind-google-drive-migration.yml'
+      - 'frontend/src/mind/**'
+      - 'frontend/tests/mind-google-drive.spec.ts'
   push:
     branches: [codex/mind-google-drive-5gb]
     paths:
@@ -16,6 +18,8 @@ on:
       - 'tests/mind-codespaces/**'
       - 'scripts/mind-codespaces.mjs'
       - '.github/workflows/mind-google-drive-migration.yml'
+      - 'frontend/src/mind/**'
+      - 'frontend/tests/mind-google-drive.spec.ts'
 permissions:
   contents: read
 jobs:
@@ -61,3 +65,25 @@ jobs:
           trap 'node scripts/mind-codespaces.mjs stop || true' EXIT
           node scripts/mind-codespaces.mjs up
           node scripts/mind-codespaces.mjs status
+          node tests/mind-codespaces/verify-video-storage.mjs
+  drive-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      MIND_CLOUD_ENABLED: 'true'
+      MIND_GOOGLE_DRIVE_ENABLED: 'true'
+      MIND_SUPABASE_URL: https://mocktestproj.supabase.co
+      MIND_SUPABASE_PUBLISHABLE_KEY: sb_publishable_test_fixture_only
+      PW_CHANNEL: chromium
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install chromium
+      - name: Test Drive chunks, interrupted upload and administrative controls with mocks
+        run: npx playwright test frontend/tests/mind-google-drive.spec.ts

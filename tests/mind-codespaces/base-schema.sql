@@ -55,3 +55,18 @@ insert into public.mind_items(id, owner_id, kind, title, file_name, file_size, s
   ('00000000-0000-4000-8000-000000000002','11111111-2222-4333-8444-555555555555','pdf','Fixture PDF','paper.pdf',4,null,null),
   ('00000000-0000-4000-8000-000000000003','11111111-2222-4333-8444-555555555555','video','Fixture link',null,null,null,'https://www.youtube.com/watch?v=abcdefghijk'),
   ('00000000-0000-4000-8000-000000000004','11111111-2222-4333-8444-555555555555','video','Fixture Storage','legacy.mp4',5,'11111111-2222-4333-8444-555555555555/00000000-0000-4000-8000-000000000004.mp4',null);
+
+-- Local Storage fixture mirrors the admin/owner condition and the MP4 bucket.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('mind-videos', 'mind-videos', true, 50000000, array['video/mp4']);
+
+create policy fixture_mind_video_select on storage.objects
+  for select to authenticated using (bucket_id = 'mind-videos' and
+    (select public.mind_is_admin()) and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy fixture_mind_video_insert on storage.objects
+  for insert to authenticated with check (bucket_id = 'mind-videos' and
+    (select public.mind_is_admin()) and (storage.foldername(name))[1] = (select auth.uid())::text and
+    lower(storage.extension(name)) = 'mp4');
+create policy fixture_mind_video_delete on storage.objects
+  for delete to authenticated using (bucket_id = 'mind-videos' and
+    (select public.mind_is_admin()) and (storage.foldername(name))[1] = (select auth.uid())::text);
