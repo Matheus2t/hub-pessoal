@@ -164,7 +164,7 @@ export class CdiDollarCalculator extends LightElement {
         Os resultados abaixo são anteriores à mudança. Clique em <strong>Comparar</strong> para atualizar.
       </p>` : nothing}
       <div class="cdi-dollar-hero">
-        <span>O CDI compensa o dólar até</span>
+        <span>Até qual cotação o CDI compensa a alta do dólar?</span>
         <strong>${money(out.fxBreakeven)}</strong>
         <p>por US$ 1 ao final do investimento · alta máxima estimada: <b>${percent(out.fxBreakevenAppreciation)}</b></p>
       </div>
@@ -189,6 +189,9 @@ export class CdiDollarCalculator extends LightElement {
           <div><dt>Dólares que poderiam ser comprados no início</dt><dd>${moneyUsd(out.initialDollars)}</dd></div>
         </dl>
         <p>O dólar de equilíbrio é a cotação futura que deixa os dois cenários com o mesmo valor em reais. Não é uma proteção cambial contratada.</p>
+      </details>
+      <details class="cdi-dollar-evolution"><summary>Explorar evolução no gráfico</summary>
+        ${this.chart(out)}
       </details>`;
   }
 
@@ -198,13 +201,12 @@ export class CdiDollarCalculator extends LightElement {
     const rows = out?.rows.slice(this.yearPage * 12 + 1, this.yearPage * 12 + 13) ?? [];
     const mainFields = fields.filter(f => f.name !== 'days' && f.name !== 'cdiParticipation');
     return html`<div class="ws-page-heading">
-      <h1>CDI x Dólar</h1><p class="cdi-dollar-intro">Descubra até que alta do dólar seu investimento compensa.</p>
+      <h1>CDI x Dólar</h1><p class="cdi-dollar-intro">Compare o rendimento líquido com a valorização da moeda, sem excesso de informações.</p>
     </div>
     <panel-workspace fixed-layout area="calculator-cdi-dollar" .panels=${[
       { id: 'form', title: 'Simulação', required: true, essential: true, size: 'small', resizable: false, role: 'form' },
       { id: 'empty', title: 'Resultados', required: true, available: !out, size: 'medium', resizable: false },
       { id: 'summary', title: 'Resultado', essential: true, available: !!out, size: 'medium' },
-      { id: 'chart', title: 'Evolução', essential: true, available: !!out, size: 'medium' },
       { id: 'table', title: 'Detalhamento', available: !!out, size: 'large' },
     ]}>
       <section slot="form" class="workspace-panel simulation-panel" aria-label="Parâmetros da comparação">
@@ -241,7 +243,6 @@ export class CdiDollarCalculator extends LightElement {
         <div><h2>Resultado</h2><p>Escolha os valores e compare.</p></div>
       </section>
       <section slot="summary" class="workspace-panel">${out ? this.summary(out) : nothing}</section>
-      <section slot="chart" class="workspace-panel">${out ? this.chart(out) : nothing}</section>
       <section slot="table" class="workspace-panel">
         ${out ? html`<div class="cdi-dollar-table">
           <details class="cdi-dollar-table-details">
