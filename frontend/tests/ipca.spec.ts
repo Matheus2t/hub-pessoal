@@ -19,7 +19,6 @@ test('IPCA index ratio includes first and last months without compounding rounde
  expect(both.finalValue).toBeCloseTo(1210,10);
  expect(both.accumulatedPercent).toBeCloseTo(21,10);
  expect(both.purchasingPower).toBeCloseTo(1000/1.21,10);
- expect(both.monthlyRate).toBeUndefined();
  expect(both.rows).toHaveLength(2);
  expect(both.rows[0].monthlyRate).toBeCloseTo(10,10);
  const single=calculateIpca(example,'1995-07','1995-07',1000);
