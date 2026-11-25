@@ -59,7 +59,7 @@ test('invalid period and negative values are rejected',()=>{
 
 test('catalog, reduced form and concise summary match 2T layout',async({page})=>{
  await page.goto('/#/calculadoras');
- await expect(page.locator('tool-card')).toHaveCount(9);
+ await expect(page.locator('tool-card')).toHaveCount(10);
  await page.getByRole('link',{name:'Abrir CDI x Dólar'}).click();
  const tool=page.locator('cdi-dollar-calculator');
  await expect(tool.getByRole('heading',{name:'CDI x Dólar'})).toBeVisible();
@@ -69,12 +69,14 @@ test('catalog, reduced form and concise summary match 2T layout',async({page})=>
  await expect(tool.getByLabel('Prazo do investimento')).toHaveValue('365');
  await expect(tool.locator('.cdi-dollar-advanced')).not.toHaveAttribute('open','');
  await tool.getByRole('button',{name:'Comparar'}).click();
- await expect(tool.locator('.cdi-dollar-hero')).toContainText('O CDI compensa o dólar até');
+ await expect(tool.locator('.cdi-dollar-hero')).toContainText('Até qual cotação o CDI compensa a alta do dólar?');
  await expect(tool.locator('.cdi-dollar-hero')).toContainText('alta máxima estimada');
  await expect(tool.locator('.cdi-dollar-verdict')).toContainText('dólar rende mais');
  await expect(tool.locator('.cdi-dollar-compare')).toContainText('Comprando dólares');
  await expect(tool.locator('.cdi-dollar-details')).not.toHaveAttribute('open','');
  await expect(tool.locator('.cdi-dollar-table-details')).not.toHaveAttribute('open','');
+ await expect(tool.locator('.cdi-dollar-evolution')).not.toHaveAttribute('open','');
+ await tool.locator('.cdi-dollar-evolution summary').click();
  await expect(tool.getByRole('slider',{name:'Mês exibido no gráfico'})).toBeVisible();
  await tool.getByRole('slider',{name:'Mês exibido no gráfico'}).focus();
  await page.keyboard.press('Home');

@@ -12,6 +12,7 @@ from .db import SessionLocal,get_db
 from .models import Simulation
 from .schemas import CalculationInput,CalculationResult,HistoryItem
 from .finance import router as finance_router
+from .ipca import router as ipca_router
 from .market import router as market_router
 from .sports import router as sports_router
 from .utilities.router import router as utilities_router
@@ -19,6 +20,7 @@ from .utilities.router import router as utilities_router
 mimetypes.add_type('image/webp', '.webp')
 app=FastAPI(title='Hub Pessoal API',version='1.0.0')
 app.include_router(finance_router)
+app.include_router(ipca_router)
 app.include_router(market_router)
 app.include_router(sports_router)
 app.include_router(utilities_router)
