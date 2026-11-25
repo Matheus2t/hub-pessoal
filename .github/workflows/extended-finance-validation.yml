@@ -4,6 +4,13 @@ on:
     paths:
       - 'frontend/src/extended-finance.ts'
       - 'frontend/src/cdi-dollar.ts'
+      - 'backend/app/ipca.py'
+      - 'backend/app/main.py'
+      - 'backend/tests/test_ipca.py'
+      - 'frontend/src/ipca-calculator.ts'
+      - 'frontend/src/components/ipca-inflation-calculator.ts'
+      - 'frontend/styles/_ipca-calculator.scss'
+      - 'frontend/tests/ipca.spec.ts'
       - 'frontend/src/components/cdi-dollar-calculator.ts'
       - 'frontend/styles/_cdi-dollar.scss'
       - 'frontend/tests/cdi-dollar.spec.ts'
@@ -40,4 +47,4 @@ jobs:
         env:
           PW_CHANNEL: chromium
           BASE_URL: http://127.0.0.1:8123
-        run: npx playwright test frontend/tests/extended-finance.spec.ts frontend/tests/calculator-improvements.spec.ts frontend/tests/cdi-dollar.spec.ts
+        run: npx playwright test frontend/tests/extended-finance.spec.ts frontend/tests/calculator-improvements.spec.ts frontend/tests/cdi-dollar.spec.ts frontend/tests/ipca.spec.ts
