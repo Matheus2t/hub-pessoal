@@ -84,3 +84,14 @@ cdi-dollar-calculator {display:block;max-width:100%;min-width:0;}
  .cdi-dollar-calculator .cdi-dollar-chart {padding:15px 10px;}
  .cdi-dollar-calculator .cdi-dollar-table {padding:11px;}
 }
+
+/* Reduce initial visual density: chart is deliberately behind disclosure. */
+.cdi-dollar-calculator .cdi-dollar-evolution {margin-top:12px;border-top:1px solid var(--line-soft);padding-top:3px;}
+.cdi-dollar-calculator .cdi-dollar-evolution > summary {color:var(--text);font-size:12px;font-weight:600;padding:12px 0;cursor:pointer;}
+.cdi-dollar-calculator .cdi-dollar-evolution .cdi-dollar-chart {height:auto;margin:4px 0 8px;padding:15px 16px 12px;border-radius:7px;}
+.cdi-dollar-calculator .cdi-dollar-evolution:not([open]) {margin-bottom:0;}
+.cdi-dollar-calculator .cdi-dollar-details,.cdi-dollar-calculator .cdi-dollar-evolution {color:var(--text);}
+.cdi-dollar-calculator .cdi-dollar-hero {padding:16px 0 14px;}
+.cdi-dollar-calculator .cdi-dollar-hero > strong {font-size:clamp(28px,3vw,42px);}
+.cdi-dollar-calculator .cdi-dollar-compare {margin:13px 0 5px;}
+.cdi-dollar-calculator .cdi-dollar-verdict {padding:13px 0;}
