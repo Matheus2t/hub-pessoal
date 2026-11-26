@@ -167,3 +167,61 @@ def test_folder_lookup_logs_only_sanitized_google_status_and_reason(monkeypatch,
     assert "http_status=403 reason=accessNotConfigured" in caplog.text
     assert secret_message not in caplog.text
     assert "token-never-log" not in caplog.text
+
+
+@pytest.mark.parametrize("commit_persisted", [True, False])
+def test_publish_reconciles_uncertain_database_response_before_revoking_public_permission(monkeypatch, commit_persisted):
+    upload_id = "a" * 32
+    file_id = "Abcdefghij0123456789"
+    row = {"status": "uploaded", "item_id": "22222222-3333-4444-8555-666666666666",
+           "drive_file_id": file_id, "confirmed_size": 1024}
+    state = {"status": "uploaded"}
+    deleted_permissions = []
+
+    async def require_admin(_authorization):
+        return ADMIN
+
+    async def rpc(name, _body):
+        if name == "mind_drive_get_upload":
+            return {**row, "status": state["status"]}
+        if name == "mind_drive_publish_video":
+            if commit_persisted:
+                state["status"] = "published"
+            raise HTTPException(503, "database response lost")
+        raise AssertionError(f"unexpected RPC: {name}")
+
+    async def access_token(_admin_id):
+        return "synthetic-access-token", {"folder_id": "folder-id-123"}
+
+    async def verified_file(_row, _access, _connection):
+        return {"id": file_id}
+
+    async def drive_request(method, path, _access, *, params=None, body=None, headers=None):
+        if method == "GET" and path.endswith("/permissions"):
+            return httpx.Response(200, json={"permissions": []})
+        if method == "POST" and path.endswith("/permissions"):
+            return httpx.Response(200, json={"id": "permission-id", "type": "anyone", "role": "reader"})
+        if method == "DELETE":
+            deleted_permissions.append(path)
+            return httpx.Response(204)
+        raise AssertionError(f"unexpected Drive request: {method} {path}")
+
+    monkeypatch.setattr(drive, "_require_admin", require_admin)
+    monkeypatch.setattr(drive, "_rpc", rpc)
+    monkeypatch.setattr(drive, "_access_token", access_token)
+    monkeypatch.setattr(drive, "_verified_upload_file", verified_file)
+    monkeypatch.setattr(drive, "_drive_request", drive_request)
+    body = drive.VideoMetadata(id=UUID(row["item_id"]), title="Aula", topic="Estudos", tags=[],
+        description="", content="", created_at="2026-11-26T00:00:00Z", updated_at="2026-11-26T00:00:00Z")
+
+    if commit_persisted:
+        result = asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
+        assert result["published"] is True
+        assert result["drive_file_id"] == file_id
+        assert result["previous_storage_path"] is None
+        assert deleted_permissions == []
+    else:
+        with pytest.raises(HTTPException) as error:
+            asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
+        assert error.value.status_code == 503
+        assert deleted_permissions == [f"/files/{file_id}/permissions/permission-id"]

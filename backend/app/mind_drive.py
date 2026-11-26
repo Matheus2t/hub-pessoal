@@ -698,6 +698,18 @@ async def publish_upload(upload_id: str, body: VideoMetadata, authorization: str
                        "favorite": body.favorite, "created_at": body.created_at.isoformat(),
                        "updated_at": body.updated_at.isoformat(), "poster_data_url": body.poster_data_url}})
     except Exception:
+        # A PostgREST timeout can happen after PostgreSQL committed the item.
+        # Reconcile the ledger before compensating the Drive permission so a
+        # committed public video is not left marked as published but unplayable.
+        try:
+            persisted = await _rpc("mind_drive_get_upload", {"p_admin_id": admin_id, "p_upload_id": upload_id})
+        except Exception:
+            persisted = None
+        if (isinstance(persisted, dict) and persisted.get("status") == "published" and
+                persisted.get("drive_file_id") == file_id):
+            return {"published": True, "drive_file_id": file_id,
+                    "web_view_url": "https://drive.google.com/file/d/" + file_id + "/view",
+                    "previous_storage_path": None, "previous_drive_file_id": None}
         if created_permission and permission_id:
             try:
                 await _drive_request("DELETE", f"/files/{file_id}/permissions/{permission_id}", access, params={"supportsAllDrives": "true"})
