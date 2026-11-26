@@ -3,7 +3,10 @@ declare global {
   var __2T_MIND_SUPABASE_URL__: string | undefined;
   var __2T_MIND_SUPABASE_KEY__: string | undefined;
   var __2T_MIND_CLOUD_ENABLED__: boolean | undefined;
+  var __2T_MIND_LOCAL_SUPABASE_ENABLED__: boolean | undefined;
   var __2T_MIND_LOCAL_MODE_ENABLED__: boolean | undefined;
+  var __2T_MIND_GOOGLE_DRIVE_ENABLED__: boolean | undefined;
+  var __2T_API_BASE_URL__: string | undefined;
 }
 
 interface CloudSession {
@@ -21,12 +24,26 @@ export function mindCloudEnabled(): boolean {
 export function mindLocalModeEnabled(): boolean {
   return globalThis.__2T_MIND_LOCAL_MODE_ENABLED__ === true;
 }
+export function mindGoogleDriveEnabled(): boolean {
+  return mindCloudEnabled() && globalThis.__2T_MIND_GOOGLE_DRIVE_ENABLED__ === true;
+}
 function config() {
   const rawUrl = globalThis.__2T_MIND_SUPABASE_URL__ ?? "";
   const key = globalThis.__2T_MIND_SUPABASE_KEY__ ?? "";
   const url = new URL(rawUrl);
-  if (url.protocol !== "https:" || !/^[a-z0-9-]+\.supabase\.co$/.test(url.hostname) ||
-      !key.startsWith("sb_publishable_")) {
+  const hosted = url.protocol === "https:" && /^[a-z0-9-]+\.supabase\.co$/.test(url.hostname) &&
+    !url.port && url.pathname === "/" && !url.search && !url.hash && key.startsWith("sb_publishable_");
+  let localAnonKey = false;
+  try {
+    const payload = key.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(payload.length / 4) * 4, "=");
+    localAnonKey = JSON.parse(atob(base64)).role === "anon";
+  } catch { /* The local exception accepts only an anonymous Supabase JWT. */ }
+  const local = globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__ === true &&
+    url.protocol === "http:" && url.hostname === "127.0.0.1" && url.port === "54321" &&
+    url.pathname === "/" && !url.search && !url.hash && localAnonKey &&
+    ["localhost", "127.0.0.1", "::1", "[::1]"].includes(location.hostname);
+  if (!hosted && !local) {
     throw new Error("A configuração administrativa da Mente não está disponível.");
   }
   return { url: url.origin, key };
@@ -86,6 +103,9 @@ async function tokenSession(): Promise<CloudSession> {
 /** TUS must use the project's direct Storage hostname, not the API gateway. */
 export function mindTusEndpoint(): string {
   const { url } = config();
+  if (globalThis.__2T_MIND_LOCAL_SUPABASE_ENABLED__ === true) {
+    return url + "/storage/v1/upload/resumable";
+  }
   const host = new URL(url).hostname;
   const projectRef = host.slice(0, -".supabase.co".length);
   return `https://${projectRef}.storage.supabase.co/storage/v1/upload/resumable`;
@@ -117,6 +137,20 @@ export async function mindPublicApi(path: string): Promise<Response> {
   return fetch(url + path, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", headers: { apikey: key, Accept: "application/json" } });
 }
 
+/** Admin-only FastAPI request; Google and Supabase secrets are never sent by this client. */
+export async function mindBackendApi(path: string, init: RequestInit = {}): Promise<Response> {
+  if (!path.startsWith("/api/mind-drive/") || path.includes("..")) throw new Error("Rota administrativa inválida.");
+  const session = await tokenSession();
+  const rawBase = globalThis.__2T_API_BASE_URL__ ?? "";
+  const base = new URL(rawBase || location.origin, location.origin);
+  const localDevApi = location.hostname === "localhost" && base.hostname === "localhost" && base.protocol === "http:";
+  if (base.origin !== location.origin && !localDevApi) throw new Error("A API administrativa não está na origem esperada.");
+  return fetch(base.origin + path, {
+    cache: "no-store", credentials: "include", referrerPolicy: "no-referrer", ...init,
+    headers: { Authorization: "Bearer " + session.access_token, ...(init.headers ?? {}) },
+  });
+}
+
 export function publicMindPdfUrl(storagePath: string): string {
   if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.pdf$/i.test(storagePath)) throw new Error("Caminho de PDF inválido.");
   const { url } = config();
@@ -127,6 +161,14 @@ export function publicMindVideoUrl(storagePath: string): string {
   if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.mp4$/i.test(storagePath)) throw new Error("Caminho de vídeo inválido.");
   const { url } = config();
   return url + "/storage/v1/object/public/mind-videos/" + storagePath;
+}
+export function publicMindDrivePreviewUrl(fileId: string): string {
+  if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) throw new Error("Identificador de vídeo inválido.");
+  return "https://drive.google.com/file/d/" + fileId + "/preview";
+}
+export function publicMindDriveViewUrl(fileId: string): string {
+  if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) throw new Error("Identificador de vídeo inválido.");
+  return "https://drive.google.com/file/d/" + fileId + "/view";
 }
 
 export function safeMindPdfFileName(value: string): string {
