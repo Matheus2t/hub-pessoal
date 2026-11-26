@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { assertMindVideoDownloadSize, MAX_MIND_VIDEO_BYTES } from "../src/mind/video";
+import {
+  assertMindVideoDownloadSize, MAX_MIND_VIDEO_BYTES, readMindVideoBlobWithinLimit,
+} from "../src/mind/video";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
 test.beforeEach(async ({ page }) => {
@@ -186,4 +188,58 @@ test("public MP4 download validates advertised and received bytes", () => {
     expect(() => assertMindVideoDownloadSize(header))
       .toThrow("O tamanho informado para o vídeo é inválido.");
   }
+});
+
+
+test("public MP4 download enforces the real byte limit while streaming", async () => {
+  const valid = new Response(new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(new Uint8Array([1, 2, 3, 4]));
+      controller.enqueue(new Uint8Array([5, 6, 7, 8]));
+      controller.close();
+    },
+  }), { headers: { "content-type": "video/mp4" } });
+  const blob = await readMindVideoBlobWithinLimit(valid, { maxBytes: 8 });
+  expect(blob.size).toBe(8);
+  expect(Array.from(new Uint8Array(await blob.arrayBuffer()))).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+
+  let cancelled = false;
+  const oversized = new Response(new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(new Uint8Array([1, 2, 3, 4]));
+      controller.enqueue(new Uint8Array([5, 6, 7, 8, 9]));
+    },
+    cancel() { cancelled = true; },
+  }));
+  await expect(readMindVideoBlobWithinLimit(oversized, { maxBytes: 8 }))
+    .rejects.toThrow("O vídeo ultrapassa 25 MB.");
+  expect(cancelled).toBe(true);
+});
+
+test("public MP4 download cancels invalid declarations and supports caller cancellation", async () => {
+  let invalidCancelled = false;
+  const invalid = new Response(new ReadableStream<Uint8Array>({
+    start() {},
+    cancel() { invalidCancelled = true; },
+  }), { headers: { "content-length": "9" } });
+  await expect(readMindVideoBlobWithinLimit(invalid, { maxBytes: 8 }))
+    .rejects.toThrow("O vídeo ultrapassa 25 MB.");
+  expect(invalidCancelled).toBe(true);
+
+  let callerCancelled = false;
+  const pending = new Response(new ReadableStream<Uint8Array>({
+    start() {},
+    cancel() { callerCancelled = true; },
+  }));
+  const controller = new AbortController();
+  const read = readMindVideoBlobWithinLimit(pending, { maxBytes: 8, signal: controller.signal });
+  controller.abort();
+  await expect(read).rejects.toThrow("Download do vídeo cancelado.");
+  expect(callerCancelled).toBe(true);
+});
+
+test("public MP4 download times out when a response stops yielding bytes", async () => {
+  const stalled = new Response(new ReadableStream<Uint8Array>({ start() {} }));
+  await expect(readMindVideoBlobWithinLimit(stalled, { maxBytes: 8, idleTimeoutMs: 25 }))
+    .rejects.toThrow("O download do vídeo excedeu o tempo limite.");
 });
