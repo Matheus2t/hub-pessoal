@@ -2,10 +2,11 @@ import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { obsidianMark } from "./obsidian-mark";
-import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, publicMindVideoUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
-import { checkPublicCloudPdf, deleteCloudMindItem, downloadPublicCloudPdf, listCloudMindItems, downloadPublicCloudVideo, saveCloudMindItem } from "./cloud-store";
-import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import { mindBackendApi, mindCloudEnabled, mindGoogleDriveEnabled, mindLocalModeEnabled, publicMindDrivePreviewUrl, publicMindDriveViewUrl, publicMindPdfUrl, publicMindVideoUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
+import { checkPublicCloudPdf, cleanupCloudMindStoragePath, deleteCloudMindItem, downloadPublicCloudPdf, listCloudMindItems, downloadPublicCloudVideo, saveCloudMindItem } from "./cloud-store";
+import { checkedMp4, MAX_MIND_DRIVE_VIDEO_BYTES, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 import { MindVideoUploadCancelledError, type MindVideoUploadProgress } from "./video-upload";
+import { clearMindDriveUpload, deleteManagedDriveVideo, DriveUploadCancelledError, findPendingMindDriveUpload, publishMindDriveVideo, uploadMindVideoToDrive } from "./google-drive-upload";
 import {
   checkedPdf, createMindBackup, deleteMindItem, displayFileSize,
   listMindItems, MAX_MIND_PDF_BYTES, mindBackupAssetName, normalizedTags, parseMindBackup, restoreMindBackup, saveMindItem,
@@ -13,6 +14,8 @@ import {
 } from "./store";
 
 type Filter = "all" | "pdf" | "note" | "video" | "favorite";
+type DriveOrphan = { drive_file_id: string; file_name: string; size_bytes: number; trashed: boolean };
+type DriveStatus = { connected: boolean; google_email?: string; used_bytes?: number | null; reserved_bytes?: number | null; account_free_bytes?: number | null; quota_verified?: boolean; orphan_files?: DriveOrphan[] };
 @customElement("mind-page")
 export class MindPage extends LightElement {
   @state() private items: MindItem[] = [];
@@ -48,6 +51,9 @@ export class MindPage extends LightElement {
   @state() private videoUploadStage: "idle" | "preparing" | "uploading" | "publishing" | "failed" = "idle";
   @state() private backupAssets: MindItem[] = [];
   @state() private backupAssetStarted: string[] = [];
+  @state() private driveStatus: DriveStatus | null = null;
+  @state() private driveBusy = false;
+  @state() private backupHasExternalAssets = false;
   private videoDraftObjectUrl: string | null = null;
   private videoUploadController: AbortController | null = null;
   private localVideoObjectUrl: string | null = null;
@@ -66,7 +72,7 @@ export class MindPage extends LightElement {
     if (!this.active) return;
     this.checkingSession = false;
     this.authenticated = allowed;
-    if (allowed) await this.reload();
+    if (allowed) { await this.reload(); if (mindGoogleDriveEnabled()) await this.refreshDriveStatus(); }
   }
 
   private async login(event: Event) {
@@ -80,6 +86,7 @@ export class MindPage extends LightElement {
       this.authenticated = true;
       this.loginVisible = false;
       await this.reload();
+      if (mindGoogleDriveEnabled()) await this.refreshDriveStatus();
       const pending = this.pendingAdminAction;
       this.pendingAdminAction = null;
       if (pending === "note") this.startNote();
@@ -93,6 +100,7 @@ export class MindPage extends LightElement {
     await signOutMind();
     if (!this.active) return;
     this.authenticated = false;
+    this.driveStatus = null;
     this.draft = null; this.editing = false; this.pendingAdminAction = null;
     this.loginPassword = ""; this.loginVisible = false; this.clearMessages();
     await this.reload();
@@ -139,6 +147,75 @@ export class MindPage extends LightElement {
     }
   }
   private get libraryAvailable() { return mindCloudEnabled() || mindLocalModeEnabled(); }
+  private get maxVideoBytes() { return mindCloudEnabled() && mindGoogleDriveEnabled() ? MAX_MIND_DRIVE_VIDEO_BYTES : MAX_MIND_VIDEO_BYTES; }
+  private async refreshDriveStatus() {
+    if (!this.authenticated || !mindGoogleDriveEnabled()) return;
+    this.driveBusy = true;
+    try {
+      const response = await mindBackendApi("/api/mind-drive/status");
+      if (!response.ok) throw new Error("Não foi possível consultar o armazenamento Google Drive (HTTP " + response.status + ").");
+      this.driveStatus = await response.json() as DriveStatus;
+    } catch (e) { this.error = this.message(e); }
+    finally { this.driveBusy = false; }
+  }
+  private async connectGoogleDrive() {
+    if (!this.authenticated || !mindGoogleDriveEnabled() || this.driveBusy) return;
+    this.driveBusy = true; this.clearMessages();
+    try {
+      const response = await mindBackendApi("/api/mind-drive/google/connect", { method: "POST" });
+      if (!response.ok) throw new Error("Não foi possível iniciar a autorização Google (HTTP " + response.status + ").");
+      const body = await response.json() as { authorization_url?: string };
+      const target = new URL(body.authorization_url ?? "");
+      if (target.origin !== "https://accounts.google.com") throw new Error("O Google retornou um endereço de autorização inválido.");
+      window.location.assign(target.href);
+    } catch (e) { this.error = this.message(e); this.driveBusy = false; }
+  }
+  private async disconnectGoogleDrive() {
+    if (!this.authenticated || !mindGoogleDriveEnabled() || this.driveBusy) return;
+    if (!window.confirm("Desconectar o Google Drive? Os vídeos publicados continuarão no Drive.")) return;
+    this.driveBusy = true; this.clearMessages();
+    try {
+      const response = await mindBackendApi("/api/mind-drive/google/disconnect", { method: "POST" });
+      if (!response.ok) throw new Error("Não foi possível desconectar o Google Drive (HTTP " + response.status + ").");
+      this.driveStatus = { connected: false };
+      this.notice = "Google Drive desconectado. Os arquivos existentes não foram removidos.";
+    } catch (e) { this.error = this.message(e); }
+    finally { this.driveBusy = false; }
+  }
+  private async deleteOrphanDriveFile(file: DriveOrphan) {
+    if (this.driveBusy || !window.confirm("Excluir permanentemente “" + file.file_name + "” do Google Drive? O arquivo não está vinculado à biblioteca.")) return;
+    this.driveBusy = true; this.clearMessages();
+    try {
+      await deleteManagedDriveVideo(file.drive_file_id);
+      const response = await mindBackendApi("/api/mind-drive/status");
+      if (!response.ok) throw new Error("O arquivo foi excluído, mas não foi possível atualizar o armazenamento.");
+      this.driveStatus = await response.json() as DriveStatus;
+      this.notice = "Arquivo órfão excluído do Google Drive.";
+    } catch (e) { this.error = this.message(e); }
+    finally { this.driveBusy = false; }
+  }
+  private formatDriveSize(bytes: number | null | undefined) {
+    if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0) return "Indisponível";
+    if (bytes >= 1_000_000_000) return (bytes / 1_000_000_000).toFixed(2).replace(".", ",") + " GB";
+    return this.displayVideoSize(bytes);
+  }
+  private renderDriveStorage() {
+    if (!mindGoogleDriveEnabled() || !this.authenticated) return nothing;
+    const connected = this.driveStatus?.connected === true;
+    return html`<section class="mind-drive-panel" aria-label="Armazenamento de vídeos no Google Drive">
+      <div><p class="mind-eyebrow">ARMAZENAMENTO DE VÍDEOS</p><strong>${connected ? "Google Drive conectado" : "Google Drive desconectado"}</strong>
+        ${connected ? html`<p>${this.driveStatus?.google_email ?? "Conta Google"} · pasta 2T / Mente / Vídeos</p>
+          <p>Limite 2T: ${this.formatDriveSize(this.driveStatus?.used_bytes)} usados${(this.driveStatus?.reserved_bytes ?? 0) ? " + " + this.formatDriveSize(this.driveStatus?.reserved_bytes) + " reservados" : ""} de 5 GB.</p>
+          <p>${this.driveStatus?.quota_verified ? "Espaço livre da conta Google: " + this.formatDriveSize(this.driveStatus?.account_free_bytes) + "." : "A cota da conta Google não pôde ser confirmada."}</p>
+          ${(this.driveStatus?.orphan_files?.length ?? 0) ? html`<div class="mind-drive-orphans" aria-label="Arquivos sem vínculo na biblioteca"><strong>Arquivos sem vínculo</strong><ul>${this.driveStatus!.orphan_files!.map(file => html`<li><span>${file.file_name} · ${this.formatDriveSize(file.size_bytes)}</span><button type="button" @click=${() => void this.deleteOrphanDriveFile(file)} ?disabled=${this.driveBusy}>Excluir</button></li>`)}</ul></div>` : nothing}`
+          : html`<p>O administrador conecta o Drive; visitantes não precisam entrar no Google.</p>`}</div>
+      <div class="mind-actions">
+        ${connected ? html`<button type="button" @click=${this.refreshDriveStatus} ?disabled=${this.driveBusy}>${this.driveBusy ? "Consultando…" : "Atualizar armazenamento"}</button>
+          <button type="button" @click=${this.disconnectGoogleDrive} ?disabled=${this.driveBusy}>Desconectar</button>`
+          : html`<button class="mind-primary" type="button" @click=${this.connectGoogleDrive} ?disabled=${this.driveBusy}>${this.driveBusy ? "Conectando…" : "Conectar Google Drive"}</button>`}
+      </div>
+    </section>`;
+  }
   private get topics() {
     const count = new Map<string, number>();
     for (const item of this.items) count.set(item.topic, (count.get(item.topic) ?? 0) + 1);
@@ -228,10 +305,12 @@ export class MindPage extends LightElement {
 
   private async selectVideoFile(file: File) {
     if (!this.draft || this.draft.kind !== "video") return;
-    if (!file.name.toLowerCase().endsWith(".mp4") || file.size > MAX_MIND_VIDEO_BYTES || !(await checkedMp4(file))) {
-        this.error = `Selecione um MP4 válido de até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}.`;
+    const maximum = this.maxVideoBytes;
+    if (!file.name.toLowerCase().endsWith(".mp4") || file.size > maximum || !(await checkedMp4(file, maximum))) {
+        this.error = `Selecione um MP4 válido de até ${this.displayVideoSize(maximum)}.`;
       return;
     }
+    const pending = mindGoogleDriveEnabled() ? await findPendingMindDriveUpload(file, new Set(this.items.map(item => item.id))) : null;
     this.clearVideoPreview();
     this.videoDraftObjectUrl = URL.createObjectURL(file);
     this.videoPreviewUrl = this.videoDraftObjectUrl;
@@ -239,7 +318,9 @@ export class MindPage extends LightElement {
     this.videoPreviewError = "";
     this.videoPreviewDuration = 0;
     const suggestedTitle = file.name.replace(/\.mp4$/i, "").replace(/[_-]+/g, " ").trim();
-    this.draft = { ...this.draft, title: this.draft.title.trim() ? this.draft.title : suggestedTitle, file, videoUrl: "", fileName: file.name, fileSize: file.size, posterDataUrl: undefined };
+    this.draft = { ...this.draft, id: pending?.itemId ?? this.draft.id,
+      title: this.draft.title.trim() ? this.draft.title : suggestedTitle, file, videoUrl: "", fileName: file.name,
+      fileSize: file.size, posterDataUrl: undefined, storagePath: undefined, storageProvider: undefined, driveFileId: undefined };
     this.videoUploadProgress = null;
     this.videoUploadStage = "idle";
     this.clearMessages();
@@ -316,10 +397,12 @@ export class MindPage extends LightElement {
         item.storagePath = undefined;
         item.fileName = undefined;
         item.fileSize = undefined;
+        item.storageProvider = undefined;
+        item.driveFileId = undefined;
       } else {
         item.videoUrl = undefined;
-        if (!item.file && !item.storagePath) { this.error = "Selecione um arquivo MP4."; return; }
-        if (item.file && !(await checkedMp4(item.file))) { this.error = `MP4 inválido ou maior que ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}.`; return; }
+        if (!item.file && !item.storagePath && !item.driveFileId) { this.error = "Selecione um arquivo MP4."; return; }
+        if (item.file && !(await checkedMp4(item.file, this.maxVideoBytes))) { this.error = `MP4 inválido ou maior que ${this.displayVideoSize(this.maxVideoBytes)}.`; return; }
         if (item.file && !this.videoPreviewReady) { this.error = this.videoPreviewError || "Aguarde a análise do vídeo antes de publicar."; return; }
       }
     }
@@ -330,7 +413,19 @@ export class MindPage extends LightElement {
     this.clearMessages();
     try {
       let cleanupPending = false;
-      if (mindCloudEnabled()) cleanupPending = await saveCloudMindItem(item, {
+      if (mindCloudEnabled() && mindGoogleDriveEnabled() && item.kind === "video" && item.file) {
+        const driveFile = item.file instanceof File ? item.file : new File([item.file], safeMindVideoFileName(item.fileName ?? item.title + ".mp4"),
+          { type: "video/mp4", lastModified: item.updatedAt });
+        const uploaded = await uploadMindVideoToDrive(driveFile, item.id,
+          progress => { this.videoUploadProgress = progress; this.videoUploadStage = "uploading"; }, this.videoUploadController?.signal);
+        this.videoUploadStage = "publishing";
+        const published = await publishMindDriveVideo(uploaded.uploadId, item);
+        clearMindDriveUpload(item.id);
+        if (published.previous_storage_path) cleanupPending = await cleanupCloudMindStoragePath(published.previous_storage_path);
+        if (published.previous_drive_file_id && published.previous_drive_file_id !== uploaded.driveFileId) {
+          try { await deleteManagedDriveVideo(published.previous_drive_file_id); } catch { cleanupPending = true; }
+        }
+      } else if (mindCloudEnabled()) cleanupPending = await saveCloudMindItem(item, {
         signal: this.videoUploadController?.signal,
         onVideoProgress: progress => { this.videoUploadProgress = progress; this.videoUploadStage = "uploading"; },
       });
@@ -343,11 +438,12 @@ export class MindPage extends LightElement {
       this.draft = null;
       this.clearVideoPreview();
       this.notice = mindCloudEnabled()
-        ? cleanupPending ? "Item publicado; o PDF anterior ainda precisa de limpeza." : "Alterações publicadas na biblioteca 2T."
+        ? cleanupPending ? "Item publicado; um arquivo anterior ainda precisa de limpeza." : "Alterações publicadas na biblioteca 2T."
         : item.kind === "note" ? "Nota salva neste navegador." : "Documento atualizado neste navegador.";
     } catch (e) {
-      this.videoUploadStage = e instanceof MindVideoUploadCancelledError ? "idle" : this.videoUploadController ? "failed" : "idle";
-      if (!(e instanceof MindVideoUploadCancelledError)) this.error = this.message(e);
+      const cancelled = e instanceof MindVideoUploadCancelledError || e instanceof DriveUploadCancelledError;
+      this.videoUploadStage = cancelled ? "idle" : this.videoUploadController ? "failed" : "idle";
+      if (!cancelled) this.error = this.message(e);
       else this.notice = "Envio cancelado. Selecione o mesmo arquivo novamente para retomar.";
     }
     finally { this.videoUploadController = null; this.busy = false; }
@@ -472,6 +568,7 @@ export class MindPage extends LightElement {
     this.busy = true; this.clearMessages();
     try {
       const blob = await createMindBackup(this.items);
+      this.backupHasExternalAssets = this.items.some(item => item.kind === "video" && item.storageProvider === "google-drive" && !!item.driveFileId);
       this.backupAssets = this.items.filter(item => item.kind === "pdf" || (item.kind === "video" && !item.videoUrl))
         .filter(item => !!item.file || !!item.storagePath);
       this.backupAssetStarted = [];
@@ -480,9 +577,11 @@ export class MindPage extends LightElement {
       a.href = url; a.download = "mente-2t-manifesto-" + new Date().toISOString().slice(0, 10) + ".json";
       document.body.append(a); a.click(); a.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 60000);
-      this.notice = this.backupAssets.length
-        ? `Manifesto gerado. Baixe também os ${this.backupAssets.length} arquivos listados para completar o backup.`
-        : "Backup de metadados gerado. Guarde o arquivo em local seguro.";
+      this.notice = this.backupHasExternalAssets
+        ? "Manifesto gerado. Ele referencia vídeos do Google Drive, mas não contém esses arquivos; o backup não está completo sem cópias baixadas do Drive."
+        : this.backupAssets.length
+          ? `Manifesto gerado. Baixe também os ${this.backupAssets.length} arquivos listados para completar o backup.`
+          : "Backup de metadados gerado. Guarde o arquivo em local seguro.";
     } catch (e) { this.error = this.message(e); }
     finally { this.busy = false; }
   }
@@ -648,11 +747,13 @@ export class MindPage extends LightElement {
           : html`<div class="mind-video-upload">
               <label class="mind-video-dropzone" @dragover=${(e: DragEvent) => e.preventDefault()} @drop=${(e: DragEvent) => { e.preventDefault(); const file = e.dataTransfer?.files[0]; if (file) void this.selectVideoFile(file); }}>
                 <input class="mind-video-file-input" name="video-file" type="file" accept=".mp4,video/mp4" @change=${this.chooseVideoFile} />
-                <span><strong>${d.fileName ? "Selecionar outro vídeo" : "Arraste um vídeo ou selecione um arquivo"}</strong><small>MP4 · até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}</small></span>
+                <span><strong>${d.fileName ? "Selecionar outro vídeo" : "Arraste um vídeo ou selecione um arquivo"}</strong><small>MP4 · até ${this.displayVideoSize(this.maxVideoBytes)}${mindGoogleDriveEnabled() ? " · envio direto ao Google Drive" : ""}</small></span>
               </label>
               ${d.fileName ? html`<div class="mind-video-file-label"><strong>${d.fileName}</strong><span>${this.displayVideoSize(d.fileSize ?? 0)}${this.videoPreviewDuration ? " · " + this.formatDuration(this.videoPreviewDuration) : ""}</span></div>` : nothing}
               ${this.videoPreviewUrl ? html`<div class="mind-video-draft-preview"><video controls muted playsinline preload="metadata" src=${this.videoPreviewUrl} poster=${d.posterDataUrl ?? nothing} @loadeddata=${this.videoPreviewLoaded} @error=${this.videoPreviewFailed}>Prévia local</video></div>` : nothing}
               ${this.videoPreviewError ? html`<p class="mind-error" role="alert">${this.videoPreviewError}</p>` : this.videoPreviewUrl && !this.videoPreviewReady ? html`<p class="mind-video-status" role="status">Analisando a reprodução neste navegador…</p>` : nothing}
+              ${mindGoogleDriveEnabled() && !d.videoUrl ? html`<p class="mind-video-status" role="note">Ao publicar, qualquer pessoa com o link poderá acessar o vídeo fora da 2T pelo Google Drive. A reprodução segue os limites do Google.</p>` : nothing}
+              ${mindGoogleDriveEnabled() && d.file && !this.driveStatus?.connected ? html`<p class="mind-error" role="alert">Conecte o Google Drive antes de enviar o MP4.</p>` : nothing}
               ${this.videoUploadProgress ? html`<div class="mind-upload-progress" role="status" aria-live="polite">
                 <div><span>${this.displayVideoSize(this.videoUploadProgress.sent)} de ${this.displayVideoSize(this.videoUploadProgress.total)} enviados</span><strong>${Math.floor(this.videoUploadProgress.sent / Math.max(1, this.videoUploadProgress.total) * 100)}%</strong></div>
                 <progress max=${this.videoUploadProgress.total} .value=${this.videoUploadProgress.sent} aria-label="Progresso do envio do vídeo"></progress>
@@ -664,7 +765,7 @@ export class MindPage extends LightElement {
               ${this.videoUploadController ? html`<button type="button" @click=${this.cancelVideoUpload}>Cancelar envio</button>` : nothing}
             </div>`}
       ` : nothing}
-      <div class="mind-actions"><button class="mind-primary" type="submit" ?disabled=${this.busy}>${d.kind === "video" && this.videoMode === "file" ? this.busy ? "Enviando vídeo…" : "Publicar vídeo" : "Salvar"}</button><button type="button" @click=${this.cancelEdit}>Cancelar</button></div>
+      <div class="mind-actions"><button class="mind-primary" type="submit" ?disabled=${this.busy || (d.kind === "video" && this.videoMode === "file" && !!d.file && mindGoogleDriveEnabled() && !this.driveStatus?.connected)}>${d.kind === "video" && this.videoMode === "file" ? this.busy ? "Enviando vídeo…" : "Publicar vídeo" : "Salvar"}</button><button type="button" @click=${this.cancelEdit}>Cancelar</button></div>
     </form>`;
   }
 
@@ -699,6 +800,8 @@ export class MindPage extends LightElement {
           <div class="mind-actions mind-video-actions">
             ${item.videoUrl && parseMindVideoLink(item.videoUrl)
               ? html`<a class="mind-pdf-external" href=${parseMindVideoLink(item.videoUrl)!.url} target="_blank" rel="noopener noreferrer">Abrir no navegador ↗</a>`
+              : item.storageProvider === "google-drive" && item.driveFileId
+                ? html`<a class="mind-pdf-external" href=${publicMindDriveViewUrl(item.driveFileId)} target="_blank" rel="noopener noreferrer">Abrir vídeo no Google Drive ↗</a>`
               : item.storagePath && mindCloudEnabled()
                 ? html`<a class="mind-pdf-external" href=${publicMindVideoUrl(item.storagePath)} target="_blank" rel="noopener noreferrer">Abrir no navegador ↗</a>
                   <button class="mind-pdf-external" type="button" ?disabled=${this.busy} @click=${() => this.downloadVideo(item)}>Baixar vídeo</button>`
@@ -710,12 +813,14 @@ export class MindPage extends LightElement {
                   loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen
                   referrerpolicy="strict-origin-when-cross-origin"></iframe>`
               : html`<p role="alert">O endereço deste vídeo é inválido.</p>`)
+              : item.storageProvider === "google-drive" && item.driveFileId
+                ? html`<iframe title=${"Prévia do vídeo: " + item.title} src=${publicMindDrivePreviewUrl(item.driveFileId)} loading="lazy" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`
               : (mindCloudEnabled() && item.storagePath ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl)
                 ? html`<video controls playsinline preload="metadata" poster=${item.posterDataUrl ?? nothing} src=${mindCloudEnabled() && item.storagePath
                     ? publicMindVideoUrl(item.storagePath) : this.localVideoObjectUrl ?? ""} @error=${() => { this.error = "Este navegador não conseguiu reproduzir o codec deste MP4. Tente H.264 com áudio AAC ou outro navegador."; }}>Seu navegador não suporta vídeo MP4.</video>`
                 : html`<p role="alert">Vídeo indisponível.</p>`}
           </div>
-          <p class="mind-video-caveat">${item.videoUrl ? "A reprodução depende das permissões do vídeo na plataforma de origem." : "Reprodução no navegador com controles de volume, velocidade e tela cheia."}</p>
+          <p class="mind-video-caveat">${item.storageProvider === "google-drive" ? "A prévia e os controles dependem do Google Drive; a disponibilidade segue os limites e as políticas do serviço." : item.videoUrl ? "A reprodução depende das permissões do vídeo na plataforma de origem." : "Reprodução no navegador com controles de volume, velocidade e tela cheia."}</p>
         ` : html`<div class="mind-note-view">${item.content || "Esta nota ainda não possui conteúdo."}</div>`}
     </div>`;
   }
@@ -750,12 +855,14 @@ export class MindPage extends LightElement {
         html`<div class="mind-local-warning" role="note"><span class="mind-storage-dot" aria-hidden="true"></span><span><strong>Biblioteca local</strong> · Arquivos somente neste navegador</span><details><summary>Sobre os dados</summary><p>Notas e PDFs ficam somente neste navegador e perfil, sem sincronização nem criptografia. Podem desaparecer se os dados do navegador forem apagados. Faça backups e evite dispositivos compartilhados.</p></details></div>` :
         html`<div class="mind-local-warning" role="status"><span><strong>Biblioteca indisponível</strong> · A configuração pública não está disponível neste deployment.</span></div>`}
       ${this.renderAdminLogin()}
+      ${this.renderDriveStorage()}
       ${this.notice ? html`<p class="mind-notice" role="status">${this.notice}</p>` : nothing}
       ${this.error ? html`<p class="mind-error" role="alert">${this.error}</p>` : nothing}
       ${this.backupAssets.length ? html`<section class="mind-backup-assets" aria-label="Arquivos do backup">
         <div><strong>Arquivos do backup</strong><p>O manifesto JSON não contém os arquivos binários. Baixe cada item abaixo e selecione todos junto ao JSON ao restaurar.</p></div>
         <ul>${this.backupAssets.map(item => html`<li><span>${item.fileName ?? item.title}${this.backupAssetStarted.includes(item.id) ? " · iniciado" : ""}</span><button type="button" @click=${() => void this.downloadBackupAsset(item)} ?disabled=${this.busy}>Baixar ${item.kind === "pdf" ? "PDF" : "MP4"}</button></li>`)}</ul>
       </section>` : nothing}
+      ${this.backupHasExternalAssets ? html`<p class="mind-video-status" role="note">O manifesto contém referências aos vídeos do Drive, não os MP4. Faça uma cópia independente no Google Drive para completar o backup.</p>` : nothing}
       <div class="mind-workspace ${this.pdfExpanded ? "mind-workspace--pdf-expanded" : ""}">
         ${this.libraryAvailable ? html`
         <aside class="mind-facets" aria-label="Navegação da Mente">
@@ -787,7 +894,7 @@ export class MindPage extends LightElement {
           ${!this.ready ? html`<p class="mind-list-empty">Carregando acervo…</p>` :
             visible.length ? html`<div class="mind-items">${visible.map(item => this.itemButton(item))}</div>` :
             html`<div class="mind-list-empty"><span aria-hidden="true">◎</span><strong>${this.items.length ? "Nenhum resultado" : "Acervo vazio"}</strong><p>${this.items.length ? "Experimente outro filtro ou pesquisa." : "Os documentos publicados aparecerão aqui."}</p></div>`}
-          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} e MP4 de até ${this.displayVideoSize(MAX_MIND_VIDEO_BYTES)}. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
+          <p class="mind-file-limit">PDFs de até ${displayFileSize(MAX_MIND_PDF_BYTES)} e MP4 de até ${this.displayVideoSize(this.maxVideoBytes)}. ${mindCloudEnabled() ? "Biblioteca pública sincronizada." : "A capacidade total depende do navegador."}</p>
         </div>
         <div class="mind-inspector" aria-label="Detalhes e editor" id="mind-reader">
           ${this.editing ? this.editor() : this.selected ? this.detail(this.selected) : html`<div class="mind-unselected">${obsidianMark}<h2>Seu espaço de leitura</h2><p>Selecione uma nota ou documento para começar.</p></div>`}

@@ -4,7 +4,8 @@
     "deploymentEnabled": {
       "main": false,
       "**": false,
-      "codex/mind-video-upload": true
+      "codex/mind-video-upload": true,
+      "codex/mind-google-drive-5gb": true
     }
   },
   "installCommand": "pip install -r requirements.txt && npm install --include=dev",
