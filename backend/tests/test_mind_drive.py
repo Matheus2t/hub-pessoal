@@ -169,7 +169,7 @@ def test_folder_lookup_logs_only_sanitized_google_status_and_reason(monkeypatch,
     assert "token-never-log" not in caplog.text
 
 
-@pytest.mark.parametrize("scenario", ["commit_response_lost", "rollback", "retry_after_restart"])
+@pytest.mark.parametrize("scenario", ["commit_response_lost", "rollback", "retry_after_restart", "reconciliation_unavailable"])
 def test_publish_reconciliation_preserves_previous_media_for_ui_cleanup(monkeypatch, scenario):
     upload_id = "a" * 32
     file_id = "Abcdefghij0123456789"
@@ -183,12 +183,17 @@ def test_publish_reconciliation_preserves_previous_media_for_ui_cleanup(monkeypa
     state = dict(row)
     deleted_permissions = []
     publish_calls = []
+    upload_reads = 0
 
     async def require_admin(_authorization):
         return ADMIN
 
     async def rpc(name, _body):
+        nonlocal upload_reads
         if name == "mind_drive_get_upload":
+            upload_reads += 1
+            if scenario == "reconciliation_unavailable" and upload_reads > 1:
+                raise HTTPException(503, "database reconciliation unavailable")
             return dict(state)
         if name == "mind_drive_publish_video":
             publish_calls.append(name)
@@ -224,12 +229,17 @@ def test_publish_reconciliation_preserves_previous_media_for_ui_cleanup(monkeypa
     body = drive.VideoMetadata(id=UUID(item_id), title="Aula", topic="Estudos", tags=[],
         description="", content="", created_at="2026-11-26T00:00:00Z", updated_at="2026-11-26T00:00:00Z")
 
-    if scenario == "rollback":
+    if scenario in {"rollback", "reconciliation_unavailable"}:
         with pytest.raises(HTTPException) as error:
             asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
         assert error.value.status_code == 503
-        assert deleted_permissions == [f"/files/{file_id}/permissions/permission-id"]
-        assert state["status"] == "uploaded"
+        if scenario == "rollback":
+            assert deleted_permissions == [f"/files/{file_id}/permissions/permission-id"]
+            assert state["status"] == "uploaded"
+        else:
+            # The database outcome cannot be verified, so keep the permission
+            # and avoid turning a possibly committed publication into a broken video.
+            assert deleted_permissions == []
     else:
         result = asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
         assert result["published"] is True
