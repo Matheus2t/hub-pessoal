@@ -7,6 +7,8 @@ __pycache__/
 backend/.env
 backend/.env.*
 !backend/.env.example
+backend/.mind-codespaces-admin.json
+backend/.mind-codespaces-encryption-key
 node_modules/
 dist/
 .pytest_cache/
@@ -16,6 +18,7 @@ dist/
 .vercel
 test-results/
 playwright-report/
+tests/mind-codespaces-runtime/
 
 # Local-only Learn audio production and owner review; never ship to public builds.
 private/learn-audio-v19/
