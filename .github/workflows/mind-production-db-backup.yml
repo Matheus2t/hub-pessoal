@@ -92,3 +92,46 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  archive-encrypted-backup:
+    if: github.ref == 'refs/heads/main' && inputs.operation == 'backup'
+    needs: backup-restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download only the verified encrypted artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/mind-archive"
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "mind-production-backup-${GITHUB_RUN_ID}" \
+            --dir "$RUNNER_TEMP/mind-archive"
+      - name: Verify checksum and archive as an unpublished draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          cd "$RUNNER_TEMP/mind-archive"
+          file="mind-production-public-private-backup.tar.gz.gpg"
+          test -s "$file"
+          test -s "$file.sha256"
+          sha256sum --status --check "$file.sha256"
+          tag="mind-backup-${GITHUB_RUN_ID}"
+          gh release create "$tag" "$file" "$file.sha256" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft --latest=false \
+            --title "Encrypted Mente backup ${GITHUB_RUN_ID}" \
+            --notes "Encrypted public/private logical backup only. Auth, Storage objects and Drive files are excluded. Keep this draft unpublished and retain the decryption passphrase separately."
+          mkdir -p "$RUNNER_TEMP/mind-archive-verify"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" \
+            --dir "$RUNNER_TEMP/mind-archive-verify"
+          cd "$RUNNER_TEMP/mind-archive-verify"
+          sha256sum --status --check "$file.sha256"
+          printf 'Encrypted archive round-trip verified in draft release.\n'

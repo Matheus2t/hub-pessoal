@@ -10,7 +10,7 @@ Para impedir deploy acidental, `vercel.json` desativa temporariamente o deploy a
 - A restauração compara, antes/depois, inventário de tabelas, funções, políticas RLS, chaves estrangeiras, definições de objetos e fingerprints de todas as tabelas em `public` e `private`.
 - O CLI exclui schemas gerenciados pelo Supabase, como `auth` e `storage`, além dos schemas de extensões. O backup **não** contém bytes de objetos da Storage API. Não trate este artefato como backup integral de Auth, Storage ou arquivos do Drive.
 - A validação comprova apenas a recuperação dos schemas de aplicação `public` e `private`; qualquer outro schema personalizado, os dados de Auth/Storage e arquivos da Storage API ficam fora deste procedimento. Não substitui o mecanismo de backup do serviço.
-- Antes de qualquer migration, confirme que o artifact foi baixado e guardado fora do prazo curto de retenção. O artifact do Actions expira em 1 dia e tem limite rígido de 100 MiB.
+- Antes de qualquer migration, confirme que o backup restaurado foi também preservado como release em rascunho e que o download desse release passou na conferência SHA-256. O artifact do Actions expira em 1 dia e tem limite rígido de 100 MiB.
 
 ## Proteção no GitHub
 
@@ -96,8 +96,9 @@ Na execução `backup`:
 2. Clique `Run workflow`, selecione `main` e escolha `backup`.
 3. Aprove o job no environment `production-db-backup`.
 4. Aguarde `backup-restore` concluir. Sucesso significa que o CLI conectou ao projeto correto, gerou os dumps, criptografou o pacote e restaurou no Supabase descartável sem diferenças nos fingerprints/metadados comparados.
-5. Baixe imediatamente o artifact `mind-production-backup-<run_id>` e armazene-o em um local privado e durável. O artifact expira após 1 dia. Ele contém somente o arquivo `.tar.gz.gpg` e seu checksum; relatórios não são publicados e nenhum SQL plaintext é enviado como artifact. O workflow falha se qualquer arquivo esperado estiver ausente.
-6. Mantenha `BACKUP_ENCRYPTION_PASSPHRASE` no GitHub Environment e no gerenciador de senhas. Não envie o artifact ou a senha em um issue público.
+5. Confira também o job `archive-encrypted-backup`. Ele baixa o artifact da mesma execução, verifica o SHA-256, cria um **release em rascunho** com somente o `.tar.gz.gpg` e seu checksum, baixa novamente os dois assets e repete a verificação. O job usa `contents:write` somente para esse arquivo criptografado e não recebe os secrets do environment. O rascunho fica acessível apenas a colaboradores com permissão de escrita; não o publique.
+6. Guarde uma cópia privada do arquivo criptografado e do checksum fora do GitHub. O artifact do Actions expira após 1 dia; o release em rascunho não depende dessa retenção, mas pode ser excluído ou ficar indisponível com a conta. Nenhum SQL plaintext ou relatório é anexado.
+7. Mantenha `BACKUP_ENCRYPTION_PASSPHRASE` no GitHub Environment e no gerenciador de senhas, separada do arquivo. Se o job de arquivamento falhar, considere a preservação durável **não comprovada** e não execute migration ou deploy.
 
 O repositório é público: pessoas com acesso de leitura podem baixar artifacts do Actions. Por isso o arquivo é criptografado com AES-256 e a chave aleatória é mantida fora do artifact e do repositório. Trate o artifact como público e preserve a chave privadamente.
 
@@ -107,7 +108,7 @@ A verificação cobre a estrutura e os registros de `public` e `private`. A chec
 
 ## Recuperar o artefato depois
 
-O ZIP baixado do Actions contém o backup criptografado e um arquivo `.sha256`. Guarde o ZIP e a senha de criptografia em meios separados, ambos sob seu controle. O artifact temporário do GitHub não substitui essa cópia durável.
+O release em rascunho identificado por `mind-backup-<run_id>` contém o backup criptografado e o arquivo `.sha256`. Baixe ambos com acesso de escrita ao repositório e confira o checksum antes de descriptografar. Guarde cópia privada e a senha de criptografia em meios separados, ambos sob seu controle. O artifact temporário do Actions não substitui essa cópia durável. Releases em rascunho também não substituem uma cópia fora do GitHub.
 
 No PowerShell, após extrair o ZIP, valide o arquivo antes de descriptografar:
 
