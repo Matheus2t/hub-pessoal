@@ -1,7 +1,7 @@
 /** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
 import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
-import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import { assertMindVideoDownloadSize, checkedMp4, parseMindVideoLink, safeMindVideoFileName } from "./video";
 
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
@@ -141,9 +141,9 @@ export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
   await requireOk(response, "Não foi possível baixar o vídeo");
   const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
   if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") throw new Error("O arquivo recebido não é MP4.");
-  const size = Number(response.headers.get("content-length"));
-  if (response.headers.has("content-length") && (size <= 0 || size > MAX_MIND_VIDEO_BYTES)) throw new Error("O vídeo ultrapassa 25 MB.");
+  assertMindVideoDownloadSize(response.headers.get("content-length"));
   const blob = await response.blob();
+  assertMindVideoDownloadSize(null, blob.size);
   if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
   return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
 }

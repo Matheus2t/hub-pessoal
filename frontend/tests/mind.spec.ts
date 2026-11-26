@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { assertMindVideoDownloadSize, MAX_MIND_VIDEO_BYTES } from "../src/mind/video";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
 test.beforeEach(async ({ page }) => {
@@ -166,4 +167,23 @@ test("on mobile opening a note reveals the reader without losing access to libra
   await expect(page.locator(".mind-detail")).toBeInViewport();
   await expect(page.locator(".mind-note-view")).toContainText("Conteúdo acessível");
   await expect(page.getByRole("button", { name: "Editar" })).toBeVisible();
+});
+
+
+test("public MP4 download validates advertised and received bytes", () => {
+  expect(() => assertMindVideoDownloadSize(String(MAX_MIND_VIDEO_BYTES))).not.toThrow();
+  expect(() => assertMindVideoDownloadSize(null, MAX_MIND_VIDEO_BYTES)).not.toThrow();
+  expect(() => assertMindVideoDownloadSize(null, 1_024)).not.toThrow();
+
+  expect(() => assertMindVideoDownloadSize(String(MAX_MIND_VIDEO_BYTES + 1)))
+    .toThrow("O vídeo ultrapassa 25 MB.");
+  expect(() => assertMindVideoDownloadSize(null, MAX_MIND_VIDEO_BYTES + 1))
+    .toThrow("O vídeo ultrapassa 25 MB.");
+  expect(() => assertMindVideoDownloadSize("32", MAX_MIND_VIDEO_BYTES + 1))
+    .toThrow("O vídeo ultrapassa 25 MB.");
+
+  for (const header of ["", "abc", "-1", "1.5", "9007199254740992"]) {
+    expect(() => assertMindVideoDownloadSize(header))
+      .toThrow("O tamanho informado para o vídeo é inválido.");
+  }
 });

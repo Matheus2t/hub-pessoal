@@ -37,6 +37,20 @@ export function parseMindVideoLink(value: string): VideoLink | null {
 
 export const MAX_MIND_VIDEO_BYTES = 25 * 1024 * 1024;
 
+/** Reject invalid or oversized public MP4 downloads using both the advertised and received byte counts. */
+export function assertMindVideoDownloadSize(contentLength: string | null, actualSize?: number): void {
+  if (contentLength !== null) {
+    if (!/^\d+$/.test(contentLength)) throw new Error("O tamanho informado para o vídeo é inválido.");
+    const declaredSize = Number(contentLength);
+    if (!Number.isSafeInteger(declaredSize) || declaredSize <= 0) throw new Error("O tamanho informado para o vídeo é inválido.");
+    if (declaredSize > MAX_MIND_VIDEO_BYTES) throw new Error("O vídeo ultrapassa 25 MB.");
+  }
+  if (actualSize !== undefined) {
+    if (!Number.isSafeInteger(actualSize) || actualSize <= 0) throw new Error("O tamanho recebido para o vídeo é inválido.");
+    if (actualSize > MAX_MIND_VIDEO_BYTES) throw new Error("O vídeo ultrapassa 25 MB.");
+  }
+}
+
 /** Container signature check; never trust filename or claimed MIME alone. */
 export async function checkedMp4(file: File | Blob): Promise<boolean> {
   if (file.size < 12 || file.size > MAX_MIND_VIDEO_BYTES) return false;
