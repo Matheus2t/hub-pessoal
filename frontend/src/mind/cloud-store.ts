@@ -1,7 +1,10 @@
 /** Supabase PostgREST + Storage adapter. RLS is the write authorization boundary. */
 import { mindApi, mindPublicApi, publicMindPdfUrl, publicMindVideoUrl, safeMindPdfFileName } from "./cloud-auth";
 import { checkedPdf, MAX_MIND_PDF_BYTES, type MindItem } from "./store";
-import { assertMindVideoDownloadSize, checkedMp4, parseMindVideoLink, safeMindVideoFileName } from "./video";
+import {
+  MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS, checkedMp4, parseMindVideoLink,
+  readMindVideoBlobWithinLimit, safeMindVideoFileName,
+} from "./video";
 
 const BUCKET = "mind-pdfs";
 const VIDEO_BUCKET = "mind-videos";
@@ -134,18 +137,49 @@ export async function downloadPublicCloudPdf(item: MindItem): Promise<Blob> {
   return blob.type === "application/pdf" ? blob : new Blob([blob], { type: "application/pdf" });
 }
 
-/** Public MP4 links stream through native video without an administrator token. */
-export async function downloadPublicCloudVideo(item: MindItem): Promise<Blob> {
+/** Download a public MP4 with bounded streaming, cancellation and an idle timeout. */
+export async function downloadPublicCloudVideo(item: MindItem, signal?: AbortSignal): Promise<Blob> {
   if (item.kind !== "video" || !item.storagePath || item.videoUrl) throw new Error("Este item não contém um MP4 para download.");
-  const response = await fetch(publicMindVideoUrl(item.storagePath), { credentials: "omit", referrerPolicy: "no-referrer" });
-  await requireOk(response, "Não foi possível baixar o vídeo");
-  const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
-  if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") throw new Error("O arquivo recebido não é MP4.");
-  assertMindVideoDownloadSize(response.headers.get("content-length"));
-  const blob = await response.blob();
-  assertMindVideoDownloadSize(null, blob.size);
-  if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
-  return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
+  const controller = new AbortController();
+  const cancelFromCaller = () => controller.abort();
+  if (signal?.aborted) cancelFromCaller();
+  else signal?.addEventListener("abort", cancelFromCaller, { once: true });
+
+  let timedOut = false;
+  const headersTimeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS);
+  try {
+    const response = await fetch(publicMindVideoUrl(item.storagePath), {
+      credentials: "omit",
+      referrerPolicy: "no-referrer",
+      signal: controller.signal,
+    });
+    clearTimeout(headersTimeout);
+    if (!response.ok) {
+      try { await response.body?.cancel(); } catch { /* The HTTP error is the useful result. */ }
+      await requireOk(response, "Não foi possível baixar o vídeo");
+    }
+    const mime = response.headers.get("content-type")?.split(";", 1)[0].toLowerCase();
+    if (mime && mime !== "video/mp4" && mime !== "application/octet-stream") {
+      try { await response.body?.cancel(); } catch { /* The MIME error is the useful result. */ }
+      throw new Error("O arquivo recebido não é MP4.");
+    }
+    const blob = await readMindVideoBlobWithinLimit(response, {
+      signal: controller.signal,
+      idleTimeoutMs: MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS,
+    });
+    if (!(await checkedMp4(blob))) throw new Error("O vídeo não é um MP4 válido.");
+    return blob.type === "video/mp4" ? blob : new Blob([blob], { type: "video/mp4" });
+  } catch (error) {
+    if (timedOut) throw new Error("O download do vídeo excedeu o tempo limite. Tente novamente.");
+    if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+    throw error;
+  } finally {
+    clearTimeout(headersTimeout);
+    signal?.removeEventListener("abort", cancelFromCaller);
+  }
 }
 
 /** Authenticated read is used for administrator backups and local-to-cloud migration only. */
