@@ -37,6 +37,112 @@ export function parseMindVideoLink(value: string): VideoLink | null {
 
 export const MAX_MIND_VIDEO_BYTES = 25 * 1024 * 1024;
 
+/** Reject invalid or oversized public MP4 downloads using both the advertised and received byte counts. */
+export const MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS = 60_000;
+
+/** Reject invalid or oversized public MP4 downloads using both advertised and received byte counts. */
+export function assertMindVideoDownloadSize(
+  contentLength: string | null,
+  actualSize?: number,
+  maxBytes = MAX_MIND_VIDEO_BYTES,
+): void {
+  if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0) throw new RangeError("Limite de tamanho inválido.");
+  if (contentLength !== null) {
+    if (!/^\d+$/.test(contentLength)) throw new Error("O tamanho informado para o vídeo é inválido.");
+    const declaredSize = Number(contentLength);
+    if (!Number.isSafeInteger(declaredSize) || declaredSize <= 0) throw new Error("O tamanho informado para o vídeo é inválido.");
+    if (declaredSize > maxBytes) throw new Error("O vídeo ultrapassa 25 MB.");
+  }
+  if (actualSize !== undefined) {
+    if (!Number.isSafeInteger(actualSize) || actualSize <= 0) throw new Error("O tamanho recebido para o vídeo é inválido.");
+    if (actualSize > maxBytes) throw new Error("O vídeo ultrapassa 25 MB.");
+  }
+}
+
+async function cancelMindVideoResponse(response: Response): Promise<void> {
+  try {
+    await response.body?.cancel();
+  } catch {
+    // Cancellation is best-effort when the browser has already locked/closed the body.
+  }
+}
+
+export async function readMindVideoBlobWithinLimit(
+  response: Response,
+  options: { maxBytes?: number; signal?: AbortSignal; idleTimeoutMs?: number } = {},
+): Promise<Blob> {
+  const maxBytes = options.maxBytes ?? MAX_MIND_VIDEO_BYTES;
+  const idleTimeoutMs = options.idleTimeoutMs ?? MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS;
+  if (!Number.isFinite(idleTimeoutMs) || idleTimeoutMs <= 0) throw new RangeError("Timeout de download inválido.");
+
+  try {
+    assertMindVideoDownloadSize(response.headers.get("content-length"), undefined, maxBytes);
+  } catch (error) {
+    await cancelMindVideoResponse(response);
+    throw error;
+  }
+
+  const signal = options.signal;
+  if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+  const reader = response.body?.getReader();
+  if (!reader) {
+    const blob = await response.blob();
+    if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+    assertMindVideoDownloadSize(null, blob.size, maxBytes);
+    return blob;
+  }
+
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let timedOut = false;
+  const armIdleTimeout = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timedOut = true;
+      void reader.cancel().catch(() => {});
+    }, idleTimeoutMs);
+  };
+  const cancelOnAbort = () => { void reader.cancel().catch(() => {}); };
+  signal?.addEventListener("abort", cancelOnAbort, { once: true });
+
+  try {
+    const chunks: ArrayBuffer[] = [];
+    let total = 0;
+    armIdleTimeout();
+    while (true) {
+      if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+      let part: ReadableStreamReadResult<Uint8Array>;
+      try {
+        part = await reader.read();
+      } catch (error) {
+        if (timedOut) throw new Error("O download do vídeo excedeu o tempo limite. Tente novamente.");
+        if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+        throw error;
+      }
+      if (timedOut) throw new Error("O download do vídeo excedeu o tempo limite. Tente novamente.");
+      if (signal?.aborted) throw new Error("Download do vídeo cancelado.");
+      if (part.done) break;
+      if (part.value.byteLength > maxBytes - total) {
+        try { await reader.cancel(); } catch { /* Preserve the size-limit error. */ }
+        throw new Error("O vídeo ultrapassa 25 MB.");
+      }
+      if (part.value.byteLength) {
+        total += part.value.byteLength;
+        chunks.push(part.value.slice().buffer as ArrayBuffer);
+        armIdleTimeout();
+      }
+    }
+    assertMindVideoDownloadSize(null, total, maxBytes);
+    return new Blob(chunks, { type: response.headers.get("content-type") ?? "" });
+  } catch (error) {
+    void reader.cancel().catch(() => {});
+    throw error;
+  } finally {
+    if (timer !== null) clearTimeout(timer);
+    signal?.removeEventListener("abort", cancelOnAbort);
+    reader.releaseLock();
+  }
+}
+
 /** Container signature check; never trust filename or claimed MIME alone. */
 export async function checkedMp4(file: File | Blob): Promise<boolean> {
   if (file.size < 12 || file.size > MAX_MIND_VIDEO_BYTES) return false;
