@@ -3,7 +3,7 @@ import { customElement, state } from "lit/decorators.js";
 import { LightElement } from "../ui";
 import { obsidianMark } from "./obsidian-mark";
 import { mindCloudEnabled, mindLocalModeEnabled, publicMindPdfUrl, publicMindVideoUrl, restoreMindSession, safeMindPdfFileName, signInMind, signOutMind } from "./cloud-auth";
-import { checkPublicCloudPdf, deleteCloudMindItem, downloadPublicCloudPdf, listCloudMindItems, publicCloudVideoDownloadUrl, saveCloudMindItem } from "./cloud-store";
+import { checkPublicCloudPdf, deleteCloudMindItem, downloadPublicCloudPdf, listCloudMindItems, downloadPublicCloudVideo, saveCloudMindItem } from "./cloud-store";
 import { checkedMp4, MAX_MIND_VIDEO_BYTES, parseMindVideoLink, safeMindVideoFileName } from "./video";
 import { MindVideoUploadCancelledError, type MindVideoUploadProgress } from "./video-upload";
 import {
@@ -449,17 +449,11 @@ export class MindPage extends LightElement {
 
   private async downloadVideo(item: MindItem) {
     if (this.busy || item.kind !== "video" || item.videoUrl) return;
-    if (mindCloudEnabled() && item.storagePath) {
-      const a = document.createElement("a");
-      a.href = publicCloudVideoDownloadUrl(item);
-      a.rel = "noopener noreferrer";
-      a.click();
-      this.notice = "Download iniciado.";
-      return;
-    }
     this.busy = true; this.clearMessages();
     try {
-      const file = item.file;
+      const file = mindCloudEnabled() && item.storagePath
+        ? await downloadPublicCloudVideo(item)
+        : item.file;
       if (!file) throw new Error("O vídeo não está disponível.");
       const url = URL.createObjectURL(file);
       const a = document.createElement("a");
