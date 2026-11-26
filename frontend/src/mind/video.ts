@@ -92,10 +92,10 @@ export async function readMindVideoBlobWithinLimit(
     return blob;
   }
 
-  let timer: ReturnType<typeof setTimeout>;
+  let timer: ReturnType<typeof setTimeout> | null = null;
   let timedOut = false;
   const armIdleTimeout = () => {
-    clearTimeout(timer);
+    if (timer !== null) clearTimeout(timer);
     timer = setTimeout(() => {
       timedOut = true;
       void reader.cancel().catch(() => {});
@@ -137,7 +137,7 @@ export async function readMindVideoBlobWithinLimit(
     void reader.cancel().catch(() => {});
     throw error;
   } finally {
-    clearTimeout(timer);
+    if (timer !== null) clearTimeout(timer);
     signal?.removeEventListener("abort", cancelOnAbort);
     reader.releaseLock();
   }
