@@ -169,24 +169,32 @@ def test_folder_lookup_logs_only_sanitized_google_status_and_reason(monkeypatch,
     assert "token-never-log" not in caplog.text
 
 
-@pytest.mark.parametrize("commit_persisted", [True, False])
-def test_publish_reconciles_uncertain_database_response_before_revoking_public_permission(monkeypatch, commit_persisted):
+@pytest.mark.parametrize("scenario", ["commit_response_lost", "rollback", "retry_after_restart"])
+def test_publish_reconciliation_preserves_previous_media_for_ui_cleanup(monkeypatch, scenario):
     upload_id = "a" * 32
     file_id = "Abcdefghij0123456789"
-    row = {"status": "uploaded", "item_id": "22222222-3333-4444-8555-666666666666",
-           "drive_file_id": file_id, "confirmed_size": 1024}
-    state = {"status": "uploaded"}
+    item_id = "22222222-3333-4444-8555-666666666666"
+    previous_storage_path = "22222222-3333-4444-8555-666666666666/33333333-4444-4555-8666-777777777777.mp4"
+    previous_drive_file_id = "OldDriveFileId123456"
+    initial_status = "published" if scenario == "retry_after_restart" else "uploaded"
+    row = {"status": initial_status, "item_id": item_id, "drive_file_id": file_id, "confirmed_size": 1024,
+           "previous_storage_path": previous_storage_path if initial_status == "published" else None,
+           "previous_drive_file_id": previous_drive_file_id if initial_status == "published" else None}
+    state = dict(row)
     deleted_permissions = []
+    publish_calls = []
 
     async def require_admin(_authorization):
         return ADMIN
 
     async def rpc(name, _body):
         if name == "mind_drive_get_upload":
-            return {**row, "status": state["status"]}
+            return dict(state)
         if name == "mind_drive_publish_video":
-            if commit_persisted:
-                state["status"] = "published"
+            publish_calls.append(name)
+            if scenario == "commit_response_lost":
+                state.update(status="published", previous_storage_path=previous_storage_path,
+                             previous_drive_file_id=previous_drive_file_id)
             raise HTTPException(503, "database response lost")
         raise AssertionError(f"unexpected RPC: {name}")
 
@@ -198,7 +206,9 @@ def test_publish_reconciles_uncertain_database_response_before_revoking_public_p
 
     async def drive_request(method, path, _access, *, params=None, body=None, headers=None):
         if method == "GET" and path.endswith("/permissions"):
-            return httpx.Response(200, json={"permissions": []})
+            permissions = ([{"id": "existing-permission", "type": "anyone", "role": "reader"}]
+                           if scenario == "retry_after_restart" else [])
+            return httpx.Response(200, json={"permissions": permissions})
         if method == "POST" and path.endswith("/permissions"):
             return httpx.Response(200, json={"id": "permission-id", "type": "anyone", "role": "reader"})
         if method == "DELETE":
@@ -211,17 +221,20 @@ def test_publish_reconciles_uncertain_database_response_before_revoking_public_p
     monkeypatch.setattr(drive, "_access_token", access_token)
     monkeypatch.setattr(drive, "_verified_upload_file", verified_file)
     monkeypatch.setattr(drive, "_drive_request", drive_request)
-    body = drive.VideoMetadata(id=UUID(row["item_id"]), title="Aula", topic="Estudos", tags=[],
+    body = drive.VideoMetadata(id=UUID(item_id), title="Aula", topic="Estudos", tags=[],
         description="", content="", created_at="2026-11-26T00:00:00Z", updated_at="2026-11-26T00:00:00Z")
 
-    if commit_persisted:
-        result = asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
-        assert result["published"] is True
-        assert result["drive_file_id"] == file_id
-        assert result["previous_storage_path"] is None
-        assert deleted_permissions == []
-    else:
+    if scenario == "rollback":
         with pytest.raises(HTTPException) as error:
             asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
         assert error.value.status_code == 503
         assert deleted_permissions == [f"/files/{file_id}/permissions/permission-id"]
+        assert state["status"] == "uploaded"
+    else:
+        result = asyncio.run(drive.publish_upload(upload_id, body, "Bearer synthetic-user-token"))
+        assert result["published"] is True
+        assert result["drive_file_id"] == file_id
+        assert result["previous_storage_path"] == previous_storage_path
+        assert result["previous_drive_file_id"] == previous_drive_file_id
+        assert deleted_permissions == []
+        assert publish_calls == ([] if scenario == "retry_after_restart" else ["mind_drive_publish_video"])

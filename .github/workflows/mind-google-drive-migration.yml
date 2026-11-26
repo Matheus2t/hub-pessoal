@@ -1,9 +1,9 @@
 name: mind Google Drive migration
 on:
   pull_request:
-    branches: [codex/mind-video-upload, main]
+    branches: [codex/mind-video-upload, codex/mind-google-drive-5gb, main]
     paths:
-      - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
+      - 'supabase/migrations/**'
       - 'tests/migrations/**'
       - 'tests/mind-codespaces/**'
       - 'scripts/mind-codespaces.mjs'
@@ -13,7 +13,7 @@ on:
   push:
     branches: [codex/mind-google-drive-5gb]
     paths:
-      - 'supabase/migrations/20261120191900_mind_google_drive_storage.sql'
+      - 'supabase/migrations/**'
       - 'tests/migrations/**'
       - 'tests/mind-codespaces/**'
       - 'scripts/mind-codespaces.mjs'
@@ -49,6 +49,7 @@ jobs:
         run: |
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/migrations/mind-drive-setup.sql
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261120191900_mind_google_drive_storage.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261126200000_mind_drive_publish_recovery_refs.sql
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/migrations/mind-drive-verify.sql
           bash tests/migrations/mind-drive-concurrency.sh
   supabase-auth-postgrest:

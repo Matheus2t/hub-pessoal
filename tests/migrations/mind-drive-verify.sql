@@ -1,5 +1,5 @@
 do $$
-declare v_count integer; v_enabled integer; v_result jsonb; v_bad record;
+declare v_count integer; v_enabled integer; v_result jsonb; v_bad record; v_recovered jsonb;
 begin
   select count(*) into v_count from public.mind_items;
   if v_count <> 4 then raise exception 'legacy rows changed: %', v_count; end if;
@@ -49,4 +49,39 @@ begin
     if sqlerrm not like 'Google account quota exceeded%' then raise; end if;
   end;
   if exists(select 1 from private.mind_drive_uploads where upload_id='dddddddddddddddddddddddddddddddd') then raise exception 'failed quota reservation persisted'; end if;
+
+  if not exists(select 1 from information_schema.columns where table_schema='private' and table_name='mind_drive_uploads' and column_name='previous_storage_path')
+     or not exists(select 1 from information_schema.columns where table_schema='private' and table_name='mind_drive_uploads' and column_name='previous_drive_file_id') then
+    raise exception 'publish recovery references missing from ledger';
+  end if;
+  insert into private.mind_drive_uploads(upload_id,admin_id,item_id,file_name,expected_size,confirmed_size,drive_file_id,status)
+  values('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee','11111111-2222-4333-8444-555555555555',
+    '00000000-0000-4000-8000-000000000004','replacement.mp4',100,100,'NewDriveFileId123456','uploaded');
+  v_result := public.mind_drive_publish_video('11111111-2222-4333-8444-555555555555',
+    'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    jsonb_build_object('id','00000000-0000-4000-8000-000000000004','title','Recovered storage video',
+      'topic','Test','tags','[]'::jsonb,'description','','content','','favorite',false,
+      'created_at',now(),'updated_at',now(),'poster_data_url',null));
+  if v_result->>'previous_storage_path' <> '11111111-2222-4333-8444-555555555555/00000000-0000-4000-8000-000000000004.mp4' then
+    raise exception 'publish did not return previous Storage path';
+  end if;
+  v_recovered := public.mind_drive_get_upload('11111111-2222-4333-8444-555555555555','eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+  if v_recovered->>'previous_storage_path' <> v_result->>'previous_storage_path' then
+    raise exception 'uncertain publish recovery lost previous Storage path';
+  end if;
+  insert into private.mind_drive_uploads(upload_id,admin_id,item_id,file_name,expected_size,confirmed_size,drive_file_id,status)
+  values('ffffffffffffffffffffffffffffffff','11111111-2222-4333-8444-555555555555',
+    '00000000-0000-4000-8000-000000000005','replacement-drive.mp4',100,100,'SecondDriveFileId12345','uploaded');
+  v_result := public.mind_drive_publish_video('11111111-2222-4333-8444-555555555555',
+    'ffffffffffffffffffffffffffffffff',
+    jsonb_build_object('id','00000000-0000-4000-8000-000000000005','title','Recovered Drive video',
+      'topic','Test','tags','[]'::jsonb,'description','','content','','favorite',false,
+      'created_at',now(),'updated_at',now(),'poster_data_url',null));
+  if v_result->>'previous_drive_file_id' <> 'abcdefghij123456' then
+    raise exception 'publish did not return previous Drive file id';
+  end if;
+  v_recovered := public.mind_drive_get_upload('11111111-2222-4333-8444-555555555555','ffffffffffffffffffffffffffffffff');
+  if v_recovered->>'previous_drive_file_id' <> v_result->>'previous_drive_file_id' then
+    raise exception 'uncertain publish recovery lost previous Drive file id';
+  end if;
 end $$;

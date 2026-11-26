@@ -79,6 +79,7 @@ function prepareRuntime() {
   writeFileSync(join(supabaseDir, "config.toml"), readFileSync(join(ROOT, "tests", "mind-codespaces", "config.toml")));
   writeFileSync(join(migrationsDir, "20261120190000_mind_codespaces_base.sql"), readFileSync(join(ROOT, "tests", "mind-codespaces", "base-schema.sql")));
   writeFileSync(join(migrationsDir, "20261120191900_mind_google_drive_storage.sql"), readFileSync(join(ROOT, "supabase", "migrations", "20261120191900_mind_google_drive_storage.sql")));
+  writeFileSync(join(migrationsDir, "20261126200000_mind_drive_publish_recovery_refs.sql"), readFileSync(join(ROOT, "supabase", "migrations", "20261126200000_mind_drive_publish_recovery_refs.sql")));
 }
 
 function readOrCreateEncryptionKey() {

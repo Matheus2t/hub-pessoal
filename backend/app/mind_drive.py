@@ -677,7 +677,7 @@ async def publish_upload(upload_id: str, body: VideoMetadata, authorization: str
         if not match:
             raise HTTPException(409, "Este vídeo foi publicado, mas a permissão do Drive foi removida. Revise o compartilhamento no Drive.")
         return {"published": True, "drive_file_id": file_id, "web_view_url": "https://drive.google.com/file/d/" + file_id + "/view",
-                "previous_storage_path": None, "previous_drive_file_id": None}
+                "previous_storage_path": row.get("previous_storage_path"), "previous_drive_file_id": row.get("previous_drive_file_id")}
     permission_id = match.get("id") if match else None
     created_permission = False
     if not match:
@@ -709,7 +709,7 @@ async def publish_upload(upload_id: str, body: VideoMetadata, authorization: str
                 persisted.get("drive_file_id") == file_id):
             return {"published": True, "drive_file_id": file_id,
                     "web_view_url": "https://drive.google.com/file/d/" + file_id + "/view",
-                    "previous_storage_path": None, "previous_drive_file_id": None}
+                    "previous_storage_path": persisted.get("previous_storage_path"), "previous_drive_file_id": persisted.get("previous_drive_file_id")}
         if created_permission and permission_id:
             try:
                 await _drive_request("DELETE", f"/files/{file_id}/permissions/{permission_id}", access, params={"supportsAllDrives": "true"})
