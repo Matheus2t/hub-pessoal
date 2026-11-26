@@ -198,7 +198,9 @@ test("on mobile opening a note reveals the reader without losing access to libra
   await expect(page.locator(".mind-detail")).toBeInViewport();
   await expect(page.locator(".mind-note-view")).toContainText("Conteúdo acessível");
   await expect(page.getByRole("button", { name: "Editar" })).toBeVisible();
-});\n\ntest("public MP4 download validates advertised and received bytes", () => {
+});
+
+test("public MP4 download validates advertised and received bytes", () => {
   expect(() => assertMindVideoDownloadSize(String(MAX_MIND_VIDEO_BYTES))).not.toThrow();
   expect(() => assertMindVideoDownloadSize(null, MAX_MIND_VIDEO_BYTES)).not.toThrow();
   expect(() => assertMindVideoDownloadSize(null, 1_024)).not.toThrow();
