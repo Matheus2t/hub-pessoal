@@ -108,13 +108,42 @@ test("PDFs are stored locally and full backup can restore a deleted PDF", async 
   const backupDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exportar backup" }).click();
   const backup = await backupDownload;
-  expect(backup.suggestedFilename()).toMatch(/^mente-2t-backup-/);
+  expect(backup.suggestedFilename()).toMatch(/^mente-2t-manifesto-\d{4}-\d{2}-\d{2}\.json$/);
+  const manifestStream = await backup.createReadStream();
+  const manifestChunks: Buffer[] = [];
+  for await (const chunk of manifestStream) manifestChunks.push(Buffer.from(chunk));
+  const manifestBytes = Buffer.concat(manifestChunks);
+  const manifest = JSON.parse(manifestBytes.toString("utf8")) as {
+    format: string;
+    version: number;
+    records: Array<{ id: string; title: string; kind: string; assetName?: string; assetSize?: number; pdfBase64?: unknown }>;
+  };
+  expect(manifest.format).toBe("2t-mind");
+  expect(manifest.version).toBe(3);
+  const pdfRecord = manifest.records.find(record => record.title === "Estudo-ações-2027" && record.kind === "pdf");
+  expect(pdfRecord).toBeDefined();
+  expect(pdfRecord?.assetName).toBeTruthy();
+  expect(pdfRecord?.assetSize).toBe(pdf.length);
+  expect(pdfRecord).not.toHaveProperty("pdfBase64");
+  await expect(page.locator(".mind-backup-assets li")).toHaveCount(1);
+
+  const assetDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Baixar PDF" }).click();
+  const assetDownload = await assetDownloadPromise;
+  expect(assetDownload.suggestedFilename()).toBe(pdfRecord!.assetName);
+  const assetStream = await assetDownload.createReadStream();
+  const assetChunks: Buffer[] = [];
+  for await (const chunk of assetStream) assetChunks.push(Buffer.from(chunk));
+  const assetBytes = Buffer.concat(assetChunks);
+  expect(assetBytes).toEqual(pdf);
+
   page.on("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Excluir" }).click();
   await expect(page.locator(".mind-item")).toHaveCount(0);
-  const path = await backup.path();
-  if (!path) throw new Error("Backup sem caminho para teste.");
-  await page.locator("#mind-backup-input").setInputFiles(path);
+  await page.locator("#mind-backup-input").setInputFiles([
+    { name: backup.suggestedFilename(), mimeType: "application/json", buffer: manifestBytes },
+    { name: pdfRecord!.assetName!, mimeType: "application/pdf", buffer: assetBytes },
+  ]);
   await expect(page.locator(".mind-item")).toHaveCount(1);
   await page.reload();
   await expect(page.locator(".mind-item")).toHaveCount(1);
@@ -169,20 +198,17 @@ test("on mobile opening a note reveals the reader without losing access to libra
   await expect(page.locator(".mind-detail")).toBeInViewport();
   await expect(page.locator(".mind-note-view")).toContainText("Conteúdo acessível");
   await expect(page.getByRole("button", { name: "Editar" })).toBeVisible();
-});
-
-
-test("public MP4 download validates advertised and received bytes", () => {
+});\n\ntest("public MP4 download validates advertised and received bytes", () => {
   expect(() => assertMindVideoDownloadSize(String(MAX_MIND_VIDEO_BYTES))).not.toThrow();
   expect(() => assertMindVideoDownloadSize(null, MAX_MIND_VIDEO_BYTES)).not.toThrow();
   expect(() => assertMindVideoDownloadSize(null, 1_024)).not.toThrow();
 
   expect(() => assertMindVideoDownloadSize(String(MAX_MIND_VIDEO_BYTES + 1)))
-    .toThrow("O vídeo ultrapassa 25 MB.");
+    .toThrow("O vídeo ultrapassa 50 MB.");
   expect(() => assertMindVideoDownloadSize(null, MAX_MIND_VIDEO_BYTES + 1))
-    .toThrow("O vídeo ultrapassa 25 MB.");
+    .toThrow("O vídeo ultrapassa 50 MB.");
   expect(() => assertMindVideoDownloadSize("32", MAX_MIND_VIDEO_BYTES + 1))
-    .toThrow("O vídeo ultrapassa 25 MB.");
+    .toThrow("O vídeo ultrapassa 50 MB.");
 
   for (const header of ["", "abc", "-1", "1.5", "9007199254740992"]) {
     expect(() => assertMindVideoDownloadSize(header))
@@ -212,7 +238,7 @@ test("public MP4 download enforces the real byte limit while streaming", async (
     cancel() { cancelled = true; },
   }));
   await expect(readMindVideoBlobWithinLimit(oversized, { maxBytes: 8 }))
-    .rejects.toThrow("O vídeo ultrapassa 25 MB.");
+    .rejects.toThrow("O vídeo ultrapassa 50 MB.");
   expect(cancelled).toBe(true);
 });
 
@@ -223,7 +249,7 @@ test("public MP4 download cancels invalid declarations and supports caller cance
     cancel() { invalidCancelled = true; },
   }), { headers: { "content-length": "9" } });
   await expect(readMindVideoBlobWithinLimit(invalid, { maxBytes: 8 }))
-    .rejects.toThrow("O vídeo ultrapassa 25 MB.");
+    .rejects.toThrow("O vídeo ultrapassa 50 MB.");
   expect(invalidCancelled).toBe(true);
 
   let callerCancelled = false;

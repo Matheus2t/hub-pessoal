@@ -35,7 +35,7 @@ export function parseMindVideoLink(value: string): VideoLink | null {
   return null;
 }
 
-export const MAX_MIND_VIDEO_BYTES = 25 * 1024 * 1024;
+export const MAX_MIND_VIDEO_BYTES = 50_000_000;
 
 /** Reject invalid or oversized public MP4 downloads using both the advertised and received byte counts. */
 export const MIND_VIDEO_DOWNLOAD_IDLE_TIMEOUT_MS = 60_000;
@@ -51,11 +51,11 @@ export function assertMindVideoDownloadSize(
     if (!/^\d+$/.test(contentLength)) throw new Error("O tamanho informado para o vídeo é inválido.");
     const declaredSize = Number(contentLength);
     if (!Number.isSafeInteger(declaredSize) || declaredSize <= 0) throw new Error("O tamanho informado para o vídeo é inválido.");
-    if (declaredSize > maxBytes) throw new Error("O vídeo ultrapassa 25 MB.");
+    if (declaredSize > maxBytes) throw new Error("O vídeo ultrapassa 50 MB.");
   }
   if (actualSize !== undefined) {
     if (!Number.isSafeInteger(actualSize) || actualSize <= 0) throw new Error("O tamanho recebido para o vídeo é inválido.");
-    if (actualSize > maxBytes) throw new Error("O vídeo ultrapassa 25 MB.");
+    if (actualSize > maxBytes) throw new Error("O vídeo ultrapassa 50 MB.");
   }
 }
 
@@ -123,7 +123,7 @@ export async function readMindVideoBlobWithinLimit(
       if (part.done) break;
       if (part.value.byteLength > maxBytes - total) {
         try { await reader.cancel(); } catch { /* Preserve the size-limit error. */ }
-        throw new Error("O vídeo ultrapassa 25 MB.");
+        throw new Error("O vídeo ultrapassa 50 MB.");
       }
       if (part.value.byteLength) {
         total += part.value.byteLength;
@@ -143,7 +143,7 @@ export async function readMindVideoBlobWithinLimit(
   }
 }
 
-/** Container signature check; never trust filename or claimed MIME alone. */
+/** Checks the MP4 container signature only; browser decoding separately validates playable codecs. */
 export async function checkedMp4(file: File | Blob): Promise<boolean> {
   if (file.size < 12 || file.size > MAX_MIND_VIDEO_BYTES) return false;
   const data = new Uint8Array(await file.slice(0, 12).arrayBuffer());

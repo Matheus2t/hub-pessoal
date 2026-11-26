@@ -20,7 +20,9 @@ function buildIndexContent(html, env = process.env) {
     /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url) &&
     key.startsWith("sb_publishable_");
   if (!enabled) return html;
-  return addCspSource(addCspSource(addCspSource(html, "connect-src", url), "frame-src", url), "media-src", url);
+  const projectHost = new URL(url).hostname;
+  const storageOrigin = "https://" + projectHost.replace(/\.supabase\.co$/, ".storage.supabase.co");
+  return addCspSource(addCspSource(addCspSource(addCspSource(html, "connect-src", url), "connect-src", storageOrigin), "frame-src", url), "media-src", url);
 }
 
 function writeIndex() {

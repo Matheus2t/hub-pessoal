@@ -83,6 +83,24 @@ async function tokenSession(): Promise<CloudSession> {
   if (!old) throw new Error("É necessário entrar na sua conta.");
   return Date.now() >= old.expires_at ? refresh(old) : old;
 }
+/** TUS must use the project's direct Storage hostname, not the API gateway. */
+export function mindTusEndpoint(): string {
+  const { url } = config();
+  const host = new URL(url).hostname;
+  const projectRef = host.slice(0, -".supabase.co".length);
+  return `https://${projectRef}.storage.supabase.co/storage/v1/upload/resumable`;
+}
+/** Called for every TUS request so resumed uploads use the latest short-lived token. */
+export async function mindStorageHeaders(forceRefresh = false): Promise<Record<string, string>> {
+  let session: CloudSession;
+  if (forceRefresh) {
+    const current = readSession();
+    if (!current) throw new Error("É necessário entrar na sua conta.");
+    session = await refresh(current);
+  } else session = await tokenSession();
+  const { key } = config();
+  return { apikey: key, Authorization: "Bearer " + session.access_token };
+}
 /** Every request is authorized independently by Supabase RLS and Storage policies. */
 export async function mindApi(path: string, init: RequestInit = {}): Promise<Response> {
   const session = await tokenSession();

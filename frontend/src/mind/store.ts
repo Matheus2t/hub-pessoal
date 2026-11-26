@@ -21,6 +21,7 @@ export interface MindItem {
   fileSize?: number;
   storagePath?: string;
   videoUrl?: string;
+  posterDataUrl?: string;
   file?: Blob;
 }
 
@@ -76,6 +77,12 @@ export function normalizedTags(value: string): string[] {
 export function displayFileSize(bytes: number): string {
   return bytes < 1048576 ? Math.max(1, Math.round(bytes / 1024)) + " KB" : (bytes / 1048576).toFixed(1).replace(".", ",") + " MB";
 }
+export function mindBackupAssetName(item: MindItem): string {
+  const suffix = item.kind === "pdf" ? ".pdf" : ".mp4";
+  const base = (item.fileName || item.title + suffix).normalize("NFC")
+    .replace(/[\\/\u0000-\u001f\u007f]/g, "_").trim().slice(0, 180);
+  return `${item.id}__${base.toLowerCase().endsWith(suffix) ? base : base + suffix}`;
+}
 export async function checkedPdf(file: File | Blob): Promise<boolean> {
   return file.size > 0 && file.size <= MAX_MIND_PDF_BYTES && (await file.slice(0, 5).text()) === "%PDF-";
 }
@@ -115,29 +122,33 @@ function videoFromBase64(data: string): Blob {
   return new Blob([bytes], { type: "video/mp4" });
 }
 
-/** Portable JSON backup includes PDF and MP4 bytes; video links remain URLs. */
+/** V3 keeps metadata in JSON and stores each PDF/MP4 as a separate sidecar file. */
 export async function createMindBackup(items: MindItem[]): Promise<Blob> {
   const records = [];
   for (const item of items) {
     const { file: _file, ...metadata } = item;
-    const pdfBase64 = item.kind === "pdf" && item.file ? toBase64(await item.file.arrayBuffer()) : null;
-    const videoBase64 = item.kind === "video" && item.file ? toBase64(await item.file.arrayBuffer()) : null;
-    records.push({ ...metadata, pdfBase64, videoBase64 });
+    delete metadata.storagePath;
+    const hasFile = (item.kind === "pdf" || item.kind === "video") && !item.videoUrl && (!!item.file || !!item.storagePath);
+    records.push({
+      ...metadata,
+      ...(hasFile ? { assetName: mindBackupAssetName(item), assetSize: item.fileSize ?? item.file?.size ?? null } : {}),
+    });
   }
-  return new Blob([JSON.stringify({ format: "2t-mind", version: 2, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
+  return new Blob([JSON.stringify({ format: "2t-mind", version: 3, exportedAt: new Date().toISOString(), records })], { type: "application/json" });
 }
 
-export async function parseMindBackup(file: File): Promise<MindItem[]> {
+export async function parseMindBackup(file: File, sidecars: File[] = []): Promise<MindItem[]> {
   if (!file.size || file.size > MAX_MIND_BACKUP_BYTES) throw new Error("O backup ultrapassa o limite de 160 MB.");
   let archive: unknown;
   try { archive = JSON.parse(await file.text()); }
   catch { throw new Error("Não foi possível ler o arquivo de backup."); }
   if (!archive || typeof archive !== "object") throw new Error("Arquivo de backup inválido.");
   const data = archive as { format?: unknown; version?: unknown; records?: unknown };
-  if (data.format !== "2t-mind" || (data.version !== 1 && data.version !== 2) || !Array.isArray(data.records) || data.records.length > 300) {
+  if (data.format !== "2t-mind" || ![1, 2, 3].includes(data.version as number) || !Array.isArray(data.records) || data.records.length > 300) {
     throw new Error("O arquivo não é um backup compatível da Mente 2T.");
   }
   const imported: MindItem[] = [];
+  const assets = new Map(sidecars.map(asset => [asset.name, asset]));
   for (const entry of data.records) {
     if (!entry || typeof entry !== "object") throw new Error("Registro inválido no backup.");
     const r = entry as Record<string, unknown>;
@@ -154,9 +165,19 @@ export async function parseMindBackup(file: File): Promise<MindItem[]> {
       createdAt: typeof r.createdAt === "number" && Number.isFinite(r.createdAt) ? r.createdAt : Date.now(),
       updatedAt: typeof r.updatedAt === "number" && Number.isFinite(r.updatedAt) ? r.updatedAt : Date.now(),
     };
+    if (r.kind === "video" && typeof r.posterDataUrl === "string" && r.posterDataUrl.length <= 65536 && /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/.test(r.posterDataUrl)) {
+      item.posterDataUrl = r.posterDataUrl;
+    }
     if (r.kind === "pdf") {
-      if (typeof r.pdfBase64 !== "string") throw new Error("PDF ausente no backup.");
-      item.file = fromBase64(r.pdfBase64);
+      if (data.version === 3) {
+        if (typeof r.assetName !== "string") throw new Error("PDF ausente no manifesto do backup.");
+        const asset = assets.get(r.assetName);
+        if (!asset || !(await checkedPdf(asset)) || (typeof r.assetSize === "number" && asset.size !== r.assetSize)) throw new Error(`Arquivo ausente ou inválido: ${r.assetName}`);
+        item.file = asset;
+      } else {
+        if (typeof r.pdfBase64 !== "string") throw new Error("PDF ausente no backup.");
+        item.file = fromBase64(r.pdfBase64);
+      }
       if (item.file.size > MAX_MIND_PDF_BYTES) throw new Error("PDF do backup excede 25 MB.");
       item.fileSize = item.file.size;
       item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".pdf";
@@ -166,6 +187,13 @@ export async function parseMindBackup(file: File): Promise<MindItem[]> {
         const link = parseMindVideoLink(r.videoUrl);
         if (!link || r.videoBase64) throw new Error("Link de vídeo inválido no backup.");
         item.videoUrl = link.url;
+      } else if (data.version === 3 && typeof r.assetName === "string") {
+        const asset = assets.get(r.assetName);
+        if (!asset || asset.size > MAX_MIND_VIDEO_BYTES || (typeof r.assetSize === "number" && asset.size !== r.assetSize)) throw new Error(`Arquivo ausente, alterado ou acima de 50 MB: ${String(r.assetName)}`);
+        item.file = asset;
+        if (!(await checkedMp4(item.file))) throw new Error("MP4 inválido no backup.");
+        item.fileSize = item.file.size;
+        item.fileName = typeof r.fileName === "string" ? r.fileName.slice(0, 180) : item.title + ".mp4";
       } else if (typeof r.videoBase64 === "string") {
         item.file = videoFromBase64(r.videoBase64);
         if (!(await checkedMp4(item.file))) throw new Error("MP4 inválido no backup.");
@@ -181,8 +209,8 @@ export async function parseMindBackup(file: File): Promise<MindItem[]> {
   return imported;
 }
 
-export async function restoreMindBackup(file: File): Promise<MindItem[]> {
-  const imported = await parseMindBackup(file);
+export async function restoreMindBackup(file: File, sidecars: File[] = []): Promise<MindItem[]> {
+  const imported = await parseMindBackup(file, sidecars);
   for (const item of imported) await saveMindItem(item);
   return imported;
 }

@@ -1,14 +1,19 @@
 import { expect, test } from "@playwright/test";
+import { readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { serveBuiltSite } from "./helpers/serve-built-site";
 
 test.skip(!/^(true|1|yes)$/i.test(process.env.MIND_CLOUD_ENABLED ?? ""), "Requer build de teste Mente Cloud");
 
 const supabase = "https://mocktestproj.supabase.co";
+const storage = "https://mocktestproj.storage.supabase.co";
 const cors = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "apikey, authorization, content-type, prefer, x-upsert",
+  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS, HEAD",
+  "Access-Control-Allow-Headers": "apikey, authorization, content-type, prefer, x-upsert, tus-resumable, upload-length, upload-metadata, upload-offset, cache-control",
+  "Access-Control-Expose-Headers": "Location, Tus-Resumable, Upload-Offset, Upload-Length, Tus-Version, Tus-Extension",
 };
 function makeTwoPagePdfWithLink() {
   const streams = [
@@ -38,7 +43,14 @@ function makeTwoPagePdfWithLink() {
   return Buffer.from(pdf, "ascii");
 }
 const pdfBytes = makeTwoPagePdfWithLink();
-const mp4Bytes = Buffer.from([0, 0, 0, 24, 102, 116, 121, 112, 105, 115, 111, 109, 0, 0, 0, 0, 105, 115, 111, 109, 109, 112, 52, 50]);
+const mp4Bytes = readFileSync("frontend/tests/fixtures/mind-h264-aac.mp4");
+function makeMp4WithFreeBox(totalBytes = 26_000_000) {
+  const trailingLength = totalBytes - mp4Bytes.length;
+  const header = Buffer.alloc(8);
+  header.writeUInt32BE(trailingLength, 0);
+  header.write("free", 4, "ascii");
+  return Buffer.concat([mp4Bytes, header, Buffer.alloc(trailingLength - header.length)]);
+}
 expect(pdfBytes.toString("ascii")).toContain("/Count 2");
 expect(pdfBytes.toString("ascii")).toContain("/Subtype /Link");
 const owner = "075026fa-4e9f-4e1a-8ef4-a3c443e11442";
@@ -51,7 +63,7 @@ const note = {
 };
 const pdf = {
   ...note, id: "e75dc2e4-2579-426d-9f21-3e1a34dc6ed4", kind: "pdf",
-  title: "Relatório", content: "", file_name: "relatorio.pdf", file_size: 2048,
+  title: "Relatório", content: "", file_name: "relatorio.pdf", file_size: pdfBytes.length,
   storage_path: owner + "/e75dc2e4-2579-426d-9f21-3e1a34dc6ed4.pdf",
 };
 async function loginAsMockAdmin(page: import("@playwright/test").Page) {
@@ -64,14 +76,55 @@ async function loginAsMockAdmin(page: import("@playwright/test").Page) {
 }
 function mockApi(page: import("@playwright/test").Page, admin = true, options: {
   pdfStatus?: number; pdfContentType?: string; failRecordWrite?: boolean; failObjectDelete?: boolean;
+  tusStatus?: number; tus401Once?: boolean; failFirstPatch?: boolean;
+  holdPatches?: { value: boolean };
 } = {}) {
   const requests: { path: string; method: string; auth: string | null }[] = [];
   const items = [note, pdf];
   const objects = new Set([pdf.storage_path]);
+  const tusSessions = new Map<string, { path: string; size: number; offset: number }>();
+  let unauthorizedUsed = false;
+  let failPatchUsed = false;
   return {
     requests, objects,
     items,
     async install() {
+      await page.route(storage + "/**", async route => {
+        const request = route.request();
+        const url = new URL(request.url());
+        requests.push({ path: url.pathname + url.search, method: request.method(), auth: request.headers()["authorization"] ?? null });
+        if (request.method() === "OPTIONS") return route.fulfill({ status: 204, headers: { ...cors, "Tus-Resumable": "1.0.0", "Tus-Version": "1.0.0", "Tus-Extension": "creation,creation-with-upload" } });
+        if (url.pathname === "/storage/v1/upload/resumable" && request.method() === "POST") {
+          if (options.tusStatus) return route.fulfill({ status: options.tusStatus, headers: cors, body: "simulated TUS error" });
+          if (options.tus401Once && !unauthorizedUsed) { unauthorizedUsed = true; return route.fulfill({ status: 401, headers: cors }); }
+          const length = Number(request.headers()["upload-length"]);
+          if (!Number.isSafeInteger(length) || length <= 0 || length > 50_000_000) return route.fulfill({ status: 413, headers: cors });
+          const metadata = Object.fromEntries((request.headers()["upload-metadata"] ?? "").split(",").map(pair => {
+            const [key, value = ""] = pair.split(" ");
+            return [key, Buffer.from(value, "base64").toString("utf8")];
+          }));
+          const path = metadata.objectName;
+          const id = crypto.randomUUID();
+          const bodyLength = request.postDataBuffer()?.length ?? 0;
+          const offset = Math.min(length, bodyLength);
+          tusSessions.set(id, { path, size: length, offset });
+          if (offset === length) objects.add(path);
+          return route.fulfill({ status: 201, headers: { ...cors, Location: `${storage}/storage/v1/upload/resumable?id=${id}`, "Tus-Resumable": "1.0.0", "Upload-Offset": String(offset), "Upload-Length": String(length), "Tus-Version": "1.0.0", "Tus-Extension": "creation,creation-with-upload" } });
+        }
+        const id = url.searchParams.get("id") ?? "";
+        const session = tusSessions.get(id);
+        if (session && request.method() === "HEAD") return route.fulfill({ status: 200, headers: { ...cors, "Tus-Resumable": "1.0.0", "Upload-Offset": String(session.offset), "Upload-Length": String(session.size), "Cache-Control": "no-store" } });
+        if (session && request.method() === "PATCH") {
+          const offset = Number(request.headers()["upload-offset"]);
+          if (offset !== session.offset) return route.fulfill({ status: 409, headers: cors });
+          if (options.failFirstPatch && !failPatchUsed) { failPatchUsed = true; return route.fulfill({ status: 503, headers: cors }); }
+          session.offset = Math.min(session.size, session.offset + (request.postDataBuffer()?.length ?? 0));
+          if (session.offset === session.size) objects.add(session.path);
+          if (options.holdPatches?.value) await new Promise(resolve => setTimeout(resolve, 800));
+          return route.fulfill({ status: 204, headers: { ...cors, "Tus-Resumable": "1.0.0", "Upload-Offset": String(session.offset) } });
+        }
+        return route.fulfill({ status: 404, headers: cors });
+      });
       await page.route(supabase + "/**", route => {
         const request = route.request();
         const url = new URL(request.url());
@@ -132,10 +185,12 @@ function mockApi(page: import("@playwright/test").Page, admin = true, options: {
           }
         }
         if (url.pathname.startsWith("/storage/v1/object/public/mind-videos/")) {
-          return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "video/mp4" }, body: mp4Bytes });
+          const filename = url.searchParams.get("download");
+          return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "video/mp4", ...(filename ? { "Content-Disposition": `attachment; filename=\"${filename}\"` } : {}) }, body: mp4Bytes });
         }
         if (url.pathname.startsWith("/storage/v1/object/public/")) {
-          return route.fulfill({ status: options.pdfStatus ?? 200, headers: { ...cors, "Content-Type": options.pdfContentType ?? "application/pdf" }, body: pdfBytes });
+          const filename = url.searchParams.get("download");
+          return route.fulfill({ status: options.pdfStatus ?? 200, headers: { ...cors, "Content-Type": options.pdfContentType ?? "application/pdf", ...(filename ? { "Content-Disposition": `attachment; filename=\"${filename}\"` } : {}) }, body: pdfBytes });
         }
         return route.fulfill({ status: 404, headers: cors, json: {} });
       });
@@ -195,17 +250,186 @@ test("admin envia MP4, visitante reproduz e baixa sem login", async ({ page }) =
   await page.locator('input[name="video-file"]').setInputFiles({
     name: "aula.mp4", mimeType: "video/mp4", buffer: mp4Bytes,
   });
-  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator(".mind-video-draft-preview video")).toBeVisible();
+  await page.waitForFunction(() => {
+    const video = document.querySelector<HTMLVideoElement>(".mind-video-draft-preview video");
+    return !!video && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+  });
+  await page.getByRole("button", { name: "Publicar vídeo" }).click();
   await expect(page.locator(".mind-item")).toHaveCount(3);
   const item = api.items.find(x => x.title === "Vídeo de estudo")!;
   expect(item.kind).toBe("video");
   expect(item.storage_path).toMatch(/\.mp4$/);
   await expect(page.locator(".mind-video-player video")).toHaveAttribute("src", new RegExp("/mind-videos/"));
+  await page.waitForFunction(() => {
+    const video = document.querySelector<HTMLVideoElement>(".mind-video-player video");
+    return !!video && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0;
+  });
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Baixar vídeo" }).click();
   expect((await download).suggestedFilename()).toBe("aula.mp4");
-  expect(api.requests.some(x => x.path.startsWith("/storage/v1/object/mind-videos/") && x.method === "POST")).toBe(true);
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/upload/resumable") && x.method === "POST" && !!x.auth)).toBe(true);
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/upload/resumable") && x.method === "PATCH" )).toBe(false);
   expect(api.requests.some(x => x.path.startsWith("/storage/v1/object/public/mind-videos/") && x.method === "GET" && !x.auth)).toBe(true);
+});
+
+test("Storage 401 renova a sessão e repete a criação do upload", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page, true, { tus401Once: true }); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  await page.locator('input[name="video-file"]').setInputFiles({ name: "sessao.mp4", mimeType: "video/mp4", buffer: mp4Bytes });
+  await page.waitForFunction(() => (document.querySelector<HTMLVideoElement>(".mind-video-draft-preview video")?.readyState ?? 0) >= HTMLMediaElement.HAVE_CURRENT_DATA);
+  await page.getByRole("button", { name: "Publicar vídeo" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  expect(api.requests.filter(request => request.path === "/auth/v1/token" && request.method === "POST")).toHaveLength(2);
+  expect(api.requests.filter(request => request.path.startsWith("/storage/v1/upload/resumable") && request.method === "POST")).toHaveLength(2);
+});
+
+test("MP4 acima de 25 MB usa TUS em blocos e publica após a confirmação", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page, true, { failFirstPatch: true }); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  await page.locator('input[name="video-file"]').setInputFiles({ name: "aula-longa.mp4", mimeType: "video/mp4", buffer: makeMp4WithFreeBox() });
+  await page.waitForFunction(() => {
+    const video = document.querySelector<HTMLVideoElement>(".mind-video-draft-preview video");
+    return !!video && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+  });
+  await expect(page.getByRole("textbox", { name: "Título" })).toHaveValue("aula longa");
+  await page.getByRole("button", { name: "Publicar vídeo" }).click();
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/upload/resumable") && x.method === "PATCH")).toBe(true);
+  expect(api.items.find(item => item.file_size === 26_000_000)).toBeTruthy();
+});
+
+test("envio cancelado pode ser retomado do bloco confirmado sem publicar incompleto", async ({ page }) => {
+  await serveBuiltSite(page);
+  const hold = { value: true };
+  const api = mockApi(page, true, { holdPatches: hold }); await api.install();
+  const resumablePath = join(tmpdir(), `2t-mind-video-${process.pid}-${Date.now()}.mp4`);
+  writeFileSync(resumablePath, makeMp4WithFreeBox());
+  const fixedTime = new Date("2024-01-01T00:00:00Z");
+  utimesSync(resumablePath, fixedTime, fixedTime);
+  try {
+    await page.goto("/#/mente");
+    await loginAsMockAdmin(page);
+    await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+    await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+    await page.locator('input[name="video-file"]').setInputFiles(resumablePath);
+    await page.waitForFunction(() => (document.querySelector<HTMLVideoElement>(".mind-video-draft-preview video")?.readyState ?? 0) >= HTMLMediaElement.HAVE_CURRENT_DATA);
+    await page.getByRole("button", { name: "Publicar vídeo" }).click();
+    await expect(page.getByRole("button", { name: "Cancelar envio" })).toBeVisible();
+    await expect(page.locator(".mind-upload-progress progress")).toBeVisible();
+    await expect.poll(() => api.requests.some(request => request.path.startsWith("/storage/v1/upload/resumable") && request.method === "PATCH")).toBe(true);
+    await page.getByRole("button", { name: "Cancelar envio" }).click();
+    await expect(page.locator(".mind-notice")).toContainText("Envio cancelado");
+    expect(api.items.some(item => item.kind === "video")).toBe(false);
+    hold.value = false;
+    await page.locator('input[name="video-file"]').setInputFiles(resumablePath);
+    await page.getByRole("button", { name: "Publicar vídeo" }).click();
+    await expect(page.locator(".mind-item")).toHaveCount(3);
+    expect(api.requests.some(x => x.path.startsWith("/storage/v1/upload/resumable") && x.method === "HEAD")).toBe(true);
+  } finally { rmSync(resumablePath, { force: true }); }
+});
+
+test("MP4 acima de 50 MB é rejeitado antes de iniciar TUS", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  const tooLarge = Buffer.alloc(50_000_001);
+  mp4Bytes.copy(tooLarge, 0, 0, 12);
+  await page.locator('input[name="video-file"]').setInputFiles({ name: "acima-do-limite.mp4", mimeType: "video/mp4", buffer: tooLarge });
+  await expect(page.getByRole("alert")).toContainText("50 MB");
+  expect(api.requests.some(x => x.path.startsWith("/storage/v1/upload/resumable"))).toBe(false);
+});
+
+test("falha HTTP 413 do Storage fica clara e não cria registro publicado", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page, true, { tusStatus: 413 }); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  await page.locator('input[name="video-file"]').setInputFiles({ name: "aula.mp4", mimeType: "video/mp4", buffer: mp4Bytes });
+  await page.waitForFunction(() => (document.querySelector<HTMLVideoElement>(".mind-video-draft-preview video")?.readyState ?? 0) >= HTMLMediaElement.HAVE_CURRENT_DATA);
+  await page.getByRole("button", { name: "Publicar vídeo" }).click();
+  await expect(page.getByRole("alert")).toContainText("Storage recusou o vídeo");
+  expect(api.items.some(item => item.kind === "video")).toBe(false);
+});
+
+test("backup v3 exporta manifesto e sidecar separados e restaura em conjunto", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.locator(".mind-backup summary").click();
+  const manifestDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Exportar backup" }).click();
+  const manifestDownload = await manifestDownloadPromise;
+  const manifestStream = await manifestDownload.createReadStream();
+  const manifestChunks: Buffer[] = [];
+  for await (const chunk of manifestStream) manifestChunks.push(Buffer.from(chunk));
+  const manifestBytes = Buffer.concat(manifestChunks);
+  const manifest = JSON.parse(manifestBytes.toString("utf8")) as { version: number; records: Array<{ id: string; assetName?: string; assetSize?: number }> };
+  expect(manifest.version).toBe(3);
+  const pdfRecord = manifest.records.find(item => item.id === pdf.id)!;
+  expect(pdfRecord.assetName).toBeTruthy();
+  expect(pdfRecord.assetSize).toBe(pdfBytes.length);
+  await expect(page.locator(".mind-backup-assets li")).toHaveCount(1);
+  const sidecarDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Baixar PDF" }).click();
+  const sidecarDownload = await sidecarDownloadPromise;
+  expect(sidecarDownload.suggestedFilename()).toBe(pdfRecord.assetName);
+  const sidecarStream = await sidecarDownload.createReadStream();
+  const sidecarChunks: Buffer[] = [];
+  for await (const chunk of sidecarStream) sidecarChunks.push(Buffer.from(chunk));
+  const sidecar = Buffer.concat(sidecarChunks);
+  page.on("dialog", dialog => dialog.accept());
+  await page.locator("#mind-backup-input").setInputFiles([
+    { name: manifestDownload.suggestedFilename(), mimeType: "application/json", buffer: manifestBytes },
+    { name: pdfRecord.assetName!, mimeType: "application/pdf", buffer: sidecar },
+  ]);
+  await expect(page.locator(".mind-notice")).toContainText("itens restaurados na biblioteca pública");
+  expect(api.items.find(item => item.id === pdf.id)?.file_size).toBe(pdfBytes.length);
+});
+
+test("backups v1 e v2 com PDF e MP4 Base64 continuam compatíveis", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  page.on("dialog", dialog => dialog.accept());
+  const legacyPdf = {
+    format: "2t-mind", version: 1, records: [{
+      id: "3080f2b9-4d61-4e39-88a8-7233a54e23cf", kind: "pdf", title: "PDF legado",
+      topic: "Estudos", tags: [], description: "", content: "", favorite: false,
+      createdAt: 1_700_000_000_000, updatedAt: 1_700_000_000_000, fileName: "legado.pdf",
+      pdfBase64: pdfBytes.toString("base64"),
+    }],
+  };
+  await page.locator("#mind-backup-input").setInputFiles({ name: "backup-v1.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(legacyPdf)) });
+  await expect(page.locator(".mind-item")).toHaveCount(3);
+  expect(api.items.find(item => item.id === legacyPdf.records[0].id)?.file_size).toBe(pdfBytes.length);
+
+  const legacyVideo = {
+    format: "2t-mind", version: 2, records: [{
+      id: "a1a1fc56-25b0-49d5-b551-d2f7a66a8c33", kind: "video", title: "MP4 legado",
+      topic: "Estudos", tags: [], description: "", content: "", favorite: false,
+      createdAt: 1_700_000_000_000, updatedAt: 1_700_000_000_000, fileName: "legado.mp4",
+      videoBase64: mp4Bytes.toString("base64"),
+    }],
+  };
+  await page.locator("#mind-backup-input").setInputFiles({ name: "backup-v2.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(legacyVideo)) });
+  await expect(page.locator(".mind-item")).toHaveCount(4);
+  expect(api.items.find(item => item.id === legacyVideo.records[0].id)?.file_size).toBe(mp4Bytes.length);
 });
 
 test("visitante acessa notas e PDFs públicos sem login, sem controles de edição", async ({ page }) => {
@@ -481,6 +705,29 @@ test("biblioteca pública é responsiva nos temas claro e escuro", async ({ page
     for (const width of [320, 390, 768, 1366, 1920]) {
       await page.setViewportSize({ width, height: 800 });
       await expect(page.locator(".mind-workspace")).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  }
+});
+
+test("formulário de upload MP4 permanece legível e sem overflow em desktop, tablet e celular", async ({ page }) => {
+  await serveBuiltSite(page);
+  const api = mockApi(page); await api.install();
+  await page.goto("/#/mente");
+  await loginAsMockAdmin(page);
+  await page.getByRole("button", { name: "Adicionar vídeo" }).click();
+  await expect(page.locator(".mind-editor h2")).toHaveText("Novo vídeo");
+  await page.getByRole("radio", { name: "Arquivo MP4" }).check();
+  await page.locator('input[name="video-file"]').setInputFiles({ name: "prévia.mp4", mimeType: "video/mp4", buffer: mp4Bytes });
+  await expect(page.locator(".mind-video-draft-preview video")).toBeVisible();
+
+  for (const theme of ["dark", "light"] as const) {
+    await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+    for (const width of [320, 390, 768, 1366, 1920]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(page.locator(".mind-editor")).toBeVisible();
+      await expect(page.locator(".mind-video-dropzone")).toBeVisible();
+      await expect(page.getByRole("button", { name: "Publicar vídeo" })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
   }
