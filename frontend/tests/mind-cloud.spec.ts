@@ -687,7 +687,7 @@ test("se o Storage falha após a exclusão, biblioteca recarrega e informa limpe
   const api = mockApi(page, true, { failObjectDelete: true }); await api.install();
   await page.goto("/#/mente");
   await loginAsMockAdmin(page);
-  page.on("dialog", dialog => dialog.accept());
+  await page.evaluate(() => { window.confirm = () => true; });
   await page.getByRole("button", { name: /Relatório/ }).click();
   await page.getByRole("button", { name: "Excluir" }).click();
   await expect(page.locator(".mind-item")).toHaveCount(1);
