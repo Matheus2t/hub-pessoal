@@ -126,6 +126,13 @@ export async function uploadMindVideo(
       void candidate.abort(false).finally(() => finish(new MindVideoUploadCancelledError()));
     };
     signal?.addEventListener("abort", abort, { once: true });
+    // Abort may fire while findPreviousUploads() is awaiting browser storage.
+    // In that case the event preceded listener registration, so do not start TUS.
+    if (signal?.aborted) {
+      cancelled = true;
+      finish(new MindVideoUploadCancelledError());
+      return;
+    }
     candidate.options.onSuccess = () => finish();
     candidate.options.onError = error => finish(error);
     candidate.start();
