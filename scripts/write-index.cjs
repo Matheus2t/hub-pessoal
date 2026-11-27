@@ -20,7 +20,7 @@ function buildIndexContent(html, env = process.env) {
     /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url) &&
     key.startsWith("sb_publishable_");
   if (!enabled) return html;
-  return addCspSource(addCspSource(addCspSource(html, "connect-src", url), "frame-src", url), "media-src", url);
+  return addCspSource(addCspSource(html, "connect-src", url), "frame-src", url);
 }
 
 function writeIndex() {
