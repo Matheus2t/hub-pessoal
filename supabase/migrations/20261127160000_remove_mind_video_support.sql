@@ -1,4 +1,5 @@
 -- Remove public Mente video support after the video catalog was retired.
+-- The empty bucket is disabled here; physical deletion must use the Supabase Storage API.
 -- Safety guards intentionally abort if any video records or Storage objects exist.
 begin;
 
@@ -17,7 +18,11 @@ drop policy if exists mind_video_storage_delete on storage.objects;
 drop policy if exists mind_video_storage_insert on storage.objects;
 drop policy if exists mind_video_storage_select on storage.objects;
 drop policy if exists mind_video_storage_update on storage.objects;
-delete from storage.buckets where id = 'mind-videos';
+-- Supabase guards storage.buckets from direct SQL deletion. Retain an empty,
+-- private, non-uploadable bucket; it is inaccessible after its policies are removed.
+update storage.buckets
+set public = false, file_size_limit = 1, allowed_mime_types = array[]::text[]
+where id = 'mind-videos';
 
 alter table public.mind_items
   drop constraint if exists mind_video_source_check,
