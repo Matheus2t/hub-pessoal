@@ -105,12 +105,6 @@ export function publicMindPdfUrl(storagePath: string): string {
   return url + "/storage/v1/object/public/mind-pdfs/" + storagePath;
 }
 
-export function publicMindVideoUrl(storagePath: string): string {
-  if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}(?:-[0-9a-f-]{36})?\.mp4$/i.test(storagePath)) throw new Error("Caminho de vídeo inválido.");
-  const { url } = config();
-  return url + "/storage/v1/object/public/mind-videos/" + storagePath;
-}
-
 export function safeMindPdfFileName(value: string): string {
   const name = value.normalize("NFC").replace(/[\\/\u0000-\u001f\u007f]/g, "_").trim().slice(0, 180);
   return name || "documento.pdf";
